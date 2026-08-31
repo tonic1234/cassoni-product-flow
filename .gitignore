@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Credenciales / secretos (NUNCA en git)
+.env.staging
+.env.prod
+creds/
+*.db
+
+# Estado local del scheduler
+cassoni_sched.json
