@@ -1,16 +1,3 @@
-.......................................F................................ [ 70%]
+........................................................................ [ 70%]
 ..............................                                           [100%]
-=================================== FAILURES ===================================
-_______________ TestPromptContrato.test_candidatas_ya_filtradas ________________
-
-self = <test_editor_prompt.TestPromptContrato object at 0x7b63d5bd5370>
-
-    def test_candidatas_ya_filtradas(self):
-        # el LLM NO puede descartar lo que el filtro determinista ya dejó pasar
->       assert "ya pasaron" in SYSTEM_PROMPT and "NO las descartes" in SYSTEM_PROMPT
-E       AssertionError: assert ('ya pasaron' in 'Sos un editor SEO senior especializado en muebles de lujo.\nEditás el H1 y la DESCRIPCIÓN LARGA de un producto, incor...ODO el HTML y formato existentes en la descripción larga.\n- No repitas conceptos que ya estén en el texto original.\n')
-
-tests/test_editor_prompt.py:10: AssertionError
-=========================== short test summary info ============================
-FAILED tests/test_editor_prompt.py::TestPromptContrato::test_candidatas_ya_filtradas
-1 failed, 101 passed in 6.49s
+102 passed in 6.66s

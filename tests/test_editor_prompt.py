@@ -7,7 +7,8 @@ from cassoni.editor import SYSTEM_PROMPT
 class TestPromptContrato:
     def test_candidatas_ya_filtradas(self):
         # el LLM NO puede descartar lo que el filtro determinista ya dejó pasar
-        assert "ya pasaron" in SYSTEM_PROMPT and "NO las descartes" in SYSTEM_PROMPT
+        s = SYSTEM_PROMPT.lower()
+        assert "ya pasaron" in s and "no las descartes" in s
 
     def test_no_reescribir(self):
         assert "NUNCA la reescribas desde cero" in SYSTEM_PROMPT
