@@ -24,6 +24,10 @@ class TestConstantes:
     def test_secundaria_max_2_usos(self):
         assert reglas.SEC_MAX_USOS == 2
 
+    def test_conservacion_minima(self):
+        # (requisito Antonio 18-sep: editar sobre el texto actual, no reescribir)
+        assert 0.0 < reglas.CONSERVACION_MIN <= 1.0
+
 
 class TestTextos:
     def test_textos_referencian_la_spec(self):

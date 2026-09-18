@@ -135,6 +135,71 @@ class TestReglasDuras:
         assert checklist.check_reglas(e) == []
 
 
+class TestConservacion:
+    """Requisito de Antonio (18-sep): la descripción larga se EDITA sobre el texto
+    actual, nunca se reescribe desde cero — y eso tiene que ser medible."""
+
+    _ORIG = "<p>Elegante sofá de cuero negro. Estructura de madera maciza de roble. " \
+            "Tapicería rematada a mano. Garantía de cinco años.</p>"
+
+    def test_conserva_oraciones_intactas(self):
+        # edición quirúrgica: 1 oración nueva insertada, las demás intactas
+        editado = "<p>Elegante sofá de cuero negro. Estructura de madera maciza de " \
+                  "roble. Tapicería rematada a mano. Ideal para living de lujo. " \
+                  "Garantía de cinco años.</p>"
+        assert checklist.conservacion(self._ORIG, editado) > 0.7
+
+    def test_reescritura_total_ratio_bajo(self):
+        nuevo = "<p>Un mueble completamente distinto que no conserva nada de las " \
+                "oraciones previas del texto original del producto.</p>"
+        assert checklist.conservacion(self._ORIG, nuevo) < 0.3
+
+    def test_check_reglas_rebota_reescritura(self):
+        # texto nuevo de 150+ palabras, spec-compliant en lo demás, pero reescrito
+        nuevo = ("<h2>Nuevo</h2><p>" + "palabra original nueva " * 40 + "</p>"
+                 "<p>" + "otra frase distinta " * 40 + "</p>")
+        e = dict(
+            h1="Sofá de Cuero Negro Modelo Belinda",
+            keyword_principal="sofá de cuero negro",
+            description=nuevo,
+            secondary_keywords=[{"keyword": "sofá de cuero de lujo", "why": "uso"},
+                                {"keyword": "sofá negro", "why": "estilo"}],
+            discarded=[],
+        )
+        issues = checklist.check_reglas(e, original_description=self._ORIG)
+        assert any("reescrita" in i.lower() or "conserva" in i.lower() for i in issues)
+
+    def test_check_reglas_ok_con_edicion_quirurgica(self):
+        editado = ("<h2>Diseño</h2><p>Elegante sofá de cuero negro. Estructura de "
+                   "madera maciza de roble. Tapicería rematada a mano. Ideal para "
+                   "living de lujo. Garantía de cinco años.</p>"
+                   "<p>Artículos de descripción extendida para superar el mínimo de "
+                   "palabras de la regla, manteniendo el tono sobrio y elegante de "
+                   "la colección, con materiales nobles y terminaciones cuidadas en "
+                   "cada detalle del mueble, pensado para espacios exigentes y "
+                   "amantes del diseño clásico contemporáneo, con entrega coordinada "
+                   "y un servicio de posventa dedicado, tal como corresponde a una "
+                   "pieza de esta categoría dentro del catálogo, con la presencia que "
+                   "un ambiente de alta gama requiere y la serenidad visual que "
+                   "caracteriza a las piezas de la casa.</p>"
+                   "<h2>Materiales</h2><p>Cuero genuino con patas de madera de roble "
+                   "maciza y una estructura pensada para durar décadas, manteniendo "
+                   "su presencia, su comodidad y el carácter artesanal de la "
+                   "colección, con acabados resistentes al uso diario y una "
+                   "apariencia que mejora con el paso del tiempo en el hogar, y "
+                   "detalles de confección que solo se encuentran en piezas "
+                   "trabajadas por artesanos con años de oficio en el rubro.</p>")
+        e = dict(
+            h1="Sofá de Cuero Negro Modelo Belinda",
+            keyword_principal="sofá de cuero negro",
+            description=editado,
+            secondary_keywords=[{"keyword": "sofá de cuero de lujo", "why": "uso"},
+                                {"keyword": "sofá negro", "why": "estilo"}],
+            discarded=[],
+        )
+        assert checklist.check_reglas(e, original_description=self._ORIG) == []
+
+
 class TestAntiCanibalizacion:
     def _cands(self):
         return ["sofa de cuero belinda", "sofa negro", "como elegir sofa de lujo",

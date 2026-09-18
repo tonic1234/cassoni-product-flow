@@ -15,9 +15,10 @@ from cassoni.config import Config
 from cassoni.db import DB
 from cassoni.orchestrator import Pipeline
 
-# --- descripción larga spec-compliant del fake (>=150 palabras, 2 H2, sin
-# --- repetir las secundarias) ---
+# --- descripción larga spec-compliant del fake: edición quirúrgica del original
+# --- ("Elegante sofá de cuero negro.") + relleno hasta >=150 palabras, 2 H2 ---
 _FRASES = [
+    "Elegante sofá de cuero negro.",   # oración del ORIGINAL: debe sobrevivir intacta
     "Diseñado en líneas sobrias, este mueble combina estructura de madera maciza "
     "con tapicería de cuero, y cada costura queda rematada a mano.",
     "El respaldo ofrece un descanso profundo, los apoyabrazos redondeados completan "
@@ -31,8 +32,8 @@ _FRASES = [
     "Cada unidad pasa por un control de calidad previo al despacho, se embala con "
     "protección en todas sus aristas y el transportista coordina la recepción con el cliente.",
 ]
-_DESC_OK = ("<h2>Diseño</h2><p>" + " ".join(_FRASES[:3]) + "</p>"
-            "<h2>Materiales</h2><p>" + " ".join(_FRASES[3:]) + "</p>")
+_DESC_OK = ("<h2>Diseño</h2><p>" + " ".join(_FRASES[:4]) + "</p>"
+            "<h2>Materiales</h2><p>" + " ".join(_FRASES[4:]) + "</p>")
 
 
 class FakeWoo:

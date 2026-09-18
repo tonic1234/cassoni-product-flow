@@ -61,11 +61,41 @@ def usos_de(kw: str, texto: str) -> int:
 
 
 # --- reglas mecánicas ---
-def check_reglas(editado: dict) -> list[str]:
+_SENT_RX = re.compile(r"(?<=[.!?])\s+")   # separador de oraciones
+_BLOQUE_RX = re.compile(r"</(?:p|h1|h2|h3|li|div|section|blockquote|tr)>", re.I)
+
+
+def oraciones(html: str) -> list[str]:
+    """Oraciones del texto (sin HTML), normalizadas y no vacías. No cruza
+    fronteras de bloque: un texto de H2 no se pega a la oración del párrafo."""
+    out = []
+    for bloque in _BLOQUE_RX.split(html or ""):
+        texto = strip_html(bloque)
+        for s in _SENT_RX.split(texto):
+            n = norm(s)
+            if len(n) > 2:
+                out.append(n)
+    return out
+
+
+def conservacion(original: str, editado: str) -> float:
+    """Fracción de oraciones del ORIGINAL que siguen intactas en la edición.
+    1.0 = nada se tocó; 0.0 = reescritura total. Es la medición de la regla
+    'editar sobre el texto actual, nunca reescribir' (requisito Antonio 18-sep)."""
+    orig = oraciones(original)
+    if not orig:
+        return 1.0
+    edit_norm = set(oraciones(editado))
+    conservadas = [o for o in orig if o in edit_norm]
+    return len(conservadas) / len(orig)
+
+
+def check_reglas(editado: dict, original_description: str = "") -> list[str]:
     """Devuelve la lista de issues (vacía si cumple TODO). `editado` es el output
     estructurado del editor (alcance: SOLO H1 + descripción larga):
     {h1, keyword_principal, description, secondary_keywords:[{keyword,why}],
-    discarded:[...]}."""
+    discarded:[...]}. `original_description`: si se pasa, también se verifica
+    que la edición conserve lo esencial del texto original (no reescribir)."""
     issues: list[str] = []
     h1 = (editado.get("h1") or "").strip()
     principal = norm(editado.get("keyword_principal") or "")
@@ -92,6 +122,15 @@ def check_reglas(editado: dict) -> list[str]:
     if wc > reglas.LARGA_MAX_WORDS:
         issues.append(f"La descripción larga supera las {reglas.LARGA_MAX_WORDS} "
                       f"palabras (tiene {wc})")
+
+    # conservación del texto original (nunca reescribir desde cero)
+    if original_description:
+        ratio = conservacion(original_description, desc)
+        if ratio < reglas.CONSERVACION_MIN:
+            issues.append(
+                f"La descripción larga fue reescrita desde cero: conserva solo "
+                f"{ratio:.0%} de las oraciones del original "
+                f"(mínimo {reglas.CONSERVACION_MIN:.0%})")
 
     # descripción larga: máx 2 H2
     h2c = h2_count(desc)

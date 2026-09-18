@@ -14,6 +14,8 @@ MAX_H2 = 2                            # máx 2 H2 en la descripción larga
 SEC_MIN = 2                           # mínimo de keywords secundarias
 SEC_MAX = 3                           # máximo de keywords secundarias
 SEC_MAX_USOS = 2                      # cada secundaria aparece máx 2 veces
+CONSERVACION_MIN = 0.6                # mínimo de oraciones del original que deben
+                                      # sobrevivir intactas en la desc larga editada
 
 # --- Texto canónico de reglas (lo que ve el LLM, mismo origen que el checklist) ---
 REGLAS_H1 = ("Título/H1: máximo 60 caracteres; marca (si aplica) + modelo + categoría "
@@ -34,7 +36,10 @@ REGLAS_NO_GO = ("No hacer: no inventar atributos que no estén en los inputs; no
                 "descripciones de competidores; no repetir la misma secundaria en varias "
                 "fichas sin chequear; no forzar una keyword en una oración donde no "
                 "encaja natural.")
-REGLAS_OUTPUT = ("Output por ficha: H1 / descripción corta / descripción larga con H2 "
+REGLAS_CONSERVAR = ("Sobre la descripción larga: PARTÍ DE LA ACTUAL tal cual viene; "
+                    "editála QUIRÚRGICAMENTE; NUNCA la reescribas desde cero. La versión "
+                    "editada conserva la estructura, la redacción y el tono del original.")
+REGLAS_OUTPUT = ("Output por ficha: H1 / descripción larga con H2 "
                  "marcados / keywords secundarias + por qué son específicas / descartadas "
                  "+ a qué contenido pertenecen.")
 
@@ -43,5 +48,5 @@ def reglas_completas() -> str:
     """Bloque de reglas completo para los prompts (editor y validador)."""
     return "\n".join([
         REGLAS_H1, REGLAS_DESC_CORTA, REGLAS_DESC_LARGA, REGLAS_SECUNDARIAS,
-        REGLAS_ANTICANIBALIZACION, REGLAS_NO_GO, REGLAS_OUTPUT,
+        REGLAS_ANTICANIBALIZACION, REGLAS_NO_GO, REGLAS_CONSERVAR, REGLAS_OUTPUT,
     ])

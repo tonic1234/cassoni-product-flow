@@ -26,7 +26,10 @@ La spec del cliente es `docs/REGLA-SEO-FICHAS.md`; sus límites viven en
   La descripción corta (`short_description`) NO se toca: entra como contexto al
   editor y WooCommerce queda intacto en ese campo (un solo escritor por campo).
 - **Descripción larga**: 150–300 palabras, máx 2 H2, 2–3 secundarias, cada una
-  máx 2 veces, preservando al máximo el texto original (modo quirúrgico).
+  máx 2 veces, **y se EDITA sobre el texto actual, nunca se reescribe desde cero**:
+  el gate mide la *conservación* (porcentaje de oraciones del original que
+  sobreviven intactas, mínimo 60% — `checklist.conservacion()`) y rebota la
+  edición si el LLM reescribió todo aunque suene bien.
 - **Anti-canibalización** (`cassoni/checklist.py`, determinista): descarta
   candidatas que ya son principal de otra ficha, compiten con la página de
   categoría o responden mejor a un blog/guía, y registra su destino. El input de

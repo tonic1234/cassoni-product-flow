@@ -1,0 +1,100 @@
+.....F.................FFFF.....                                         [100%]
+=================================== FAILURES ===================================
+___________________ TestConstantes.test_conservacion_minima ____________________
+
+self = <test_reglas.TestConstantes object at 0x773bf5f28aa0>
+
+    def test_conservacion_minima(self):
+        # (requisito Antonio 18-sep: editar sobre el texto actual, no reescribir)
+>       assert 0.0 < reglas.CONSERVACION_MIN <= 1.0
+                     ^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'cassoni.reglas' has no attribute 'CONSERVACION_MIN'
+
+tests/test_reglas.py:29: AttributeError
+______________ TestConservacion.test_conserva_oraciones_intactas _______________
+
+self = <test_checklist.TestConservacion object at 0x773bf5f2bf20>
+
+    def test_conserva_oraciones_intactas(self):
+        # edición quirúrgica: 1 oración nueva insertada, las demás intactas
+        editado = "<p>Elegante sofá de cuero negro. Estructura de madera maciza de " \
+                  "roble. Tapicería rematada a mano. Ideal para living de lujo. " \
+                  "Garantía de cinco años.</p>"
+>       assert checklist.conservacion(self._ORIG, editado) > 0.7
+               ^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'cassoni.checklist' has no attribute 'conservacion'
+
+tests/test_checklist.py:150: AttributeError
+______________ TestConservacion.test_reescritura_total_ratio_bajo ______________
+
+self = <test_checklist.TestConservacion object at 0x773bf5f28a40>
+
+    def test_reescritura_total_ratio_bajo(self):
+        nuevo = "<p>Un mueble completamente distinto que no conserva nada de las " \
+                "oraciones previas del texto original del producto.</p>"
+>       assert checklist.conservacion(self._ORIG, nuevo) < 0.3
+               ^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'cassoni.checklist' has no attribute 'conservacion'
+
+tests/test_checklist.py:155: AttributeError
+____________ TestConservacion.test_check_reglas_rebota_reescritura _____________
+
+self = <test_checklist.TestConservacion object at 0x773bf5f289b0>
+
+    def test_check_reglas_rebota_reescritura(self):
+        # texto nuevo de 150+ palabras, spec-compliant en lo demás, pero reescrito
+        nuevo = ("<h2>Nuevo</h2><p>" + "palabra original nueva " * 40 + "</p>"
+                 "<p>" + "otra frase distinta " * 40 + "</p>")
+        e = dict(
+            h1="Sofá de Cuero Negro Modelo Belinda",
+            keyword_principal="sofá de cuero negro",
+            description=nuevo,
+            secondary_keywords=[{"keyword": "sofá de cuero de lujo", "why": "uso"},
+                                {"keyword": "sofá negro", "why": "estilo"}],
+            discarded=[],
+        )
+>       issues = checklist.check_reglas(e, original_description=self._ORIG)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check_reglas() got an unexpected keyword argument 'original_description'
+
+tests/test_checklist.py:169: TypeError
+_________ TestConservacion.test_check_reglas_ok_con_edicion_quirurgica _________
+
+self = <test_checklist.TestConservacion object at 0x773bf5f294f0>
+
+    def test_check_reglas_ok_con_edicion_quirurgica(self):
+        editado = ("<h2>Diseño</h2><p>Elegante sofá de cuero negro. Estructura de "
+                   "madera maciza de roble. Tapicería rematada a mano. Ideal para "
+                   "living de lujo. Garantía de cinco años.</p>"
+                   "<p>Artículos de descripción extendida para superar el mínimo de "
+                   "palabras de la regla, manteniendo el tono sobrio y elegante de "
+                   "la colección, con materiales nobles y terminaciones cuidadas en "
+                   "cada detalle del mueble, pensado para espacios exigentes y "
+                   "amantes del diseño clásico contemporáneo, con entrega coordinada "
+                   "y un servicio de posventa dedicado, tal como corresponde a una "
+                   "pieza de esta categoría dentro del catálogo.</p>"
+                   "<h2>Materiales</h2><p>Cuero genuino con patas de madera de roble "
+                   "maciza y una estructura pensada para durar décadas, manteniendo "
+                   "su presencia, su comodidad y el carácter artesanal de la "
+                   "colección, con acabados resistentes al uso diario y una "
+                   "apariencia que mejora con el paso del tiempo en el hogar.</p>")
+        e = dict(
+            h1="Sofá de Cuero Negro Modelo Belinda",
+            keyword_principal="sofá de cuero negro",
+            description=editado,
+            secondary_keywords=[{"keyword": "sofá de cuero de lujo", "why": "uso"},
+                                {"keyword": "sofá negro", "why": "estilo"}],
+            discarded=[],
+        )
+>       assert checklist.check_reglas(e, original_description=self._ORIG) == []
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: check_reglas() got an unexpected keyword argument 'original_description'
+
+tests/test_checklist.py:196: TypeError
+=========================== short test summary info ============================
+FAILED tests/test_reglas.py::TestConstantes::test_conservacion_minima - Attri...
+FAILED tests/test_checklist.py::TestConservacion::test_conserva_oraciones_intactas
+FAILED tests/test_checklist.py::TestConservacion::test_reescritura_total_ratio_bajo
+FAILED tests/test_checklist.py::TestConservacion::test_check_reglas_rebota_reescritura
+FAILED tests/test_checklist.py::TestConservacion::test_check_reglas_ok_con_edicion_quirurgica
+5 failed, 27 passed in 0.32s

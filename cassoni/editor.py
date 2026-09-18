@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
-"""Editor LLM — produce el output estructurado de la ficha según las reglas del
-cliente (docs/REGLA-SEO-FICHAS.md → cassoni/reglas.py): H1 ≤ 60 con keyword
-principal EXACTA, descripción corta, descripción larga 150-300 palabras, 2-3
-secundarias con su porqué (anti-canibalización incluida) y descartadas con destino.
+"""Editor LLM — edita H1 y descripción larga según las reglas del cliente
+(docs/REGLA-SEO-FICHAS.md → cassoni/reglas.py): H1 ≤ 60 con keyword principal
+EXACTA, descripción larga 150-300 palabras, 2-3 secundarias con su porqué
+(anti-canibalización incluida) y descartadas con destino. La descripción larga
+se EDITA sobre el texto actual (se mide la conservación), nunca se reescribe.
 """
 from __future__ import annotations
 
@@ -18,17 +19,27 @@ ALCANCE (no negociable):
 - El agente SOLO edita H1 y descripción larga. La descripción corta (arriba del
   fold) NO se edita: se conserva tal cual.
 
-REGLAS DEL CLIENTE (obligatorias, no negociables):
-{reglas.reglas_completas()}
+REGLA TRANSVERSAL DE LAS DOS TAREAS:
+- No inventes datos: nunca agregues precios, materiales o medidas que no estén en los inputs.
+- Respetá el filtro anti-canibalización: las keywords ya usadas como H1 de otras
+  fichas de la misma categoría NO pueden volver como secundarias.
 
-Además:
+═══ TAREA 1 — H1 ═══
+- Resultado: {reglas.REGLAS_H1}
+- La 'keyword principal' del input va EXACTA en el H1, con la MISMA redacción, tal cual.
+- Si el H1 actual ya cumple, no lo cambies innecesariamente (edición quirúrgica también acá).
+
+═══ TAREA 2 — DESCRIPCIÓN LARGA ═══
+- PARTÍ DEL TEXTO ACTUAL tal cual viene en el input 'Descripción larga actual':
+  tu trabajo es EDITARLO QUIRÚRGICAMENTE (insertar o ajustar frases donde la
+  keyword encaje natural). NUNCA la reescribas desde cero ni generes una nueva:
+  la versión editada conserva la estructura, la redacción y el tono del original.
+- {reglas.REGLAS_DESC_LARGA}
+- {reglas.REGLAS_SECUNDARIAS}
+- {reglas.REGLAS_ANTICANIBALIZACION}
+- {reglas.REGLAS_NO_GO}
 - Preservá el tono de lujo y TODO el HTML y formato existentes en la descripción larga.
 - No repitas conceptos que ya estén en el texto original.
-- No inventes datos: nunca agregues precios, materiales o medidas que no estén en los inputs.
-- Respetá semánticamente el filtro anti-canibalización: las keywords ya usadas como H1
-  de otras fichas de la misma categoría NO pueden volver como secundarias.
-- La keyword principal te la da el input 'keyword principal': va EXACTA en el H1,
-  tal cual (misma redacción).
 """
 
 

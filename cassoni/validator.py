@@ -75,7 +75,8 @@ Responde SOLO con JSON:
         last_edited = dict(edited)
         last_val = None
         for attempt in range(max_passes):
-            mecanicas = check_reglas(last_edited)
+            mecanicas = check_reglas(last_edited,
+                                     original_description=original_desc)
             last_val = self.validate(
                 url=url, original_h1=original_h1, original_desc=original_desc,
                 edited_h1=last_edited["h1"], edited_desc=last_edited["description"],
