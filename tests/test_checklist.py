@@ -33,6 +33,19 @@ class TestKeywordExacta:
         # no cuenta "sofa" dentro de "sofas" ni prefijos sueltos
         assert not checklist.kw_exacta_en("Nuestros sofás de lujo", "sofá")
 
+    # criterio del SEO (Alexander Valero, 18-sep): "tienen que estar juntas sí.
+    # La única variable aceptable es que se antecedan por un artículo (of, the etc)"
+    def test_articulo_antes_ok(self):
+        assert checklist.kw_exacta_en("the leather sofa is elegant", "leather sofa")
+        assert checklist.kw_exacta_en("of the leather sofa collection", "leather sofa")
+
+    def test_palabras_intercaladas_no(self):
+        # "leather comfortable sofa" NO es "leather sofa": las palabras van juntas
+        assert not checklist.kw_exacta_en("leather comfortable sofa", "leather sofa")
+
+    def test_orden_invertido_no(self):
+        assert not checklist.kw_exacta_en("sofa leather", "leather sofa")
+
 
 class TestReglasDuras:
     _FRASES = [

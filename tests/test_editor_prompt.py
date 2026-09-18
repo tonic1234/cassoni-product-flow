@@ -17,7 +17,11 @@ class TestPromptContrato:
         assert "TONO DE LA MARCA" in SYSTEM_PROMPT or "registro de Cassoni" in SYSTEM_PROMPT
 
     def test_anti_repeticion(self):
-        assert "sofá sofa sofa" in SYSTEM_PROMPT or "sofa sofa sofa" in SYSTEM_PROMPT
+        assert "sofa sofa sofa" in SYSTEM_PROMPT.lower()
+
+    def test_keywords_juntas_mismo_orden(self):
+        # criterio del SEO (18-sep): juntas, mismo orden, solo artículo delante
+        assert "MISMO orden" in SYSTEM_PROMPT
 
     def test_alcance_solo_h1_y_long(self):
         assert "SOLO edita H1 y descripción larga" in SYSTEM_PROMPT

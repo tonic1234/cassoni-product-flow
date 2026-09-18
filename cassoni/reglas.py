@@ -22,6 +22,10 @@ REPETICION_MAX_PALABRA = 8            # tope de veces que una misma palabra (no
 # --- Texto canónico de reglas (lo que ve el LLM, mismo origen que el checklist) ---
 REGLAS_H1 = ("Título/H1: máximo 60 caracteres; marca (si aplica) + modelo + categoría "
              "completa; es la keyword principal, EXACTA.")
+REGLAS_KEYWORD_JUNTA = ("Las palabras de cada keyword van JUNTAS y en el MISMO orden "
+                        "('leather sofa' es 'leather sofa'). La única variable aceptable "
+                        "es que se antecedan por un artículo ('of', 'the', etc.). "
+                        "Prohibido intercalar palabras u ordenarlas al revés.")
 REGLAS_DESC_CORTA = ("Descripción corta (above the fold): incluye la keyword principal "
                      "exacta tal cual el H1; corta; una sola idea central; SIN H2.")
 REGLAS_DESC_LARGA = ("Descripción larga (below the fold): 150 a 300 palabras; 1 o 2 H2 "
