@@ -22,10 +22,11 @@ La spec del cliente es `docs/REGLA-SEO-FICHAS.md`; sus límites viven en
 
 - **H1** ≤ 60 caracteres, keyword principal EXACTA (el pipeline la define como la
   candidata de mayor volumen).
-- **Descripción corta** (`short_description`): keyword principal exacta, sin H2,
-  una idea central. Se edita y se aplica a WooCommerce junto con el H1.
+- **Alcance**: el agente SOLO edita H1 (`name`) y descripción larga (`description`).
+  La descripción corta (`short_description`) NO se toca: entra como contexto al
+  editor y WooCommerce queda intacto en ese campo (un solo escritor por campo).
 - **Descripción larga**: 150–300 palabras, máx 2 H2, 2–3 secundarias, cada una
-  máx 2 veces.
+  máx 2 veces, preservando al máximo el texto original (modo quirúrgico).
 - **Anti-canibalización** (`cassoni/checklist.py`, determinista): descarta
   candidatas que ya son principal de otra ficha, compiten con la página de
   categoría o responden mejor a un blog/guía, y registra su destino. El input de

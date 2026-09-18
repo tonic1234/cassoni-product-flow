@@ -51,7 +51,6 @@ class Result:
     keywords: list = field(default_factory=list)
     selected: list = field(default_factory=list)
     edited_h1: Optional[str] = None
-    edited_short_description: Optional[str] = None
     edited_description: Optional[str] = None
     aprobado: bool = True
     aplicado: bool = False
@@ -205,7 +204,6 @@ class Pipeline:
         wc_resp = {}
         if self.cfg.dry_run:
             wc_resp = {"dry_run": True, "apply_h1": edited_final.get("h1", ""),
-                       "apply_short_len": len(edited_final.get("short_description", "")),
                        "apply_desc_len": len(edited_final.get("description", ""))}
             applied = True  # en dry_run "aplicar" = intento registrado
         elif val["aprobado"]:
@@ -214,7 +212,6 @@ class Pipeline:
                     product["id"],
                     name=edited_final.get("h1", ""),
                     description=edited_final.get("description", ""),
-                    short_description=edited_final.get("short_description", ""),
                     allowed=True)
                 applied = True
             except WooError as exc:
@@ -226,7 +223,6 @@ class Pipeline:
             original_h1=h1_orig, original_description=desc_orig,
             edited_h1=edited_final.get("h1", ""),
             edited_description=edited_final.get("description", ""),
-            edited_short_description=edited_final.get("short_description", ""),
             gsc_keywords=kw_rows[:10], selected_keywords=candidates,
             validation_result=vres, validation_attempts=val["intentos"],
             status="processed" if (applied or val["aprobado"]) else "failed",
@@ -238,7 +234,6 @@ class Pipeline:
                     else vres.get("razon", "")),
             keywords=kw_rows, selected=candidates,
             edited_h1=edited_final.get("h1", ""),
-            edited_short_description=edited_final.get("short_description", ""),
             edited_description=edited_final.get("description", ""),
             aprobado=val["aprobado"], aplicado=applied, wc_response=wc_resp)
 

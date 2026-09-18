@@ -58,9 +58,8 @@ class FakeWoo:
         self.sibling_calls.append(category_id)
         return [{"id": 120563, "name": "Pedro Sofá", "slug": "p1"},
                 {"id": 999, "name": "Otro Sofá Belinda", "slug": "p2"}]
-    def update_product(self, product_id, *, name, description,
-                       short_description=None, allowed=True):
-        self.writes.append((name, short_description, description))
+    def update_product(self, product_id, *, name, description, allowed=True):
+        self.writes.append((name, description))
         return {"id": product_id, "name": name}
 
 
@@ -91,7 +90,6 @@ class FakeLLM:
         return {
             "h1": "Sofá de cuero Cassoni Pedro Sofá",
             "keyword_principal": "sofá de cuero",
-            "short_description": "Sofá de cuero: elegancia para el living.",
             "description": _DESC_OK,
             "secondary_keywords": [
                 {"keyword": "sofá de lujo", "why": "variante de uso"},
@@ -129,13 +127,11 @@ def test_e2e_dry_run(tmp_path):
     assert res.aprobado is True
     assert res.aplicado is True          # dry_run registra el intento
     assert "Sofá de cuero" in res.edited_h1
-    assert res.edited_short_description == "Sofá de cuero: elegancia para el living."
     # el FakeWoo no recibió writes porque el orquestador en dry_run no llama update
     assert pipe.woo.writes == []
-    # DB guardó antes/despues (incluye desc corta)
+    # DB guardó antes/despues
     row = pipe.db.get_state(res.url)
     assert row.edited_h1 == res.edited_h1
-    assert row.edited_short_description == res.edited_short_description
     assert row.original_h1 == "Pedro Sofá"
 
 
@@ -145,9 +141,8 @@ def test_e2e_write_enabled(tmp_path):
     assert res.status == "processed"
     assert res.aplicado is True
     assert len(pipe.woo.writes) == 1
-    name, short, desc = pipe.woo.writes[0]
+    name, desc = pipe.woo.writes[0]
     assert name == res.edited_h1
-    assert short == res.edited_short_description
     assert desc == res.edited_description
 
 

@@ -63,7 +63,6 @@ class TestReglasDuras:
         base = dict(
             h1="Sofá de Cuero Negro Modelo Belinda",
             keyword_principal="sofá de cuero negro",
-            short_description="Sofá de cuero negro, elegancia para el living.",
             description=self._desc_larga_ok(),
             secondary_keywords=[{"keyword": "sofá de cuero de lujo", "why": "uso"},
                                 {"keyword": "sofá negro", "why": "estilo"}],
@@ -83,10 +82,6 @@ class TestReglasDuras:
         e = self._editado(h1="S" * 61)
         issues = checklist.check_reglas(e)
         assert any("60" in i and "H1" in i for i in issues)
-
-    def test_desc_corta_sin_h2(self):
-        e = self._editado(short_description="<h2>Hola</h2>texto")
-        assert any("corta" in i and "H2" in i for i in checklist.check_reglas(e))
 
     def test_desc_larga_bajo_minimo(self):
         e = self._editado(description="<p>Muy corto.</p>")
@@ -134,10 +129,9 @@ class TestReglasDuras:
         issues = checklist.check_reglas(e)
         assert any("principal" in i.lower() for i in issues)
 
-    def test_keyword_principal_exacta_en_h1_y_desc_corta_pasa(self):
+    def test_keyword_principal_exacta_en_h1_pasa(self):
         e = self._editado(h1="Sofá de Cuero Negro modelo Belinda",
-                          keyword_principal="sofá de cuero negro",
-                          short_description="Sofá de cuero negro: elegancia para el living.")
+                          keyword_principal="sofá de cuero negro")
         assert checklist.check_reglas(e) == []
 
 

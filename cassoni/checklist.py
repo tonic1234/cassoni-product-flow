@@ -63,12 +63,12 @@ def usos_de(kw: str, texto: str) -> int:
 # --- reglas mecánicas ---
 def check_reglas(editado: dict) -> list[str]:
     """Devuelve la lista de issues (vacía si cumple TODO). `editado` es el output
-    estructurado del editor: {h1, keyword_principal, short_description,
-    description, secondary_keywords:[{keyword,why}], discarded:[...]}."""
+    estructurado del editor (alcance: SOLO H1 + descripción larga):
+    {h1, keyword_principal, description, secondary_keywords:[{keyword,why}],
+    discarded:[...]}."""
     issues: list[str] = []
     h1 = (editado.get("h1") or "").strip()
     principal = norm(editado.get("keyword_principal") or "")
-    sc = editado.get("short_description") or ""
     desc = editado.get("description") or ""
     secs = editado.get("secondary_keywords") or []
 
@@ -77,19 +77,12 @@ def check_reglas(editado: dict) -> list[str]:
         issues.append(f"H1 supera los {reglas.H1_MAX_CHARS} caracteres "
                       f"(tiene {len(h1)})")
 
-    # keyword principal EXACTA en H1 y en descripción corta
+    # keyword principal EXACTA en el H1
     if principal:
         if not kw_exacta_en(h1, principal):
             issues.append("La keyword principal no está EXACTA en el H1")
-        if not kw_exacta_en(sc, principal):
-            issues.append("La keyword principal no está exacta en la descripción corta")
     else:
         issues.append("Falta la keyword principal (keyword_principal)")
-
-    # descripción corta: sin H2
-    if h2_count(sc) > 0:
-        issues.append(f"La descripción corta no puede llevar H2 "
-                      f"(tiene {h2_count(sc)})")
 
     # descripción larga: 150-300 palabras
     wc = word_count(desc)

@@ -11,9 +11,12 @@ from .llm import LLMClient, LLMError
 from . import reglas
 
 SYSTEM_PROMPT = f"""Sos un editor SEO senior especializado en muebles de lujo.
-Editás la ficha completa de un producto (H1, descripción corta y descripción
-larga) incorporando keywords de forma natural, sin exagerar y sin perder el
-tono elegante y sobrio de la marca.
+Editás el H1 y la DESCRIPCIÓN LARGA de un producto, incorporando keywords de forma
+natural, sin exagerar y sin perder el tono elegante y sobrio de la marca.
+
+ALCANCE (no negociable):
+- El agente SOLO edita H1 y descripción larga. La descripción corta (arriba del
+  fold) NO se edita: se conserva tal cual.
 
 REGLAS DEL CLIENTE (obligatorias, no negociables):
 {reglas.reglas_completas()}
@@ -24,15 +27,13 @@ Además:
 - No inventes datos: nunca agregues precios, materiales o medidas que no estén en los inputs.
 - Respetá semánticamente el filtro anti-canibalización: las keywords ya usadas como H1
   de otras fichas de la misma categoría NO pueden volver como secundarias.
-- La keyword principal te la da el input 'keyword principal': va EXACTA en el H1 y en
-  la descripción corta, tal cual (misma redacción).
+- La keyword principal te la da el input 'keyword principal': va EXACTA en el H1,
+  tal cual (misma redacción).
 """
 
 
 def json_schema() -> str:
     return ('{"h1": "<H1 editado, máx 60 chars, con la keyword principal exacta>", '
-            '"short_description": "<descripción corta, con la keyword principal exacta, '
-            'sin H2>", '
             '"description": "<descripción larga 150-300 palabras, HTML, H2 marcados>", '
             '"keyword_principal": "<la keyword principal usada>", '
             '"secondary_keywords": [{"keyword": "<secundaria>", '
@@ -75,13 +76,13 @@ Atributos técnicos del producto:
 H1 actual:
 {current_h1}
 
-Descripción corta actual:
+Descripción corta actual (contexto — NO se edita):
 {current_short_description or '(vacía)'}
 
-Descripción larga actual (HTML):
+Descripción larga actual (HTML, la que hay que editar):
 {current_description}
 
-KEYWORD PRINCIPAL (obligatoria, EXACTA en H1 y descripción corta):
+KEYWORD PRINCIPAL (obligatoria, EXACTA en el H1):
 {principal}
 
 Keywords candidatas (de mayor a menor volumen):
@@ -98,7 +99,6 @@ Responde SOLO con JSON:
                                         model=self.cfg.llm_editor_model)
         return {
             "h1": result.get("h1", ""),
-            "short_description": result.get("short_description", ""),
             "description": result.get("description", ""),
             "keyword_principal": result.get("keyword_principal", principal),
             "secondary_keywords": result.get("secondary_keywords", []),

@@ -34,7 +34,7 @@ class Validator:
         self.llm = llm
 
     def validate(self, *, url: str, original_h1: str, original_desc: str,
-                 edited_h1: str, edited_desc: str, edited_short: str,
+                 edited_h1: str, edited_desc: str,
                  target_keywords: list[str]) -> dict:
         user = f"""Producto: {url}
 
@@ -44,7 +44,6 @@ Descripción: {original_desc[:1500]}
 
 ---- EDITADO ----
 H1: {edited_h1}
-Descripción corta: {edited_short[:400]}
 Descripción: {edited_desc[:2500]}
 
 Keywords que debían incorporarse: {', '.join(target_keywords)}
@@ -69,7 +68,7 @@ Responde SOLO con JSON:
                        max_passes: int = 2) -> dict:
         """Valida (reglas mecánicas + LLM); si no aprueba, rebota al editor
         (hasta max_passes veces). Devuelve {aprobado, intentos, validacion,
-        edited:{h1,short_description,description}}."""
+        edited:{h1,description}}."""
         self._context = context or {}
         # la ficha completa del editor viaja entera: check_reglas necesita
         # keyword_principal y secondary_keywords, no solo los textos
@@ -80,7 +79,6 @@ Responde SOLO con JSON:
             last_val = self.validate(
                 url=url, original_h1=original_h1, original_desc=original_desc,
                 edited_h1=last_edited["h1"], edited_desc=last_edited["description"],
-                edited_short=last_edited.get("short_description", ""),
                 target_keywords=target_keywords)
             issues = list(mecanicas) + list(last_val.get("issues") or [])
             if not mecanicas and last_val.get("aprobado"):
@@ -111,6 +109,5 @@ Responde SOLO con JSON:
             keyword_principal=ctx.pop("keyword_principal", ""))
         return {
             "h1": feedback["h1"],
-            "short_description": feedback.get("short_description", ""),
             "description": feedback["description"],
         }
