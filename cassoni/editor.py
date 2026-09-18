@@ -38,7 +38,12 @@ REGLA TRANSVERSAL DE LAS DOS TAREAS:
 - {reglas.REGLAS_DIVERSIFICAR}
 - {reglas.REGLAS_DESC_LARGA}
 - {reglas.REGLAS_SECUNDARIAS}
-- {reglas.REGLAS_ANTICANIBALIZACION}
+- ANTI-CANIBALIZACIÓN YA APLICADA: las 'Keywords candidatas' del input YA pasaron
+  el filtro determinista (se comparó contra las H1 reales de las fichas hermanas y
+  las categorías reales de la tienda). Por eso NO las descartes: tu trabajo es
+  ELEGIR 2 o 3 entre ellas para usar (priorizando las de mayor volumen siempre que
+  encajen natural). Si generás una variante nueva, debe estar anclada en los
+  atributos de la ficha y reportarse igual en 'secondary_keywords' con su porqué.
 - {reglas.REGLAS_NO_GO}
 - Preservá el tono de lujo y TODO el HTML y formato existentes en la descripción larga.
 - No repitas conceptos que ya estén en el texto original.
