@@ -58,6 +58,35 @@ def test_json_valido_devuelve_dict():
     assert llm.complete_json("s", "u") == {"h1": "x"}
 
 
+class FakeSecuencia:
+    """Devuelve respuestas en orden (para probar reintentos)."""
+    def __init__(self, *contents):
+        self.contents = list(contents)
+        self.bodies = []
+    def post(self, url, json=None, headers=None):
+        self.bodies.append(json)
+        c = self.contents.pop(0)
+        return FakeResp(c)
+
+
+def test_retry_tras_content_vacio():
+    # el modelo razonador a veces devuelve content vacío (varianza real del
+    # piloto Connor v4): reintento con doble presupuesto salva la llamada
+    fake = FakeSecuencia("", '{"ok": true}')
+    llm = LLMClient(_cfg(), client=fake)
+    assert llm.complete_json("s", "u") == {"ok": True}
+    assert fake.bodies[0]["max_tokens"] == 8000
+    assert fake.bodies[1]["max_tokens"] == 16000
+
+
+def test_content_vacio_2_intentos_lanza_llmerror():
+    fake = FakeSecuencia("", "")
+    llm = LLMClient(_cfg(), client=fake)
+    with pytest.raises(LLMError) as ei:
+        llm.complete_json("s", "u")
+    assert "2 intentos" in str(ei.value)
+
+
 def test_tope_de_tokens_suficiente_para_razonamiento():
     # con 1800 el razonamiento del modelo consumía el presupuesto y content
     # llegaba vacío: el default tiene que dejar lugar al JSON final

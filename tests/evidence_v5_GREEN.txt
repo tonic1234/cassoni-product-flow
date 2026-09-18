@@ -1,0 +1,18 @@
+...................................................F.................... [ 63%]
+.........................................                                [100%]
+=================================== FAILURES ===================================
+________ TestPromptContrato.test_genera_variantes_si_llegan_menos_de_3 _________
+
+self = <test_editor_prompt.TestPromptContrato object at 0x78fdcae3e240>
+
+    def test_genera_variantes_si_llegan_menos_de_3(self):
+        # diversidad (18-sep): si faltan candidatas, las genera desde atributos
+        # SIN repetir la palabra ya usada
+        assert "MENOS DE 3 candidatas" in SYSTEM_PROMPT
+>       assert "no pueden repetir la palabra ya usada" in SYSTEM_PROMPT
+E       AssertionError: assert 'no pueden repetir la palabra ya usada' in 'Sos un editor SEO senior especializado en muebles de lujo.\nEditás el H1 y la DESCRIPCIÓN LARGA de un producto, incor...ODO el HTML y formato existentes en la descripción larga.\n- No repitas conceptos que ya estén en el texto original.\n'
+
+tests/test_editor_prompt.py:30: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_editor_prompt.py::TestPromptContrato::test_genera_variantes_si_llegan_menos_de_3
+1 failed, 112 passed in 7.17s

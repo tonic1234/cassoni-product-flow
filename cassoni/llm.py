@@ -49,20 +49,24 @@ class LLMClient:
 
     def complete_json(self, system: str, user: str, *, model: str | None = None,
                       temperature: float = 0.2, max_tokens: int = 8000) -> dict:
-        """JSON estricto. max_tokens generoso (>=8000): los modelos razonadores
-        (p. ej. deepseek-v4-flash) consumen el presupuesto en `reasoning_content`
-        y con topes chicos devuelven content VACÍO (bug real 18-sep-2026 en la
-        prueba de la ficha Connor Sofa). Errores claros, no JSONDecodeError."""
-        raw = self.complete(system, user + (
-            "\n\nResponde SOLO con JSON válido."), model=model,
-            temperature=temperature, max_tokens=max_tokens)
-        if not raw or not raw.strip():
-            raise LLMError(
-                "El modelo devolvió content vacío (presupuesto de tokens agotado "
-                "en el razonamiento): aumentar max_tokens o simplificar el prompt)")
-        try:
-            return json.loads(raw)
-        except json.JSONDecodeError as exc:
-            raise LLMError(
-                f"El modelo no devolvió JSON válido (primeros 120 chars: "
-                f"{raw[:120]!r}): {exc}") from exc
+        """JSON estricto. max_tokens generoso (>=8000) porque los modelos
+        razonadores (deepseek-v4-flash) consumen presupuesto en reasoning_content
+        y a veces dejan content vacío; si pasa, se REINTENTA una vez con el doble
+        (varianza real observada en el piloto Connor, 18-sep). Errores claros."""
+        for intent, mt in ((1, max_tokens), (2, max_tokens * 2)):
+            raw = self.complete(system, user + (
+                "\n\nResponde SOLO con JSON válido."), model=model,
+                temperature=temperature, max_tokens=mt)
+            if raw and raw.strip():
+                try:
+                    return json.loads(raw)
+                except json.JSONDecodeError as exc:
+                    raise LLMError(
+                        f"El modelo no devolvió JSON válido (primeros 120 chars: "
+                        f"{raw[:120]!r}): {exc}") from exc
+            if intent == 1:
+                log.warning("Content vacío en el intento 1 (max_tokens=%s) -> "
+                            "reintento con %s", max_tokens, mt * 2)
+        raise LLMError(
+            "El modelo devolvió content vacío en 2 intentos (presupuesto de tokens "
+            "agotado en el razonamiento): aumentar max_tokens o simplificar el prompt)")

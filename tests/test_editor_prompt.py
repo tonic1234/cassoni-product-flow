@@ -23,5 +23,11 @@ class TestPromptContrato:
         # criterio del SEO (18-sep): juntas, mismo orden, solo artículo delante
         assert "MISMO orden" in SYSTEM_PROMPT
 
+    def test_genera_variantes_si_llegan_menos_de_3(self):
+        # diversidad (18-sep): si faltan candidatas, las genera desde atributos
+        # SIN repetir la palabra ya usada
+        assert "MENOS DE 3 candidatas" in SYSTEM_PROMPT
+        assert "no pueden repetir la palabra ya usada" in SYSTEM_PROMPT
+
     def test_alcance_solo_h1_y_long(self):
         assert "SOLO edita H1 y descripción larga" in SYSTEM_PROMPT

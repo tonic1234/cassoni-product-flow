@@ -45,6 +45,11 @@ REGLA TRANSVERSAL DE LAS DOS TAREAS:
   ELEGIR 2 o 3 entre ellas para usar (priorizando las de mayor volumen siempre que
   encajen natural). Si generás una variante nueva, debe estar anclada en los
   atributos de la ficha y reportarse igual en 'secondary_keywords' con su porqué.
+- SI te llegan MENOS DE 3 candidatas: generá las que faltan como variantes ANCLADAS
+  en los atributos o contexto de la ficha (material, estructura, estilo, uso) y
+  registralas en 'secondary_keywords' con su porqué. Las variantes no pueden
+  repetir la palabra ya usada por otra keyword elegida ('sofa' usado una vez = no
+  más 'sofa' en otras secundarias).
 - {reglas.REGLAS_NO_GO}
 - Preservá el tono de lujo y TODO el HTML y formato existentes en la descripción larga.
 - No repitas conceptos que ya estén en el texto original.
