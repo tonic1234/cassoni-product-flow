@@ -9,9 +9,33 @@ staging usás exactamente el mismo código que corre en producción.
 
 ```
 INPUT(lista URLs) → 01 extract → 02 woo ficha → 03 GSC top-10 kw (+ etiqueta de
-oportunidades) → 04 DataForSEO (volumen, dedup+bulk+remapeo) → 05 editor LLM (H1+desc)
-→ 06 validador → 07 DB trazabilidad, y cron supervisor 9-18 con pausas aleatorias anti-bot.
+oportunidades) → 04 DataForSEO (volumen, dedup+bulk+remapeo) → 05 editor LLM
+(ficha completa: H1 + desc corta + desc larga + secundarias/descartadas)
+→ 06 validador (reglas mecánicas en código + LLM) → 07 DB trazabilidad,
+y cron supervisor 9-18 con pausas aleatorias anti-bot.
 ```
+
+## Agente según "Reglas de contenido SEO para fichas de producto"
+
+La spec del cliente es `docs/REGLA-SEO-FICHAS.md`; sus límites viven en
+`cassoni/reglas.py` (fuente única de constantes y textos de prompt):
+
+- **H1** ≤ 60 caracteres, keyword principal EXACTA (el pipeline la define como la
+  candidata de mayor volumen).
+- **Descripción corta** (`short_description`): keyword principal exacta, sin H2,
+  una idea central. Se edita y se aplica a WooCommerce junto con el H1.
+- **Descripción larga**: 150–300 palabras, máx 2 H2, 2–3 secundarias, cada una
+  máx 2 veces.
+- **Anti-canibalización** (`cassoni/checklist.py`, determinista): descarta
+  candidatas que ya son principal de otra ficha, compiten con la página de
+  categoría o responden mejor a un blog/guía, y registra su destino. El input de
+  "keywords ya usadas" son los H1 de las demás fichas publicadas de la misma
+  categoría (`woo.products_by_category()`, con caché).
+- **Gate duro en código**: el validador corre `check_reglas()` ANTES del LLM; el
+  LLM queda con lo cualitativo (tono, naturalidad, HTML, datos inventados).
+- El output del editor es estructurado: H1 / desc corta / desc larga con H2 /
+  secundarias con su porqué / descartadas con su destino, y se guarda como traza
+  en la DB (`edited_short_description` incluida).
 
 ## Oportunidades de GSC (`cassoni/opportunities.py`)
 Cada keyword de GSC se etiqueta (campo `opportunity` + `opportunity_score` en la traza) según

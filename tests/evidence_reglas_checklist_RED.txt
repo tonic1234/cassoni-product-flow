@@ -1,0 +1,27 @@
+
+==================================== ERRORS ====================================
+____________________ ERROR collecting tests/test_reglas.py _____________________
+ImportError while importing test module '/root/cassoni-agent/tests/test_reglas.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_reglas.py:6: in <module>
+    from cassoni import reglas
+E   ImportError: cannot import name 'reglas' from 'cassoni' (/root/cassoni-agent/cassoni/__init__.py)
+___________________ ERROR collecting tests/test_checklist.py ___________________
+ImportError while importing test module '/root/cassoni-agent/tests/test_checklist.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_checklist.py:9: in <module>
+    from cassoni import checklist
+E   ImportError: cannot import name 'checklist' from 'cassoni' (/root/cassoni-agent/cassoni/__init__.py)
+=========================== short test summary info ============================
+ERROR tests/test_reglas.py
+ERROR tests/test_checklist.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 2 errors during collection !!!!!!!!!!!!!!!!!!!!
+2 errors in 0.26s

@@ -49,6 +49,25 @@ class WooCommerce:
     def get_product_by_id(self, product_id: int) -> dict:
         return self._get(f"products/{product_id}")
 
+    def products_by_category(self, category_id: int, per_page: int = 100) -> list[dict]:
+        """Fichas de una categoría (id, name, slug) — para conocer los H1 ya usados
+        en otras fichas (input del filtro anti-canibalización). Solo lectura."""
+        items = []
+        page = 1
+        while True:
+            got = self._get("products", {
+                "category": category_id, "per_page": per_page, "page": page,
+                "status": "publish", "fields": "id,name,slug",
+            })
+            if not got:
+                break
+            items.extend([{"id": p["id"], "name": p.get("name", ""),
+                           "slug": p.get("slug", "")} for p in got])
+            if len(got) < per_page:
+                break
+            page += 1
+        return items
+
     def get_product_by_url(self, url: str) -> dict:
         slug, _ = extract_slug(url)
         return self.get_product_by_slug(slug)
@@ -60,15 +79,18 @@ class WooCommerce:
         return self._get(f"products/{product['id']}/variations", {"per_page": 100})
 
     def update_product(self, product_id: int, *, name: str, description: str,
+                       short_description: Optional[str] = None,
                        allowed: bool = True) -> Optional[dict]:
-        """Edita H1 (name) y long description. Bloqueado salvo que el gate
-        esté abierto (`write_enabled` y `allowed`). Dry-run ⇒ no toca la API."""
+        """Edita H1 (name), long description y (opcional) descripción corta.
+        Bloqueado salvo que el gate esté abierto (`write_enabled` y `allowed`).
+        Dry-run ⇒ no toca la API. `short_description=None` = NO se toca el campo."""
+        payload = {"name": name, "description": description}
+        if short_description is not None:
+            payload["short_description"] = short_description
         if not self.cfg.write_enabled:
-            return {"dry_run": True, "id": product_id,
-                    "apply": {"name": name, "description": description}}
+            return {"dry_run": True, "id": product_id, "apply": payload}
         if not allowed:
             raise WooError("Gate cerrado: no se permite escribir en WooCommerce")
-        payload = {"name": name, "description": description}
         r = self._session.post(self._url(f"products/{product_id}"),
                                json=payload,
                                auth=(self.cfg.wc_key, self.cfg.wc_secret),

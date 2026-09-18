@@ -41,6 +41,7 @@ class ProcessedProduct(Base):
     original_h1 = Column(Text)
     original_description = Column(Text)
     edited_h1 = Column(Text)
+    edited_short_description = Column(Text)   # descripción corta (arriba del fold)
     edited_description = Column(Text)
     # validación
     validation_result = Column(Text)     # JSON {aprobado, issues, ...}
@@ -61,7 +62,21 @@ class DB:
         self.cfg = config
         self.engine = create_engine(config.db_url, echo=echo)
         Base.metadata.create_all(self.engine)
+        self._migrate()
         self.Session = sessionmaker(bind=self.engine)
+
+    def _migrate(self):
+        """Migración idempotente para bases EXISTENTES: agrega columnas nuevas
+        del schema. create_all solo crea tablas; no altera columnas. SQLite no
+        soporta 'ADD COLUMN IF NOT EXISTS' -> try/except."""
+        try:
+            from sqlalchemy import text
+            with self.engine.begin() as conn:
+                conn.execute(text(
+                    "ALTER TABLE cassoni_processed_products "
+                    "ADD COLUMN edited_short_description TEXT"))
+        except Exception as exc:  # ya existe (o backend sin ALTER) -> ok
+            log.debug("Migración de columnas no aplicó (esperado si ya existen): %s", exc)
 
     def get_state(self, url: str) -> ProcessedProduct | None:
         with self.Session() as s:
