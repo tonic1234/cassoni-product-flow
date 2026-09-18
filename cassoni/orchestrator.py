@@ -32,7 +32,7 @@ from .llm import LLMClient, LLMError
 from .woo import WooCommerce, WooError
 from .dataforseo import DataForSEOFetcher, KeywordMapper
 from .opportunities import annotate as annotate_opportunities
-from .checklist import filtrar_canibalizacion
+from .checklist import filtrar_canibalizacion, seleccionar_diversas
 
 log = logging.getLogger("cassoni.orchestrator")
 
@@ -193,6 +193,20 @@ class Pipeline:
             candidates = [by_kw[kw] for kw in by_kw if kw in pasan]
         except Exception as exc:
             log.exception("Filtro anti-canibalización degradado -> sin filtrar: %s", exc)
+
+        # 4c) DIVERSIDAD DE PALABRAS (Antonio 18-sep): de todas las keywords que
+        # comparten una palabra ('sofa') solo se usa UNA, priorizando volumen;
+        # si no alcanzan para 3 secundarias con palabras distintas, avisar para
+        # que el expansor salga a buscar más (DataForSEO related / atributos).
+        try:
+            div = seleccionar_diversas(candidates, max_sec=3)
+            candidates = div["elegidas"]
+            if div["faltantes"]:
+                log.warning("Faltan %s candidatas con palabras distintas para "
+                            "completar 3 secundarias (%s) -> expansor pendiente",
+                            div["faltantes"], url)
+        except Exception as exc:
+            log.exception("Selección diversa degradada -> usar candidatas: %s", exc)
         if not candidates:
             candidates = [{"keyword": principal}]
         principal = candidates[0]["keyword"] if candidates else ""

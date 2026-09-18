@@ -249,6 +249,45 @@ class TestConservacion:
         assert checklist.check_reglas(e, original_description=self._ORIG) == []
 
 
+class TestDiversidadSecundarias:
+    """Regla de Antonio (18-sep): de todas las keywords que comparten una palabra
+    (p. ej. 'sofa') solo se puede usar UNA; hay que completar las 3 secundarias con
+    keywords de palabras distintas."""
+
+    def _c(self, *kws):
+        return [{"keyword": k, "volume": v} for k, v in kws]
+
+    def test_una_sola_por_palabra_compartida(self):
+        cands = self._c(("leather sofa", 2100), ("modular sofa", 900),
+                        ("italian luxury sofa", 720), ("sofa de cuero italiano", 390),
+                        ("bouclé sofa", 480))
+        r = checklist.seleccionar_diversas(cands, max_sec=3)
+        elegidas = [e["keyword"] for e in r["elegidas"]]
+        assert elegidas == ["leather sofa"]          # la de mayor volumen, y una sola
+        assert len(r["omitidas"]) == 4
+        assert all("sofa" in o["motivo"].lower() for o in r["omitidas"])
+
+    def test_completa_hasta_3_con_palabras_distintas(self):
+        cands = self._c(("leather sofa", 2100), ("modular sofa", 900),
+                        ("canaletto walnut base", 320), ("quilted down seating", 180))
+        r = checklist.seleccionar_diversas(cands, max_sec=3)
+        elegidas = [e["keyword"] for e in r["elegidas"]]
+        assert elegidas == ["leather sofa", "canaletto walnut base", "quilted down seating"]
+        assert [o["keyword"] for o in r["omitidas"]] == ["modular sofa"]
+        assert r["faltantes"] == 0
+
+    def test_reporta_faltantes_si_no_alcanza(self):
+        cands = self._c(("leather sofa", 2100), ("canaletto walnut base", 320))
+        r = checklist.seleccionar_diversas(cands, max_sec=3)
+        assert len(r["elegidas"]) == 2 and r["faltantes"] == 1
+
+    def test_plural_y_acentos_colisionan(self):
+        # 'sofa', 'sofas' y 'sofá' son la MISMA palabra a efectos de diversidad
+        cands = self._c(("sofa de cuero", 900), ("sofas modernos", 800), ("sofá italiano", 700))
+        r = checklist.seleccionar_diversas(cands, max_sec=3)
+        assert len(r["elegidas"]) == 1
+
+
 class TestAntiCanibalizacion:
     def _cands(self):
         return ["sofa de cuero belinda", "sofa negro", "como elegir sofa de lujo",

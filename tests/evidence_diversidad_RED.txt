@@ -1,0 +1,56 @@
+FFFF                                                                     [100%]
+=================================== FAILURES ===================================
+________ TestDiversidadSecundarias.test_una_sola_por_palabra_compartida ________
+
+self = <test_checklist.TestDiversidadSecundarias object at 0x7f9825489cd0>
+
+    def test_una_sola_por_palabra_compartida(self):
+        cands = self._c(("leather sofa", 2100), ("modular sofa", 900),
+                        ("italian luxury sofa", 720), ("sofa de cuero italiano", 390),
+                        ("bouclé sofa", 480))
+>       r = checklist.seleccionar_diversas(cands, max_sec=3)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'cassoni.checklist' has no attribute 'seleccionar_diversas'
+
+tests/test_checklist.py:264: AttributeError
+____ TestDiversidadSecundarias.test_completa_hasta_3_con_palabras_distintas ____
+
+self = <test_checklist.TestDiversidadSecundarias object at 0x7f98254898b0>
+
+    def test_completa_hasta_3_con_palabras_distintas(self):
+        cands = self._c(("leather sofa", 2100), ("modular sofa", 900),
+                        ("canaletto walnut base", 320), ("quilted down seating", 180))
+>       r = checklist.seleccionar_diversas(cands, max_sec=3)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'cassoni.checklist' has no attribute 'seleccionar_diversas'
+
+tests/test_checklist.py:273: AttributeError
+________ TestDiversidadSecundarias.test_reporta_faltantes_si_no_alcanza ________
+
+self = <test_checklist.TestDiversidadSecundarias object at 0x7f9825489460>
+
+    def test_reporta_faltantes_si_no_alcanza(self):
+        cands = self._c(("leather sofa", 2100), ("canaletto walnut base", 320))
+>       r = checklist.seleccionar_diversas(cands, max_sec=3)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'cassoni.checklist' has no attribute 'seleccionar_diversas'
+
+tests/test_checklist.py:281: AttributeError
+__________ TestDiversidadSecundarias.test_plural_y_acentos_colisionan __________
+
+self = <test_checklist.TestDiversidadSecundarias object at 0x7f9825489430>
+
+    def test_plural_y_acentos_colisionan(self):
+        # 'sofa', 'sofas' y 'sofá' son la MISMA palabra a efectos de diversidad
+        cands = self._c(("sofa de cuero", 900), ("sofas modernos", 800), ("sofá italiano", 700))
+>       r = checklist.seleccionar_diversas(cands, max_sec=3)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'cassoni.checklist' has no attribute 'seleccionar_diversas'
+
+tests/test_checklist.py:287: AttributeError
+=========================== short test summary info ============================
+FAILED tests/test_checklist.py::TestDiversidadSecundarias::test_una_sola_por_palabra_compartida
+FAILED tests/test_checklist.py::TestDiversidadSecundarias::test_completa_hasta_3_con_palabras_distintas
+FAILED tests/test_checklist.py::TestDiversidadSecundarias::test_reporta_faltantes_si_no_alcanza
+FAILED tests/test_checklist.py::TestDiversidadSecundarias::test_plural_y_acentos_colisionan
+4 failed in 0.13s

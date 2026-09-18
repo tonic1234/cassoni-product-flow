@@ -12,6 +12,7 @@ filtrar_canibalizacion(candidatas, principals_ya_usadas, categorias, blogs_guia)
 from __future__ import annotations
 
 import re
+import unicodedata
 from typing import Iterable
 
 from . import reglas
@@ -96,6 +97,54 @@ def conservacion(original: str, editado: str) -> float:
     edit_norm = set(oraciones(editado))
     conservadas = [o for o in orig if o in edit_norm]
     return len(conservadas) / len(orig)
+
+
+def _clave_palabras(kw: str) -> set[str]:
+    """Huella de una keyword: palabras significativas, sin acentos y sin plural
+    final ('sofa', 'sofas' y 'sofá' colisionan entre sí)."""
+    out: set[str] = set()
+    for w in strip_html(kw).lower().split():
+        w = unicodedata.normalize("NFKD", w).encode("ascii", "ignore").decode()
+        w = w.strip(".,;:()[]¡!¿?\"'")
+        if len(w) < 4 or w in _FUNCIONALES:
+            continue
+        if len(w) > 4 and w.endswith("s"):
+            w = w[:-1]
+        out.add(w)
+    return out
+
+
+def seleccionar_diversas(candidatas: list[dict], max_sec: int = 3) -> dict:
+    """Elige hasta `max_sec` keywords que NO compartan palabras entre sí
+    (regla de Antonio 18-sep: de todas las que dicen 'sofa' solo se usa UNA),
+    priorizando volumen. Devuelve {elegidas, omitidas, faltantes}.
+
+    `faltantes` > 0 = hay que SALIR A BUSCAR más candidatas con palabras
+    distintas para completar las secundarias (expansor)."""
+    ordenadas = sorted(candidatas, key=lambda c: c.get("volume") or 0, reverse=True)
+    elegidas: list[dict] = []
+    omitidas: list[dict] = []
+    usadas: set[str] = set()
+    for c in ordenadas:
+        kw = c.get("keyword", "")
+        claves = _clave_palabras(kw)
+        choque = claves & usadas
+        if choque:
+            otra = next((e["keyword"] for e in elegidas
+                         if claves & _clave_palabras(e["keyword"])), "")
+            omitidas.append({
+                "keyword": kw, "choca_con": otra,
+                "motivo": (f"comparte la palabra '{sorted(choque)[0]}' con '{otra}' "
+                           f"(solo se usa una por palabra)")})
+            continue
+        if len(elegidas) < max_sec:
+            elegidas.append(c)
+            usadas |= claves
+        else:
+            omitidas.append({"keyword": kw, "choca_con": "",
+                             "motivo": f"ya hay {max_sec} secundarias elegidas"})
+    return {"elegidas": elegidas, "omitidas": omitidas,
+            "faltantes": max(0, max_sec - len(elegidas))}
 
 
 def palabra_dominante(html: str, max_apariciones: int | None = None) -> str:
