@@ -48,8 +48,21 @@ class LLMClient:
                           temperature=temperature, max_tokens=max_tokens)
 
     def complete_json(self, system: str, user: str, *, model: str | None = None,
-                      temperature: float = 0.2, max_tokens: int = 1800) -> dict:
+                      temperature: float = 0.2, max_tokens: int = 8000) -> dict:
+        """JSON estricto. max_tokens generoso (>=8000): los modelos razonadores
+        (p. ej. deepseek-v4-flash) consumen el presupuesto en `reasoning_content`
+        y con topes chicos devuelven content VACÍO (bug real 18-sep-2026 en la
+        prueba de la ficha Connor Sofa). Errores claros, no JSONDecodeError."""
         raw = self.complete(system, user + (
             "\n\nResponde SOLO con JSON válido."), model=model,
             temperature=temperature, max_tokens=max_tokens)
-        return json.loads(raw)
+        if not raw or not raw.strip():
+            raise LLMError(
+                "El modelo devolvió content vacío (presupuesto de tokens agotado "
+                "en el razonamiento): aumentar max_tokens o simplificar el prompt)")
+        try:
+            return json.loads(raw)
+        except json.JSONDecodeError as exc:
+            raise LLMError(
+                f"El modelo no devolvió JSON válido (primeros 120 chars: "
+                f"{raw[:120]!r}): {exc}") from exc

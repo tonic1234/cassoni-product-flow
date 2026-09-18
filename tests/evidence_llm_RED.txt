@@ -1,0 +1,97 @@
+FF.F                                                                     [100%]
+=================================== FAILURES ===================================
+___________________ test_content_vacio_lanza_llmerror_claro ____________________
+
+    def test_content_vacio_lanza_llmerror_claro():
+        # el bug real: content vacío -> antes JSONDecodeError críptico
+        llm = LLMClient(_cfg(), client=FakeHTTP(""))
+        with pytest.raises(LLMError) as ei:
+>           llm.complete_json("s", "u")
+
+tests/test_llm.py:46: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+cassoni/llm.py:55: in complete_json
+    return json.loads(raw)
+           ^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:346: in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <json.decoder.JSONDecoder object at 0x707982e42780>, s = '', idx = 0
+
+    def raw_decode(self, s, idx=0):
+        """Decode a JSON document from ``s`` (a ``str`` beginning with
+        a JSON document) and return a 2-tuple of the Python
+        representation and the index in ``s`` where the document ended.
+    
+        This can be used to decode a JSON document from a string that may
+        have extraneous data at the end.
+    
+        """
+        try:
+            obj, end = self.scan_once(s, idx)
+        except StopIteration as err:
+>           raise JSONDecodeError("Expecting value", s, err.value) from None
+E           json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+/usr/lib/python3.12/json/decoder.py:355: JSONDecodeError
+_____________________ test_content_no_json_lanza_llmerror ______________________
+
+    def test_content_no_json_lanza_llmerror():
+        llm = LLMClient(_cfg(), client=FakeHTTP("esto no es json"))
+        with pytest.raises(LLMError):
+>           llm.complete_json("s", "u")
+
+tests/test_llm.py:53: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+cassoni/llm.py:55: in complete_json
+    return json.loads(raw)
+           ^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:346: in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <json.decoder.JSONDecoder object at 0x707982e42780>
+s = 'esto no es json', idx = 0
+
+    def raw_decode(self, s, idx=0):
+        """Decode a JSON document from ``s`` (a ``str`` beginning with
+        a JSON document) and return a 2-tuple of the Python
+        representation and the index in ``s`` where the document ended.
+    
+        This can be used to decode a JSON document from a string that may
+        have extraneous data at the end.
+    
+        """
+        try:
+            obj, end = self.scan_once(s, idx)
+        except StopIteration as err:
+>           raise JSONDecodeError("Expecting value", s, err.value) from None
+E           json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+/usr/lib/python3.12/json/decoder.py:355: JSONDecodeError
+_______________ test_tope_de_tokens_suficiente_para_razonamiento _______________
+
+    def test_tope_de_tokens_suficiente_para_razonamiento():
+        # con 1800 el razonamiento del modelo consumía el presupuesto y content
+        # llegaba vacío: el default tiene que dejar lugar al JSON final
+        fake = FakeHTTP('{"ok": true}')
+        llm = LLMClient(_cfg(), client=fake)
+        llm.complete_json("s", "u")
+>       assert fake.last_body["max_tokens"] >= 8000
+E       assert 1800 >= 8000
+
+tests/test_llm.py:67: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_llm.py::test_content_vacio_lanza_llmerror_claro - json.deco...
+FAILED tests/test_llm.py::test_content_no_json_lanza_llmerror - json.decoder....
+FAILED tests/test_llm.py::test_tope_de_tokens_suficiente_para_razonamiento - ...
+3 failed, 1 passed in 0.18s
