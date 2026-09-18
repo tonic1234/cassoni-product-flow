@@ -8,10 +8,17 @@ staging usás exactamente el mismo código que corre en producción.
 ## Arquitectura (cadena del informe)
 
 ```
-INPUT(lista URLs) → 01 extract → 02 woo ficha → 03 GSC top-10 kw → 04 DataForSEO
-(volumen, dedup+bulk+remapeo) → 05 editor LLM (H1+desc) → 06 validador → 07 DB
-trazabilidad, y cron supervisor 9-18 con pausas aleatorias anti-bot.
+INPUT(lista URLs) → 01 extract → 02 woo ficha → 03 GSC top-10 kw (+ etiqueta de
+oportunidades) → 04 DataForSEO (volumen, dedup+bulk+remapeo) → 05 editor LLM (H1+desc)
+→ 06 validador → 07 DB trazabilidad, y cron supervisor 9-18 con pausas aleatorias anti-bot.
 ```
+
+## Oportunidades de GSC (`cassoni/opportunities.py`)
+Cada keyword de GSC se etiqueta (campo `opportunity` + `opportunity_score` en la traza) según
+su potencial de optimización: `materialize_demand` (posición 4-20 con demanda, el mayor valor),
+`lift_ctr` (mucho aparecer, nadie entra), `hold_top` (ya rankea), `long_tail` (no prioritario).
+Es información **aditiva** para reportar/priorizar: no cambia la selección por volumen de
+DataForSEO ni toca el schema de la DB.
 
 ## Seguridad
 - **GSC = SOLO LECTURA** (scope `webmasters.readonly`). No hay función de escritura.

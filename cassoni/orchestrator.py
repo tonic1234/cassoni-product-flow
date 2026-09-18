@@ -26,6 +26,7 @@ from .gsc import GSCClient
 from .llm import LLMClient, LLMError
 from .woo import WooCommerce, WooError
 from .dataforseo import DataForSEOFetcher, KeywordMapper
+from .opportunities import annotate as annotate_opportunities
 
 log = logging.getLogger("cassoni.orchestrator")
 
@@ -91,6 +92,8 @@ class Pipeline:
         try:
             permalink = product.get("permalink") or url
             kw_rows = self.gsc.top_keywords_for_url(permalink or url)
+            # etiquetar oportunidades (aditivo: categories+score en cada fila)
+            kw_rows = annotate_opportunities(kw_rows) if kw_rows else kw_rows
         except Exception as exc:  # GSC fail -> no bloquea
             return self._fail(row_id, url, f"GSC: {exc}")
         if not kw_rows:
