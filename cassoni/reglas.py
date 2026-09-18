@@ -14,8 +14,11 @@ MAX_H2 = 2                            # máx 2 H2 en la descripción larga
 SEC_MIN = 2                           # mínimo de keywords secundarias
 SEC_MAX = 3                           # máximo de keywords secundarias
 SEC_MAX_USOS = 2                      # cada secundaria aparece máx 2 veces
-CONSERVACION_MIN = 0.6                # mínimo de oraciones del original que deben
+CONSERVACION_MIN = 0.8                # mínimo de oraciones del original que deben
                                       # sobrevivir intactas en la desc larga editada
+                                      # (subido de 0.6: la v3 del piloto tocó una
+                                      # oración para meter 'modular sofa' — 0.75; la
+                                      # regla de Antonio es MAXIMA conservación)
 REPETICION_MAX_PALABRA = 8            # tope de veces que una misma palabra (no
                                       # funcional) puede aparecer en la desc larga
 
