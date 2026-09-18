@@ -32,6 +32,7 @@ from .llm import LLMClient, LLMError
 from .woo import WooCommerce, WooError
 from .dataforseo import DataForSEOFetcher, KeywordMapper
 from .opportunities import annotate as annotate_opportunities
+from .checklist import filtrar_canibalizacion
 
 log = logging.getLogger("cassoni.orchestrator")
 
@@ -172,6 +173,28 @@ class Pipeline:
             except Exception as exc:
                 log.warning("DataForSEO degradado (%s) -> uso GSC bare", exc)
         candidates = candidates[: self.cfg_dfs_keep()]
+        principal = candidates[0]["keyword"] if candidates else ""
+
+        # 4b) FILTRO ANTI-CANIBALIZACIÓN DETERMINISTA (regla: nunca descartar
+        # asumiendo — Antonio 18-sep). Se compara contra datos REALES:
+        #   - keywords ya usadas en otras fichas de la categoría (las H1 reales),
+        #   - categorías REALES de la tienda (las del producto),
+        #   - patrones de intención blog/guía.
+        # El LLM ya NO decide "página de categoría" a ojo: acá se filtra y al
+        # editor llegan solo las que pasaron, con su motivo verificable.
+        try:
+            filtrado = filtrar_canibalizacion(
+                [k["keyword"] for k in candidates],
+                principals_ya_usadas=[n for n in ya_usadas],
+                categorias_como_pagina=[c for c in categorias],
+                blogs_guia=[])
+            pasan = {f["keyword"] for f in filtrado["aceptadas"]}
+            by_kw = {k["keyword"]: k for k in candidates}
+            candidates = [by_kw[kw] for kw in by_kw if kw in pasan]
+        except Exception as exc:
+            log.exception("Filtro anti-canibalización degradado -> sin filtrar: %s", exc)
+        if not candidates:
+            candidates = [{"keyword": principal}]
         principal = candidates[0]["keyword"] if candidates else ""
 
         # 5) editor LLM (ficha completa, reglas del cliente)

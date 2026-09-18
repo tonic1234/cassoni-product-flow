@@ -44,7 +44,7 @@ class FakeWoo:
             "permalink": "https://x.com/product/cas-cprn-pedro-sofa-01",
             "short_description": "Elegante sofá de cuero negro.",
             "description": "<p>Elegante sofá de cuero negro.</p>",
-            "categories": [{"id": 5, "name": "Sofás"}],
+            "categories": [{"id": 5, "name": "Sofas"}],
             "attributes": [{"name": "Marca", "options": ["Cassoni"]},
                            {"name": "Material", "options": ["Cuero"]}],
         }
@@ -153,9 +153,26 @@ def test_e2e_editor_recibe_contexto_anti_canibalizacion(tmp_path):
     pipe.process("https://x.com/product/cas-cprn-pedro-sofa-01/")
     assert pipe.woo.sibling_calls == [5]       # categoría del producto
     assert "Otro Sofá Belinda" in pipe.editor.llm.editor_user
-    assert "Categoría(s): Sofás" in pipe.editor.llm.editor_user
+    assert "Categoría(s): Sofas" in pipe.editor.llm.editor_user
     assert "Marca: Cassoni" in pipe.editor.llm.editor_user
     assert "Material: Cuero" in pipe.editor.llm.editor_user
+
+
+def test_e2e_filtro_canibalizacion_filtra_categoria(tmp_path):
+    # (spec 18-sep: nunca descartar asumiendo — el filtro usa las categorías REALES)
+    pipe = _pipeline(tmp_path, dry_run=True)
+    class GscConCategoria:
+        def top_keywords_for_url(self, url, **kw):
+            return [{"keyword": "sofas", "clicks": 9, "impressions": 900,
+                     "position": 5, "ctr": 0.06},
+                    {"keyword": "sofá de cuero", "clicks": 5, "impressions": 100,
+                     "position": 8, "ctr": 0.05}]
+    pipe.gsc = GscConCategoria()
+    res = pipe.process("https://x.com/product/cas-cprn-pedro-sofa-01/")
+    assert res.status == "processed"
+    # "sofas" == categoría real del producto -> descartada; la específica pasa
+    assert "sofá de cuero" in pipe.editor.llm.editor_user
+    assert "\n- sofas " not in pipe.editor.llm.editor_user
 
 
 def test_e2e_sku_publish_filter(tmp_path):

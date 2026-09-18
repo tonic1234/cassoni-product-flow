@@ -16,6 +16,8 @@ SEC_MAX = 3                           # máximo de keywords secundarias
 SEC_MAX_USOS = 2                      # cada secundaria aparece máx 2 veces
 CONSERVACION_MIN = 0.6                # mínimo de oraciones del original que deben
                                       # sobrevivir intactas en la desc larga editada
+REPETICION_MAX_PALABRA = 8            # tope de veces que una misma palabra (no
+                                      # funcional) puede aparecer en la desc larga
 
 # --- Texto canónico de reglas (lo que ve el LLM, mismo origen que el checklist) ---
 REGLAS_H1 = ("Título/H1: máximo 60 caracteres; marca (si aplica) + modelo + categoría "
@@ -39,6 +41,16 @@ REGLAS_NO_GO = ("No hacer: no inventar atributos que no estén en los inputs; no
 REGLAS_CONSERVAR = ("Sobre la descripción larga: PARTÍ DE LA ACTUAL tal cual viene; "
                     "editála QUIRÚRGICAMENTE; NUNCA la reescribas desde cero. La versión "
                     "editada conserva la estructura, la redacción y el tono del original.")
+REGLAS_TONO = ("TONO DE LA MARCA: el registro de Cassoni es sobrio y técnico, ficha de "
+               "catálogo de lujo. Nada de frases comerciales genéricas, nada de "
+               "subtítulos estilo blog si el original NO los tiene: si el original es "
+               "prosa continua, la edición sigue en prosa continua. El texto nuevo debe "
+               "sonar escrito por la misma persona que el original.")
+REGLAS_DIVERSIFICAR = ("DIVERSIFICACIÓN (anti-repetición): si varias keywords comparten "
+                       "una palabra (p. ej. 'sofa'), cada keyword COMPLETA aparece como "
+                       "máximo 2 veces y el resto del texto usa SUS PARTES (material, "
+                       "estilo, uso) como variaciones naturales. Repetir la palabra "
+                       "compartida una y otra vez ('sofa sofa sofa') está prohibido.")
 REGLAS_OUTPUT = ("Output por ficha: H1 / descripción larga con H2 "
                  "marcados / keywords secundarias + por qué son específicas / descartadas "
                  "+ a qué contenido pertenecen.")

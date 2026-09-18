@@ -1,0 +1,38 @@
+....F                                                                    [100%]
+=================================== FAILURES ===================================
+_______________ test_e2e_filtro_canibalizacion_filtra_categoria ________________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-121/test_e2e_filtro_canibalizacion0')
+
+    def test_e2e_filtro_canibalizacion_filtra_categoria(tmp_path):
+        # (spec 18-sep: nunca descartar asumiendo — el filtro usa las categorías REALES)
+        pipe = _pipeline(tmp_path, dry_run=True)
+        class GscConCategoria:
+            def top_keywords_for_url(self, url, **kw):
+                return [{"keyword": "sofas", "clicks": 9, "impressions": 900,
+                         "position": 5, "ctr": 0.06},
+                        {"keyword": "sofá de cuero", "clicks": 5, "impressions": 100,
+                         "position": 8, "ctr": 0.05}]
+        pipe.gsc = GscConCategoria()
+        res = pipe.process("https://x.com/product/cas-cprn-pedro-sofa-01/")
+        assert res.status == "processed"
+        # "sofas" == categoría real del producto -> descartada; la específica pasa
+        assert "sofá de cuero" in pipe.editor.llm.editor_user
+>       assert "\n- sofas " not in pipe.editor.llm.editor_user
+E       assert '\n- sofas ' not in 'Producto: h...principal>"}'
+E         
+E         '\n- sofas ' is contained here:
+E            volumen):
+E           - sofas (volumen ?)
+E           - sofá de cuero (volumen ?)
+E           
+E           Keywords ya usadas como H1 en OTRAS fichas de esta categoría (anti-canibalización;...
+E         
+E         ...Full output truncated (6 lines hidden), use '-vv' to show
+
+tests/test_pipeline.py:175: AssertionError
+------------------------------ Captured log call -------------------------------
+WARNING  cassoni.orchestrator:orchestrator.py:195 Filtro anti-canibalización degradado (unhashable type: 'dict') -> sin filtrar
+=========================== short test summary info ============================
+FAILED tests/test_pipeline.py::test_e2e_filtro_canibalizacion_filtra_categoria
+1 failed, 4 passed in 1.06s

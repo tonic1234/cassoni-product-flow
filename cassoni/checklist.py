@@ -63,6 +63,14 @@ def usos_de(kw: str, texto: str) -> int:
 # --- reglas mecánicas ---
 _SENT_RX = re.compile(r"(?<=[.!?])\s+")   # separador de oraciones
 _BLOQUE_RX = re.compile(r"</(?:p|h1|h2|h3|li|div|section|blockquote|tr)>", re.I)
+# palabras funcionales que no cuentan para la regla anti-repetición
+_FUNCIONALES = {
+    "de", "la", "el", "los", "las", "con", "para", "por", "que", "un", "una",
+    "unos", "unas", "y", "en", "del", "al", "su", "sus", "se", "no", "más",
+    "mas", "the", "and", "for", "with", "its", "this", "that", "are", "can",
+    "into", "from", "has", "have", "was", "were", "also", "como", "sobre",
+    "cada", "entre", "desde", "hasta", "them", "their", "they", "there",
+}
 
 
 def oraciones(html: str) -> list[str]:
@@ -88,6 +96,22 @@ def conservacion(original: str, editado: str) -> float:
     edit_norm = set(oraciones(editado))
     conservadas = [o for o in orig if o in edit_norm]
     return len(conservadas) / len(orig)
+
+
+def palabra_dominante(html: str, max_apariciones: int | None = None) -> str:
+    """Devuelve la palabra no funcional más repetida del texto, o '' si ninguna
+    pasa el límite. Regla anti 'sofa sofa sofa' (Antonio 18-sep)."""
+    limite = max_apariciones if max_apariciones is not None else reglas.REPETICION_MAX_PALABRA
+    frec: dict[str, int] = {}
+    for w in strip_html(html).lower().split():
+        w = w.strip(".,;:()[]¡!¿?\"'")
+        if len(w) < 4 or w in _FUNCIONALES:
+            continue
+        frec[w] = frec.get(w, 0) + 1
+    if not frec:
+        return ""
+    top, n = max(frec.items(), key=lambda kv: kv[1])
+    return top if n > limite else ""
 
 
 def check_reglas(editado: dict, original_description: str = "") -> list[str]:
@@ -131,6 +155,14 @@ def check_reglas(editado: dict, original_description: str = "") -> list[str]:
                 f"La descripción larga fue reescrita desde cero: conserva solo "
                 f"{ratio:.0%} de las oraciones del original "
                 f"(mínimo {reglas.CONSERVACION_MIN:.0%})")
+
+    # anti-repetición: una misma palabra no puede dominar el texto
+    dominante = palabra_dominante(desc)
+    if dominante:
+        issues.append(
+            f"La palabra '{dominante}' se repite demasiado en la descripción larga "
+            f"(más de {reglas.REPETICION_MAX_PALABRA} veces, 'sofa sofa sofa' está "
+            f"prohibido)")
 
     # descripción larga: máx 2 H2
     h2c = h2_count(desc)

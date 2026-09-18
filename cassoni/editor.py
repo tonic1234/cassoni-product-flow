@@ -34,6 +34,8 @@ REGLA TRANSVERSAL DE LAS DOS TAREAS:
   tu trabajo es EDITARLO QUIRÚRGICAMENTE (insertar o ajustar frases donde la
   keyword encaje natural). NUNCA la reescribas desde cero ni generes una nueva:
   la versión editada conserva la estructura, la redacción y el tono del original.
+- {reglas.REGLAS_TONO}
+- {reglas.REGLAS_DIVERSIFICAR}
 - {reglas.REGLAS_DESC_LARGA}
 - {reglas.REGLAS_SECUNDARIAS}
 - {reglas.REGLAS_ANTICANIBALIZACION}

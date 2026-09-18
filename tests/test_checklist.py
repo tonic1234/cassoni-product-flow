@@ -135,6 +135,42 @@ class TestReglasDuras:
         assert checklist.check_reglas(e) == []
 
 
+class TestRepeticion:
+    """Anti 'sofa sofa sofa' (Antonio 18-sep): si varias keywords comparten una
+    palabra, ninguna puede dominar la descripción."""
+
+    def test_palabra_dominante_detectada(self):
+        desc = ("<p>Un sofá elegante, sofá moderno, sofá cómodo, sofá de lujo, "
+                "sofá para el living, sofá con estructura, sofá de diseño, sofá "
+                "italiano, sofá artesanal y sofá exclusivo.</p>")
+        assert checklist.palabra_dominante(desc) == "sofá"
+
+    def test_check_reglas_rebota_sofa_repetido(self):
+        desc = ("<p>Un sofá elegante, sofá moderno, sofá cómodo, sofá de lujo, "
+                "sofá para el living, sofá con estructura, sofá de diseño, sofá "
+                "italiano, sofá artesanal y sofá exclusivo, en la colección del "
+                "año, con acabados de la casa y cuero de la mejor curtiembre.</p>")
+        e = dict(
+            h1="Sofá de Cuero Negro Modelo Belinda",
+            keyword_principal="sofá de cuero negro",
+            description=desc,
+            secondary_keywords=[{"keyword": "sofá de cuero de lujo", "why": "uso"},
+                                {"keyword": "sofá negro", "why": "estilo"}],
+            discarded=[],
+        )
+        issues = checklist.check_reglas(e)
+        assert any("'sofá'" in i for i in issues)
+
+    def test_funcionales_no_cuentan(self):
+        # 'de' repetido no dispara (es palabra funcional)
+        desc = "<p>" + "de la casa de la marca de la serie " * 6 + ".</p>"
+        assert checklist.palabra_dominante(desc) == ""
+
+    def test_desc_compliant_no_dispara(self):
+        assert checklist.palabra_dominante(
+            "<p>Elegante sofá de cuero negro con estructura de madera maciza de roble.</p>") == ""
+
+
 class TestConservacion:
     """Requisito de Antonio (18-sep): la descripción larga se EDITA sobre el texto
     actual, nunca se reescribe desde cero — y eso tiene que ser medible."""
