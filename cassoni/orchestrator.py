@@ -18,6 +18,7 @@ Fallbacks:
 
 from __future__ import annotations
 
+import html
 import logging
 import re
 from dataclasses import dataclass, field
@@ -63,10 +64,21 @@ class Result:
 
 
 def _brand_y_atributos(product: dict) -> tuple[str, tuple]:
-    """Marca (atributo 'marca'/'brand') y lista de atributos técnicos legibles.
-    No inventa nada: solo lo que trae el JSON del producto (regla del cliente)."""
+    """Marca y lista de atributos técnicos legibles. No inventa nada: sólo lo que
+    trae el JSON del producto (regla del cliente).
+
+    La marca vive en el campo `brands` de WooCommerce (`[{'id':..,'name':'Slide'}]`),
+    medido el 13-oct-2026: 150/150 fichas lo traen y 0/150 tienen un atributo
+    'marca'/'brand'. El atributo queda como respaldo por si alguna ficha no lo trae.
+    """
     attrs = product.get("attributes") or []
     brand = ""
+    # 1) campo `brands` (fuente real). Si trae varias, la primera.
+    for b in (product.get("brands") or []):
+        nombre = html.unescape((b or {}).get("name") or "").strip()
+        if nombre:
+            brand = nombre
+            break
     tecnicos = []
     for a in attrs:
         name = (a.get("name") or "").strip()
@@ -74,8 +86,8 @@ def _brand_y_atributos(product: dict) -> tuple[str, tuple]:
         if not name:
             continue
         if name.lower().strip() in BRAND_ATTR_NAMES:
-            if opts:
-                brand = opts[0]
+            if not brand and opts:
+                brand = html.unescape(str(opts[0])).strip()      # respaldo
             continue
         if opts:
             tecnicos.append(f"{name}: {', '.join(str(o) for o in opts)}")

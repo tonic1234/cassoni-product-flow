@@ -1,0 +1,67 @@
+FF.FF.F                                                                  [100%]
+=================================== FAILURES ===================================
+_______________________ test_marca_desde_el_campo_brands _______________________
+
+    def test_marca_desde_el_campo_brands():
+        """RED: hoy devuelve ('', ()) porque sólo mira atributos 'marca'/'brand'."""
+        p = {"brands": [{"id": 68217, "name": "Slide", "slug": "slide"}], "attributes": []}
+        marca, _tec = _brand_y_atributos(p)
+>       assert marca == "Slide"
+E       AssertionError: assert '' == 'Slide'
+E         
+E         - Slide
+
+tests/test_brand.py:19: AssertionError
+__________________ test_marca_desde_brands_con_entidades_html __________________
+
+    def test_marca_desde_brands_con_entidades_html():
+        p = {"brands": [{"id": 1, "name": "Adriani &amp; Rossi"}], "attributes": []}
+>       assert _brand_y_atributos(p)[0] == "Adriani & Rossi"
+E       AssertionError: assert '' == 'Adriani & Rossi'
+E         
+E         - Adriani & Rossi
+
+tests/test_brand.py:24: AssertionError
+_________________ test_el_campo_brands_gana_sobre_el_atributo __________________
+
+    def test_el_campo_brands_gana_sobre_el_atributo():
+        p = {"brands": [{"id": 1, "name": "Slide"}],
+             "attributes": [{"name": "marca", "options": ["Otra Marca"]}]}
+>       assert _brand_y_atributos(p)[0] == "Slide"
+E       AssertionError: assert 'Otra Marca' == 'Slide'
+E         
+E         - Slide
+E         + Otra Marca
+
+tests/test_brand.py:36: AssertionError
+____________ test_la_marca_no_se_cuela_entre_los_atributos_tecnicos ____________
+
+    def test_la_marca_no_se_cuela_entre_los_atributos_tecnicos():
+        p = {"brands": [{"id": 1, "name": "Slide"}],
+             "attributes": [{"name": "Size", "options": ['17"3/4W']},
+                            {"name": "Designer", "options": ["Italo Pertichini"]}]}
+        marca, tec = _brand_y_atributos(p)
+>       assert marca == "Slide"
+E       AssertionError: assert '' == 'Slide'
+E         
+E         - Slide
+
+tests/test_brand.py:44: AssertionError
+____________________ test_con_varias_marcas_toma_la_primera ____________________
+
+    def test_con_varias_marcas_toma_la_primera():
+        p = {"brands": [{"id": 1, "name": "Paolo Castelli"}, {"id": 2, "name": "Otra"}],
+             "attributes": []}
+>       assert _brand_y_atributos(p)[0] == "Paolo Castelli"
+E       AssertionError: assert '' == 'Paolo Castelli'
+E         
+E         - Paolo Castelli
+
+tests/test_brand.py:57: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_brand.py::test_marca_desde_el_campo_brands - AssertionError...
+FAILED tests/test_brand.py::test_marca_desde_brands_con_entidades_html - Asse...
+FAILED tests/test_brand.py::test_el_campo_brands_gana_sobre_el_atributo - Ass...
+FAILED tests/test_brand.py::test_la_marca_no_se_cuela_entre_los_atributos_tecnicos
+FAILED tests/test_brand.py::test_con_varias_marcas_toma_la_primera - Assertio...
+5 failed, 2 passed in 1.14s
