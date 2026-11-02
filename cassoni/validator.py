@@ -35,8 +35,21 @@ class Validator:
 
     def validate(self, *, url: str, original_h1: str, original_desc: str,
                  edited_h1: str, edited_desc: str,
-                 target_keywords: list[str]) -> dict:
+                 target_keywords: list[str],
+                 attributes: tuple = (), brand: str = "",
+                 categories: tuple = ()) -> dict:
+        # Los ATRIBUTOS OFICIALES de la ficha son la fuente de verdad de los datos:
+        # sin ellos, cualquier medida real de WooCommerce parece "inventada" (pasó
+        # en el piloto del 2-nov: marcó 62"3/8 y 122"W como falsas y eran del campo
+        # Size). El validador juzga con la misma información que tuvo el editor.
+        attrs = "\n".join(f"- {a}" for a in attributes) or "(sin atributos)"
         user = f"""Producto: {url}
+Marca: {brand or '(sin dato)'}
+Categoría(s): {', '.join(categories) or '(sin dato)'}
+
+Atributos oficiales de la ficha (datos REALES de WooCommerce; cualquier dato que
+figure acá NO es inventado y NO puede reportarse como tal):
+{attrs}
 
 ---- ORIGINAL ----
 H1: {original_h1}
@@ -80,7 +93,10 @@ Responde SOLO con JSON:
             last_val = self.validate(
                 url=url, original_h1=original_h1, original_desc=original_desc,
                 edited_h1=last_edited["h1"], edited_desc=last_edited["description"],
-                target_keywords=target_keywords)
+                target_keywords=target_keywords,
+                attributes=tuple(self._context.get("attributes") or ()),
+                brand=self._context.get("brand") or "",
+                categories=tuple(self._context.get("categories") or ()))
             issues = list(mecanicas) + list(last_val.get("issues") or [])
             if not mecanicas and last_val.get("aprobado"):
                 last_val["issues"] = issues
@@ -99,6 +115,7 @@ Responde SOLO con JSON:
         ctx = dict(self._context)
         ctx.pop("current_h1", None)
         ctx.pop("current_description", None)
+        principal = ctx.pop("keyword_principal", "")
         feedback = editor.edit(
             url=url, current_h1=current["h1"], current_description=current["description"],
             keywords=backup_keywords,
@@ -107,8 +124,17 @@ Responde SOLO con JSON:
             brand=ctx.pop("brand", ""),
             attributes=ctx.pop("attributes", ()),
             keywords_ya_usadas=ctx.pop("keywords_ya_usadas", ()),
-            keyword_principal=ctx.pop("keyword_principal", ""))
+            keyword_principal=principal,
+            feedback=list(issues or []))
+        # la ficha COMPLETA viaja al siguiente pase: si se devuelven sólo h1 y
+        # description, la 2da pasada rebota por "falta la keyword principal" y
+        # "hay 0 secundarias" (bug real del piloto, 2-nov)
         return {
             "h1": feedback["h1"],
             "description": feedback["description"],
+            "keyword_principal": feedback.get("keyword_principal") or principal,
+            "secondary_keywords": feedback.get("secondary_keywords") or [],
+            "discarded": feedback.get("discarded") or [],
+            "used_keywords": feedback.get("used_keywords") or [],
+            "selection_reason": feedback.get("selection_reason") or "",
         }

@@ -44,10 +44,17 @@ REGLAS_ANTICANIBALIZACION = ("Filtro anti canibalización: descartar una candida
 REGLAS_NO_GO = ("No hacer: no inventar atributos que no estén en los inputs; no copiar "
                 "descripciones de competidores; no repetir la misma secundaria en varias "
                 "fichas sin chequear; no forzar una keyword en una oración donde no "
-                "encaja natural.")
+                "encaja natural. PROHIBIDO agregar medidas, dimensiones, pulgadas, "
+                "centímetros, años ni nombres de colección que no aparezcan "
+                "LITERALMENTE en el texto original o en los atributos: aunque los "
+                "conozcas, no están en los inputs (el validador los marca como dato "
+                "inventado y rebota la ficha).")
 REGLAS_CONSERVAR = ("Sobre la descripción larga: PARTÍ DE LA ACTUAL tal cual viene; "
                     "editála QUIRÚRGICAMENTE; NUNCA la reescribas desde cero. La versión "
-                    "editada conserva la estructura, la redacción y el tono del original.")
+                    "editada conserva la estructura, la redacción y el tono del original. "
+                    "Al menos el 80% de las ORACIONES originales deben sobrevivir "
+                    "INTACTAS: agregá oraciones nuevas ENTRE las existentes; no partas, "
+                    "fusiones ni reformules las que ya están.")
 REGLAS_TONO = ("TONO DE LA MARCA: el registro de Cassoni es sobrio y técnico, ficha de "
                "catálogo de lujo. Nada de frases comerciales genéricas, nada de "
                "subtítulos estilo blog si el original NO los tiene: si el original es "

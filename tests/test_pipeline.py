@@ -250,3 +250,54 @@ def test_e2e_guarda_la_linea_base_de_la_consulta_objetivo(tmp_path):
     assert row.baseline_clicks == 0
     assert row.baseline_window and ".." in row.baseline_window
     assert row.baseline_at is not None
+
+
+class _ValidadorRechaza:
+    """El validador real encontró issues graves y no aprobó (2 intentos)."""
+
+    def pass_or_rework(self, **kw):
+        return {"aprobado": False,
+                "validacion": {"aprobado": False,
+                               "issues": ["Falta la keyword principal (keyword_principal)",
+                                          "La descripción larga fue reescrita desde cero"]},
+                "edited": kw["edited"], "intentos": 2}
+
+
+def test_e2e_edicion_rechazada_no_se_reporta_como_processed(tmp_path):
+    """Hallazgo del piloto real (2-nov): el validador rechazó la edición y el
+    pipeline devolvió status='processed' y la guardó como processed. Un rechazo
+    reportado como éxito es el peor error posible en un lote nocturno."""
+    pipe = _pipeline(tmp_path, dry_run=True)
+    pipe.validator = _ValidadorRechaza()
+    res = pipe.process("https://x.com/product/cas-cprn-pedro-sofa-01/")
+    assert res.status == "rejected"
+    assert res.aprobado is False
+    assert res.aplicado is False
+    row = pipe.db.get_state(res.url)
+    assert row.status == "rejected"
+    assert pipe.db.summary()["rejected"] == 1
+
+
+def test_e2e_rechazada_en_write_no_toca_woocommerce(tmp_path):
+    pipe = _pipeline(tmp_path, dry_run=False)
+    pipe.validator = _ValidadorRechaza()
+    res = pipe.process("https://x.com/product/cas-cprn-pedro-sofa-01/")
+    assert res.status == "rejected"
+    assert pipe.woo.writes == []
+
+
+class _ValidadorExplota:
+    def pass_or_rework(self, **kw):
+        from cassoni.llm import LLMError
+        raise LLMError("El modelo no devolvió JSON válido (truncado)")
+
+
+def test_e2e_un_fallo_del_validador_no_tumba_el_pipeline(tmp_path):
+    """En un lote nocturno, una ficha que hace explotar al validador (JSON truncado,
+    timeout) no puede matar el proceso: se marca failed y se sigue."""
+    pipe = _pipeline(tmp_path, dry_run=True)
+    pipe.validator = _ValidadorExplota()
+    res = pipe.process("https://x.com/product/cas-cprn-pedro-sofa-01/")
+    assert res.status == "failed"
+    assert "LLM" in res.reason or "JSON" in res.reason
+    assert pipe.db.get_state(res.url).status == "failed"

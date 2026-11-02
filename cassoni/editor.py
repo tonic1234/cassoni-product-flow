@@ -45,6 +45,9 @@ REGLA TRANSVERSAL DE LAS DOS TAREAS:
   ELEGIR 2 o 3 entre ellas para usar (priorizando las de mayor volumen siempre que
   encajen natural). Si generás una variante nueva, debe estar anclada en los
   atributos de la ficha y reportarse igual en 'secondary_keywords' con su porqué.
+- 'secondary_keywords' es OBLIGATORIO: devolvé 2 o 3, cada una con su 'why' específico.
+- Es OBLIGATORIO conservar al menos el 80% de las oraciones originales INTACTAS:
+  sumá frases nuevas alrededor, nunca reemplaces una oración existente.
 - SI te llegan MENOS DE 3 candidatas: generá las que faltan como variantes ANCLADAS
   en los atributos o contexto de la ficha (material, estructura, estilo, uso) y
   registralas en 'secondary_keywords' con su porqué. Las variantes no pueden
@@ -69,6 +72,20 @@ def json_schema() -> str:
             '"selection_reason": "<por qué elegiste la principal>"}')
 
 
+def _faltantes(result: dict) -> list[str]:
+    """Claves obligatorias que el JSON del editor no trajo (o trajo vacías)."""
+    faltan = []
+    if not (result.get("h1") or "").strip():
+        faltan.append("h1")
+    if not (result.get("description") or "").strip():
+        faltan.append("description")
+    if not (result.get("keyword_principal") or "").strip():
+        faltan.append("keyword_principal")
+    if len(result.get("secondary_keywords") or []) < 2:
+        faltan.append("secondary_keywords (2 o 3)")
+    return faltan
+
+
 class Editor:
     def __init__(self, config: Config, llm: LLMClient):
         self.cfg = config
@@ -81,7 +98,8 @@ class Editor:
              brand: str = "",
              attributes: tuple = (),
              keywords_ya_usadas: tuple = (),
-             keyword_principal: str = "") -> dict:
+             keyword_principal: str = "",
+             feedback: list[str] | None = None) -> dict:
         """Devuelve el output estructurado de la ficha o lanza LLMError."""
         if not keywords:
             raise LLMError("Sin keywords válidas para editar")
@@ -89,6 +107,13 @@ class Editor:
         key_rows = "\n".join(
             f"- {k['keyword']} (volumen {k.get('volume', '?')})" for k in keywords)
         principal = keyword_principal or (keywords[0].get("keyword", "") if keywords else "")
+
+        bloque_feedback = ""
+        if feedback:
+            bloque_feedback = (
+                "\n\nTU VERSIÓN ANTERIOR FUE RECHAZADA POR ESTOS MOTIVOS "
+                "(corregilos TODOS, sin excepción):\n"
+                + "\n".join(f"- {i}" for i in feedback))
 
         user = f"""Producto: {url}
 
@@ -118,13 +143,31 @@ no pueden repetirse como secundarias; si descartás alguna candidata, registrala
 {chr(10).join(f'- {k}' for k in keywords_ya_usadas) or '(sin datos de otras fichas)'}
 
 Responde SOLO con JSON:
-{json_schema()}"""
+{json_schema()}{bloque_feedback}"""
+        # presupuesto holgado: los modelos razonadores gastan tokens antes de
+        # emitir el JSON y la descripción larga es extensa (se truncó el 2-nov)
         result = self.llm.complete_json(SYSTEM_PROMPT, user,
-                                        model=self.cfg.llm_editor_model)
+                                        model=self.cfg.llm_editor_model,
+                                        max_tokens=12000)
+        faltan = _faltantes(result)
+        if faltan:
+            # el modelo devolvió un JSON a medias (pasó en el piloto real del
+            # 2-nov: sin secundarias y con la principal vacía). Se le pide de
+            # nuevo diciéndole QUÉ falta, en vez de aceptarlo y que rebote abajo.
+            recordatorio = (f"\n\nTu respuesta anterior estuvo incompleta. Falta: "
+                            f"{', '.join(faltan)}. Devolvé el JSON COMPLETO con todas "
+                            f"las claves del esquema (h1, description, "
+                            f"secondary_keywords con 2 o 3 elementos, discarded, "
+                            f"keyword_principal, used_keywords, selection_reason).")
+            result2 = self.llm.complete_json(SYSTEM_PROMPT, user + recordatorio,
+                                             model=self.cfg.llm_editor_model,
+                                             max_tokens=12000)
+            if len(_faltantes(result2)) < len(faltan):
+                result = result2
         return {
             "h1": result.get("h1", ""),
             "description": result.get("description", ""),
-            "keyword_principal": result.get("keyword_principal", principal),
+            "keyword_principal": result.get("keyword_principal") or principal,
             "secondary_keywords": result.get("secondary_keywords", []),
             "discarded": result.get("discarded", []),
             "used_keywords": result.get("used_keywords", []),

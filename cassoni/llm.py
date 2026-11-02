@@ -69,6 +69,12 @@ class LLMClient:
                 try:
                     return json.loads(raw)
                 except json.JSONDecodeError as exc:
+                    if intent == 1:
+                        # JSON truncado o roto: se reintenta con más presupuesto
+                        # (pasó en el piloto del 2-nov: 'Unterminated string')
+                        log.warning("JSON inválido en el intento 1 (%s) -> reintento "
+                                    "con %s tokens", exc, mt * 2)
+                        continue
                     raise LLMError(
                         f"El modelo no devolvió JSON válido (primeros 120 chars: "
                         f"{raw[:120]!r}): {exc}") from exc

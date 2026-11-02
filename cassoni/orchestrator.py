@@ -245,11 +245,16 @@ class Pipeline:
             return self._fail(row_id, url, f"editor LLM: {exc}")
 
         # 6) validador (reglas mecánicas + LLM, con re-trabajo)
-        val = self.validator.pass_or_rework(
-            url=url, original_h1=h1_orig, original_desc=desc_orig,
-            edited=edited,
-            target_keywords=[k["keyword"] for k in candidates if isinstance(k, dict)],
-            editor=self.editor, backup_keywords=candidates, context=context)
+        # un fallo técnico del validador (JSON truncado, timeout) no puede tumbar
+        # el lote entero: esa ficha se marca failed y se sigue con la próxima
+        try:
+            val = self.validator.pass_or_rework(
+                url=url, original_h1=h1_orig, original_desc=desc_orig,
+                edited=edited,
+                target_keywords=[k["keyword"] for k in candidates if isinstance(k, dict)],
+                editor=self.editor, backup_keywords=candidates, context=context)
+        except LLMError as exc:
+            return self._fail(row_id, url, f"validador LLM: {exc}")
         vres = val["validacion"]
         edited_final = val["edited"]
 
@@ -257,9 +262,11 @@ class Pipeline:
         applied = False
         wc_resp = {}
         if self.cfg.dry_run:
+            # dry_run NO es "aplicado": es un intento. Sólo se cuenta como aplicado
+            # si además la edición pasó el gate (hallazgo del piloto, 2-nov).
             wc_resp = {"dry_run": True, "apply_h1": edited_final.get("h1", ""),
                        "apply_desc_len": len(edited_final.get("description", ""))}
-            applied = True  # en dry_run "aplicar" = intento registrado
+            applied = bool(val["aprobado"])
         elif val["aprobado"]:
             try:
                 wc_resp = self.woo.update_product(
@@ -290,13 +297,19 @@ class Pipeline:
             edited_description=edited_final.get("description", ""),
             gsc_keywords=kw_rows[:10], selected_keywords=candidates,
             validation_result=vres, validation_attempts=val["intentos"],
-            status="processed" if (applied or val["aprobado"]) else "failed",
+            status="processed" if (val["aprobado"] and applied) else "rejected",
         )
-        # para traza sin aplicar: dry_run deja en processed (no toca producción)
+        # el status del Result es el REAL: una edición rechazada por el validador
+        # nunca se reporta como procesada (hallazgo del piloto, 2-nov)
+        if not val["aprobado"]:
+            issues = "; ".join((vres.get("issues") or [])[:3])
+            reason = f"rechazada por el validador: {issues or vres.get('razon', 'sin motivo')}"
+        else:
+            reason = ("dry_run (sin tocar WooCommerce)" if self.cfg.dry_run
+                      else vres.get("razon", ""))
         return Result(
-            url=url, status="processed",
-            reason=("dry_run (sin tocar WooCommerce)" if self.cfg.dry_run
-                    else vres.get("razon", "")),
+            url=url, status="processed" if (val["aprobado"] and applied) else "rejected",
+            reason=reason,
             keywords=kw_rows, selected=candidates,
             edited_h1=edited_final.get("h1", ""),
             edited_description=edited_final.get("description", ""),

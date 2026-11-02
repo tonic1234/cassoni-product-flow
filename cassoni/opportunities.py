@@ -53,9 +53,10 @@ def opportunity_score(row: dict) -> int:
     cat = classify(row)
     if cat == MATERIALIZE_DEMAND:
         # más cerca del top (pos baja) y más demanda -> más alto
-        return min(100, 55 + max(0, (MATERIALIZE_POS_MAX - pos)) + min(25, impr // 100))
+        return int(min(100, 55 + max(0, (MATERIALIZE_POS_MAX - pos))
+                       + min(25, impr // 100)))
     if cat == LIFT_CTR:
-        return min(90, 55 + min(35, impr // 200))
+        return int(min(90, 55 + min(35, impr // 200)))
     if cat == HOLD_TOP:
         return 40
     return 0  # long_tail

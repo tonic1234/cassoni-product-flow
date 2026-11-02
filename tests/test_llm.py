@@ -94,3 +94,28 @@ def test_tope_de_tokens_suficiente_para_razonamiento():
     llm = LLMClient(_cfg(), client=fake)
     llm.complete_json("s", "u")
     assert fake.last_body["max_tokens"] >= 8000
+
+def test_json_truncado_se_reintenta_con_mas_presupuesto(monkeypatch):
+    """El piloto v5 (2-nov) murió con 'Unterminated string': el modelo devolvió un
+    JSON cortado y complete_json lanzaba excepción en el primer intento."""
+    from cassoni.config import Config
+    from cassoni.llm import LLMClient
+
+    cfg = Config(env="staging", dry_run=True)
+    cfg.llm_base_url = "https://x/v1"
+    cfg.llm_api_key = "k"
+    cfg.llm_editor_model = "m"
+    cli = LLMClient(cfg)
+    respuestas = ['{"h1": "Rugiano Club Sofa", "description": "<p>This is a de',
+                  '{"h1": "ok", "description": "<p>bien</p>"}']
+    llamadas = []
+
+    def fake_complete(system, user, *, model=None, temperature=0.3, max_tokens=1200):
+        llamadas.append(max_tokens)
+        return respuestas.pop(0)
+
+    monkeypatch.setattr(cli, "complete", fake_complete)
+    out = cli.complete_json("sys", "user", max_tokens=100)
+    assert out["h1"] == "ok"
+    assert len(llamadas) == 2
+    assert llamadas[1] > llamadas[0]      # segundo intento con más presupuesto

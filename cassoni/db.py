@@ -174,6 +174,7 @@ class DB:
                 "processed": s.query(ProcessedProduct).filter_by(status="processed").count(),
                 "skipped": s.query(ProcessedProduct).filter_by(status="skipped").count(),
                 "failed": s.query(ProcessedProduct).filter_by(status="failed").count(),
+                "rejected": s.query(ProcessedProduct).filter_by(status="rejected").count(),
                 "in_queue": s.query(ProcessedProduct).filter_by(status="in_queue").count(),
                 "reviews": s.query(Review).count(),
             }

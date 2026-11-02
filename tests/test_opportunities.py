@@ -164,3 +164,12 @@ class TestElegirPrincipal:
         out = opp.ordenar_candidatas(cands)
         assert out[0]["keyword"] == "sofa modular"
         assert len(out) == 2
+
+
+def test_score_es_entero_aunque_la_posicion_venga_con_decimales():
+    """GSC devuelve posiciones con decimales (7.466...). El score 0-100 es entero:
+    si se cuela un float, el lote publica '80.53382352941176' y deja de ser auditable."""
+    r = _row(position=7.466176470588235, impressions=1360)
+    s = opp.opportunity_score(r)
+    assert isinstance(s, int)
+    assert opp.annotate([r])[0]["opportunity_score"] == s

@@ -84,6 +84,18 @@ class Config:
         c.llm_api_key = g("CASSONI_LLM_API_KEY")
         c.llm_editor_model = g("CASSONI_LLM_EDITOR_MODEL")
         c.llm_validator_model = g("CASSONI_LLM_VALIDATOR_MODEL")
+        # las rutas relativas del .env se resuelven contra la carpeta del .env, no
+        # contra el cwd: si no, correr el CLI desde otro lado rompe GSC y parte la DB
+        base_dir = base.resolve().parent if base.exists() else Path.cwd()
+        if c.gsc_service_account_file and not Path(c.gsc_service_account_file).is_absolute():
+            cand = base_dir / c.gsc_service_account_file
+            if cand.exists() or base.exists():
+                c.gsc_service_account_file = str(cand)
+        if c.db_url.startswith("sqlite:///./") or c.db_url.startswith("sqlite:///"):
+            resto = c.db_url[len("sqlite:///"):]
+            if resto.startswith("./") or (resto and not resto.startswith("/")):
+                ruta = (base_dir / resto.lstrip("./")).resolve()
+                c.db_url = f"sqlite:///{ruta}"
         try:
             c.dfs_max_requests_min = int(os.environ.get("CASSONI_DFS_MAX_REQ_MIN")
                                          or data.get("CASSONI_DFS_MAX_REQ_MIN")

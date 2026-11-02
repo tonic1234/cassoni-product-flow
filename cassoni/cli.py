@@ -161,7 +161,7 @@ def main(argv=None) -> int:
         print(f"\nLote de {len(lote)} fichas → {out}")
         for i, c in enumerate(lote, 1):
             print(f"  {i:>2}. [{c['opportunity_score']:>3}] {c['keyword'][:48]:<48} "
-                  f"pos {c['kw_position']:>5} impr {c['kw_impressions']:>6}  {c['url']}")
+                  f"pos {c['kw_position']:>5.1f} impr {c['kw_impressions']:>6}  {c['url']}")
         return 0
 
     if args.revisar:
@@ -204,7 +204,9 @@ def _print_results(results):
     counts = Counter(r.status for r in results)
     print(f"\nResultados: {dict(counts)}")
     for r in results:
-        flag = "⚠" if r.status == "failed" else ("-" if r.status == "skipped" else "✓")
+        flag = ("⚠" if r.status == "failed"
+                else ("✗" if r.status == "rejected"
+                      else ("-" if r.status == "skipped" else "✓")))
         print(f"  {flag} {r.status:9s} {r.url}")
         if r.edited_h1:
             print(f"       H1 → {r.edited_h1[:90]}")

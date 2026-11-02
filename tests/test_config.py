@@ -42,3 +42,32 @@ def test_validate_reports_missing(tmp_path):
     missing = c.validate()
     assert "CASSONI_WC_BASE" in missing
     assert "CASSONI_GSC_SERVICE_ACCOUNT_FILE" in missing
+
+class TestRutasRelativasAlEnvFile:
+    """La config se lee de un .env, pero las rutas relativas se resolvían contra el
+    cwd: correr el CLI desde otra carpeta rompía GSC y partía la base SQLite."""
+
+    def test_service_account_relativa_al_env(self, tmp_path):
+        from cassoni.config import Config
+        (tmp_path / "creds").mkdir()
+        (tmp_path / "creds" / "gsc.json").write_text("{}")
+        (tmp_path / ".env.staging").write_text(
+            "CASSONI_GSC_SERVICE_ACCOUNT_FILE=creds/gsc.json\n"
+            "CASSONI_DB_URL=sqlite:///./data/cassoni.db\n")
+        cfg = Config.load(env="staging", env_file=tmp_path / ".env.staging")
+        assert cfg.gsc_service_account_file == str(tmp_path / "creds" / "gsc.json")
+
+    def test_db_sqlite_relativa_al_env(self, tmp_path):
+        from cassoni.config import Config
+        (tmp_path / ".env.staging").write_text(
+            "CASSONI_DB_URL=sqlite:///./data/cassoni.db\n")
+        cfg = Config.load(env="staging", env_file=tmp_path / ".env.staging")
+        assert cfg.db_url == f"sqlite:///{tmp_path}/data/cassoni.db"
+
+    def test_ruta_absoluta_se_respeta(self, tmp_path):
+        from cassoni.config import Config
+        (tmp_path / "abs.json").write_text("{}")
+        (tmp_path / ".env.staging").write_text(
+            f"CASSONI_GSC_SERVICE_ACCOUNT_FILE={tmp_path}/abs.json\n")
+        cfg = Config.load(env="staging", env_file=tmp_path / ".env.staging")
+        assert cfg.gsc_service_account_file == f"{tmp_path}/abs.json"
