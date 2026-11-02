@@ -228,3 +228,25 @@ def test_e2e_la_principal_sale_de_la_oportunidad_no_del_volumen(tmp_path):
     bloque = prompt.split("Keywords candidatas")[1].split("Keywords ya usadas")[0]
     assert "sofá modular de lujo" in bloque
     assert "sofá de cuero" not in bloque
+
+
+def test_e2e_guarda_la_linea_base_de_la_consulta_objetivo(tmp_path):
+    """Sin punto de partida no se puede medir el efecto: la ficha editada guarda
+    la posición/impresiones/clics de su consulta objetivo al momento de editar."""
+    pipe = _pipeline(tmp_path, dry_run=True)
+
+    class GscConOportunidad:
+        def top_keywords_for_url(self, url, **kw):
+            return [{"keyword": "sofá modular de lujo", "clicks": 0,
+                     "impressions": 300, "position": 12.0, "ctr": 0.0}]
+
+    pipe.gsc = GscConOportunidad()
+    res = pipe.process("https://x.com/product/cas-cprn-pedro-sofa-01/")
+    assert res.status == "processed"
+    row = pipe.db.get_state(res.url)
+    assert row.baseline_keyword == "sofá modular de lujo"
+    assert row.baseline_position == 12.0
+    assert row.baseline_impressions == 300
+    assert row.baseline_clicks == 0
+    assert row.baseline_window and ".." in row.baseline_window
+    assert row.baseline_at is not None

@@ -1,0 +1,30 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+____________ test_e2e_guarda_la_linea_base_de_la_consulta_objetivo _____________
+
+tmp_path = PosixPath('/root/.hermes/cache/scratch/pytest-of-root/pytest-11/test_e2e_guarda_la_linea_base_0')
+
+    def test_e2e_guarda_la_linea_base_de_la_consulta_objetivo(tmp_path):
+        """Sin punto de partida no se puede medir el efecto: la ficha editada guarda
+        la posición/impresiones/clics de su consulta objetivo al momento de editar."""
+        pipe = _pipeline(tmp_path, dry_run=True)
+    
+        class GscConOportunidad:
+            def top_keywords_for_url(self, url, **kw):
+                return [{"keyword": "sofá modular de lujo", "clicks": 0,
+                         "impressions": 300, "position": 12.0, "ctr": 0.0}]
+    
+        pipe.gsc = GscConOportunidad()
+        res = pipe.process("https://x.com/product/cas-cprn-pedro-sofa-01/")
+        assert res.status == "processed"
+        row = pipe.db.get_state(res.url)
+>       assert row.baseline_keyword == "sofá modular de lujo"
+E       AssertionError: assert None == 'sofá modular de lujo'
+E        +  where None = <cassoni.db.ProcessedProduct object at 0x79be1ec9c5f0>.baseline_keyword
+
+tests/test_pipeline.py:247: AssertionError
+------------------------------ Captured log call -------------------------------
+WARNING  cassoni.orchestrator:orchestrator.py:220 Faltan 2 candidatas con palabras distintas para completar 3 secundarias (https://x.com/product/cas-cprn-pedro-sofa-01/) -> expansor pendiente
+=========================== short test summary info ============================
+FAILED tests/test_pipeline.py::test_e2e_guarda_la_linea_base_de_la_consulta_objetivo
+1 failed, 8 deselected in 1.92s

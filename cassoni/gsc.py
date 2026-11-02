@@ -24,6 +24,13 @@ FILAS_POR_FICHA = 200
 TAM_PAGINA = 25000
 
 
+def ventana_texto(days: int = DIAS_DEFAULT) -> str:
+    """'2026-08-04..2026-11-02' — la ventana que se midió, para la traza."""
+    end = dt.date.today()
+    start = end - dt.timedelta(days=days)
+    return f"{start.isoformat()}..{end.isoformat()}"
+
+
 class GSCClient:
     SCOPES = ["https://www.googleapis.com/auth/webmasters.readonly"]
 
@@ -48,6 +55,10 @@ class GSCClient:
         end = dt.date.today()
         start = end - dt.timedelta(days=days)
         return start.isoformat(), end.isoformat()
+
+    @classmethod
+    def ventana_texto(cls, days: int = DIAS_DEFAULT) -> str:
+        return ventana_texto(days)
 
     def _query(self, body: dict) -> list[dict]:
         resp = self.service.searchanalytics().query(siteUrl=self.site,

@@ -23,6 +23,14 @@ class LLMClient:
         self.cfg = config
         self._http = client or httpx.Client(timeout=90)
 
+    def ping(self) -> int:
+        """GET /models sin gastar tokens. Devuelve el código HTTP."""
+        if not (self.cfg.llm_base_url and self.cfg.llm_api_key):
+            raise LLMError("Config LLM incompleta (llm_base_url/api_key)")
+        r = self._http.get(self.cfg.llm_base_url.rstrip("/") + "/models",
+                           headers={"Authorization": f"Bearer {self.cfg.llm_api_key}"})
+        return r.status_code
+
     def _post(self, model: str, messages: list[dict], temperature: float = 0.3,
               max_tokens: int = 1200) -> str:
         if not (self.cfg.llm_base_url and self.cfg.llm_api_key):

@@ -21,6 +21,7 @@ from __future__ import annotations
 import html
 import logging
 import re
+from datetime import datetime, timezone
 from dataclasses import dataclass, field
 from typing import Optional
 
@@ -28,7 +29,7 @@ from .config import Config
 from .db import DB
 from .editor import Editor
 from .extract import extract_slug, ExtractionError
-from .gsc import GSCClient
+from .gsc import GSCClient, ventana_texto
 from .llm import LLMClient, LLMError
 from .woo import WooCommerce, WooError
 from .dataforseo import DataForSEOFetcher, KeywordMapper
@@ -271,8 +272,19 @@ class Pipeline:
                 self.record(row_id, status="failed", validation_result=vres,
                             reason=f"apply WooCommerce: {exc}")
 
+        # línea base de la consulta objetivo: sin esto no se puede medir el efecto
+        fila_kw = next((k for k in kw_rows
+                        if (k.get("keyword") or "").strip().lower()
+                        == (principal or "").strip().lower()), None) or {}
         self.db.record(
             row_id,
+            baseline_keyword=principal,
+            baseline_position=fila_kw.get("position"),
+            baseline_impressions=fila_kw.get("impressions"),
+            baseline_clicks=fila_kw.get("clicks"),
+            baseline_ctr=fila_kw.get("ctr"),
+            baseline_window=ventana_texto(),
+            baseline_at=datetime.now(timezone.utc),
             original_h1=h1_orig, original_description=desc_orig,
             edited_h1=edited_final.get("h1", ""),
             edited_description=edited_final.get("description", ""),
