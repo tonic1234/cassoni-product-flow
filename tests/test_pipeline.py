@@ -198,3 +198,33 @@ def test_e2e_non_product_url(tmp_path):
     pipe = _pipeline(tmp_path)
     res = pipe.process("https://x.com/product-category/sofas/")
     assert res.status == "skipped"
+
+def test_e2e_la_principal_sale_de_la_oportunidad_no_del_volumen(tmp_path):
+    """Auditoría 13-oct: la principal era candidates[0] por volumen de DataForSEO.
+    La consulta que ya está en el top no tiene nada que ganar; la que está en
+    posición 12 con demanda es la que se trabaja."""
+    pipe = _pipeline(tmp_path, dry_run=True)
+
+    class GscConOportunidad:
+        def top_keywords_for_url(self, url, **kw):
+            return [
+                # 5.000 impresiones, posición 2: ya rankea (hold_top)
+                {"keyword": "sofá de cuero", "clicks": 400, "impressions": 5000,
+                 "position": 2.0, "ctr": 0.08},
+                # 300 impresiones, posición 12: demanda que se puede materializar
+                {"keyword": "sofá modular de lujo", "clicks": 0, "impressions": 300,
+                 "position": 12.0, "ctr": 0.0},
+            ]
+
+    pipe.gsc = GscConOportunidad()
+    res = pipe.process("https://x.com/product/cas-cprn-pedro-sofa-01/")
+    assert res.status == "processed"
+    prompt = pipe.editor.llm.editor_user
+    assert "KEYWORD PRINCIPAL" in prompt
+    linea = prompt.split("KEYWORD PRINCIPAL (obligatoria, EXACTA en el H1):")[1].split("\n")[1]
+    assert linea.strip() == "sofá modular de lujo"
+    # y la de-posición-2 NO entra como secundaria: comparten la palabra 'sofá' y la
+    # diversidad ahora respeta la oportunidad (antes ordenaba por volumen y la revetía)
+    bloque = prompt.split("Keywords candidatas")[1].split("Keywords ya usadas")[0]
+    assert "sofá modular de lujo" in bloque
+    assert "sofá de cuero" not in bloque

@@ -109,7 +109,7 @@ Descripción larga actual (HTML, la que hay que editar):
 KEYWORD PRINCIPAL (obligatoria, EXACTA en el H1):
 {principal}
 
-Keywords candidatas (de mayor a menor volumen):
+Keywords candidatas (ordenadas por oportunidad: la primera es la principal; usa el volumen para desempatar):
 {key_rows}
 
 Keywords ya usadas como H1 en OTRAS fichas de esta categoría (anti-canibalización;

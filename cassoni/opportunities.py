@@ -85,3 +85,46 @@ def top_opportunities(rows: Iterable[dict], top_n: int = 10) -> list[dict]:
 def has_opportunity(row: dict) -> bool:
     """True si la fila es una oportunidad real (no long_tail)."""
     return classify(row) != LONG_TAIL
+
+def ordenar_candidatas(candidates: Iterable[dict]) -> list[dict]:
+    """Devuelve una NUEVA lista ordenada por oportunidad; el volumen desempata.
+
+    Si ninguna candidata trae datos de GSC (position/impressions), se respeta el
+    orden recibido: es la degradación cuando sólo hay volumen de DataForSEO.
+    """
+    filas = [dict(c) for c in candidates]
+    if not any("position" in f or "impressions" in f for f in filas):
+        return filas
+    anotadas = annotate(filas)
+    anotadas.sort(key=lambda r: (r["opportunity_score"], r.get("volume") or 0,
+                                 r.get("impressions") or 0), reverse=True)
+    return anotadas
+
+
+def elegir_principal(candidates: Iterable[dict]) -> str:
+    """La keyword principal: la de mayor oportunidad (volumen como desempate)."""
+    ordenadas = ordenar_candidatas(candidates)
+    return (ordenadas[0].get("keyword") or "") if ordenadas else ""
+
+
+def fusionar_gsc(candidates: Iterable[dict], gsc_rows: Iterable[dict]) -> list[dict]:
+    """Pega a cada candidata los datos de GSC de su misma consulta.
+
+    DataForSEO devuelve sólo volumen; sin esto, al elegir la principal se pierde la
+    posición y las impresiones (o sea, la señal de oportunidad). Match por keyword
+    normalizada; las candidatas sin fila de GSC quedan como vinieron.
+    """
+    def norm(s: str) -> str:
+        return " ".join((s or "").lower().split())
+
+    por_kw = {norm(r.get("keyword", "")): r for r in gsc_rows if r.get("keyword")}
+    out = []
+    for c in candidates:
+        c2 = dict(c)
+        g = por_kw.get(norm(c2.get("keyword", "")))
+        if g:
+            for campo in ("impressions", "clicks", "ctr", "position"):
+                if campo in g and campo not in c2:
+                    c2[campo] = g[campo]
+        out.append(c2)
+    return out

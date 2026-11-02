@@ -121,7 +121,9 @@ def seleccionar_diversas(candidatas: list[dict], max_sec: int = 3) -> dict:
 
     `faltantes` > 0 = hay que SALIR A BUSCAR más candidatas con palabras
     distintas para completar las secundarias (expansor)."""
-    ordenadas = sorted(candidatas, key=lambda c: c.get("volume") or 0, reverse=True)
+    ordenadas = sorted(candidatas,
+                       key=lambda c: (c.get("opportunity_score") or 0,
+                                      c.get("volume") or 0), reverse=True)
     elegidas: list[dict] = []
     omitidas: list[dict] = []
     usadas: set[str] = set()

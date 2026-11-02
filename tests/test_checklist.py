@@ -341,3 +341,27 @@ class TestAntiCanibalizacion:
             categorias_como_pagina={"sofas"}, blogs_guia=set())
         kws = {k["keyword"] for k in res["aceptadas"]}
         assert "sofa negro capitoné" in kws or "belinda de cuero" in kws
+
+class TestDiversidadRespetaLaOportunidad:
+    """Si dos keywords comparten palabra, sobrevive la de mayor OPORTUNIDAD.
+
+    La diversidad se inventó (18-sep) para no decir 'sofa sofa sofa', y ordenaba
+    por volumen. Cuando la principal se elige por oportunidad (2-nov), ordenar acá
+    por volumen revertía esa decisión en silencio.
+    """
+
+    def test_sobrevive_la_de_mayor_oportunidad_aunque_tenga_menos_volumen(self):
+        from cassoni.checklist import seleccionar_diversas
+        cands = [
+            {"keyword": "sofa de cuero", "volume": 5000, "opportunity_score": 40},
+            {"keyword": "sofa modular", "volume": 120, "opportunity_score": 90},
+        ]
+        out = seleccionar_diversas(cands)
+        assert out["elegidas"][0]["keyword"] == "sofa modular"
+
+    def test_sin_scores_sigue_mandando_el_volumen(self):
+        from cassoni.checklist import seleccionar_diversas
+        cands = [{"keyword": "sofa chico", "volume": 10},
+                 {"keyword": "sofa grande", "volume": 900}]
+        out = seleccionar_diversas(cands)
+        assert out["elegidas"][0]["keyword"] == "sofa grande"

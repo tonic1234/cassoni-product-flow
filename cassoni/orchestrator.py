@@ -32,7 +32,8 @@ from .gsc import GSCClient
 from .llm import LLMClient, LLMError
 from .woo import WooCommerce, WooError
 from .dataforseo import DataForSEOFetcher, KeywordMapper
-from .opportunities import annotate as annotate_opportunities
+from .opportunities import (annotate as annotate_opportunities,
+                           elegir_principal, fusionar_gsc, ordenar_candidatas)
 from .checklist import filtrar_canibalizacion, seleccionar_diversas
 
 log = logging.getLogger("cassoni.orchestrator")
@@ -181,11 +182,13 @@ class Pipeline:
         if self.mapper is not None:
             try:
                 selected = self.mapper.keywords_for_url(permalink or url)
-                candidates = selected or candidates
+                # el volumen de DataForSEO NO trae posición/impresiones: se las
+                # pegamos desde GSC para no perder la señal de oportunidad
+                candidates = fusionar_gsc(selected, kw_rows) if selected else candidates
             except Exception as exc:
                 log.warning("DataForSEO degradado (%s) -> uso GSC bare", exc)
-        candidates = candidates[: self.cfg_dfs_keep()]
-        principal = candidates[0]["keyword"] if candidates else ""
+        candidates = ordenar_candidatas(candidates)[: self.cfg_dfs_keep()]
+        principal = elegir_principal(candidates)
 
         # 4b) FILTRO ANTI-CANIBALIZACIÓN DETERMINISTA (regla: nunca descartar
         # asumiendo — Antonio 18-sep). Se compara contra datos REALES:
@@ -221,7 +224,8 @@ class Pipeline:
             log.exception("Selección diversa degradada -> usar candidatas: %s", exc)
         if not candidates:
             candidates = [{"keyword": principal}]
-        principal = candidates[0]["keyword"] if candidates else ""
+        candidates = ordenar_candidatas(candidates)
+        principal = elegir_principal(candidates)
 
         # 5) editor LLM (ficha completa, reglas del cliente)
         context = {

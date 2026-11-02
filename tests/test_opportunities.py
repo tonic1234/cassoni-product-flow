@@ -114,3 +114,53 @@ class TestAnnotateAndTop:
     def test_has_opportunity(self):
         assert opp.has_opportunity(_row(position=12, impressions=300))
         assert not opp.has_opportunity(_row(position=30, impressions=30))
+
+class TestElegirPrincipal:
+    """La principal manda por OPORTUNIDAD, no por volumen.
+
+    Caso real medido (auditoría 13-oct): la consulta con 5.000 impresiones en
+    posición 2 no tiene nada que ganar; la de 300 impresiones en posición 12 sí.
+    """
+
+    def test_manda_la_oportunidad_y_no_el_volumen(self):
+        cands = [
+            {"keyword": "sofa de cuero", "volume": 5000, "impressions": 5000,
+             "clicks": 400, "ctr": 0.08, "position": 2.0},
+            {"keyword": "sofa modular", "volume": 120, "impressions": 300,
+             "clicks": 0, "ctr": 0.0, "position": 12.0},
+        ]
+        assert opp.elegir_principal(cands) == "sofa modular"
+
+    def test_sin_datos_de_oportunidad_respeta_el_orden_recibido(self):
+        # degradación: si no hay filas de GSC, el orden de entrada (volumen) decide
+        assert opp.elegir_principal([{"keyword": "a"}, {"keyword": "b"}]) == "a"
+
+    def test_el_volumen_desempata_oportunidades_iguales(self):
+        cands = [
+            {"keyword": "pequena", "volume": 90, "impressions": 300,
+             "clicks": 0, "ctr": 0.0, "position": 12.0},
+            {"keyword": "grande", "volume": 900, "impressions": 300,
+             "clicks": 0, "ctr": 0.0, "position": 12.0},
+        ]
+        assert opp.elegir_principal(cands) == "grande"
+
+    def test_lista_vacia_devuelve_cadena_vacia(self):
+        assert opp.elegir_principal([]) == ""
+
+    def test_no_muta_las_candidatas(self):
+        cands = [{"keyword": "a", "position": 12.0, "impressions": 300},
+                 {"keyword": "b", "position": 2.0, "impressions": 5000, "ctr": 0.08}]
+        antes = [dict(c) for c in cands]
+        opp.elegir_principal(cands)
+        assert cands == antes
+
+    def test_ordenar_candidatas_pone_la_principal_primero(self):
+        cands = [
+            {"keyword": "sofa de cuero", "volume": 5000, "impressions": 5000,
+             "clicks": 400, "ctr": 0.08, "position": 2.0},
+            {"keyword": "sofa modular", "volume": 120, "impressions": 300,
+             "clicks": 0, "ctr": 0.0, "position": 12.0},
+        ]
+        out = opp.ordenar_candidatas(cands)
+        assert out[0]["keyword"] == "sofa modular"
+        assert len(out) == 2

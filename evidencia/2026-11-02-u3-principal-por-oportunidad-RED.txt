@@ -1,0 +1,129 @@
+...................FFFFFF.......F                                        [100%]
+=================================== FAILURES ===================================
+________ TestElegirPrincipal.test_manda_la_oportunidad_y_no_el_volumen _________
+
+self = <test_opportunities.TestElegirPrincipal object at 0x730249e32480>
+
+    def test_manda_la_oportunidad_y_no_el_volumen(self):
+        cands = [
+            {"keyword": "sofa de cuero", "volume": 5000, "impressions": 5000,
+             "clicks": 400, "ctr": 0.08, "position": 2.0},
+            {"keyword": "sofa modular", "volume": 120, "impressions": 300,
+             "clicks": 0, "ctr": 0.0, "position": 12.0},
+        ]
+>       assert opp.elegir_principal(cands) == "sofa modular"
+               ^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'cassoni.opportunities' has no attribute 'elegir_principal'
+
+tests/test_opportunities.py:132: AttributeError
+_ TestElegirPrincipal.test_sin_datos_de_oportunidad_respeta_el_orden_recibido __
+
+self = <test_opportunities.TestElegirPrincipal object at 0x730249e32060>
+
+    def test_sin_datos_de_oportunidad_respeta_el_orden_recibido(self):
+        # degradación: si no hay filas de GSC, el orden de entrada (volumen) decide
+>       assert opp.elegir_principal([{"keyword": "a"}, {"keyword": "b"}]) == "a"
+               ^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'cassoni.opportunities' has no attribute 'elegir_principal'
+
+tests/test_opportunities.py:136: AttributeError
+_____ TestElegirPrincipal.test_el_volumen_desempata_oportunidades_iguales ______
+
+self = <test_opportunities.TestElegirPrincipal object at 0x730249e32900>
+
+    def test_el_volumen_desempata_oportunidades_iguales(self):
+        cands = [
+            {"keyword": "pequena", "volume": 90, "impressions": 300,
+             "clicks": 0, "ctr": 0.0, "position": 12.0},
+            {"keyword": "grande", "volume": 900, "impressions": 300,
+             "clicks": 0, "ctr": 0.0, "position": 12.0},
+        ]
+>       assert opp.elegir_principal(cands) == "grande"
+               ^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'cassoni.opportunities' has no attribute 'elegir_principal'
+
+tests/test_opportunities.py:145: AttributeError
+__________ TestElegirPrincipal.test_lista_vacia_devuelve_cadena_vacia __________
+
+self = <test_opportunities.TestElegirPrincipal object at 0x730249e304a0>
+
+    def test_lista_vacia_devuelve_cadena_vacia(self):
+>       assert opp.elegir_principal([]) == ""
+               ^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'cassoni.opportunities' has no attribute 'elegir_principal'
+
+tests/test_opportunities.py:148: AttributeError
+_______________ TestElegirPrincipal.test_no_muta_las_candidatas ________________
+
+self = <test_opportunities.TestElegirPrincipal object at 0x730249e4ef30>
+
+    def test_no_muta_las_candidatas(self):
+        cands = [{"keyword": "a", "position": 12.0, "impressions": 300},
+                 {"keyword": "b", "position": 2.0, "impressions": 5000, "ctr": 0.08}]
+        antes = [dict(c) for c in cands]
+>       opp.elegir_principal(cands)
+        ^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'cassoni.opportunities' has no attribute 'elegir_principal'
+
+tests/test_opportunities.py:154: AttributeError
+____ TestElegirPrincipal.test_ordenar_candidatas_pone_la_principal_primero _____
+
+self = <test_opportunities.TestElegirPrincipal object at 0x730249e4da60>
+
+    def test_ordenar_candidatas_pone_la_principal_primero(self):
+        cands = [
+            {"keyword": "sofa de cuero", "volume": 5000, "impressions": 5000,
+             "clicks": 400, "ctr": 0.08, "position": 2.0},
+            {"keyword": "sofa modular", "volume": 120, "impressions": 300,
+             "clicks": 0, "ctr": 0.0, "position": 12.0},
+        ]
+>       out = opp.ordenar_candidatas(cands)
+              ^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'cassoni.opportunities' has no attribute 'ordenar_candidatas'
+
+tests/test_opportunities.py:164: AttributeError
+_________ test_e2e_la_principal_sale_de_la_oportunidad_no_del_volumen __________
+
+tmp_path = PosixPath('/root/.hermes/cache/scratch/pytest-of-root/pytest-4/test_e2e_la_principal_sale_de_0')
+
+    def test_e2e_la_principal_sale_de_la_oportunidad_no_del_volumen(tmp_path):
+        """Auditoría 13-oct: la principal era candidates[0] por volumen de DataForSEO.
+        La consulta que ya está en el top no tiene nada que ganar; la que está en
+        posición 12 con demanda es la que se trabaja."""
+        pipe = _pipeline(tmp_path, dry_run=True)
+    
+        class GscConOportunidad:
+            def top_keywords_for_url(self, url, **kw):
+                return [
+                    # 5.000 impresiones, posición 2: ya rankea (hold_top)
+                    {"keyword": "sofá de cuero", "clicks": 400, "impressions": 5000,
+                     "position": 2.0, "ctr": 0.08},
+                    # 300 impresiones, posición 12: demanda que se puede materializar
+                    {"keyword": "sofá modular de lujo", "clicks": 0, "impressions": 300,
+                     "position": 12.0, "ctr": 0.0},
+                ]
+    
+        pipe.gsc = GscConOportunidad()
+        res = pipe.process("https://x.com/product/cas-cprn-pedro-sofa-01/")
+        assert res.status == "processed"
+        prompt = pipe.editor.llm.editor_user
+        assert "KEYWORD PRINCIPAL" in prompt
+        linea = prompt.split("KEYWORD PRINCIPAL (obligatoria, EXACTA en el H1):")[1].split("\n")[1]
+>       assert linea.strip() == "sofá modular de lujo"
+E       AssertionError: assert 'sofá de cuero' == 'sofá modular de lujo'
+E         
+E         - sofá modular de lujo
+E         + sofá de cuero
+
+tests/test_pipeline.py:225: AssertionError
+------------------------------ Captured log call -------------------------------
+WARNING  cassoni.orchestrator:orchestrator.py:217 Faltan 2 candidatas con palabras distintas para completar 3 secundarias (https://x.com/product/cas-cprn-pedro-sofa-01/) -> expansor pendiente
+=========================== short test summary info ============================
+FAILED tests/test_opportunities.py::TestElegirPrincipal::test_manda_la_oportunidad_y_no_el_volumen
+FAILED tests/test_opportunities.py::TestElegirPrincipal::test_sin_datos_de_oportunidad_respeta_el_orden_recibido
+FAILED tests/test_opportunities.py::TestElegirPrincipal::test_el_volumen_desempata_oportunidades_iguales
+FAILED tests/test_opportunities.py::TestElegirPrincipal::test_lista_vacia_devuelve_cadena_vacia
+FAILED tests/test_opportunities.py::TestElegirPrincipal::test_no_muta_las_candidatas
+FAILED tests/test_opportunities.py::TestElegirPrincipal::test_ordenar_candidatas_pone_la_principal_primero
+FAILED tests/test_pipeline.py::test_e2e_la_principal_sale_de_la_oportunidad_no_del_volumen
+7 failed, 26 passed in 1.68s
