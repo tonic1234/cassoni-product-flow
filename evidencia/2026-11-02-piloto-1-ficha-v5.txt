@@ -1,0 +1,47 @@
+CASSonI pipeline | env=staging | dry_run=True
+  wc_base=https://cassoni.com
+2026-11-02 14:31:37,755 WARNING cassoni.orchestrator: Faltan 2 candidatas con palabras distintas para completar 3 secundarias (https://cassoni.com/product/cas-rug-club-sofa-01/) -> expansor pendiente
+2026-11-02 14:31:38,275 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 14:32:17,985 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 14:32:23,070 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+Traceback (most recent call last):
+  File "/root/wt-cassoni-seo/cassoni/llm.py", line 70, in complete_json
+    return json.loads(raw)
+           ^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 353, in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+json.decoder.JSONDecodeError: Unterminated string starting at: line 1 column 44 (char 43)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/root/wt-cassoni-seo/cassoni/cli.py", line 218, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/root/wt-cassoni-seo/cassoni/cli.py", line 196, in main
+    results = [pipe.process(u) for u in urls[:limit]]
+               ^^^^^^^^^^^^^^^
+  File "/root/wt-cassoni-seo/cassoni/orchestrator.py", line 248, in process
+    val = self.validator.pass_or_rework(
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/wt-cassoni-seo/cassoni/validator.py", line 106, in pass_or_rework
+    last_edited = self._rework(editor, url, last_edited,
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/wt-cassoni-seo/cassoni/validator.py", line 119, in _rework
+    feedback = editor.edit(
+               ^^^^^^^^^^^^
+  File "/root/wt-cassoni-seo/cassoni/editor.py", line 147, in edit
+    result = self.llm.complete_json(SYSTEM_PROMPT, user,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/wt-cassoni-seo/cassoni/llm.py", line 72, in complete_json
+    raise LLMError(
+cassoni.llm.LLMError: El modelo no devolvió JSON válido (primeros 120 chars: '{"h1": "Rugiano Club Sofa", "description": "<p>This is a designer Italian Sofa, part of the exclusive Club collection. I'): Unterminated string starting at: line 1 column 44 (char 43)

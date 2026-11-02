@@ -1,0 +1,28 @@
+2026-11-02 14:30:50,014 INFO httpx: HTTP Request: GET https://api.deepseek.com/v1/models "HTTP/1.1 200 OK"
+{
+  "env": "staging",
+  "dry_run": true,
+  "faltantes": [],
+  "gsc": {
+    "ok": true,
+    "sitios": [
+      "sc-domain:cassoni.com"
+    ]
+  },
+  "woo": {
+    "ok": true,
+    "muestra": 1,
+    "base": "https://cassoni.com"
+  },
+  "llm": {
+    "ok": true,
+    "http": 200,
+    "modelo": "deepseek-flash",
+    "base": "https://api.deepseek.com/v1"
+  },
+  "dataforseo": {
+    "ok": true,
+    "nota": "credenciales presentes (no se gasta acá)"
+  },
+  "ok": true
+}

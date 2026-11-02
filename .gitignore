@@ -8,6 +8,7 @@ venv/
 .env.staging
 .env.prod
 creds/
+creds
 *.db
 
 # Estado local del scheduler

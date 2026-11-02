@@ -1,0 +1,14 @@
+CASSonI pipeline | env=staging | dry_run=True
+  wc_base=https://cassoni.com
+2026-11-02 14:27:54,164 WARNING cassoni.orchestrator: Faltan 2 candidatas con palabras distintas para completar 3 secundarias (https://cassoni.com/product/cas-rug-club-sofa-01/) -> expansor pendiente
+2026-11-02 14:27:54,589 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 14:28:23,438 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 14:28:33,613 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 14:28:48,930 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+
+Resultados: {'rejected': 1}
+  ✗ rejected  https://cassoni.com/product/cas-rug-club-sofa-01/
+       H1 → Rugiano Club Sofa
+       (rechazada por el validador: La descripción larga fue reescrita desde cero: conserva solo 67% de las oraciones del original (mínimo 80%); Repetición innecesaria de conceptos ya presentes: 'Italian', 'Made in Italy' y 'produced in Italy' se reiteran en la introducción y en el texto añadido; también se reformulan materiales ya descritos (brass/bronze, leather/fabric). Conviene depurar para evitar redundancia.)
+
+Resumen DB: {'total': 1, 'processed': 0, 'skipped': 0, 'failed': 0, 'rejected': 1, 'in_queue': 0, 'reviews': 0}

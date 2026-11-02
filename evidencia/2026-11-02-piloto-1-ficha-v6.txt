@@ -1,0 +1,14 @@
+CASSonI pipeline | env=staging | dry_run=True
+  wc_base=https://cassoni.com
+2026-11-02 14:36:04,874 WARNING cassoni.orchestrator: Faltan 2 candidatas con palabras distintas para completar 3 secundarias (https://cassoni.com/product/cas-rug-club-sofa-01/) -> expansor pendiente
+2026-11-02 14:36:05,319 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 14:36:24,951 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 14:36:29,852 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 14:37:13,617 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+
+Resultados: {'rejected': 1}
+  ✗ rejected  https://cassoni.com/product/cas-rug-club-sofa-01/
+       H1 → Rugiano Club Sofa
+       (rechazada por el validador: La descripción larga fue reescrita desde cero: conserva solo 67% de las oraciones del original (mínimo 80%); Repetición de conceptos ya presentes: el primer párrafo nuevo reformula casi punto por punto lo que ya dice la descripción original (tubos de latón/bronce cepillado + tapizado en cuero o tela + patrón elegante); no aporta información nueva, solo relleno.; Repetición interna dentro del mismo párrafo: primero describe el metal y las opciones de tapizado ('leather upholstery, or the fabric alternative') y luego vuelve a decir lo mismo ('the brushed brass frame is available in a bronze finish as well, and the covering can be specified in fabric or leather').)
+
+Resumen DB: {'total': 1, 'processed': 0, 'skipped': 0, 'failed': 0, 'rejected': 1, 'in_queue': 0, 'reviews': 0}

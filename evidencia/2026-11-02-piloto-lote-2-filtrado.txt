@@ -1,0 +1,20 @@
+CASSonI pipeline | env=staging | dry_run=True
+  wc_base=https://cassoni.com
+2026-11-02 14:55:54,653 INFO cassoni.orchestrator: Descartadas 1 consultas que no son del producto (https://cassoni.com/product/cas-oak-sc_1019_chair-01/)
+2026-11-02 14:55:54,655 WARNING cassoni.orchestrator: Faltan 2 candidatas con palabras distintas para completar 3 secundarias (https://cassoni.com/product/cas-oak-sc_1019_chair-01/) -> expansor pendiente
+2026-11-02 14:55:55,082 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 14:56:19,466 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 14:57:09,130 INFO cassoni.orchestrator: Descartadas 3 consultas que no son del producto (https://cassoni.com/product/cas-mor-pebble-rubble-sofa-01/)
+2026-11-02 14:57:09,132 WARNING cassoni.orchestrator: Faltan 2 candidatas con palabras distintas para completar 3 secundarias (https://cassoni.com/product/cas-mor-pebble-rubble-sofa-01/) -> expansor pendiente
+2026-11-02 14:57:09,698 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 14:57:39,822 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+
+Resultados: {'processed': 2}
+  ✓ processed https://cassoni.com/product/cas-oak-sc_1019_chair-01/
+       H1 → Cleopatra Chair (SC1019)
+       (dry_run (sin tocar WooCommerce))
+  ✓ processed https://cassoni.com/product/cas-mor-pebble-rubble-sofa-01/
+       H1 → Pebble Sofa by Moroso
+       (dry_run (sin tocar WooCommerce))
+
+Resumen DB: {'total': 2, 'processed': 2, 'skipped': 0, 'failed': 0, 'rejected': 0, 'in_queue': 0, 'reviews': 0}

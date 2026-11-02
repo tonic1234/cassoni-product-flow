@@ -1,0 +1,141 @@
+{
+  "id": 1,
+  "url": "https://cassoni.com/product/cas-rug-club-sofa-01/",
+  "slug": "cas-rug-club-sofa-01",
+  "status": "processed",
+  "gsc_keywords": [
+    {
+      "keyword": "club sofa",
+      "clicks": 0,
+      "impressions": 1360,
+      "position": 7.466176470588235,
+      "ctr": 0,
+      "opportunity": "materialize_demand",
+      "opportunity_score": 80
+    },
+    {
+      "keyword": "club style sofa",
+      "clicks": 0,
+      "impressions": 19,
+      "position": 9.631578947368421,
+      "ctr": 0,
+      "opportunity": "long_tail",
+      "opportunity_score": 0
+    },
+    {
+      "keyword": "grey club sofa",
+      "clicks": 0,
+      "impressions": 17,
+      "position": 9.411764705882353,
+      "ctr": 0,
+      "opportunity": "long_tail",
+      "opportunity_score": 0
+    },
+    {
+      "keyword": "club couch",
+      "clicks": 0,
+      "impressions": 15,
+      "position": 4,
+      "ctr": 0,
+      "opportunity": "long_tail",
+      "opportunity_score": 0
+    },
+    {
+      "keyword": "rugiano sofa",
+      "clicks": 0,
+      "impressions": 14,
+      "position": 2.071428571428571,
+      "ctr": 0,
+      "opportunity": "hold_top",
+      "opportunity_score": 40
+    },
+    {
+      "keyword": "club sofas",
+      "clicks": 0,
+      "impressions": 7,
+      "position": 5.857142857142857,
+      "ctr": 0,
+      "opportunity": "long_tail",
+      "opportunity_score": 0
+    },
+    {
+      "keyword": "club style couch",
+      "clicks": 0,
+      "impressions": 7,
+      "position": 4.285714285714286,
+      "ctr": 0,
+      "opportunity": "long_tail",
+      "opportunity_score": 0
+    },
+    {
+      "keyword": "cassoni sofa",
+      "clicks": 0,
+      "impressions": 4,
+      "position": 21,
+      "ctr": 0,
+      "opportunity": "long_tail",
+      "opportunity_score": 0
+    },
+    {
+      "keyword": "what is a club sofa",
+      "clicks": 0,
+      "impressions": 4,
+      "position": 7.5,
+      "ctr": 0,
+      "opportunity": "long_tail",
+      "opportunity_score": 0
+    },
+    {
+      "keyword": "clib sofa",
+      "clicks": 0,
+      "impressions": 3,
+      "position": 5.666666666666667,
+      "ctr": 0,
+      "opportunity": "long_tail",
+      "opportunity_score": 0
+    }
+  ],
+  "df_keywords": null,
+  "selected_keywords": [
+    {
+      "keyword": "club sofa",
+      "clicks": 0,
+      "impressions": 1360,
+      "position": 7.466176470588235,
+      "ctr": 0,
+      "opportunity": "materialize_demand",
+      "opportunity_score": 80
+    }
+  ],
+  "selection_reason": null,
+  "original_h1": "Club Sofa",
+  "original_description": "<p>This is a designer Italian Sofa, part of the exclusive Club collection. It stands out for the innovative structure created by refined brushed brass or bronze drawn tubes that, combined with the upholstered leather or fabric, create a stylish pattern. A high-end Glamour furniture, ideal to fit in any sophisticated living area.Made in Italy.</p>\n",
+  "edited_h1": "Rugiano Club Sofa",
+  "edited_description": "<p>This is a designer Italian Sofa, part of the exclusive Club collection. It stands out for the innovative structure created by refined brushed brass or bronze drawn tubes that, combined with the upholstered leather or fabric, create a stylish pattern. A high-end Glamour furniture, ideal to fit in any sophisticated living area. Made in Italy.</p>\n<h2>Italian Leather Sofa: Metal and Upholstery</h2>\n<p>The brushed brass tubes define the architecture of the piece and remain visible where the upholstery steps back, so the metal draws a fine, continuous pattern around the seat. The cover — leather or fabric — is worked with the same care: as a leather sofa it takes on a warmer, more tactile presence, while the fabric version reads quieter and more relaxed. The straight shape and the armrests keep the line rigorous and calm.</p>\n<h2>Glamour Furniture for Refined Interiors</h2>\n<p>Available in several widths, the club sofa adapts to compact rooms as well as to larger living areas without losing the clarity of the line. The character of the New Glamour Collection emerges in the contrast between the reflections of the metal and the tailored finish of the upholstery, a balance that makes it a natural centrepiece and, at the same time, a discreet presence in a more understated interior.</p>",
+  "baseline_keyword": "club sofa",
+  "baseline_position": 7.466176470588235,
+  "baseline_impressions": 1360,
+  "baseline_clicks": 0,
+  "baseline_ctr": 0.0,
+  "baseline_window": "2026-08-04..2026-11-02",
+  "baseline_at": "2026-11-02 17:40:59.900282",
+  "validation_result": {
+    "aprobado": true,
+    "issues": [
+      "Solapamiento conceptual con el original: el primer bloque reformula los tubos de latón cepillado y la combinación cuero/tela ya descritos en la descripción base, y el H2 'Glamour Furniture for Refined Interiors' parafrasea casi literalmente 'high-end Glamour furniture, ideal to fit in any sophisticated living area'. El valor agregado real se limita a la visibilidad del metal y a la disponibilidad en varios anchos.",
+      "El H2 'Italian Leather Sofa: Metal and Upholstery' enfatiza cuero cuando la ficha ofrece también fabric; el cuerpo lo aclara, pero el título sesga la lectura."
+    ],
+    "keywords_presentes": [
+      "club sofa"
+    ],
+    "tono_lujo": true,
+    "razon": "El H1 sigue siendo descriptivo al sumar la marca, la keyword aparece de forma natural en título y cuerpo, el registro de lujo se mantiene y no hay datos inventados ni HTML roto; solo se observa redundancia con la descripción original y un H2 levemente sesgado al cuero."
+  },
+  "validation_attempts": 1,
+  "dfs_cost": null,
+  "llm_cost": null,
+  "host_env": "staging",
+  "dry_run": 1,
+  "created_at": "2026-11-02 17:39:36.435469",
+  "updated_at": "2026-11-02 17:40:59.912118"
+}

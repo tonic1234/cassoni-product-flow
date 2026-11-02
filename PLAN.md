@@ -73,3 +73,25 @@ Conclusión: el motor de edición está terminado y testeado; lo que falta es qu
 
 `scripts/verify.sh` en verde + el lote en seco con evidencia + los tres comandos
 (`--preflight`, `--seleccionar`, `--revisar`) corridos de verdad sobre datos reales.
+
+---
+
+## Bitácora del 2-nov-2026 (hallazgos medidos, no supuestos)
+
+La puesta en marcha se hizo por tramos con tests antes del código. El piloto se corrió
+contra la ficha real `cas-rug-club-sofa-01` de producción, en dry-run.
+
+| # | Hallazgo | Cómo se detectó | Estado |
+|---|---|---|---|
+| 1 | Un rechazo del validador se guardaba y reportaba como `processed` | primer piloto: la consola decía `processed` con `"aprobado": false` | corregido (`rejected`, D-007) |
+| 2 | `keyword_principal=""` no caía al default | el checklist pedía "falta la keyword principal" con el H1 correcto | corregido |
+| 3 | El JSON incompleto del editor se aceptaba a medias | captura de la respuesta cruda del modelo | corregido (reintento con el faltante explícito) |
+| 4 | `_rework` devolvía sólo `h1` y `description` → la 2da pasada se auto-rechazaba | piloto v2 | corregido (D-009) |
+| 5 | El validador marcaba como inventadas medidas y colección que son atributos REALES de WooCommerce | piloto v3 + inspección del producto | corregido (D-008) |
+| 6 | Los `issues` del rechazo no llegaban al editor: rehacía a ciegas | lectura del código de `_rework` | corregido |
+| 7 | JSON truncado (`Unterminated string`) mataba la corrida; la excepción del validador tumbaba el lote | piloto v5 | corregido (reintento + `failed` por ficha) |
+
+Lección de método: los siete aparecieron **corriendo el producto contra datos reales**,
+no leyendo el código. La suite estaba en verde (120 tests) mientras los siete estaban
+vivos. Un test de integración contra el destino real vale más que veinte unitarios del
+helper.

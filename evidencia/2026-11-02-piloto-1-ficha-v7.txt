@@ -1,0 +1,12 @@
+CASSonI pipeline | env=staging | dry_run=True
+  wc_base=https://cassoni.com
+2026-11-02 14:40:26,264 WARNING cassoni.orchestrator: Faltan 2 candidatas con palabras distintas para completar 3 secundarias (https://cassoni.com/product/cas-rug-club-sofa-01/) -> expansor pendiente
+2026-11-02 14:40:26,849 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 14:40:52,999 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+
+Resultados: {'processed': 1}
+  ✓ processed https://cassoni.com/product/cas-rug-club-sofa-01/
+       H1 → Rugiano Club Sofa
+       (dry_run (sin tocar WooCommerce))
+
+Resumen DB: {'total': 1, 'processed': 1, 'skipped': 0, 'failed': 0, 'rejected': 0, 'in_queue': 0, 'reviews': 0}

@@ -1,0 +1,290 @@
+[
+  {
+    "id": 1,
+    "url": "https://cassoni.com/product/cas-oak-sc_1019_chair-01/",
+    "slug": "cas-oak-sc_1019_chair-01",
+    "status": "processed",
+    "gsc_keywords": [
+      {
+        "keyword": "cleopatra chair",
+        "clicks": 0,
+        "impressions": 1515,
+        "position": 10.494389438943895,
+        "ctr": 0,
+        "opportunity": "materialize_demand",
+        "opportunity_score": 79
+      },
+      {
+        "keyword": "cleopatra chair wood",
+        "clicks": 0,
+        "impressions": 237,
+        "position": 7.8354430379746836,
+        "ctr": 0,
+        "opportunity": "materialize_demand",
+        "opportunity_score": 69
+      },
+      {
+        "keyword": "cleopatra seat",
+        "clicks": 0,
+        "impressions": 46,
+        "position": 9.630434782608695,
+        "ctr": 0,
+        "opportunity": "long_tail",
+        "opportunity_score": 0
+      },
+      {
+        "keyword": "cleopatra chair design",
+        "clicks": 0,
+        "impressions": 20,
+        "position": 9.25,
+        "ctr": 0,
+        "opportunity": "long_tail",
+        "opportunity_score": 0
+      },
+      {
+        "keyword": "cleopatra wooden chair",
+        "clicks": 1,
+        "impressions": 19,
+        "position": 7.842105263157895,
+        "ctr": 0.05263157894736842,
+        "opportunity": "long_tail",
+        "opportunity_score": 0
+      },
+      {
+        "keyword": "cleopatra chair price",
+        "clicks": 0,
+        "impressions": 14,
+        "position": 7.357142857142857,
+        "ctr": 0,
+        "opportunity": "long_tail",
+        "opportunity_score": 0
+      },
+      {
+        "keyword": "kleopatra chair",
+        "clicks": 0,
+        "impressions": 10,
+        "position": 9.6,
+        "ctr": 0,
+        "opportunity": "long_tail",
+        "opportunity_score": 0
+      },
+      {
+        "keyword": "cleopatra chair wood for sale",
+        "clicks": 0,
+        "impressions": 7,
+        "position": 10,
+        "ctr": 0,
+        "opportunity": "long_tail",
+        "opportunity_score": 0
+      },
+      {
+        "keyword": "cleopatra chairs",
+        "clicks": 0,
+        "impressions": 6,
+        "position": 9.333333333333334,
+        "ctr": 0,
+        "opportunity": "long_tail",
+        "opportunity_score": 0
+      },
+      {
+        "keyword": "cleopatra chair sofa",
+        "clicks": 0,
+        "impressions": 4,
+        "position": 11.5,
+        "ctr": 0,
+        "opportunity": "long_tail",
+        "opportunity_score": 0
+      }
+    ],
+    "df_keywords": null,
+    "selected_keywords": [
+      {
+        "keyword": "cleopatra chair",
+        "clicks": 0,
+        "impressions": 1515,
+        "position": 10.494389438943895,
+        "ctr": 0,
+        "opportunity": "materialize_demand",
+        "opportunity_score": 79
+      }
+    ],
+    "selection_reason": null,
+    "original_h1": "Cleopatra Chair (SC1019)",
+    "original_description": "<p>Wooden chair with leather upholstery. Rosewood, Ebony or Citronier finish.</p>\n",
+    "edited_h1": "Cleopatra Chair (SC1019)",
+    "edited_description": "<p>Wooden chair with leather upholstery. Rosewood, Ebony or Citronier finish.</p>\n<p>Designed by Luca Scacchetti, the Cleopatra chair holds a transitional register: neither strictly classic nor strictly contemporary, it balances clean lines with a warm, discreet material palette. The armless silhouette and the high backrest draw a slender, vertical profile, while the wooden base keeps the volume light, so the seat sits quietly in a dining room, a study or a generous entrance hall.</p>\n<h2>Leather upholstery and wooden legs</h2>\n<p>The covering follows the geometry of the frame with measured tension, so the surface stays taut and the seams stay clean along the high backrest. The wooden legs carry the finish of the structure and lift the body from the floor, giving the piece its airy stance. Available in Rosewood, Ebony or Citronier finish, it adapts to dark, lacquered interiors as well as lighter, natural palettes, and holds its composure when repeated around a table. A sober presence, suited to both residential and contract interiors.</p>",
+    "baseline_keyword": "cleopatra chair",
+    "baseline_position": 10.494389438943895,
+    "baseline_impressions": 1515,
+    "baseline_clicks": 0,
+    "baseline_ctr": 0.0,
+    "baseline_window": "2026-08-04..2026-11-02",
+    "baseline_at": "2026-11-02 17:56:21.742969",
+    "validation_result": {
+      "aprobado": true,
+      "issues": [],
+      "keywords_presentes": [
+        "cleopatra chair"
+      ],
+      "tono_lujo": true,
+      "razon": "La edición mantiene el H1 descriptivo, conserva el tono sobrio y de lujo, incorpora la keyword de forma natural y no agrega datos inventados; los atributos mencionados coinciden con la ficha oficial."
+    },
+    "validation_attempts": 1,
+    "dfs_cost": null,
+    "llm_cost": null,
+    "host_env": "staging",
+    "dry_run": 1,
+    "created_at": "2026-11-02 17:54:58.886398",
+    "updated_at": "2026-11-02 17:56:21.748820",
+    "_medido": {
+      "conservacion": 1.0,
+      "palabras_antes": 10,
+      "palabras_despues": 163,
+      "h2": 1
+    }
+  },
+  {
+    "id": 2,
+    "url": "https://cassoni.com/product/cas-mor-pebble-rubble-sofa-01/",
+    "slug": "cas-mor-pebble-rubble-sofa-01",
+    "status": "processed",
+    "gsc_keywords": [
+      {
+        "keyword": "pebble sofa",
+        "clicks": 9,
+        "impressions": 559,
+        "position": 4.989266547406082,
+        "ctr": 0.016100178890876567,
+        "opportunity": "materialize_demand",
+        "opportunity_score": 75
+      },
+      {
+        "keyword": "pebble couch",
+        "clicks": 2,
+        "impressions": 297,
+        "position": 2.942760942760943,
+        "ctr": 0.006734006734006734,
+        "opportunity": "hold_top",
+        "opportunity_score": 40
+      },
+      {
+        "keyword": "pebble rubble sofa",
+        "clicks": 5,
+        "impressions": 186,
+        "position": 4.973118279569892,
+        "ctr": 0.026881720430107527,
+        "opportunity": "materialize_demand",
+        "opportunity_score": 71
+      },
+      {
+        "keyword": "moroso pebble rubble",
+        "clicks": 4,
+        "impressions": 112,
+        "position": 9.383928571428571,
+        "ctr": 0.03571428571428571,
+        "opportunity": "long_tail",
+        "opportunity_score": 0
+      },
+      {
+        "keyword": "pebble rubble sofas",
+        "clicks": 0,
+        "impressions": 91,
+        "position": 2.571428571428571,
+        "ctr": 0,
+        "opportunity": "hold_top",
+        "opportunity_score": 40
+      },
+      {
+        "keyword": "pebble modular sofa",
+        "clicks": 2,
+        "impressions": 89,
+        "position": 36.52808988764045,
+        "ctr": 0.02247191011235955,
+        "opportunity": "long_tail",
+        "opportunity_score": 0
+      },
+      {
+        "keyword": "pebble rubble",
+        "clicks": 0,
+        "impressions": 59,
+        "position": 4.864406779661017,
+        "ctr": 0,
+        "opportunity": "long_tail",
+        "opportunity_score": 0
+      },
+      {
+        "keyword": "pebble sofa moroso",
+        "clicks": 0,
+        "impressions": 38,
+        "position": 4.631578947368421,
+        "ctr": 0,
+        "opportunity": "long_tail",
+        "opportunity_score": 0
+      },
+      {
+        "keyword": "moroso pebble",
+        "clicks": 3,
+        "impressions": 35,
+        "position": 5.3428571428571425,
+        "ctr": 0.08571428571428572,
+        "opportunity": "long_tail",
+        "opportunity_score": 0
+      },
+      {
+        "keyword": "moroso pebble sofa",
+        "clicks": 0,
+        "impressions": 34,
+        "position": 5.617647058823529,
+        "ctr": 0,
+        "opportunity": "long_tail",
+        "opportunity_score": 0
+      }
+    ],
+    "df_keywords": null,
+    "selected_keywords": [
+      {
+        "keyword": "pebble sofa",
+        "clicks": 9,
+        "impressions": 559,
+        "position": 4.989266547406082,
+        "ctr": 0.016100178890876567,
+        "opportunity": "materialize_demand",
+        "opportunity_score": 75
+      }
+    ],
+    "selection_reason": null,
+    "original_h1": "Pebble Rubble Sofa",
+    "original_description": "<p>The innovative Pebble Rubble design conveys a message that transcends the functions and qualities of a common seat. The most evident characteristic is the similarity of the upholstered volumes to those massive rocks, polished by the tireless rain and wind and cloaked by an organic or plant layer capable of softening its roughness and making the surfaces comfortable and welcoming. A scenic installation that doesn’t stop at simply simulating, but rests on a lengthy research during which the designers investigated the therapeutic benefits that nature has on people’s physical and mental health, as well as the cultural and psychological significance of natural environments, in particular those found in the designers’ native Sweden.</p>\n<p>These exclusive Italian sofas are composed of elements in polyurethane foam with differentiated density, covered with polyester fiber and with internal wooden structure. Backrests made with a lightweight composite structure in polymeric materials and polyurethane foam with a wooden base. Glides in black polypropylene screwed to the structure. The covers of this collection are offered in fabric and are not removable. Also optional ottomans and decorative cushions are offered to complement these versatile lounge chairs. Made in Italy.</p>\n",
+    "edited_h1": "Pebble Sofa by Moroso",
+    "edited_description": "<p>The innovative Pebble Rubble design conveys a message that transcends the functions and qualities of a common seat. The most evident characteristic is the similarity of the upholstered volumes to those massive rocks, polished by the tireless rain and wind and cloaked by an organic or plant layer capable of softening its roughness and making the surfaces comfortable and welcoming. A scenic installation that doesn’t stop at simply simulating, but rests on a lengthy research during which the designers investigated the therapeutic benefits that nature has on people’s physical and mental health, as well as the cultural and psychological significance of natural environments, in particular those found in the designers’ native Sweden. The outcome is organic shaped seating: a pebble sofa that reads as a landscape of softly modelled volumes, proposed in different sizes and configurations.</p>\n<p>These exclusive Italian sofas are composed of elements in polyurethane foam with differentiated density, covered with polyester fiber and with internal wooden structure. Backrests made with a lightweight composite structure in polymeric materials and polyurethane foam with a wooden base. Glides in black polypropylene screwed to the structure. The covers of this collection are offered in fabric and are not removable; the italian fabric upholstery follows the profile of each volume without interrupting its line. Its modern armless design leaves the proportions open, so the elements can be placed side by side or facing one another. Also optional ottomans and decorative cushions are offered to complement these versatile lounge chairs. Made in Italy.</p>",
+    "baseline_keyword": "pebble sofa",
+    "baseline_position": 4.989266547406082,
+    "baseline_impressions": 559,
+    "baseline_clicks": 9,
+    "baseline_ctr": 0.016100178890876567,
+    "baseline_window": "2026-08-04..2026-11-02",
+    "baseline_at": "2026-11-02 17:57:44.652812",
+    "validation_result": {
+      "aprobado": true,
+      "issues": [],
+      "keywords_present": [
+        "pebble sofa"
+      ],
+      "tono_lujo": true,
+      "razon": "La edición conserva el tono editorial de lujo y el H1 sigue siendo descriptivo, ahora con marca. La keyword \"pebble sofa\" se integra de forma natural en una frase coherente con el relato del producto. No hay HTML roto, repeticiones problemáticas ni datos inventados: las menciones a fabric, armless, modern y Made in Italy están respaldadas por la ficha oficial."
+    },
+    "validation_attempts": 1,
+    "dfs_cost": null,
+    "llm_cost": null,
+    "host_env": "staging",
+    "dry_run": 1,
+    "created_at": "2026-11-02 17:56:21.763011",
+    "updated_at": "2026-11-02 17:57:44.656840",
+    "_medido": {
+      "conservacion": 0.889,
+      "palabras_antes": 190,
+      "palabras_despues": 249,
+      "h2": 0
+    }
+  }
+]

@@ -1,0 +1,22 @@
+
+Lote de 20 fichas → evidencia/2026-11-02-lote-20-filtrado.json
+   1. [ 80] club sofa                                        pos   7.5 impr   1360  https://cassoni.com/product/cas-rug-club-sofa-01/
+   2. [ 79] cleopatra chair                                  pos  10.5 impr   1515  https://cassoni.com/product/cas-oak-sc_1019_chair-01/
+   3. [ 78] cruise couch                                     pos   4.5 impr    822  https://cassoni.com/product/cas-tal-cruise-teak-sofa-01/
+   4. [ 76] rock coffee table                                pos   4.7 impr    675  https://cassoni.com/product/cas-rug-rock-coffee-table-01/
+   5. [ 75] pebble sofa                                      pos   5.0 impr    559  https://cassoni.com/product/cas-mor-pebble-rubble-sofa-01/
+   6. [ 74] anamon                                           pos   6.0 impr    535  https://cassoni.com/product/anamon-outdoor-luxury-parasol-lamp-royal-botania/
+   7. [ 74] steinway piano                                   pos   4.8 impr    490  https://cassoni.com/product/luxury-exquisite-masterpiece-19800-steinway-piano-by-riva-mobili-darte/
+   8. [ 73] tiffany mirror                                   pos   5.8 impr    488  https://cassoni.com/product/cas-dvhc-tiffany-mirror-01/
+   9. [ 72] floyd nightstand                                 pos   4.1 impr    208  https://cassoni.com/product/exquisite-high-end-floyd-nightstand-by-rugiano/
+  10. [ 72] crystal side table                               pos   6.6 impr    474  https://cassoni.com/product/crystal-luxury-designer-side-table-glas-italia/
+  11. [ 71] hermes lounge chair                              pos   9.3 impr    643  https://cassoni.com/product/cas-dvhc-hermes-lounge-chair-01/
+  12. [ 71] tucroma chair                                    pos   7.3 impr    408  https://cassoni.com/product/cas-i4m-tucroma-armchair/
+  13. [ 71] hermes bed                                       pos   4.2 impr    176  https://cassoni.com/product/cas-dvhc-hermes-maxi-bed-01/
+  14. [ 70] 4x4 table                                        pos   8.1 impr    430  https://cassoni.com/product/cas-ozz-4x4-fixed-table-01/
+  15. [ 70] slim sideboard                                   pos   8.4 impr    402  https://cassoni.com/product/cas-si-slim-sideboard-01/
+  16. [ 70] hug rest chair                                   pos   6.7 impr    282  https://cassoni.com/product/cas-gio-hug-lounge-chair-01/
+  17. [ 70] illan lamp                                       pos   8.8 impr    431  https://cassoni.com/product/illan-luxury-wall-lamp-luceplan/
+  18. [ 69] fish silverware                                  pos   6.3 impr    157  https://cassoni.com/product/cas-sch-america-fish-serving-cutlery-set-01/
+  19. [ 69] nohrd step tower                                 pos   7.0 impr    211  https://cassoni.com/product/cas-wrn-nohrd-steptower-01/
+  20. [ 68] roly poly chair                                  pos  10.7 impr    486  https://cassoni.com/product/roly-poly-designer-lounge-chair-driade/

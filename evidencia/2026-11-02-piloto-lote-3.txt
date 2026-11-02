@@ -1,0 +1,28 @@
+CASSonI pipeline | env=staging | dry_run=True
+  wc_base=https://cassoni.com
+2026-11-02 14:43:16,203 WARNING cassoni.orchestrator: Faltan 1 candidatas con palabras distintas para completar 3 secundarias (https://cassoni.com/product/cas-oak-sc_1019_chair-01/) -> expansor pendiente
+2026-11-02 14:43:16,617 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 14:43:51,822 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 14:43:59,053 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 14:44:52,096 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 14:45:13,839 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 14:45:38,423 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 14:45:46,804 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 14:46:34,129 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 14:47:25,317 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 14:47:52,162 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 14:47:58,682 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 14:48:54,754 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+
+Resultados: {'rejected': 2, 'processed': 1}
+  ✗ rejected  https://cassoni.com/product/cas-oak-sc_1019_chair-01/
+       H1 → Cleopatra Chair (SC1019)
+       (rechazada por el validador: Falta la keyword 'liberator lounger': no aparece en el texto editado. Además, es una keyword de otro producto (un lounger/reposera), no de una silla dining, por lo que incorporarla aquí sería forzada y antinatural; conviene escalarla al equipo SEO en lugar de meterla en el copy.; Repetición de conceptos dentro del propio texto añadido: 'restraint'/'restrained' y 'plain'/'deliberately plain' aparecen dos veces cada uno, y 'upright' se usa dos veces ('upright, formal posture' y 'an upright posture'). Se puede ajustar sin perder el tono.; Detalle menor: 'a firm back' introduce una apreciación de confort/firmeza no respaldada por la ficha (los atributos no describen firmeza). No es un dato numérico inventado, pero conviene reformular a algo estructural ('a tall, continuous backrest').)
+  ✓ processed https://cassoni.com/product/cas-tal-cruise-teak-sofa-01/
+       H1 → Cruise Couch Outdoor Sofa by Talenti
+       (dry_run (sin tocar WooCommerce))
+  ✗ rejected  https://cassoni.com/product/cas-mor-pebble-rubble-sofa-01/
+       H1 → Moroso Pebble Sofa
+       (rechazada por el validador: La keyword 'geef foto' está insertada de forma forzada y antinatural en la FAQ: 'A search for geef foto leads to the product gallery...' no tiene relación clara con el producto y rompe el tono de lujo.; La FAQ introduce un registro transaccional directo ('How much does it cost?') que, junto con la frase de 'geef foto', deteriora la voz editorial de lujo.; El H1 cambió de 'Pebble Rubble Sofa' a 'Moroso Pebble Sofa'; sigue siendo descriptivo, pero pierde precisión respecto del nombre completo del producto.)
+
+Resumen DB: {'total': 3, 'processed': 1, 'skipped': 0, 'failed': 0, 'rejected': 2, 'in_queue': 0, 'reviews': 0}

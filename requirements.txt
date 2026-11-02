@@ -1,0 +1,6 @@
+SQLAlchemy==2.0.52
+requests==2.34.2
+httpx==0.28.1
+google-api-python-client==2.199.0
+google-auth==2.57.0
+pytest==9.1.1

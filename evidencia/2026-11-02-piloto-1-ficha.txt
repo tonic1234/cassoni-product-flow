@@ -1,0 +1,14 @@
+2026-11-02 14:17:49,569 WARNING cassoni.orchestrator: Faltan 2 candidatas con palabras distintas para completar 3 secundarias (https://cassoni.com/product/cas-rug-club-sofa-01/) -> expansor pendiente
+2026-11-02 14:17:50,001 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 14:18:07,399 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 14:18:22,535 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 14:18:39,151 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+CASSonI pipeline | env=staging | dry_run=True
+  wc_base=https://cassoni.com
+
+Resultados: {'processed': 1}
+  ✓ processed https://cassoni.com/product/cas-rug-club-sofa-01/
+       H1 → Rugiano Club Sofa – Italian Designer Sofa
+       (dry_run (sin tocar WooCommerce))
+
+Resumen DB: {'total': 1, 'processed': 1, 'skipped': 0, 'failed': 0, 'in_queue': 0, 'reviews': 0}
