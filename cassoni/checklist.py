@@ -63,6 +63,10 @@ def usos_de(kw: str, texto: str) -> int:
 
 # --- reglas mecánicas ---
 _SENT_RX = re.compile(r"(?<=[.!?])\s+")   # separador de oraciones
+# el HTML real viene del scraping con puntos pegados ('living area.Made in Italy'):
+# sin esto la frase se lee como UNA oración y el editor que la escribe bien queda
+# penalizado (falso negativo medido en el piloto del 2-nov)
+_PUNT_PEGADA_RX = re.compile(r"([.!?])(?=[A-Za-zÁÉÍÓÚÑÜáéíóúñü])")
 _BLOQUE_RX = re.compile(r"</(?:p|h1|h2|h3|li|div|section|blockquote|tr)>", re.I)
 # palabras funcionales que no cuentan para la regla anti-repetición
 _FUNCIONALES = {
@@ -79,7 +83,7 @@ def oraciones(html: str) -> list[str]:
     fronteras de bloque: un texto de H2 no se pega a la oración del párrafo."""
     out = []
     for bloque in _BLOQUE_RX.split(html or ""):
-        texto = strip_html(bloque)
+        texto = _PUNT_PEGADA_RX.sub(r"\1 ", strip_html(bloque))
         for s in _SENT_RX.split(texto):
             n = norm(s)
             if len(n) > 2:

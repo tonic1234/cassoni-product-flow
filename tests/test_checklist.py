@@ -365,3 +365,22 @@ class TestDiversidadRespetaLaOportunidad:
                  {"keyword": "sofa grande", "volume": 900}]
         out = seleccionar_diversas(cands)
         assert out["elegidas"][0]["keyword"] == "sofa grande"
+
+
+class TestConservacionYPuntuacionDelScraping:
+    """El texto original viene del scraping con puntos pegados ('area.Made in Italy.').
+    El editor lo corrige al escribirlo bien y la métrica lo contaba como pérdida:
+    penalizaba mejorar la puntuación."""
+
+    def test_arreglar_la_puntuacion_cuenta_como_conservar(self):
+        from cassoni.checklist import conservacion
+        orig = "<p>Una oración original. Otra oración original.Made in Italy.</p>"
+        edit = "<p>Una oración original. Otra oración original. Made in Italy. " \
+               "Texto nuevo agregado.</p>"
+        assert conservacion(orig, edit) == 1.0
+
+    def test_reescribir_de_verdad_sigue_penalizado(self):
+        from cassoni.checklist import conservacion
+        orig = "<p>Una oración original. Otra oración original.</p>"
+        edit = "<p>Texto completamente distinto que no conserva nada.</p>"
+        assert conservacion(orig, edit) == 0.0
