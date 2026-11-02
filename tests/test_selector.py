@@ -89,15 +89,15 @@ class TestElegirKeyword:
 
 class TestPriorizar:
     def test_arma_el_lote_con_la_keyword_elegida(self):
-        paginas = [_pagina("https://cassoni.com/product/a/", impressions=900)]
-        queries = {"https://cassoni.com/product/a/": [
+        paginas = [_pagina("https://cassoni.com/product/sofa-a/", impressions=900)]
+        queries = {"https://cassoni.com/product/sofa-a/": [
             _q("sofa modular", impressions=300, position=12.0),
             _q("sofa de cuero", impressions=5000, clicks=400, ctr=0.08, position=2.0),
         ]}
         lote = selector.priorizar(paginas, queries)
         assert len(lote) == 1
         c = lote[0]
-        assert c["url"] == "https://cassoni.com/product/a/"
+        assert c["url"] == "https://cassoni.com/product/sofa-a/"
         assert c["keyword"] == "sofa modular"
         assert c["opportunity_score"] > 0
         assert c["impressions"] == 900          # de la página
@@ -105,32 +105,32 @@ class TestPriorizar:
 
     def test_ordena_por_oportunidad_y_luego_impresiones(self):
         paginas = [
-            _pagina("https://cassoni.com/product/top/", impressions=5000),
-            _pagina("https://cassoni.com/product/oportunidad/", impressions=600),
+            _pagina("https://cassoni.com/product/top-sofa/", impressions=5000),
+            _pagina("https://cassoni.com/product/oportunidad-sofa/", impressions=600),
         ]
         queries = {
-            "https://cassoni.com/product/top/": [
-                _q("x", impressions=5000, clicks=500, ctr=0.1, position=1.0)],   # hold_top = 40
-            "https://cassoni.com/product/oportunidad/": [
-                _q("y", impressions=600, position=6.0)],                          # materialize > 55
+            "https://cassoni.com/product/top-sofa/": [
+                _q("top sofa", impressions=5000, clicks=500, ctr=0.1, position=1.0)],  # hold_top = 40
+            "https://cassoni.com/product/oportunidad-sofa/": [
+                _q("oportunidad sofa", impressions=600, position=6.0)],                # materialize > 55
         }
         lote = selector.priorizar(paginas, queries)
-        assert lote[0]["url"] == "https://cassoni.com/product/oportunidad/"
+        assert lote[0]["url"] == "https://cassoni.com/product/oportunidad-sofa/"
 
     def test_pagina_sin_consultas_no_entra(self):
         paginas = [_pagina("https://cassoni.com/product/sin-query/")]
         assert selector.priorizar(paginas, {}) == []
 
     def test_respeta_el_tope_n(self):
-        paginas = [_pagina(f"https://cassoni.com/product/p{i}/", impressions=900 - i)
+        paginas = [_pagina(f"https://cassoni.com/product/sofa-{i}/", impressions=900 - i)
                    for i in range(30)]
-        queries = {p["url"]: [_q("kw", impressions=300, position=12.0)] for p in paginas}
+        queries = {p["url"]: [_q("sofa", impressions=300, position=12.0)] for p in paginas}
         assert len(selector.priorizar(paginas, queries, top_n=20)) == 20
 
     def test_no_repite_urls(self):
-        paginas = [_pagina("https://cassoni.com/product/a/", impressions=900),
-                   _pagina("https://cassoni.com/product/a/", impressions=900)]
-        queries = {"https://cassoni.com/product/a/": [_q("kw", impressions=300, position=12.0)]}
+        paginas = [_pagina("https://cassoni.com/product/sofa-a/", impressions=900),
+                   _pagina("https://cassoni.com/product/sofa-a/", impressions=900)]
+        queries = {"https://cassoni.com/product/sofa-a/": [_q("sofa", impressions=300, position=12.0)]}
         lote = selector.priorizar(paginas, queries)
         assert len({c["url"] for c in lote}) == len(lote)
 
@@ -145,3 +145,51 @@ class TestLoteAJson:
         texto = selector.lote_a_json(lote, meta={"dias": 90, "tope": 20})
         assert '"keyword": "sofa modular"' in texto
         assert '"dias": 90' in texto
+
+
+class TestRelevanciaDeLaConsulta:
+    """Hallazgo del lote real (2-nov): el selector eligió 'liberator lounger' para una
+    silla dining y 'geef foto' (basura de GSC) para un sofá. Una consulta con
+    impresiones no sirve si no es de ESE producto."""
+
+    def test_basura_de_gsc_no_es_relevante(self):
+        assert not selector.relevante("geef foto",
+                                      "https://cassoni.com/product/cas-mor-pebble-rubble-sofa-01/")
+
+    def test_consulta_de_otro_mueble_no_es_relevante(self):
+        assert not selector.relevante("liberator lounger",
+                                      "https://cassoni.com/product/cas-oak-sc_1019_chair-01/")
+
+    def test_consulta_del_producto_es_relevante(self):
+        assert selector.relevante("club sofa",
+                                  "https://cassoni.com/product/cas-rug-club-sofa-01/")
+
+    def test_una_palabra_en_comun_alcanza(self):
+        assert selector.relevante("cruise sofa",
+                                  "https://cassoni.com/product/cas-tal-cruise-teak-sofa-01/")
+
+    def test_funciona_igual_con_el_nombre_real_del_producto(self):
+        # en el orquestador se compara contra name + categorías + marca
+        assert selector.relevante("outdoor couch", "Cruise Couch Outdoor Sofa by Talenti")
+        assert not selector.relevante("geef foto", "Pebble Rubble Sofa by Moroso")
+
+    def test_nombre_de_marca_solo_tambien_cuenta(self):
+        assert selector.relevante("anamon",
+                                  "https://cassoni.com/product/anamon-outdoor-luxury-parasol-lamp-royal-botania/")
+
+    def test_palabras_cortas_del_slug_no_cuentan(self):
+        # 'cas', '01', 'sc' son códigos internos, no materia de la consulta
+        assert not selector.relevante("cas 01", "https://cassoni.com/product/cas-rug-club-sofa-01/")
+
+    def test_elegir_keyword_ignora_las_irrelevantes_y_toma_la_siguiente(self):
+        rows = [_q("geef foto", impressions=5000, position=6.0),
+                _q("pebble sofa", impressions=400, position=9.0)]
+        elegida = selector.elegir_keyword(
+            rows, url="https://cassoni.com/product/cas-mor-pebble-rubble-sofa-01/")
+        assert elegida["keyword"] == "pebble sofa"
+        assert elegida["opportunity"] == "materialize_demand"
+
+    def test_sin_ninguna_relevante_la_ficha_no_entra(self):
+        paginas = [_pagina("https://cassoni.com/product/cas-mor-pebble-rubble-sofa-01/")]
+        queries = {paginas[0]["url"]: [_q("geef foto", impressions=5000)]}
+        assert selector.priorizar(paginas, queries) == []

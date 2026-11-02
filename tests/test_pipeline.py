@@ -301,3 +301,41 @@ def test_e2e_un_fallo_del_validador_no_tumba_el_pipeline(tmp_path):
     assert res.status == "failed"
     assert "LLM" in res.reason or "JSON" in res.reason
     assert pipe.db.get_state(res.url).status == "failed"
+
+
+def test_e2e_descarta_consultas_que_no_son_del_producto(tmp_path):
+    """Lote real (2-nov): 'geef foto' (basura de GSC) y 'liberator lounger' (otro
+    mueble) entraban como principal. Con el nombre real del producto se descartan
+    y se usa la siguiente; si no queda ninguna, la ficha se saltea."""
+    pipe = _pipeline(tmp_path, dry_run=True)
+
+    class GscConBasura:
+        def top_keywords_for_url(self, url, **kw):
+            return [
+                {"keyword": "geef foto", "clicks": 0, "impressions": 5000,
+                 "position": 6.0, "ctr": 0.0},
+                {"keyword": "pedro sofa", "clicks": 1, "impressions": 300,
+                 "position": 11.0, "ctr": 0.003},
+            ]
+
+    pipe.gsc = GscConBasura()
+    res = pipe.process("https://x.com/product/cas-cprn-pedro-sofa-01/")
+    assert res.status == "processed"
+    linea = pipe.editor.llm.editor_user.split(
+        "KEYWORD PRINCIPAL (obligatoria, EXACTA en el H1):")[1].split("\n")[1]
+    assert linea.strip() == "pedro sofa"
+
+
+def test_e2e_si_todas_las_consultas_son_ajenas_se_saltea(tmp_path):
+    pipe = _pipeline(tmp_path, dry_run=True)
+
+    class GscTodoAjeno:
+        def top_keywords_for_url(self, url, **kw):
+            return [{"keyword": "geef foto", "clicks": 0, "impressions": 5000,
+                     "position": 6.0, "ctr": 0.0}]
+
+    pipe.gsc = GscTodoAjeno()
+    res = pipe.process("https://x.com/product/cas-cprn-pedro-sofa-01/")
+    assert res.status == "skipped"
+    assert "del producto" in res.reason
+    assert pipe.llm.calls == 0

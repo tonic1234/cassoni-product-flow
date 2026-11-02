@@ -36,6 +36,7 @@ from .dataforseo import DataForSEOFetcher, KeywordMapper
 from .opportunities import (annotate as annotate_opportunities,
                            elegir_principal, fusionar_gsc, ordenar_candidatas)
 from .checklist import filtrar_canibalizacion, seleccionar_diversas
+from .selector import relevante
 
 log = logging.getLogger("cassoni.orchestrator")
 
@@ -189,6 +190,19 @@ class Pipeline:
             except Exception as exc:
                 log.warning("DataForSEO degradado (%s) -> uso GSC bare", exc)
         candidates = ordenar_candidatas(candidates)[: self.cfg_dfs_keep()]
+        # RELEVANCIA: GSC devuelve consultas que rankean la página sin ser de este
+        # producto ('geef foto', 'liberator lounger' en una silla). Se descartan
+        # con el nombre real + categorías + marca; si no queda ninguna, no se edita.
+        texto_producto = " ".join([h1_orig, *categorias, marca]).strip()
+        antes = len(candidates)
+        candidates = [c for c in candidates
+                      if relevante(c.get("keyword", ""), texto_producto)]
+        if len(candidates) < antes:
+            log.info("Descartadas %s consultas que no son del producto (%s)",
+                     antes - len(candidates), url)
+        if not candidates:
+            return Result(url=url, status="skipped",
+                          reason="ninguna consulta de GSC es del producto")
         principal = elegir_principal(candidates)
 
         # 4b) FILTRO ANTI-CANIBALIZACIÓN DETERMINISTA (regla: nunca descartar

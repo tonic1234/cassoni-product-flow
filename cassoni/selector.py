@@ -15,6 +15,8 @@ priorizado. La regla de negocio sale de la auditoría del 13-oct-2026:
 from __future__ import annotations
 
 import json
+import re
+import unicodedata
 from typing import Iterable, Optional
 from urllib.parse import urlsplit
 
@@ -23,6 +25,42 @@ from .opportunities import annotate as annotate_opportunities
 PRODUCTO_PATH = "/product/"
 MIN_IMPRESSIONS = 50        # debajo de esto no hay demanda que justifique el trabajo
 MAX_POS_SIN_CLICS = 30      # más allá de la página 3 y sin un solo clic: ruido
+
+
+# palabras que no identifican un producto
+_STOP = {
+    "the", "and", "for", "with", "from", "that", "this", "into", "luxury", "design",
+    "de", "la", "el", "los", "las", "con", "para", "por", "que", "una", "unos",
+    "unas", "del", "al", "sus", "mas", "más", "como", "sobre", "cada", "entre",
+    "desde", "hasta", "mueble", "muebles", "producto", "productos",
+}
+_TOKEN_RX = re.compile(r"[a-z0-9]+")
+
+
+def _tokens(texto: str) -> set[str]:
+    """Palabras significativas: >=4 letras, sin números ni códigos internos."""
+    plano = unicodedata.normalize("NFKD", (texto or "").lower())
+    plano = plano.encode("ascii", "ignore").decode()
+    out = set()
+    for w in _TOKEN_RX.findall(plano):
+        if len(w) < 4 or w.isdigit() or w in _STOP:
+            continue
+        if len(w) > 4 and w.endswith("s"):
+            w = w[:-1]          # 'sofas' y 'sofa' colisionan, igual que en checklist
+        out.add(w)
+    return out
+
+
+def relevante(keyword: str, texto_producto: str) -> bool:
+    """¿La consulta es de ESTE producto? Exige al menos una palabra significativa
+    en común con el nombre, el slug o la categoría.
+
+    Motivo (lote real del 2-nov): GSC devuelve consultas que rankean la página sin
+    ser del producto —'liberator lounger' en una silla dining, 'geef foto' en un
+    sofá—. Elegirlas por impresiones hace que el editor escriba con una keyword
+    ajena, que el validador después rebota.
+    """
+    return bool(_tokens(keyword) & _tokens(texto_producto))
 
 
 def es_producto(url: str) -> bool:
@@ -52,12 +90,15 @@ def filtrar_paginas(rows: Iterable[dict], *, min_impressions: int = MIN_IMPRESSI
     return out
 
 
-def elegir_keyword(queries: Iterable[dict]) -> Optional[dict]:
+def elegir_keyword(queries: Iterable[dict], *, url: Optional[str] = None) -> Optional[dict]:
     """De las consultas de una ficha, la de mayor oportunidad. El volumen desempata.
 
+    Con `url`, descarta antes las consultas que no son de ese producto.
     Devuelve la fila enriquecida (`opportunity`, `opportunity_score`) o None.
     """
     filas = [dict(q) for q in queries if q.get("keyword")]
+    if url:
+        filas = [q for q in filas if relevante(q["keyword"], url)]
     if not filas:
         return None
     anotadas = annotate_opportunities(filas)
@@ -78,7 +119,7 @@ def priorizar(paginas: Iterable[dict], queries_por_url: dict[str, list[dict]], *
         url = p["url"]
         if url in vistas:
             continue
-        kw = elegir_keyword(queries_por_url.get(url, []))
+        kw = elegir_keyword(queries_por_url.get(url, []), url=url)
         if kw is None:
             continue          # sin consultas no hay keyword: no se puede editar con kw
         vistas.add(url)
@@ -97,7 +138,8 @@ def priorizar(paginas: Iterable[dict], queries_por_url: dict[str, list[dict]], *
             "kw_position": kw.get("position") or 0.0,
         })
     lote.sort(key=lambda c: (c["opportunity_score"], c["impressions"]), reverse=True)
-    return lote[:top_n] if top_n else lote
+    lote = lote[:top_n] if top_n else lote
+    return lote
 
 
 def lote_a_json(lote: list[dict], *, meta: Optional[dict] = None) -> str:

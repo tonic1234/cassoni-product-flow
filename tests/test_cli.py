@@ -27,7 +27,7 @@ class FakeGSC:
 
 
 def _pag(n, impressions=500):
-    return {"url": f"https://cassoni.com/product/p{n}/", "impressions": impressions,
+    return {"url": f"https://cassoni.com/product/sofa-{n}/", "impressions": impressions,
             "clicks": 1, "ctr": 0.002, "position": 12.0}
 
 
@@ -56,13 +56,13 @@ class TestSeleccionar:
 
     def test_respeta_el_orden_de_prioridad(self):
         paginas = [_pag(1, impressions=100), _pag(2, impressions=900)]
-        queries = {_pag(1)["url"]: [{"keyword": "k1", "impressions": 300,
+        queries = {_pag(1)["url"]: [{"keyword": "sofa k1", "impressions": 300,
                                      "clicks": 0, "ctr": 0.0, "position": 5.0}],
-                   _pag(2)["url"]: [{"keyword": "k2", "impressions": 900,
+                   _pag(2)["url"]: [{"keyword": "sofa k2", "impressions": 900,
                                      "clicks": 0, "ctr": 0.0, "position": 18.0}]}
         lote = cli.seleccionar(FakeGSC(paginas, queries), n=2, days=90, pausa=0)
         # pos 5 con 300 imp gana a pos 18 con 900 imp (mismo score -> gana impresiones de página)
-        assert lote[0]["keyword"] == "k1"
+        assert lote[0]["keyword"] == "sofa k1"
 
 
 class TestParser:
