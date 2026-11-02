@@ -12,6 +12,7 @@ explícito por impresiones.
 from __future__ import annotations
 
 import datetime as dt
+import time
 from typing import Optional
 
 from google.oauth2 import service_account
@@ -60,10 +61,26 @@ class GSCClient:
     def ventana_texto(cls, days: int = DIAS_DEFAULT) -> str:
         return ventana_texto(days)
 
-    def _query(self, body: dict) -> list[dict]:
-        resp = self.service.searchanalytics().query(siteUrl=self.site,
-                                                    body=body).execute()
-        return resp.get("rows", [])
+    def _query(self, body: dict, *, intentos: int = 3) -> list[dict]:
+        """Consulta con reintento ante cortes transitorios.
+
+        Un timeout de GSC de dos segundos perdía la ficha entera en el lote del
+        2-nov. Los errores permanentes (403/400) NO se reintentan: no se arreglan
+        repitiendo.
+        """
+        for i in range(intentos):
+            try:
+                resp = self.service.searchanalytics().query(siteUrl=self.site,
+                                                            body=body).execute()
+                return resp.get("rows", [])
+            except Exception as exc:
+                status = getattr(getattr(exc, "resp", None), "status", None)
+                permanente = isinstance(status, int) and 400 <= status < 500 \
+                    and status != 429
+                if permanente or i == intentos - 1:
+                    raise
+                time.sleep(2 ** i)
+        return []
 
     def pages(self, *, days: int = DIAS_DEFAULT, page_size: int = TAM_PAGINA) -> list[dict]:
         """Una fila por página del sitio (agregada), paginando hasta agotar."""

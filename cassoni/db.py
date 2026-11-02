@@ -60,6 +60,8 @@ class ProcessedProduct(Base):
     # costos
     dfs_cost = Column(String(20))        # "0.285" USD (CRITICO: log por keywords)
     llm_cost = Column(String(20))
+    llm_tokens_in = Column(Integer)
+    llm_tokens_out = Column(Integer)
     # meta
     host_env = Column(String(10))        # staging|prod
     dry_run = Column(Integer, default=1)
@@ -95,6 +97,8 @@ _COLUMNAS_NUEVAS = [
     ("baseline_ctr", "FLOAT"),
     ("baseline_window", "VARCHAR(60)"),
     ("baseline_at", "TIMESTAMP"),
+    ("llm_tokens_in", "INTEGER"),
+    ("llm_tokens_out", "INTEGER"),
 ]
 
 

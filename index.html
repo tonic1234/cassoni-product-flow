@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cassoni · Muestra de 10 fichas para validar</title>
+<meta property="og:title" content="Cassoni · Muestra de 10 fichas optimizadas">
+<meta property="og:description" content="Antes y después de 10 fichas reales, con la consulta que las trae, los atributos usados y el costo por ficha.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--night:#2B2B28;--carbon:#363633;--lime:#CCE535;--cream:#E3E1CD;--white:#fff;
+--muted:rgba(255,255,255,.66);--dim:rgba(255,255,255,.46);--border:rgba(255,255,255,.10);
+--orange:#E8683F;--f:'Plus Jakarta Sans',system-ui,sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--night);color:var(--white);font-family:var(--f);line-height:1.62;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1100px;margin:0 auto;padding:0 22px 96px}
+header.top{border-bottom:1px solid var(--border);padding:30px 0 22px;margin-bottom:34px}
+.chip{display:inline-block;font-size:.66rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+background:rgba(204,229,53,.14);color:var(--lime);border:1px solid rgba(204,229,53,.35);border-radius:999px;padding:4px 11px}
+h1{font-size:clamp(1.7rem,4.4vw,2.5rem);font-weight:800;letter-spacing:-.02em;line-height:1.12;margin:14px 0 10px}
+h2{font-size:clamp(1.18rem,2.6vw,1.6rem);font-weight:800;letter-spacing:-.01em;margin:0 0 6px}
+h3{font-size:1rem;font-weight:700}
+p{color:var(--muted);max-width:80ch}
+a{color:var(--lime)}
+section{margin:54px 0 0}
+.eyebrow{font-size:.68rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--lime);margin-bottom:8px}
+.lead{font-size:1.02rem;color:var(--cream);max-width:78ch}
+.card{background:var(--carbon);border:1px solid var(--border);border-radius:14px;padding:20px 22px}
+.grid{display:grid;gap:14px}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.kpi{background:var(--carbon);border:1px solid var(--border);border-radius:14px;padding:18px 20px}
+.kpi .n{font-size:1.9rem;font-weight:800;letter-spacing:-.02em;line-height:1.1}
+.kpi .l{font-size:.76rem;color:var(--dim);text-transform:uppercase;letter-spacing:.09em;margin-top:4px}
+.kpi .s{font-size:.8rem;color:var(--muted);margin-top:6px}
+.src{background:var(--carbon);border:1px solid var(--border);border-radius:14px;padding:18px 20px}
+.src .tag{font-size:.63rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--night);
+background:var(--lime);border-radius:6px;padding:2px 7px;display:inline-block;margin-bottom:10px}
+.src ul{margin:8px 0 0 16px;color:var(--muted);font-size:.86rem}
+.src li{margin:3px 0}
+.tscroll{overflow-x:auto;margin-top:16px;border:1px solid var(--border);border-radius:12px}
+table.t{width:100%;border-collapse:collapse;font-size:.82rem;min-width:720px}
+table.t th{text-align:left;font-size:.64rem;letter-spacing:.09em;text-transform:uppercase;color:var(--dim);
+padding:11px 12px;border-bottom:1px solid var(--border);white-space:nowrap}
+table.t td{padding:11px 12px;border-bottom:1px solid var(--border);color:var(--muted);vertical-align:top}
+table.t tr:last-child td{border-bottom:none}
+table.t td.num{text-align:right;font-variant-numeric:tabular-nums;color:var(--white);font-weight:600;white-space:nowrap}
+table.t td.name{color:var(--white);font-weight:700}
+.pill{display:inline-block;font-size:.64rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+border-radius:999px;padding:3px 9px}
+.ok{background:rgba(204,229,53,.16);color:var(--lime);border:1px solid rgba(204,229,53,.4)}
+.rej{background:rgba(232,104,63,.16);color:#FF9873;border:1px solid rgba(232,104,63,.45)}
+.ficha{background:var(--carbon);border:1px solid var(--border);border-radius:16px;margin-top:18px;overflow:hidden}
+.fhead{display:flex;gap:16px;align-items:flex-start;padding:20px 22px;border-bottom:1px solid var(--border)}
+.thumb{width:84px;height:84px;border-radius:10px;object-fit:cover;background:#2B2B28;flex:0 0 84px;
+border:1px solid var(--border)}
+.thumb.ph{display:flex;align-items:center;justify-content:center;font-size:1.9rem;font-weight:800;
+color:var(--lime);background:rgba(204,229,53,.08);border-color:rgba(204,229,53,.3)}
+.fhead .meta{flex:1 1 auto;min-width:0}
+.fhead .meta h3{font-size:1.06rem;line-height:1.3}
+.fhead .sub{font-size:.78rem;color:var(--dim);margin-top:3px}
+.fbody{padding:18px 22px 22px}
+.entra{display:grid;gap:10px;grid-template-columns:repeat(3,minmax(0,1fr));margin-bottom:16px}
+.entra .b{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+.entra .k{font-size:.62rem;letter-spacing:.11em;text-transform:uppercase;color:var(--dim);font-weight:700}
+.entra .v{font-size:.92rem;color:var(--white);font-weight:600;margin-top:3px;word-break:break-word}
+.entra .x{font-size:.76rem;color:var(--muted);margin-top:3px}
+.antesdespues{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.col{border:1px solid var(--border);border-radius:12px;padding:14px 16px;background:rgba(0,0,0,.12)}
+.col h4{font-size:.64rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px}
+.col.old h4{color:var(--dim)}
+.col.new{border-color:rgba(204,229,53,.35);background:rgba(204,229,53,.05)}
+.col.new h4{color:var(--lime)}
+.titulo{font-size:.98rem;font-weight:800;color:var(--white);margin-bottom:8px;line-height:1.3}
+.texto{font-size:.86rem;color:var(--muted);max-height:320px;overflow:auto}
+.texto h2{font-size:.95rem;font-weight:800;color:var(--cream);margin:10px 0 6px;letter-spacing:0}
+.texto p{margin:0 0 8px;max-width:none}
+.texto strong{color:var(--white)}
+.pie{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:14px;font-size:.78rem;color:var(--muted);
+border-top:1px solid var(--border);padding-top:12px}
+.pie b{color:var(--white)}
+.obs{margin-top:12px;border-left:3px solid var(--orange);background:rgba(232,104,63,.07);
+border-radius:0 10px 10px 0;padding:10px 14px;font-size:.82rem;color:var(--cream)}
+.limites li{margin:6px 0}
+.preg{background:var(--carbon);border:1px solid var(--border);border-left:3px solid var(--lime);
+border-radius:12px;padding:16px 20px;margin-top:12px}
+footer{margin-top:54px;border-top:1px solid var(--border);padding-top:18px;font-size:.78rem;color:var(--dim)}
+@media (max-width:820px){
+  .g4,.g3{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .antesdespues{grid-template-columns:1fr}
+  .entra{grid-template-columns:1fr}
+}
+@media (max-width:520px){
+  .g4,.g3,.g2{grid-template-columns:1fr}
+  .fhead{flex-wrap:wrap}
+  .wrap{padding:0 16px 72px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <span class="chip">Cassoni · muestra para validación</span>
+  <h1>10 fichas optimizadas, con todo lo que entró en cada una</h1>
+  <p class="lead">Para Alex. Son diez fichas reales del catálogo, elegidas entre las que tienen
+  demanda en Google y material suficiente para escribir sin inventar. Cada una muestra qué
+  consulta la trae, qué atributos reales se usaron, cómo estaba y cómo queda.
+  <b>No se escribió nada en el sitio</b>: todo vive en la base interna del agente, esperando tu OK.</p>
+  <p class="lead" style="margin-top:10px;color:var(--dim);font-size:.88rem">
+  Generado el 02/11/2026 · pipeline con 217 tests en verde ·
+  el mismo código que después corre el catálogo completo.</p>
+</header>
+
+<section>
+  <div class="eyebrow">Qué necesitamos de vos</div>
+  <div class="grid g3">
+    <div class="card"><h3>1 · ¿El criterio es el correcto?</h3>
+      <p style="margin-top:6px">H1 con la keyword exacta y la descripción editada sobre la
+      existente, sin reescribir. Si el criterio está bien, escalamos el lote.</p></div>
+    <div class="card"><h3>2 · ¿Hay alguna ficha que no pasarías?</h3>
+      <p style="margin-top:6px">Marcanos cuáles y por qué. Cada rechazo tuyo se convierte en
+      una regla nueva del validador, no en un parche a mano.</p></div>
+    <div class="card"><h3>3 · ¿Qué falta para que esto sea publicable?</h3>
+      <p style="margin-top:6px">Tono, longitud, datos que no querés que se agreguen,
+      secundarias que preferís evitar.</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="grid g4">
+    <div class="kpi"><div class="n">10</div><div class="l">fichas de la muestra</div>
+      <div class="s">de la lista priorizada por GSC</div></div>
+    <div class="kpi"><div class="n">8/10</div><div class="l">aprobadas por el validador</div>
+      <div class="s">reglas del documento + control editorial</div></div>
+    <div class="kpi"><div class="n">1255 → 2024</div><div class="l">palabras en total</div>
+      <div class="s">sobre el texto que ya existía</div></div>
+    <div class="kpi"><div class="n">US$ 0.20</div><div class="l">costo total medido</div>
+      <div class="s">US$ 0.0196 por ficha · tokens reales de la API</div></div>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">De dónde salió cada dato</div>
+  <h2>Cuatro fuentes, ninguna inventada</h2>
+  <p>Lo que el agente no encuentra en estas fuentes, no lo escribe.</p>
+  <div class="grid g4" style="margin-top:16px">
+    <div class="src"><span class="tag">Google Search Console</span>
+      <ul><li>La consulta real que trae la ficha</li><li>Posición, impresiones y clics de 90 días</li>
+      <li>La oportunidad se calcula ahí, no a ojo</li></ul></div>
+    <div class="src"><span class="tag">WooCommerce</span>
+      <ul><li>H1 y descripción actuales</li><li>Marca, categoría y colección</li>
+      <li>Atributos: material, medidas, acabados</li></ul></div>
+    <div class="src"><span class="tag">Documento del equipo SEO</span>
+      <ul><li>Máximo 60 caracteres en el H1</li><li>150-300 palabras, hasta 2 H2</li>
+      <li>2-3 secundarias, máximo 2 usos</li><li>Anti-canibalización entre fichas</li></ul></div>
+    <div class="src"><span class="tag">Base interna del agente</span>
+      <ul><li>Texto antes y después</li><li>Keywords elegidas y descartadas</li>
+      <li>Veredicto del validador y motivos</li><li>Tokens y costo de cada ficha</li></ul></div>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Resumen</div>
+  <h2>Las diez, de un vistazo</h2>
+  <div class="tscroll">
+    <table class="t">
+      <thead><tr><th>Ficha</th><th>Consulta</th><th>Pos.</th><th>Impr.</th><th>Palabras</th><th>Conservación</th><th>Costo</th></tr></thead>
+      <tbody>
+      <tr>
+        <td class="name">01 · Anamon Sunshade</td>
+        <td>anamon</td>
+        <td class="num">6.0</td>
+        <td class="num">535</td>
+        <td class="num">259 → 275</td>
+        <td class="num">91%</td>
+        <td class="num">US$ 0.0415</td>
+      </tr>
+      <tr>
+        <td class="name">02 · Pebble Rubble Sofa</td>
+        <td>pebble sofa</td>
+        <td class="num">5.0</td>
+        <td class="num">559</td>
+        <td class="num">190 → 220</td>
+        <td class="num">100%</td>
+        <td class="num">US$ 0.0078</td>
+      </tr>
+      <tr>
+        <td class="name">03 · Crystal Side Table</td>
+        <td>crystal side table</td>
+        <td class="num">6.6</td>
+        <td class="num">474</td>
+        <td class="num">135 → 188</td>
+        <td class="num">100%</td>
+        <td class="num">US$ 0.0095</td>
+      </tr>
+      <tr>
+        <td class="name">04 · Illan Wall Lamp</td>
+        <td>illan lamp</td>
+        <td class="num">8.8</td>
+        <td class="num">431</td>
+        <td class="num">158 → 208</td>
+        <td class="num">100%</td>
+        <td class="num">US$ 0.0242</td>
+      </tr>
+      <tr>
+        <td class="name">05 · Hermes Lounge Chair</td>
+        <td>hermes lounge chair</td>
+        <td class="num">9.3</td>
+        <td class="num">643</td>
+        <td class="num">99 → 165</td>
+        <td class="num">100%</td>
+        <td class="num">US$ 0.0101</td>
+      </tr>
+      <tr>
+        <td class="name">06 · Madia Slim Sideboard</td>
+        <td>slim sideboard</td>
+        <td class="num">8.4</td>
+        <td class="num">402</td>
+        <td class="num">85 → 191</td>
+        <td class="num">100%</td>
+        <td class="num">US$ 0.0360</td>
+      </tr>
+      <tr>
+        <td class="name">07 · Tucroma Armchair</td>
+        <td>tucroma chair</td>
+        <td class="num">7.3</td>
+        <td class="num">408</td>
+        <td class="num">86 → 209</td>
+        <td class="num">100%</td>
+        <td class="num">US$ 0.0178</td>
+      </tr>
+      <tr>
+        <td class="name">08 · Cruise Sofa</td>
+        <td>cruise couch</td>
+        <td class="num">4.5</td>
+        <td class="num">822</td>
+        <td class="num">73 → 166</td>
+        <td class="num">100%</td>
+        <td class="num">US$ 0.0214</td>
+      </tr>
+      <tr>
+        <td class="name">09 · Club Sofa</td>
+        <td>club sofa</td>
+        <td class="num">7.5</td>
+        <td class="num">1,360</td>
+        <td class="num">54 → 177</td>
+        <td class="num">100%</td>
+        <td class="num">US$ 0.0068</td>
+      </tr>
+      <tr>
+        <td class="name">10 · Floyd Nightstand</td>
+        <td>floyd nightstand</td>
+        <td class="num">4.1</td>
+        <td class="num">208</td>
+        <td class="num">116 → 225</td>
+        <td class="num">100%</td>
+        <td class="num">US$ 0.0213</td>
+      </tr></tbody>
+    </table>
+  </div>
+  <p style="margin-top:10px;font-size:.8rem;color:var(--dim)">Conservación = porcentaje de
+  oraciones del texto original que siguen intactas en la versión nueva. No se reescribe: se edita.</p>
+</section>
+
+<section>
+  <div class="eyebrow">Ficha por ficha</div>
+  <h2>Antes y después</h2>
+  <p>El texto de la derecha es lo que se publicaría. A la izquierda, lo que hay hoy.</p>
+  
+<article class="ficha">
+  <div class="fhead">
+    <div class="thumb ph" aria-hidden="true">R</div>
+    <div class="meta">
+      <h3>01 · Anamon Sunshade</h3>
+      <div class="sub">Umbrellas &amp; Sunshades · Royal Botania</div>
+    </div>
+    <span class="pill ok">Aprobada por el validador</span>
+  </div>
+  <div class="fbody">
+    <div class="entra">
+      <div class="b">
+        <div class="k">Consulta que la ficha recibe</div>
+        <div class="v">anamon</div>
+        <div class="x">posición 6.0 · 535 impresiones · 4 clics</div>
+      </div>
+      <div class="b">
+        <div class="k">Atributos reales que se usaron</div>
+        <div class="v" style="font-size:.84rem">2 campos</div>
+        <div class="x">de la ficha en WooCommerce</div>
+      </div>
+      <div class="b">
+        <div class="k">Oportunidad</div>
+        <div class="v">materialize_demand</div>
+        <div class="x">score 74/100</div>
+      </div>
+    </div>
+    <div class="antesdespues">
+      <div class="col old">
+        <h4>Antes</h4>
+        <div class="titulo">Anamon Sunshade</div>
+        <div class="texto"><p style="text-align: center"><strong>Anamon is not just another parasol – it redefines what an outdoor umbrella can be.</strong></p>
+<p style="text-align: center">The Anamon is a visionary outdoor solution that redefines the concept of shade through "organic engineering." Designed by Kris Van Puyvelde, this parasol mimics the graceful unfurling of a blooming flower, opening from the top down to reveal its canopy without disturbing nearby furniture. When closed, its minimalist vertical column hides all mechanics, doubling as a sleek, sculptural element for any high-end terrace or poolside.</p>
+<p style="text-align: center">Engineered for both day and night, the Anamon provides cooling shade under the sun and transforms into a sculptural light source after dark. Its integrated warm white LED lighting is battery-powered, ensuring a clean look free of cables. With a focus on longevity, the design includes a protective top cap and a discreet internal drainage system to safeguard the mechanism from the elements.</p>
+<p>At the turn of a handle, the parasol seamlessly unfolds with a theatrical reveal, while the inner workings remain discreetly hidden. Call it organic engineering, inspired by the fluid, natural motion of tube-dwelling anemones.</p>
+<p style="text-align: center">Once the sun sets, Anamon continues to shine. With the canopy tucked away, it transforms into a sculptural light source.</p>
+<p style="text-align: center">When Anamon is not in use, the top cap clicks effortlessly into place, providing a sleek, polished finish and protecting the mechanism from rain, dust and debris – an especially useful feature in wet climates or during winter. Any water that does find its way inside is directed out through a discreet drainage system at the base – no build-up or mess.</p>
+</div>
+        <div class="pie"><span><b>259</b> palabras</span></div>
+      </div>
+      <div class="col new">
+        <h4>Después</h4>
+        <div class="titulo">Royal Botania Anamon Outdoor Parasol</div>
+        <div class="texto"><p style="text-align: center"><strong>Anamon is not just another parasol – it redefines what an outdoor umbrella can be.</strong></p>
+<h2 style="text-align: center">Organic Engineering</h2>
+<p style="text-align: center">The Anamon is a visionary outdoor solution that redefines the concept of shade through "organic engineering." Designed by Kris Van Puyvelde, this parasol mimics the graceful unfurling of a blooming flower, opening from the top down to reveal its canopy without disturbing nearby furniture. When closed, its minimalist vertical column hides all mechanics, doubling as a sleek, sculptural element for any high-end terrace or poolside. It is, in effect, a patio umbrella that retracts into pole form, with no folded canopy left on view. As a Royal Botania parasol, it is resolved with the same attention usually reserved for indoor furniture.</p>
+<h2 style="text-align: center">Day and Night</h2>
+<p style="text-align: center">Engineered for both day and night, the Anamon provides cooling shade under the sun and transforms into a sculptural light source after dark. Its integrated warm white LED lighting is battery-powered, ensuring a clean look free of cables.</p>
+<p>At the turn of a handle, the parasol seamlessly unfolds with a theatrical reveal, while the inner workings remain discreetly hidden. Call it organic engineering, inspired by the fluid, natural motion of tube-dwelling anemones.</p>
+<p style="text-align: center">Once the sun sets, Anamon continues to shine. With the canopy tucked away, it transforms into a sculptural light source.</p>
+<p style="text-align: center">When Anamon is not in use, the top cap clicks effortlessly into place, providing a sleek, polished finish and protecting the mechanism from rain, dust and debris – an especially useful feature in wet climates or during winter. Any water that does find its way inside is directed out through a discreet drainage system at the base – no build-up or mess.</p></div>
+        <div class="pie">
+          <span><b>275</b> palabras</span>
+          <span>conservación del original <b>91%</b></span>
+          <span><b>2</b> H2</span>
+        </div>
+      </div>
+    </div>
+    <div class="obs"><b>Observaciones del validador</b><br>Leve redundancia: la frase insertada «with no folded canopy left on view» repite el concepto ya expresado en la oración anterior («its minimalist vertical column hides all mechanics»). Es aceptable, pero roza la reformulación innecesaria.<br>El bloque «As a Royal Botania parasol, it is resolved with the same attention usually reserved for indoor furniture» es una inserción de marca algo explicativa; sostiene el tono de lujo pero se lee como añadido SEO más que como parte del relato original.<br>El término «patio umbrella» es de registro algo más comercial que «parasol»; convive bien por la aclaración «in effect», aunque baja mínimamente el registro.</div>
+    <div class="pie">
+      <span>costo de esta ficha <b>US$ 0.0415</b></span>
+      <span>9,811 tokens entrada · 33,378 salida</span>
+      <span>2 pase(s) de validación</span>
+      <span><a href="https://cassoni.com/product/anamon-outdoor-luxury-parasol-lamp-royal-botania/" target="_blank" rel="noopener">ver ficha en el sitio</a></span>
+    </div>
+  </div>
+</article>
+<article class="ficha">
+  <div class="fhead">
+    <div class="thumb ph" aria-hidden="true">M</div>
+    <div class="meta">
+      <h3>02 · Pebble Rubble Sofa</h3>
+      <div class="sub">Sofas &amp; Sectionals · Moroso</div>
+    </div>
+    <span class="pill ok">Aprobada por el validador</span>
+  </div>
+  <div class="fbody">
+    <div class="entra">
+      <div class="b">
+        <div class="k">Consulta que la ficha recibe</div>
+        <div class="v">pebble sofa</div>
+        <div class="x">posición 5.0 · 559 impresiones · 9 clics</div>
+      </div>
+      <div class="b">
+        <div class="k">Atributos reales que se usaron</div>
+        <div class="v" style="font-size:.84rem">3 campos</div>
+        <div class="x">de la ficha en WooCommerce</div>
+      </div>
+      <div class="b">
+        <div class="k">Oportunidad</div>
+        <div class="v">materialize_demand</div>
+        <div class="x">score 75/100</div>
+      </div>
+    </div>
+    <div class="antesdespues">
+      <div class="col old">
+        <h4>Antes</h4>
+        <div class="titulo">Pebble Rubble Sofa</div>
+        <div class="texto"><p>The innovative Pebble Rubble design conveys a message that transcends the functions and qualities of a common seat. The most evident characteristic is the similarity of the upholstered volumes to those massive rocks, polished by the tireless rain and wind and cloaked by an organic or plant layer capable of softening its roughness and making the surfaces comfortable and welcoming. A scenic installation that doesn’t stop at simply simulating, but rests on a lengthy research during which the designers investigated the therapeutic benefits that nature has on people’s physical and mental health, as well as the cultural and psychological significance of natural environments, in particular those found in the designers’ native Sweden.</p>
+<p>These exclusive Italian sofas are composed of elements in polyurethane foam with differentiated density, covered with polyester fiber and with internal wooden structure. Backrests made with a lightweight composite structure in polymeric materials and polyurethane foam with a wooden base. Glides in black polypropylene screwed to the structure. The covers of this collection are offered in fabric and are not removable. Also optional ottomans and decorative cushions are offered to complement these versatile lounge chairs. Made in Italy.</p>
+</div>
+        <div class="pie"><span><b>190</b> palabras</span></div>
+      </div>
+      <div class="col new">
+        <h4>Después</h4>
+        <div class="titulo">Pebble Sofa by Moroso | Pebble Rubble</div>
+        <div class="texto"><p>The innovative Pebble Rubble design conveys a message that transcends the functions and qualities of a common seat. The most evident characteristic is the similarity of the upholstered volumes to those massive rocks, polished by the tireless rain and wind and cloaked by an organic or plant layer capable of softening its roughness and making the surfaces comfortable and welcoming. A scenic installation that doesn’t stop at simply simulating, but rests on a lengthy research during which the designers investigated the therapeutic benefits that nature has on people’s physical and mental health, as well as the cultural and psychological significance of natural environments, in particular those found in the designers’ native Sweden. In the Pebble sofa, designed by Front for Moroso, that research takes the form of a modern organic design with a full fabric upholstery, proposed in several sizes and configurations.</p>
+<p>These exclusive Italian sofas are composed of elements in polyurethane foam with differentiated density, covered with polyester fiber and with internal wooden structure. Backrests made with a lightweight composite structure in polymeric materials and polyurethane foam with a wooden base. Glides in black polypropylene screwed to the structure. The covers of this collection are offered in fabric and are not removable. Also optional ottomans and decorative cushions are offered to complement these versatile lounge chairs. Made in Italy.</p></div>
+        <div class="pie">
+          <span><b>220</b> palabras</span>
+          <span>conservación del original <b>100%</b></span>
+          <span><b>0</b> H2</span>
+        </div>
+      </div>
+    </div>
+    <div class="obs"><b>Observaciones del validador</b><br>La frase añadida retoma el término 'research' ya presente en el párrafo previo; funciona como transición, pero roza la repetición de concepto.<br>El H1 'Pebble Sofa by Moroso | Pebble Rubble' duplica 'Pebble' y puede leerse algo redundante; no obstante, sigue siendo descriptivo del producto y de la marca.</div>
+    <div class="pie">
+      <span>costo de esta ficha <b>US$ 0.0078</b></span>
+      <span>8,059 tokens entrada · 6,297 salida</span>
+      <span>1 pase(s) de validación</span>
+      <span><a href="https://cassoni.com/product/cas-mor-pebble-rubble-sofa-01/" target="_blank" rel="noopener">ver ficha en el sitio</a></span>
+    </div>
+  </div>
+</article>
+<article class="ficha">
+  <div class="fhead">
+    <div class="thumb ph" aria-hidden="true">G</div>
+    <div class="meta">
+      <h3>03 · Crystal Side Table</h3>
+      <div class="sub">Coffee &amp; Side Tables · Glas Italia</div>
+    </div>
+    <span class="pill ok">Aprobada por el validador</span>
+  </div>
+  <div class="fbody">
+    <div class="entra">
+      <div class="b">
+        <div class="k">Consulta que la ficha recibe</div>
+        <div class="v">crystal side table</div>
+        <div class="x">posición 6.6 · 474 impresiones · 0 clics</div>
+      </div>
+      <div class="b">
+        <div class="k">Atributos reales que se usaron</div>
+        <div class="v" style="font-size:.84rem">7 campos</div>
+        <div class="x">de la ficha en WooCommerce</div>
+      </div>
+      <div class="b">
+        <div class="k">Oportunidad</div>
+        <div class="v">materialize_demand</div>
+        <div class="x">score 72/100</div>
+      </div>
+    </div>
+    <div class="antesdespues">
+      <div class="col old">
+        <h4>Antes</h4>
+        <div class="titulo">Crystal Side Table</div>
+        <div class="texto"><p>The Crystal side table is a striking example of refined craftsmanship and modern luxury, made entirely from 24 mm thick tempered transparent glass. Assembled using advanced UV bonding techniques, this piece achieves exceptional structural integrity while maintaining a pure, seamless aesthetic.</p>
+<p>Its sophisticated design is the result of complex manufacturing processes, where every edge and joint is precisely finished to enhance the clarity and strength of the glass. The result is an object of remarkable load resistance, with details that reflect the mastery of Italian glassmaking tradition.</p>
+<p>Discreet mirror-polished stainless steel feet subtly elevate the piece, adding a touch of elegance and ensuring stability without distracting from the table’s minimalist form.</p>
+<p>Made in Italy, the Crystal side table embodies premium design and timeless appeal—perfect for interiors that value clean lines, luxurious materials, and impeccable execution.</p>
+</div>
+        <div class="pie"><span><b>135</b> palabras</span></div>
+      </div>
+      <div class="col new">
+        <h4>Después</h4>
+        <div class="titulo">Glas Italia Crystal Side Table</div>
+        <div class="texto"><p>The Crystal side table is a striking example of refined craftsmanship and modern luxury, made entirely from 24 mm thick tempered transparent glass. Assembled using advanced UV bonding techniques, this piece achieves exceptional structural integrity while maintaining a pure, seamless aesthetic.</p>
+<h2>Designer Glass Furniture by Glas Italia</h2>
+<p>Its sophisticated design is the result of complex manufacturing processes, where every edge and joint is precisely finished to enhance the clarity and strength of the glass. The result is an object of remarkable load resistance, with details that reflect the mastery of Italian glassmaking tradition. This Philippe Starck side table, conceived for Glas Italia, translates that technical rigour into a light, almost immaterial presence that suits contemporary interiors.</p>
+<p>Discreet mirror-polished stainless steel feet subtly elevate the piece, adding a touch of elegance and ensuring stability without distracting from the table’s minimalist form.</p>
+<p>Made in Italy, the Crystal side table embodies premium design and timeless appeal—perfect for interiors that value clean lines, luxurious materials, and impeccable execution. Placed beside a sofa or an armchair, it completes a living area with the same quiet precision that defines the finest designer glass furniture.</p></div>
+        <div class="pie">
+          <span><b>188</b> palabras</span>
+          <span>conservación del original <b>100%</b></span>
+          <span><b>1</b> H2</span>
+        </div>
+      </div>
+    </div>
+    <div class="obs"><b>Observaciones del validador</b><br>Observación menor (no bloqueante): el cierre 'the same quiet precision that defines the finest designer glass furniture' fuerza algo la keyword al final y repite el concepto de 'designer glass furniture' ya usado en el H2; se acepta por sonar natural, pero es el punto más débil de la edición.<br>Detalle de estilo: se alterna ortografía británica ('rigour') con el resto del texto en inglés estándar; conviene unificar.<br>El H2 'Designer Glass Furniture by Glas Italia' interrumpe el flujo entre el primer párrafo (materiales/UV bonding) y el segundo (procesos de manufactura), que eran continuos en el original; el corte es aceptable pero ligeramente abrupto.</div>
+    <div class="pie">
+      <span>costo de esta ficha <b>US$ 0.0095</b></span>
+      <span>9,802 tokens entrada · 5,750 salida</span>
+      <span>1 pase(s) de validación</span>
+      <span><a href="https://cassoni.com/product/crystal-luxury-designer-side-table-glas-italia/" target="_blank" rel="noopener">ver ficha en el sitio</a></span>
+    </div>
+  </div>
+</article>
+<article class="ficha">
+  <div class="fhead">
+    <div class="thumb ph" aria-hidden="true">L</div>
+    <div class="meta">
+      <h3>04 · Illan Wall Lamp</h3>
+      <div class="sub">Wall Lamps &amp; Sconces · Luceplan</div>
+    </div>
+    <span class="pill ok">Aprobada por el validador</span>
+  </div>
+  <div class="fbody">
+    <div class="entra">
+      <div class="b">
+        <div class="k">Consulta que la ficha recibe</div>
+        <div class="v">illan lamp</div>
+        <div class="x">posición 8.8 · 431 impresiones · 0 clics</div>
+      </div>
+      <div class="b">
+        <div class="k">Atributos reales que se usaron</div>
+        <div class="v" style="font-size:.84rem">3 campos</div>
+        <div class="x">de la ficha en WooCommerce</div>
+      </div>
+      <div class="b">
+        <div class="k">Oportunidad</div>
+        <div class="v">materialize_demand</div>
+        <div class="x">score 70/100</div>
+      </div>
+    </div>
+    <div class="antesdespues">
+      <div class="col old">
+        <h4>Antes</h4>
+        <div class="titulo">Illan Wall Lamp</div>
+        <div class="texto"><p>The Illan wall lamp brings the poetic lightness and innovative spirit of Zsuzsanna Horvath’s design into a refined, space-saving format. This elegant wall light features a die-cast aluminum body housing an efficient LED source that casts a soft, warm glow upward, enriching interiors with atmospheric, eco-friendly illumination. Its distinctive shade is crafted from laser-cut, layered wood, an ultra-thin and flexible material that defines Illan’s iconic geometric silhouette. In a commitment to sustainable design, the wooden element is made from surplus material left over from producing the Illan suspension lamp, transforming production scraps into a sculptural, decorative feature.</p>
+<p>Lightweight, contemporary, and environmentally conscious, the Illan wall lamp is a perfect choice for those seeking designer wall lighting, warm LED ambience, and Italian craftsmanship that merges technology, beauty, and sustainability. UL Approved (Product build according to the National Electrical Code’s requirements and tested by Underwriters Laboratories). Made in Italy.</p>
+<p><strong>Light source:</strong> LED 21W 1265lm 2700K/3000K CRI 90 Dimmable. UL Approved.</p>
+<p><img src="https://cassoni.com/wp-content/uploads/2025/11/c-UL-us.jpg" alt="" width="90" height="14" class="alignnone size-full wp-image-230107" /></p>
+</div>
+        <div class="pie"><span><b>158</b> palabras</span></div>
+      </div>
+      <div class="col new">
+        <h4>Después</h4>
+        <div class="titulo">Illan Lamp by Luceplan | Wall Sconce</div>
+        <div class="texto"><p>The Illan wall lamp brings the poetic lightness and innovative spirit of Zsuzsanna Horvath’s design into a refined, space-saving format. Compact and graphic, it belongs to that small group of luxury wall lights that reveal their sculptural, geometric presence even when the light is switched off. This elegant wall light features a die-cast aluminum body housing an efficient LED source that casts a soft, warm glow upward, enriching interiors with atmospheric, eco-friendly illumination. Its distinctive shade is crafted from laser-cut, layered wood, an ultra-thin and flexible material that defines Illan’s iconic geometric silhouette. In a commitment to sustainable design, the wooden element is made from surplus material left over from producing the Illan suspension lamp, transforming production scraps into a sculptural, decorative feature. That meeting of technical precision and natural texture is what distinguishes it within contemporary wall light design.</p><h2>A contemporary sconce with a sustainable core</h2><p>Lightweight, contemporary, and environmentally conscious, the Illan wall lamp is a perfect choice for those seeking designer wall lighting, warm LED ambience, and Italian craftsmanship that merges technology, beauty, and sustainability. UL Approved (Product build according to the National Electrical Code’s requirements and tested by Underwriters Laboratories). Made in Italy.</p><p><strong>Light source:</strong> LED 21W 1265lm 2700K/3000K CRI 90 Dimmable. UL Approved.</p><p><img src="https://cassoni.com/wp-content/uploads/2025/11/c-UL-us.jpg" alt="" width="90" height="14" class="alignnone size-full wp-image-230107" /></p></div>
+        <div class="pie">
+          <span><b>208</b> palabras</span>
+          <span>conservación del original <b>100%</b></span>
+          <span><b>1</b> H2</span>
+        </div>
+      </div>
+    </div>
+    <div class="obs"><b>Observaciones del validador</b><br>La keyword 'luceplan ilan' no aparece literalmente (el texto solo incluye 'Luceplan' en el H1). Además está mal escrita ('ilan' con una sola L): forzarla tal cual introduciría una falta de ortografía, por lo que conviene resolverla como variante correcta ('Luceplan Illan') o descartarla.<br>Inserción algo artificial de 'luxury wall lights': la frase 'it belongs to that small group of luxury wall lights that reveal their sculptural, geometric presence…' suena a muletilla promocional y agrega un juicio de valor que no estaba en el original; se puede suavizar para que fluya con el tono editorial de lujo.<br>Repetición de conceptos ya presentes: 'sculptural' y 'geometric' ya figuraban en el párrafo original ('iconic geometric silhouette', 'sculptural, decorative feature') y la edición los vuelve a usar casi en la misma oración, generando redundancia.<br>El cierre añadido ('That meeting of technical precision and natural texture is what distinguishes it within contemporary wall light design') es relleno que repite la idea de diseño contemporáneo sin aportar información nueva.</div>
+    <div class="pie">
+      <span>costo de esta ficha <b>US$ 0.0242</b></span>
+      <span>11,199 tokens entrada · 18,047 salida</span>
+      <span>2 pase(s) de validación</span>
+      <span><a href="https://cassoni.com/product/illan-luxury-wall-lamp-luceplan/" target="_blank" rel="noopener">ver ficha en el sitio</a></span>
+    </div>
+  </div>
+</article>
+<article class="ficha">
+  <div class="fhead">
+    <div class="thumb ph" aria-hidden="true">D</div>
+    <div class="meta">
+      <h3>05 · Hermes Lounge Chair</h3>
+      <div class="sub">Lounge Chairs · DV Home Collection</div>
+    </div>
+    <span class="pill ok">Aprobada por el validador</span>
+  </div>
+  <div class="fbody">
+    <div class="entra">
+      <div class="b">
+        <div class="k">Consulta que la ficha recibe</div>
+        <div class="v">hermes lounge chair</div>
+        <div class="x">posición 9.3 · 643 impresiones · 1 clics</div>
+      </div>
+      <div class="b">
+        <div class="k">Atributos reales que se usaron</div>
+        <div class="v" style="font-size:.84rem">2 campos</div>
+        <div class="x">de la ficha en WooCommerce</div>
+      </div>
+      <div class="b">
+        <div class="k">Oportunidad</div>
+        <div class="v">materialize_demand</div>
+        <div class="x">score 71/100</div>
+      </div>
+    </div>
+    <div class="antesdespues">
+      <div class="col old">
+        <h4>Antes</h4>
+        <div class="titulo">Hermes Lounge Chair</div>
+        <div class="texto"><p>The high-end Hermes lounge chair has a solid wood structure covered with foam polyurethane with different density and a stylish round metal swivel base offered in a variety of finishes.</p>
+<p>The shell has a refined ergonomic curve that allows a completely relax while sitting. The cover is available in fabric or leather and the external part of the backrest is elegantly decorated with a vertical seam.</p>
+<p>Also, to add more comfort, square decorative cushions (19”5/8 or 15”3/4), filled with goose feathers, are available upon request.</p>
+<p>Sophistication and functionality are represented in this Glamour Italian furniture piece. Made in Italy.</p>
+</div>
+        <div class="pie"><span><b>99</b> palabras</span></div>
+      </div>
+      <div class="col new">
+        <h4>Después</h4>
+        <div class="titulo">Hermes Lounge Chair</div>
+        <div class="texto"><p>The high-end Hermes lounge chair has a solid wood structure covered with foam polyurethane with different density and a stylish round metal swivel base offered in a variety of finishes. As a swivel armchair, it allows a fluid, intuitive movement without altering the balanced proportions of the shell.</p><p>The shell has a refined ergonomic curve that allows a completely relax while sitting. The cover is available in fabric or leather and the external part of the backrest is elegantly decorated with a vertical seam. The leather upholstery option brings a denser, more tactile character to the seat, while the fabric version preserves a softer expression.</p><p>Also, to add more comfort, square decorative cushions (19”5/8 or 15”3/4), filled with goose feathers, are available upon request. These details contribute to the calm, tailored comfort that defines the piece.</p><p>Sophistication and functionality are represented in this Glamour Italian furniture piece. Made in Italy. Its measured profile and refined finishes make it suitable for both residential and hospitality interiors.</p></div>
+        <div class="pie">
+          <span><b>165</b> palabras</span>
+          <span>conservación del original <b>100%</b></span>
+          <span><b>0</b> H2</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="pie">
+      <span>costo de esta ficha <b>US$ 0.0101</b></span>
+      <span>7,224 tokens entrada · 6,877 salida</span>
+      <span>1 pase(s) de validación</span>
+      <span><a href="https://cassoni.com/product/cas-dvhc-hermes-lounge-chair-01/" target="_blank" rel="noopener">ver ficha en el sitio</a></span>
+    </div>
+  </div>
+</article>
+<article class="ficha">
+  <div class="fhead">
+    <div class="thumb ph" aria-hidden="true">S</div>
+    <div class="meta">
+      <h3>06 · Madia Slim Sideboard</h3>
+      <div class="sub">Sideboards &amp; Cupboards, Sideboards &amp; Cupboards · Sovet Italia</div>
+    </div>
+    <span class="pill rej">Rechazada por el validador</span>
+  </div>
+  <div class="fbody">
+    <div class="entra">
+      <div class="b">
+        <div class="k">Consulta que la ficha recibe</div>
+        <div class="v">slim sideboard</div>
+        <div class="x">posición 8.4 · 402 impresiones · 0 clics</div>
+      </div>
+      <div class="b">
+        <div class="k">Atributos reales que se usaron</div>
+        <div class="v" style="font-size:.84rem">10 campos</div>
+        <div class="x">de la ficha en WooCommerce</div>
+      </div>
+      <div class="b">
+        <div class="k">Oportunidad</div>
+        <div class="v">materialize_demand</div>
+        <div class="x">score 70/100</div>
+      </div>
+    </div>
+    <div class="antesdespues">
+      <div class="col old">
+        <h4>Antes</h4>
+        <div class="titulo">Madia Slim Sideboard</div>
+        <div class="texto"><p>Italian sideboard with 4 doors with aluminum base and legs, offered in various finishes. Slim features a high-end structure in mdf veneered, Canaletto walnut or oak stained wengé a refined top available in net glass or ceramic. Height-adjustable smoked glass internal shelf.</p>
+<p>A natural evolution that completes the Slim collection. The rounded edges of the wooden structure perfectly merge with the aluminum parts. The different finishes of the top create original solutions that will surely fit any Modern living or dining area. Made in Italy.</p>
+</div>
+        <div class="pie"><span><b>85</b> palabras</span></div>
+      </div>
+      <div class="col new">
+        <h4>Después</h4>
+        <div class="titulo">Slim Sideboard by Sovet Italia</div>
+        <div class="texto"><p>Italian sideboard with 4 doors with aluminum base and legs, offered in various finishes. Slim features a high-end structure in mdf veneered, Canaletto walnut or oak stained wengé a refined top available in net glass or ceramic. Height-adjustable smoked glass internal shelf. A contemporary madia that pairs a sober wooden volume with the lightness of the aluminum base, and is also available in a two-door version. Designed by Matthias Demacker for Sovet Italia.</p>
+<p>A natural evolution that completes the Slim collection. The rounded edges of the wooden structure perfectly merge with the aluminum parts. The different finishes of the top create original solutions that will surely fit any Modern living or dining area. The name says it plainly: a slim sideboard of contained depth, meant to sit against the wall and leave the space around it free. The contrast between the warmth of the Canaletto walnut and the crisp surface of the ceramic top defines the character of the piece, while the smoked glass shelf keeps the interior visually light. The wooden structure rests on slender aluminum legs, a detail that underlines the vertical proportions of the design. Made in Italy.</p></div>
+        <div class="pie">
+          <span><b>191</b> palabras</span>
+          <span>conservación del original <b>100%</b></span>
+          <span><b>0</b> H2</span>
+        </div>
+      </div>
+    </div>
+    <div class="obs"><b>Observaciones del validador</b><br>Repetición de conceptos ya presentes en el párrafo original: 'slender aluminum legs' reitera 'aluminum base and legs'; 'the crisp surface of the ceramic top' y 'the warmth of the Canaletto walnut' reiteran los acabados ya listados; 'the smoked glass shelf keeps the interior visually light' duplica 'Height-adjustable smoked glass internal shelf'. El texto añadido es en gran medida una reformulación de specs existentes, no un aporte nuevo.<br>Keyword forzada en una frase de relleno: 'The name says it plainly: a slim sideboard of contained depth...' explica el nombre del producto en tono de folleto, recurso poco elegante para una pieza de lujo y con función puramente SEO.<br>'A contemporary madia' inserta el término italiano de forma algo abrupta en una frase en inglés; se entiende en el rubro, pero queda como calce léxico antes que como lenguaje natural de la marca.<br>El primer párrafo quedó sobrecargado: se le encolaron tres oraciones de copy comercial a un bloque que era puramente descriptivo-técnico, perdiendo el ritmo pausado del original.</div>
+    <div class="pie">
+      <span>costo de esta ficha <b>US$ 0.0360</b></span>
+      <span>21,784 tokens entrada · 27,109 salida</span>
+      <span>2 pase(s) de validación</span>
+      <span><a href="https://cassoni.com/product/cas-si-slim-sideboard-01/" target="_blank" rel="noopener">ver ficha en el sitio</a></span>
+    </div>
+  </div>
+</article>
+<article class="ficha">
+  <div class="fhead">
+    <div class="thumb ph" aria-hidden="true">4</div>
+    <div class="meta">
+      <h3>07 · Tucroma Armchair</h3>
+      <div class="sub">Office Chairs &amp; Armchairs, Chairs &amp; Armchairs · 4 Mariani</div>
+    </div>
+    <span class="pill ok">Aprobada por el validador</span>
+  </div>
+  <div class="fbody">
+    <div class="entra">
+      <div class="b">
+        <div class="k">Consulta que la ficha recibe</div>
+        <div class="v">tucroma chair</div>
+        <div class="x">posición 7.3 · 408 impresiones · 9 clics</div>
+      </div>
+      <div class="b">
+        <div class="k">Atributos reales que se usaron</div>
+        <div class="v" style="font-size:.84rem">3 campos</div>
+        <div class="x">de la ficha en WooCommerce</div>
+      </div>
+      <div class="b">
+        <div class="k">Oportunidad</div>
+        <div class="v">materialize_demand</div>
+        <div class="x">score 71/100</div>
+      </div>
+    </div>
+    <div class="antesdespues">
+      <div class="col old">
+        <h4>Antes</h4>
+        <div class="titulo">Tucroma Armchair</div>
+        <div class="texto"><p>Tucroma Armchair stands out for its linear and at the same time innovative shape. The simplicity of the steel tubular frame, available in various elegant finishes, gives to the shape an effect of continuity in the lines and big comfort in the seating. The seat and back cushions covered in fabric or leather, are fixed one to the other through two large straps of saddle leather. For its essentiality, Tucroma is perfect either in professional and residential environments, providing unique comfort and style. Made in Italy.</p>
+</div>
+        <div class="pie"><span><b>86</b> palabras</span></div>
+      </div>
+      <div class="col new">
+        <h4>Después</h4>
+        <div class="titulo">Tucroma Chair by 4 Mariani</div>
+        <div class="texto"><p>Tucroma Armchair stands out for its linear and at the same time innovative shape. The simplicity of the steel tubular frame, available in various elegant finishes, gives to the shape an effect of continuity in the lines and big comfort in the seating. The seat and back cushions covered in fabric or leather, are fixed one to the other through two large straps of saddle leather. For its essentiality, Tucroma is perfect either in professional and residential environments, providing unique comfort and style. Made in Italy.</p>
+<h2>Contemporary Office Armchair</h2>
+<p>Designed by Guido Faleschini, the <strong>sled base armchair</strong> rests on a continuous metal structure that lightens its presence in the room, while the armrests and the regular backrest height define a composed, upright posture. With a leather cover, the piece reads as an <strong>Italian leather armchair</strong>, the upholstery and the frame meeting in a single, quiet profile. The available finishes of the frame allow the piece to be calibrated to the surrounding palette, and the sober line of the back makes it easy to place in series, in a waiting area or around a meeting table. The sled profile keeps the footprint visually light, so the piece can be repeated through a room without weighing on the overall layout.</p></div>
+        <div class="pie">
+          <span><b>209</b> palabras</span>
+          <span>conservación del original <b>100%</b></span>
+          <span><b>1</b> H2</span>
+        </div>
+      </div>
+    </div>
+    <div class="obs"><b>Observaciones del validador</b><br>Redundancia conceptual dentro del párrafo nuevo: la idea de 'ligereza visual' de la base sled se enuncia dos veces ('lightens its presence in the room' / 'keeps the footprint visually light') y la idea de repetición en serie aparece también duplicada ('place in series, in a waiting area or around a meeting table' / 'can be repeated through a room without weighing on the overall layout'). Es repetición interna, no del texto original, pero conviene condensarla.<br>El H1 pasó de 'Tucroma Armchair' a 'Tucroma Chair by 4 Mariani': sigue siendo descriptivo y el keyword entra de forma natural, pero 'Chair' es más genérico que 'Armchair' en un producto con armrests y difiere del slug/URL (tucroma-armchair). Cambio menor, no bloqueante.<br>El H2 'Contemporary Office Armchair' replica casi literalmente la Collection ('New Contemporary Office Collection') y la categoría; roza el relleno de keyword aunque sin sonar antinatural.</div>
+    <div class="pie">
+      <span>costo de esta ficha <b>US$ 0.0178</b></span>
+      <span>17,463 tokens entrada · 11,167 salida</span>
+      <span>2 pase(s) de validación</span>
+      <span><a href="https://cassoni.com/product/cas-i4m-tucroma-armchair/" target="_blank" rel="noopener">ver ficha en el sitio</a></span>
+    </div>
+  </div>
+</article>
+<article class="ficha">
+  <div class="fhead">
+    <div class="thumb ph" aria-hidden="true">T</div>
+    <div class="meta">
+      <h3>08 · Cruise Sofa</h3>
+      <div class="sub">Sofas &amp; Sectionals · Talenti</div>
+    </div>
+    <span class="pill rej">Rechazada por el validador</span>
+  </div>
+  <div class="fbody">
+    <div class="entra">
+      <div class="b">
+        <div class="k">Consulta que la ficha recibe</div>
+        <div class="v">cruise couch</div>
+        <div class="x">posición 4.5 · 822 impresiones · 3 clics</div>
+      </div>
+      <div class="b">
+        <div class="k">Atributos reales que se usaron</div>
+        <div class="v" style="font-size:.84rem">8 campos</div>
+        <div class="x">de la ficha en WooCommerce</div>
+      </div>
+      <div class="b">
+        <div class="k">Oportunidad</div>
+        <div class="v">materialize_demand</div>
+        <div class="x">score 78/100</div>
+      </div>
+    </div>
+    <div class="antesdespues">
+      <div class="col old">
+        <h4>Antes</h4>
+        <div class="titulo">Cruise Sofa</div>
+        <div class="texto"><p>The exclusive three seater sofa of the refined Cruise teak collection is created with a nautical and nature inspired style. Indeed, the high-end structure is entirely realized in teak wood, the use of synthetic rope is reserved to the armrests and backrest and the cushions are made with weather resistant fabrics, making the product perfect for outdoor living areas. Here you have a stylish Italian furniture ideal for relaxing moments outside.Made in Italy.</p>
+</div>
+        <div class="pie"><span><b>73</b> palabras</span></div>
+      </div>
+      <div class="col new">
+        <h4>Después</h4>
+        <div class="titulo">Cruise Couch Teak Outdoor</div>
+        <div class="texto"><p>The exclusive three seater sofa of the refined Cruise teak collection is created with a nautical and nature inspired style. Indeed, the high-end structure is entirely realized in teak wood, the use of synthetic rope is reserved to the armrests and backrest and the cushions are made with weather resistant fabrics, making the product perfect for outdoor living areas. Here you have a stylish Italian furniture ideal for relaxing moments outside. Made in Italy.</p>
+<h2>Teak Wood Sofa for Outdoor Living</h2>
+<p>Designed by Ludovica + Roberto Palomba for the New Outdoor Collection, the cruise couch follows the straight silhouette with armrests that defines the series, holding a conversation area together without raising its voice. The teak outdoor sofa is conceived for continuity between interior and exterior, and its sober geometry suits private residences as much as contract projects, where a single piece is asked to set the character of the space. Precisely detailed and discreet in proportion, it is a finely resolved interpretation of Italian outdoor seating.</p></div>
+        <div class="pie">
+          <span><b>166</b> palabras</span>
+          <span>conservación del original <b>100%</b></span>
+          <span><b>1</b> H2</span>
+        </div>
+      </div>
+    </div>
+    <div class="obs"><b>Observaciones del validador</b><br>Keyword 'cruise furniture' ausente: solo se incorporó 'cruise couch' (H1 y cuerpo); la segunda keyword obligatoria no aparece en ningún lado.<br>H1 'Cruise Couch Teak Outdoor' suena a acumulación de keywords (sustantivos yuxtapuestos sin conector) y pierde naturalidad descriptiva frente al original 'Cruise Sofa'; además abandona el término 'Sofa' que es el que usa la categoría (Sofas &amp; Sectionals).<br>Repetición de conceptos ya presentes en el párrafo original: teak ('entirely realized in teak wood' → 'The teak outdoor sofa'), outdoor living ('perfect for outdoor living areas' → 'Teak Wood Sofa for Outdoor Living'), armrests ('reserved to the armrests' → 'straight silhouette with armrests') e italiano ('stylish Italian furniture' → 'Italian outdoor seating'). El bloque nuevo aporta poco vocabulario nuevo y recicla el del original.<br>El H2 'Teak Wood Sofa for Outdoor Living' duplica casi literalmente el concepto 'outdoor living areas' del primer párrafo, reforzando la redundancia.</div>
+    <div class="pie">
+      <span>costo de esta ficha <b>US$ 0.0214</b></span>
+      <span>8,595 tokens entrada · 16,467 salida</span>
+      <span>2 pase(s) de validación</span>
+      <span><a href="https://cassoni.com/product/cas-tal-cruise-teak-sofa-01/" target="_blank" rel="noopener">ver ficha en el sitio</a></span>
+    </div>
+  </div>
+</article>
+<article class="ficha">
+  <div class="fhead">
+    <div class="thumb ph" aria-hidden="true">R</div>
+    <div class="meta">
+      <h3>09 · Club Sofa</h3>
+      <div class="sub">Sofas &amp; Sectionals · Rugiano</div>
+    </div>
+    <span class="pill ok">Aprobada por el validador</span>
+  </div>
+  <div class="fbody">
+    <div class="entra">
+      <div class="b">
+        <div class="k">Consulta que la ficha recibe</div>
+        <div class="v">club sofa</div>
+        <div class="x">posición 7.5 · 1,360 impresiones · 0 clics</div>
+      </div>
+      <div class="b">
+        <div class="k">Atributos reales que se usaron</div>
+        <div class="v" style="font-size:.84rem">2 campos</div>
+        <div class="x">de la ficha en WooCommerce</div>
+      </div>
+      <div class="b">
+        <div class="k">Oportunidad</div>
+        <div class="v">materialize_demand</div>
+        <div class="x">score 80/100</div>
+      </div>
+    </div>
+    <div class="antesdespues">
+      <div class="col old">
+        <h4>Antes</h4>
+        <div class="titulo">Club Sofa</div>
+        <div class="texto"><p>This is a designer Italian Sofa, part of the exclusive Club collection. It stands out for the innovative structure created by refined brushed brass or bronze drawn tubes that, combined with the upholstered leather or fabric, create a stylish pattern. A high-end Glamour furniture, ideal to fit in any sophisticated living area.Made in Italy.</p>
+</div>
+        <div class="pie"><span><b>54</b> palabras</span></div>
+      </div>
+      <div class="col new">
+        <h4>Después</h4>
+        <div class="titulo">Rugiano Club Sofa</div>
+        <div class="texto"><p>This is a designer Italian Sofa, part of the exclusive Club collection. It stands out for the innovative structure created by refined brushed brass or bronze drawn tubes that, combined with the upholstered leather or fabric, create a stylish pattern. A high-end Glamour furniture, ideal to fit in any sophisticated living area. Made in Italy.</p>
+<p>The brushed brass frame is the signature of this club sofa: slender drawn tubes outline the back and the armrests, holding the seat within a light, continuous graphic line. The straight silhouette keeps the proportions sober, letting the metal detailing stand out against the upholstery. Fabric or leather upholstery can be specified to suit the palette of the room, from warm neutral tones to deeper, more textured covers.</p>
+<p>Conceived as glamour furniture for residential projects and hospitality lounges, the piece sits naturally in contemporary living rooms as well as in more classic settings, where a measured decorative accent is required. Its presence is discreet yet distinct, and the combination of drawn metal and soft padding keeps the volume balanced from every angle.</p></div>
+        <div class="pie">
+          <span><b>177</b> palabras</span>
+          <span>conservación del original <b>100%</b></span>
+          <span><b>0</b> H2</span>
+        </div>
+      </div>
+    </div>
+    <div class="obs"><b>Observaciones del validador</b><br>Repetición parcial de conceptos ya presentes en el párrafo original: la idea de 'glamour furniture' y la de 'ubicarse en living sofisticado' se reformulan en el segundo párrafo añadido ('Conceived as glamour furniture... contemporary living rooms... more classic settings'), y la disyuntiva 'leather or fabric' del original se repite como 'Fabric or leather upholstery can be specified'. No es grave, pero añade poco valor nuevo.<br>El keyword 'club sofa' aparece una sola vez y de forma aceptable, aunque algo genérica ('this club sofa'); no llega a sonar forzado.</div>
+    <div class="pie">
+      <span>costo de esta ficha <b>US$ 0.0068</b></span>
+      <span>7,445 tokens entrada · 5,454 salida</span>
+      <span>1 pase(s) de validación</span>
+      <span><a href="https://cassoni.com/product/cas-rug-club-sofa-01/" target="_blank" rel="noopener">ver ficha en el sitio</a></span>
+    </div>
+  </div>
+</article>
+<article class="ficha">
+  <div class="fhead">
+    <div class="thumb ph" aria-hidden="true">R</div>
+    <div class="meta">
+      <h3>10 · Floyd Nightstand</h3>
+      <div class="sub">Nightstands &amp; Dressers · Rugiano</div>
+    </div>
+    <span class="pill ok">Aprobada por el validador</span>
+  </div>
+  <div class="fbody">
+    <div class="entra">
+      <div class="b">
+        <div class="k">Consulta que la ficha recibe</div>
+        <div class="v">floyd nightstand</div>
+        <div class="x">posición 4.1 · 208 impresiones · 2 clics</div>
+      </div>
+      <div class="b">
+        <div class="k">Atributos reales que se usaron</div>
+        <div class="v" style="font-size:.84rem">2 campos</div>
+        <div class="x">de la ficha en WooCommerce</div>
+      </div>
+      <div class="b">
+        <div class="k">Oportunidad</div>
+        <div class="v">materialize_demand</div>
+        <div class="x">score 72/100</div>
+      </div>
+    </div>
+    <div class="antesdespues">
+      <div class="col old">
+        <h4>Antes</h4>
+        <div class="titulo">Floyd Nightstand</div>
+        <div class="texto"><p>Crafted by the masters of high-end Italian glamour at Rugiano, the Floyd Nightstand is an elite bedside masterpiece, perfectly suited for palatial master bedrooms, upscale penthouse suites, and luxury boutique hotel chambers. The piece is defined by a pure, compact cylindrical volume entirely clad in premium leather with fine visible stitching that highlights its round silhouette. It reflects a luxury lifestyle that delights in multi-tier architectural detail; a dramatic upper marble top acts as a canvas for striking organic veining, while the open understructure reveals a calibrated interplay of solids and voids featuring a matching second marble shelf—all bound together by a precision bronzed metal framework that integrates a handle-free, seamless storage drawer. Made in Italy.</p>
+</div>
+        <div class="pie"><span><b>116</b> palabras</span></div>
+      </div>
+      <div class="col new">
+        <h4>Después</h4>
+        <div class="titulo">Floyd Nightstand by Rugiano</div>
+        <div class="texto"><p>Crafted by the masters of high-end Italian glamour at Rugiano, the Floyd Nightstand is an elite bedside masterpiece, perfectly suited for palatial master bedrooms, upscale penthouse suites, and luxury boutique hotel chambers. The piece is defined by a pure, compact cylindrical volume entirely clad in premium leather with fine visible stitching that highlights its round silhouette. It reflects a luxury lifestyle that delights in multi-tier architectural detail; a dramatic upper marble top acts as a canvas for striking organic veining, while the open understructure reveals a calibrated interplay of solids and voids featuring a matching second marble shelf—all bound together by a precision bronzed metal framework that integrates a handle-free, seamless storage drawer. Made in Italy.</p>
+<h2>A Cylindrical Nightstand in Leather and Stone</h2>
+<p>The composition is deliberately quiet: the round volume reads as a sculptural presence, a softer counterpoint to the linear geometries that surround it. What distinguishes the piece is the dialogue of materials — the warmth of the hide against the cool veining of the stone, mediated by the dry lustre of the bronzed metal, with every transition resolved through the quiet precision of Italian craftsmanship. The curve invites the hand as much as the eye, and glamour is entrusted to proportion and finish rather than applied ornament. Within the New RUGIANO Collection, this leather bedside table stands as a study in restraint.</p></div>
+        <div class="pie">
+          <span><b>225</b> palabras</span>
+          <span>conservación del original <b>100%</b></span>
+          <span><b>1</b> H2</span>
+        </div>
+      </div>
+    </div>
+    <div class="obs"><b>Observaciones del validador</b><br>Redundancia leve: el nuevo párrafo retoma conceptos ya presentes en la descripción original (volumen cilíndrico/redondo, cuero, veta de mármol, metal bronceado, craftsmanship italiano). Aporta valor por el enfoque estético —'glamour entrusted to proportion'— pero no introduce información nueva (podría haberse apoyado en el dato oficial de medida Ø21"5/8 x 21"1/4H o en la colección).<br>El H1 se amplió a 'Floyd Nightstand by Rugiano': sigue siendo descriptivo y no genera problema, solo se deja constancia del cambio.</div>
+    <div class="pie">
+      <span>costo de esta ficha <b>US$ 0.0213</b></span>
+      <span>10,959 tokens entrada · 15,599 salida</span>
+      <span>2 pase(s) de validación</span>
+      <span><a href="https://cassoni.com/product/exquisite-high-end-floyd-nightstand-by-rugiano/" target="_blank" rel="noopener">ver ficha en el sitio</a></span>
+    </div>
+  </div>
+</article>
+</section>
+
+<section>
+  <div class="eyebrow">Límites</div>
+  <h2>Lo que el agente no hace</h2>
+  <div class="card" style="margin-top:14px">
+    <ul class="limites" style="margin-left:18px;color:var(--muted);font-size:.9rem">
+      <li>No edita la descripción corta, el meta title, la meta description ni los ALT:
+        esos campos son del flujo de n8n. Un solo escritor por campo.</li>
+      <li>No inventa medidas, materiales ni colecciones: si un dato no está en el texto
+        original o en los atributos de la ficha, el validador lo rebota.</li>
+      <li>No reescribe la descripción: la edita. La conservación mínima exigida es 80% y
+        se mide en código.</li>
+      <li>No publica. Lo que ves acá vive en la base interna hasta que el equipo SEO lo apruebe.</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Siguiente paso</div>
+  <h2>Tres preguntas concretas</h2>
+  <div class="preg">1. De las diez, ¿cuáles publicarías tal como están y cuáles no? Con el número alcanza.</div>
+  <div class="preg">2. ¿La longitud final te cierra? Hoy las fichas originales tienen 54 a 269 palabras
+    y la regla pide 150-300: en las cortas el agente tiene que agregar texto. ¿Preferís que se
+    quede más corto antes que sumar párrafos?</div>
+  <div class="preg">3. ¿El H1 con la marca adelante es el formato que querés
+    (<i>Rugiano Club Sofa</i>) o preferís el nombre del producto primero?</div>
+</section>
+
+<footer>
+  Cassoni · agente SEO · muestra generada desde la base interna de trazas.
+  El costo se calcula con los precios oficiales de DeepSeek Flash (entrada US$ 0,30/M,
+  salida US$ 1,20/M, tarifa peak) sobre los tokens que devuelve la API en cada llamada.
+</footer>
+
+</div>
+</body>
+</html>

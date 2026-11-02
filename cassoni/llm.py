@@ -10,6 +10,7 @@ from typing import Optional
 import httpx
 
 from .config import Config
+from . import costos
 
 log = logging.getLogger("cassoni.llm")
 
@@ -22,6 +23,11 @@ class LLMClient:
     def __init__(self, config: Config, client: Optional[httpx.Client] = None):
         self.cfg = config
         self._http = client or httpx.Client(timeout=90)
+        self.usage: list[dict] = []      # una entrada por llamada (usage crudo)
+
+    def consumo(self) -> dict:
+        """Tokens y USD acumulados en este cliente (todas sus llamadas)."""
+        return costos.sumar([costos.costo_de_usage(u) for u in self.usage])
 
     def ping(self) -> int:
         """GET /models sin gastar tokens. Devuelve el código HTTP."""
@@ -44,6 +50,8 @@ class LLMClient:
             r = self._http.post(url, json=body, headers=headers)
             r.raise_for_status()
             data = r.json()
+            if isinstance(data.get("usage"), dict):
+                self.usage.append(data["usage"])
             return data["choices"][0]["message"]["content"].strip()
         except (httpx.HTTPError, KeyError, IndexError) as exc:
             raise LLMError(f"Fallo LLM ({model}): {exc}") from exc

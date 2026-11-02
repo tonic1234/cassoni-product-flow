@@ -126,3 +126,53 @@ class TestContratoViejo:
         ini = dt.date.fromisoformat(body["startDate"])
         fin = dt.date.fromisoformat(body["endDate"])
         assert (fin - ini).days == 90
+
+
+class _AnalyticsInestable:
+    """Falla con timeout las primeras N veces y después responde."""
+
+    def __init__(self, fallos, payload):
+        self.fallos = fallos
+        self.payload = payload
+        self.llamadas = 0
+
+    def query(self, siteUrl=None, body=None):
+        self.llamadas += 1
+        if self.llamadas <= self.fallos:
+            raise TimeoutError("The read operation timed out")
+        return _Req(self.payload)
+
+
+def test_un_timeout_transitorio_se_reintenta(tmp_path):
+    """Lote real del 2-nov: un timeout de GSC perdió una ficha entera
+    ('GSC: The read operation timed out'). Un lote nocturno no puede perder
+    fichas por un corte de red de dos segundos."""
+    cli = _cli(tmp_path, [])
+    a = _AnalyticsInestable(
+        2, {"rows": [_fila(["https://cassoni.com/product/a/"], impressions=500)]})
+    cli.service = type("S", (), {})()
+    cli.service.searchanalytics = lambda: a
+    out = cli.pages(days=90)
+    assert len(out) == 1
+    assert a.llamadas == 3
+
+
+def test_un_403_no_se_reintenta(tmp_path):
+    class _Prohibido:
+        def __init__(self):
+            self.llamadas = 0
+
+        def query(self, siteUrl=None, body=None):
+            self.llamadas += 1
+            err = Exception("403 forbidden")
+            err.resp = type("R", (), {"status": 403})()
+            raise err
+
+    cli = _cli(tmp_path, [])
+    p = _Prohibido()
+    cli.service = type("S", (), {})()
+    cli.service.searchanalytics = lambda: p
+    import pytest
+    with pytest.raises(Exception):
+        cli.pages(days=90)
+    assert p.llamadas == 1          # un 403 no se arregla reintentando

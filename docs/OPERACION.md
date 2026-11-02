@@ -90,3 +90,37 @@ no lo es.
 | Todo `rejected` | la ficha no tiene insumo para llegar a 150 palabras, o el validador ve datos que no están en la ficha | leer `validation_result.issues`; ver D-008 |
 | `failed: editor LLM` | cuota, clave o timeout del proveedor | revisar `--preflight` (ping a `/models`) |
 | WooCommerce `401` | clave sin permiso de escritura | pedir clave read+write |
+
+## Costos (medidos, no estimados)
+
+Cada llamada al LLM devuelve su `usage`; el agente lo guarda por ficha
+(`llm_tokens_in`, `llm_tokens_out`, `llm_cost`) y muestra el total de la corrida al
+terminar:
+
+```
+Costo LLM: US$ 0.2071 · 42 llamadas · 96.400 tokens entrada · 21.300 salida
+```
+
+El cálculo usa los precios oficiales de `deepseek-flash` (USD por 1M tokens, tarifa
+**peak**, el peor caso): entrada cache miss **0,30**, cache hit **0,006**, salida
+**1,20**. Fuente: `api-docs.deepseek.com/quick_start/pricing`. Los precios viven en
+`cassoni/costos.py` con tests propios.
+
+GSC y el catálogo no tienen costo. DataForSEO sólo gasta si se activa el mapper de
+volumen, que hoy el CLI no usa.
+
+## Muestra para validar con el cliente
+
+```bash
+# 1) correr las fichas elegidas (dry-run: no toca el sitio)
+./venv/bin/python -m cassoni.cli --env prod --urls muestra.txt --batch 10 --db sqlite:///muestra.db
+
+# 2) exportar la base interna a JSON auditable
+./venv/bin/python tools/exportar_muestra.py --db sqlite:///muestra.db --out muestra.json
+
+# 3) generar la página de revisión (antes/después, de dónde salió cada dato, costo)
+./venv/bin/python tools/generar_muestra.py --json muestra.json --out index.html
+```
+
+La página no se publica sola: se copia al webroot y se le agrega el handle de Caddy
+con `Cache-Control: no-cache` (ver `case-web-publishing`).

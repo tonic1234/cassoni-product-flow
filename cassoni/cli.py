@@ -196,7 +196,18 @@ def main(argv=None) -> int:
     results = [pipe.process(u) for u in urls[:limit]]
     _print_results(results)
     print("\nResumen DB:", pipe.db.summary())
+    _print_costo(pipe)
     return 0
+
+
+def _print_costo(pipe):
+    """Costo real de la corrida (tokens de la API x precio oficial)."""
+    fn = getattr(pipe.llm, "consumo", None)
+    if not callable(fn):
+        return
+    c = fn()
+    print(f"\nCosto LLM: US$ {c.get('usd', 0):.4f} · {c.get('llamadas', 0)} llamadas · "
+          f"{c.get('tokens_in', 0):,} tokens entrada · {c.get('tokens_out', 0):,} salida")
 
 
 def _print_results(results):

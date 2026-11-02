@@ -151,6 +151,7 @@ class Pipeline:
 
         row_id = self.db.enqueue(url, slug)
         self._log_state(row_id, url)
+        consumo_0 = self._consumo()
 
         # 1) ficha WooCommerce
         try:
@@ -297,8 +298,12 @@ class Pipeline:
         fila_kw = next((k for k in kw_rows
                         if (k.get("keyword") or "").strip().lower()
                         == (principal or "").strip().lower()), None) or {}
+        consumo = self._delta_consumo(consumo_0)
         self.db.record(
             row_id,
+            llm_cost=f"{consumo['usd']:.6f}" if consumo["llamadas"] else None,
+            llm_tokens_in=consumo["tokens_in"] or None,
+            llm_tokens_out=consumo["tokens_out"] or None,
             baseline_keyword=principal,
             baseline_position=fila_kw.get("position"),
             baseline_impressions=fila_kw.get("impressions"),
@@ -328,6 +333,23 @@ class Pipeline:
             edited_h1=edited_final.get("h1", ""),
             edited_description=edited_final.get("description", ""),
             aprobado=val["aprobado"], aplicado=applied, wc_response=wc_resp)
+
+    def _consumo(self) -> dict:
+        """Consumo acumulado del cliente LLM (los fakes de test pueden no tenerlo)."""
+        fn = getattr(self.llm, "consumo", None)
+        if callable(fn):
+            try:
+                return dict(fn())
+            except Exception:
+                pass
+        return {"tokens_in": 0, "tokens_out": 0, "usd": 0.0, "llamadas": 0}
+
+    def _delta_consumo(self, antes: dict) -> dict:
+        ahora = self._consumo()
+        return {"tokens_in": int(ahora.get("tokens_in", 0)) - int(antes.get("tokens_in", 0)),
+                "tokens_out": int(ahora.get("tokens_out", 0)) - int(antes.get("tokens_out", 0)),
+                "usd": float(ahora.get("usd", 0.0)) - float(antes.get("usd", 0.0)),
+                "llamadas": int(ahora.get("llamadas", 0)) - int(antes.get("llamadas", 0))}
 
     def cfg_dfs_keep(self) -> int:
         return 10

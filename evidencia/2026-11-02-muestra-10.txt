@@ -1,0 +1,85 @@
+CASSonI pipeline | env=staging | dry_run=True
+  wc_base=https://cassoni.com
+2026-11-02 15:12:05,154 INFO cassoni.orchestrator: Descartadas 5 consultas que no son del producto (https://cassoni.com/product/anamon-outdoor-luxury-parasol-lamp-royal-botania/)
+2026-11-02 15:12:05,737 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 15:12:36,887 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 15:12:44,625 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 15:13:51,320 WARNING cassoni.llm: Content vacío en el intento 1 (max_tokens=12000) -> reintento con 24000
+2026-11-02 15:13:51,792 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 15:14:58,186 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 15:16:53,666 ERROR cassoni.orchestrator: FALLO https://cassoni.com/product/cas-mor-pebble-rubble-sofa-01/: GSC: The read operation timed out
+2026-11-02 15:18:09,506 INFO cassoni.orchestrator: Descartadas 2 consultas que no son del producto (https://cassoni.com/product/crystal-luxury-designer-side-table-glas-italia/)
+2026-11-02 15:18:09,530 WARNING cassoni.orchestrator: Faltan 1 candidatas con palabras distintas para completar 3 secundarias (https://cassoni.com/product/crystal-luxury-designer-side-table-glas-italia/) -> expansor pendiente
+2026-11-02 15:18:10,159 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 15:18:37,460 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 15:19:05,441 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 15:19:41,532 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 15:19:50,732 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 15:20:34,141 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 15:21:29,428 WARNING cassoni.orchestrator: Faltan 2 candidatas con palabras distintas para completar 3 secundarias (https://cassoni.com/product/cas-dvhc-hermes-lounge-chair-01/) -> expansor pendiente
+2026-11-02 15:21:29,871 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 15:22:00,600 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 15:23:01,198 INFO cassoni.orchestrator: Descartadas 2 consultas que no son del producto (https://cassoni.com/product/cas-si-slim-sideboard-01/)
+2026-11-02 15:23:01,210 WARNING cassoni.orchestrator: Faltan 1 candidatas con palabras distintas para completar 3 secundarias (https://cassoni.com/product/cas-si-slim-sideboard-01/) -> expansor pendiente
+2026-11-02 15:23:01,735 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 15:23:26,594 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 15:23:37,792 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 15:24:45,184 WARNING cassoni.llm: JSON inválido en el intento 1 (Unterminated string starting at: line 1 column 1893 (char 1892)) -> reintento con 24000 tokens
+2026-11-02 15:24:45,578 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 15:25:25,514 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 15:26:53,620 INFO cassoni.orchestrator: Descartadas 2 consultas que no son del producto (https://cassoni.com/product/cas-i4m-tucroma-armchair/)
+2026-11-02 15:26:53,623 WARNING cassoni.orchestrator: Faltan 2 candidatas con palabras distintas para completar 3 secundarias (https://cassoni.com/product/cas-i4m-tucroma-armchair/) -> expansor pendiente
+2026-11-02 15:26:54,063 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 15:27:21,429 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 15:27:33,805 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 15:27:45,814 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 15:28:07,937 INFO cassoni.orchestrator: Descartadas 1 consultas que no son del producto (https://cassoni.com/product/cas-tal-cruise-teak-sofa-01/)
+2026-11-02 15:28:07,937 WARNING cassoni.orchestrator: Faltan 1 candidatas con palabras distintas para completar 3 secundarias (https://cassoni.com/product/cas-tal-cruise-teak-sofa-01/) -> expansor pendiente
+2026-11-02 15:28:08,263 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 15:28:43,571 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 15:28:51,417 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 15:29:32,355 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 15:29:40,112 WARNING cassoni.orchestrator: Faltan 2 candidatas con palabras distintas para completar 3 secundarias (https://cassoni.com/product/cas-rug-club-sofa-01/) -> expansor pendiente
+2026-11-02 15:29:40,510 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 15:30:03,433 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 15:30:45,261 INFO cassoni.orchestrator: Descartadas 4 consultas que no son del producto (https://cassoni.com/product/exquisite-high-end-floyd-nightstand-by-rugiano/)
+2026-11-02 15:30:45,262 WARNING cassoni.orchestrator: Faltan 2 candidatas con palabras distintas para completar 3 secundarias (https://cassoni.com/product/exquisite-high-end-floyd-nightstand-by-rugiano/) -> expansor pendiente
+2026-11-02 15:30:45,759 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 15:31:17,199 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 15:31:26,113 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-11-02 15:32:08,956 INFO httpx: HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+
+Resultados: {'processed': 7, 'failed': 1, 'rejected': 2}
+  ✓ processed https://cassoni.com/product/anamon-outdoor-luxury-parasol-lamp-royal-botania/
+       H1 → Royal Botania Anamon Outdoor Parasol
+       (dry_run (sin tocar WooCommerce))
+  ⚠ failed    https://cassoni.com/product/cas-mor-pebble-rubble-sofa-01/
+       (GSC: The read operation timed out)
+  ✓ processed https://cassoni.com/product/crystal-luxury-designer-side-table-glas-italia/
+       H1 → Glas Italia Crystal Side Table
+       (dry_run (sin tocar WooCommerce))
+  ✓ processed https://cassoni.com/product/illan-luxury-wall-lamp-luceplan/
+       H1 → Illan Lamp by Luceplan | Wall Sconce
+       (dry_run (sin tocar WooCommerce))
+  ✓ processed https://cassoni.com/product/cas-dvhc-hermes-lounge-chair-01/
+       H1 → Hermes Lounge Chair
+       (dry_run (sin tocar WooCommerce))
+  ✗ rejected  https://cassoni.com/product/cas-si-slim-sideboard-01/
+       H1 → Slim Sideboard by Sovet Italia
+       (rechazada por el validador: Repetición de conceptos ya presentes en el párrafo original: 'slender aluminum legs' reitera 'aluminum base and legs'; 'the crisp surface of the ceramic top' y 'the warmth of the Canaletto walnut' reiteran los acabados ya listados; 'the smoked glass shelf keeps the interior visually light' duplica 'Height-adjustable smoked glass internal shelf'. El texto añadido es en gran medida una reformulación de specs existentes, no un aporte nuevo.; Keyword forzada en una frase de relleno: 'The name says it plainly: a slim sideboard of contained depth...' explica el nombre del producto en tono de folleto, recurso poco elegante para una pieza de lujo y con función puramente SEO.; 'A contemporary madia' inserta el término italiano de forma algo abrupta en una frase en inglés; se entiende en el rubro, pero queda como calce léxico antes que como lenguaje natural de la marca.)
+  ✓ processed https://cassoni.com/product/cas-i4m-tucroma-armchair/
+       H1 → Tucroma Chair by 4 Mariani
+       (dry_run (sin tocar WooCommerce))
+  ✗ rejected  https://cassoni.com/product/cas-tal-cruise-teak-sofa-01/
+       H1 → Cruise Couch Teak Outdoor
+       (rechazada por el validador: Keyword 'cruise furniture' ausente: solo se incorporó 'cruise couch' (H1 y cuerpo); la segunda keyword obligatoria no aparece en ningún lado.; H1 'Cruise Couch Teak Outdoor' suena a acumulación de keywords (sustantivos yuxtapuestos sin conector) y pierde naturalidad descriptiva frente al original 'Cruise Sofa'; además abandona el término 'Sofa' que es el que usa la categoría (Sofas & Sectionals).; Repetición de conceptos ya presentes en el párrafo original: teak ('entirely realized in teak wood' → 'The teak outdoor sofa'), outdoor living ('perfect for outdoor living areas' → 'Teak Wood Sofa for Outdoor Living'), armrests ('reserved to the armrests' → 'straight silhouette with armrests') e italiano ('stylish Italian furniture' → 'Italian outdoor seating'). El bloque nuevo aporta poco vocabulario nuevo y recicla el del original.)
+  ✓ processed https://cassoni.com/product/cas-rug-club-sofa-01/
+       H1 → Rugiano Club Sofa
+       (dry_run (sin tocar WooCommerce))
+  ✓ processed https://cassoni.com/product/exquisite-high-end-floyd-nightstand-by-rugiano/
+       H1 → Floyd Nightstand by Rugiano
+       (dry_run (sin tocar WooCommerce))
+
+Resumen DB: {'total': 10, 'processed': 7, 'skipped': 0, 'failed': 1, 'rejected': 2, 'in_queue': 0, 'reviews': 0}
+
+Costo LLM: US$ 0.1886 · 32 llamadas · 104,282 tokens entrada · 139,848 salida

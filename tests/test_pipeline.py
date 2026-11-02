@@ -339,3 +339,40 @@ def test_e2e_si_todas_las_consultas_son_ajenas_se_saltea(tmp_path):
     assert res.status == "skipped"
     assert "del producto" in res.reason
     assert pipe.llm.calls == 0
+
+
+class _FakeLLMConCosto(FakeLLM):
+    """Como el cliente real: acumula usage y expone consumo()."""
+
+    def __init__(self):
+        super().__init__()
+        self._consumo = {"tokens_in": 0, "tokens_out": 0, "usd": 0.0, "llamadas": 0}
+
+    def complete_json(self, system, user, **kw):
+        out = super().complete_json(system, user, **kw)
+        self._consumo["tokens_in"] += 4200
+        self._consumo["tokens_out"] += 900
+        self._consumo["usd"] += 0.0023
+        self._consumo["llamadas"] += 1
+        return out
+
+    def consumo(self):
+        return dict(self._consumo)
+
+
+def test_e2e_registra_tokens_y_costo_de_la_ficha(tmp_path):
+    """Sin costo por ficha no se puede decidir un lote de 13.000."""
+    cfg = _cfg(tmp_path, dry_run=True)
+    from cassoni.db import DB
+    from cassoni.editor import Editor
+
+    db = DB(cfg)
+    llm = _FakeLLMConCosto()
+    pipe = Pipeline(cfg, db=db, woo=FakeWoo(), gsc=FakeGSC(), llm=llm,
+                    editor=Editor(cfg, llm), dry_run=True)
+    res = pipe.process("https://x.com/product/cas-cprn-pedro-sofa-01/")
+    assert res.status == "processed"
+    row = db.get_state(res.url)
+    assert row.llm_tokens_in == 8400          # editor + validador
+    assert row.llm_tokens_out == 1800
+    assert float(row.llm_cost) > 0

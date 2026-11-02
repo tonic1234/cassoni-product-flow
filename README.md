@@ -53,6 +53,23 @@ credenciales ver [docs/OPERACION.md](docs/OPERACION.md).
 | Escritura en producción | ⛔ **no ejecutada**: el primer lote debe aprobarlo el equipo SEO |
 | Cron / timer | ⛔ **no instalado**: el agente corre a mano |
 
+## Muestra para validar con el cliente
+
+Diez fichas reales elegidas por insumo (las que tienen material para escribir sin
+inventar), procesadas en seco y publicadas para revisión:
+
+**https://tarsterminal.duckdns.org/muestra-cassoni/**
+
+```bash
+./venv/bin/python -m cassoni.cli --env prod --urls muestra.txt --batch 10 --db sqlite:///muestra.db
+./venv/bin/python tools/exportar_muestra.py --db sqlite:///muestra.db --out muestra.json
+./venv/bin/python tools/generar_muestra.py --json muestra.json --out index.html
+```
+
+Medido en esa corrida: **8 de 10** aprobadas por el validador, **US$ 0,0196 por ficha**
+(tokens reales), 1.255 → 2.024 palabras. Las dos rechazadas quedan en la página con el
+motivo: un rechazo honesto vale más que una muestra toda verde.
+
 ## Mapa del repo
 
 ```

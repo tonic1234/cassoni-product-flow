@@ -1,0 +1,812 @@
+[
+  {
+    "url": "https://cassoni.com/product/anamon-outdoor-luxury-parasol-lamp-royal-botania/",
+    "slug": "anamon-outdoor-luxury-parasol-lamp-royal-botania",
+    "status": "processed",
+    "woo_id": 250191,
+    "nombre": "Anamon Sunshade",
+    "categorias": [
+      "Umbrellas & Sunshades"
+    ],
+    "marca": "Royal Botania",
+    "imagen": "",
+    "imagen_remota": "https://cassoni.com/wp-content/uploads/cache/thumbs_900x900/250283_cassoni-royal-botania-anamon-sunshade-01-img00.webp",
+    "imagen_error": "el CDN del sitio responde 403 a este servidor",
+    "atributos": [
+      "Style: Outdoor",
+      "Designer: Kris Van Puyvelde"
+    ],
+    "gsc": {
+      "keyword": "anamon",
+      "position": 5.986915887850468,
+      "impressions": 535,
+      "clicks": 4,
+      "ctr": 0.007476635514018692,
+      "opportunity": "materialize_demand",
+      "score": 74
+    },
+    "h1_antes": "Anamon Sunshade",
+    "h1_despues": "Royal Botania Anamon Outdoor Parasol",
+    "desc_antes": "<p style=\"text-align: center\"><strong>Anamon is not just another parasol – it redefines what an outdoor umbrella can be.</strong></p>\n<p style=\"text-align: center\">The Anamon is a visionary outdoor solution that redefines the concept of shade through \"organic engineering.\" Designed by Kris Van Puyvelde, this parasol mimics the graceful unfurling of a blooming flower, opening from the top down to reveal its canopy without disturbing nearby furniture. When closed, its minimalist vertical column hides all mechanics, doubling as a sleek, sculptural element for any high-end terrace or poolside.</p>\n<p style=\"text-align: center\">Engineered for both day and night, the Anamon provides cooling shade under the sun and transforms into a sculptural light source after dark. Its integrated warm white LED lighting is battery-powered, ensuring a clean look free of cables. With a focus on longevity, the design includes a protective top cap and a discreet internal drainage system to safeguard the mechanism from the elements.</p>\n<p>At the turn of a handle, the parasol seamlessly unfolds with a theatrical reveal, while the inner workings remain discreetly hidden. Call it organic engineering, inspired by the fluid, natural motion of tube-dwelling anemones.</p>\n<p style=\"text-align: center\">Once the sun sets, Anamon continues to shine. With the canopy tucked away, it transforms into a sculptural light source.</p>\n<p style=\"text-align: center\">When Anamon is not in use, the top cap clicks effortlessly into place, providing a sleek, polished finish and protecting the mechanism from rain, dust and debris – an especially useful feature in wet climates or during winter. Any water that does find its way inside is directed out through a discreet drainage system at the base – no build-up or mess.</p>\n",
+    "desc_despues": "<p style=\"text-align: center\"><strong>Anamon is not just another parasol – it redefines what an outdoor umbrella can be.</strong></p>\n<h2 style=\"text-align: center\">Organic Engineering</h2>\n<p style=\"text-align: center\">The Anamon is a visionary outdoor solution that redefines the concept of shade through \"organic engineering.\" Designed by Kris Van Puyvelde, this parasol mimics the graceful unfurling of a blooming flower, opening from the top down to reveal its canopy without disturbing nearby furniture. When closed, its minimalist vertical column hides all mechanics, doubling as a sleek, sculptural element for any high-end terrace or poolside. It is, in effect, a patio umbrella that retracts into pole form, with no folded canopy left on view. As a Royal Botania parasol, it is resolved with the same attention usually reserved for indoor furniture.</p>\n<h2 style=\"text-align: center\">Day and Night</h2>\n<p style=\"text-align: center\">Engineered for both day and night, the Anamon provides cooling shade under the sun and transforms into a sculptural light source after dark. Its integrated warm white LED lighting is battery-powered, ensuring a clean look free of cables.</p>\n<p>At the turn of a handle, the parasol seamlessly unfolds with a theatrical reveal, while the inner workings remain discreetly hidden. Call it organic engineering, inspired by the fluid, natural motion of tube-dwelling anemones.</p>\n<p style=\"text-align: center\">Once the sun sets, Anamon continues to shine. With the canopy tucked away, it transforms into a sculptural light source.</p>\n<p style=\"text-align: center\">When Anamon is not in use, the top cap clicks effortlessly into place, providing a sleek, polished finish and protecting the mechanism from rain, dust and debris – an especially useful feature in wet climates or during winter. Any water that does find its way inside is directed out through a discreet drainage system at the base – no build-up or mess.</p>",
+    "medido": {
+      "palabras_antes": 259,
+      "palabras_despues": 275,
+      "conservacion": 0.917,
+      "h2": 2
+    },
+    "keywords": [
+      {
+        "keyword": "anamon",
+        "clicks": 4,
+        "impressions": 535,
+        "position": 5.986915887850468,
+        "ctr": 0.007476635514018692,
+        "opportunity": "materialize_demand",
+        "opportunity_score": 74
+      },
+      {
+        "keyword": "patio umbrella that retracts into pole",
+        "clicks": 1,
+        "impressions": 2,
+        "position": 2.5,
+        "ctr": 0.5,
+        "opportunity": "hold_top",
+        "opportunity_score": 40
+      },
+      {
+        "keyword": "royal botania parasol",
+        "clicks": 0,
+        "impressions": 2,
+        "position": 2,
+        "ctr": 0,
+        "opportunity": "hold_top",
+        "opportunity_score": 40
+      }
+    ],
+    "validacion": {
+      "aprobado": true,
+      "issues": [
+        "Leve redundancia: la frase insertada «with no folded canopy left on view» repite el concepto ya expresado en la oración anterior («its minimalist vertical column hides all mechanics»). Es aceptable, pero roza la reformulación innecesaria.",
+        "El bloque «As a Royal Botania parasol, it is resolved with the same attention usually reserved for indoor furniture» es una inserción de marca algo explicativa; sostiene el tono de lujo pero se lee como añadido SEO más que como parte del relato original.",
+        "El término «patio umbrella» es de registro algo más comercial que «parasol»; convive bien por la aclaración «in effect», aunque baja mínimamente el registro."
+      ],
+      "keywords_presentes": [
+        "anamon",
+        "patio umbrella that retracts into pole",
+        "royal botania parasol"
+      ],
+      "tono_lujo": true,
+      "razon": "Las tres keywords se integran de forma gramatical y legible, sin forzado evidente ni pérdida del registro de lujo; el H1 sigue siendo descriptivo (marca + producto + categoría), el HTML está bien cerrado y no se añadieron datos inventados (el sistema de drenaje y el top cap ya figuraban en el original, y la ampliación final solo completa la frase truncada). Solo se señalan redundancias menores."
+    },
+    "intentos": 2,
+    "costo": {
+      "usd": 0.041454,
+      "tokens_in": 9811,
+      "tokens_out": 33378
+    },
+    "baseline": {
+      "posicion": 5.986915887850468,
+      "impresiones": 535,
+      "ventana": "2026-08-04..2026-11-02"
+    }
+  },
+  {
+    "url": "https://cassoni.com/product/cas-mor-pebble-rubble-sofa-01/",
+    "slug": "cas-mor-pebble-rubble-sofa-01",
+    "status": "processed",
+    "woo_id": 144419,
+    "nombre": "Pebble Rubble Sofa",
+    "categorias": [
+      "Sofas & Sectionals"
+    ],
+    "marca": "Moroso",
+    "imagen": "",
+    "imagen_remota": "https://cassoni.com/wp-content/uploads/cache/thumbs_900x900/144420_cas-mor-pebble-rubble-sofa-01-img01.webp",
+    "imagen_error": "el CDN del sitio responde 403 a este servidor",
+    "atributos": [
+      "Designer: Front",
+      "Style: Modern",
+      "Collection: New Brand! Discover MOROSO"
+    ],
+    "gsc": {
+      "keyword": "pebble sofa",
+      "position": 4.989266547406082,
+      "impressions": 559,
+      "clicks": 9,
+      "ctr": 0.016100178890876567,
+      "opportunity": "materialize_demand",
+      "score": 75
+    },
+    "h1_antes": "Pebble Rubble Sofa",
+    "h1_despues": "Pebble Sofa by Moroso | Pebble Rubble",
+    "desc_antes": "<p>The innovative Pebble Rubble design conveys a message that transcends the functions and qualities of a common seat. The most evident characteristic is the similarity of the upholstered volumes to those massive rocks, polished by the tireless rain and wind and cloaked by an organic or plant layer capable of softening its roughness and making the surfaces comfortable and welcoming. A scenic installation that doesn’t stop at simply simulating, but rests on a lengthy research during which the designers investigated the therapeutic benefits that nature has on people’s physical and mental health, as well as the cultural and psychological significance of natural environments, in particular those found in the designers’ native Sweden.</p>\n<p>These exclusive Italian sofas are composed of elements in polyurethane foam with differentiated density, covered with polyester fiber and with internal wooden structure. Backrests made with a lightweight composite structure in polymeric materials and polyurethane foam with a wooden base. Glides in black polypropylene screwed to the structure. The covers of this collection are offered in fabric and are not removable. Also optional ottomans and decorative cushions are offered to complement these versatile lounge chairs. Made in Italy.</p>\n",
+    "desc_despues": "<p>The innovative Pebble Rubble design conveys a message that transcends the functions and qualities of a common seat. The most evident characteristic is the similarity of the upholstered volumes to those massive rocks, polished by the tireless rain and wind and cloaked by an organic or plant layer capable of softening its roughness and making the surfaces comfortable and welcoming. A scenic installation that doesn’t stop at simply simulating, but rests on a lengthy research during which the designers investigated the therapeutic benefits that nature has on people’s physical and mental health, as well as the cultural and psychological significance of natural environments, in particular those found in the designers’ native Sweden. In the Pebble sofa, designed by Front for Moroso, that research takes the form of a modern organic design with a full fabric upholstery, proposed in several sizes and configurations.</p>\n<p>These exclusive Italian sofas are composed of elements in polyurethane foam with differentiated density, covered with polyester fiber and with internal wooden structure. Backrests made with a lightweight composite structure in polymeric materials and polyurethane foam with a wooden base. Glides in black polypropylene screwed to the structure. The covers of this collection are offered in fabric and are not removable. Also optional ottomans and decorative cushions are offered to complement these versatile lounge chairs. Made in Italy.</p>",
+    "medido": {
+      "palabras_antes": 190,
+      "palabras_despues": 220,
+      "conservacion": 1.0,
+      "h2": 0
+    },
+    "keywords": [
+      {
+        "keyword": "pebble sofa",
+        "clicks": 9,
+        "impressions": 559,
+        "position": 4.989266547406082,
+        "ctr": 0.016100178890876567,
+        "opportunity": "materialize_demand",
+        "opportunity_score": 75
+      }
+    ],
+    "validacion": {
+      "aprobado": true,
+      "issues": [
+        "La frase añadida retoma el término 'research' ya presente en el párrafo previo; funciona como transición, pero roza la repetición de concepto.",
+        "El H1 'Pebble Sofa by Moroso | Pebble Rubble' duplica 'Pebble' y puede leerse algo redundante; no obstante, sigue siendo descriptivo del producto y de la marca."
+      ],
+      "keywords_presentes": [
+        "pebble sofa"
+      ],
+      "tono_lujo": true,
+      "razon": "La edición conserva el registro de lujo y el relato de diseño original, incorpora 'pebble sofa' de forma natural tanto en el H1 como en el cuerpo, y los datos añadidos (tapizado en tela, varias medidas y configuraciones) coinciden con los atributos reales de la ficha; no hay HTML roto ni invención de precios, materiales o medidas."
+    },
+    "intentos": 1,
+    "costo": {
+      "usd": 0.007829,
+      "tokens_in": 8059,
+      "tokens_out": 6297
+    },
+    "baseline": {
+      "posicion": 4.989266547406082,
+      "impresiones": 559,
+      "ventana": "2026-08-04..2026-11-02"
+    }
+  },
+  {
+    "url": "https://cassoni.com/product/crystal-luxury-designer-side-table-glas-italia/",
+    "slug": "crystal-luxury-designer-side-table-glas-italia",
+    "status": "processed",
+    "woo_id": 213797,
+    "nombre": "Crystal Side Table",
+    "categorias": [
+      "Coffee & Side Tables"
+    ],
+    "marca": "Glas Italia",
+    "imagen": "",
+    "imagen_remota": "https://cassoni.com/wp-content/uploads/cache/thumbs_900x900/213800_cassoni-glas-italia-crystal-side-table-01-img01.webp",
+    "imagen_error": "el CDN del sitio responde 403 a este servidor",
+    "atributos": [
+      "Designer: Philippe Starck",
+      "Style: Contemporary",
+      "Collection: New Brand! Discover GLAS ITALIA",
+      "Filter by Base Material: Glass",
+      "Filter by Top Size: 10\" - 20\"",
+      "Filter by Top Shape: Round",
+      "Filter by Top Material: Glass"
+    ],
+    "gsc": {
+      "keyword": "crystal side table",
+      "position": 6.649789029535865,
+      "impressions": 474,
+      "clicks": 0,
+      "ctr": 0,
+      "opportunity": "materialize_demand",
+      "score": 72
+    },
+    "h1_antes": "Crystal Side Table",
+    "h1_despues": "Glas Italia Crystal Side Table",
+    "desc_antes": "<p>The Crystal side table is a striking example of refined craftsmanship and modern luxury, made entirely from 24 mm thick tempered transparent glass. Assembled using advanced UV bonding techniques, this piece achieves exceptional structural integrity while maintaining a pure, seamless aesthetic.</p>\n<p>Its sophisticated design is the result of complex manufacturing processes, where every edge and joint is precisely finished to enhance the clarity and strength of the glass. The result is an object of remarkable load resistance, with details that reflect the mastery of Italian glassmaking tradition.</p>\n<p>Discreet mirror-polished stainless steel feet subtly elevate the piece, adding a touch of elegance and ensuring stability without distracting from the table’s minimalist form.</p>\n<p>Made in Italy, the Crystal side table embodies premium design and timeless appeal—perfect for interiors that value clean lines, luxurious materials, and impeccable execution.</p>\n",
+    "desc_despues": "<p>The Crystal side table is a striking example of refined craftsmanship and modern luxury, made entirely from 24 mm thick tempered transparent glass. Assembled using advanced UV bonding techniques, this piece achieves exceptional structural integrity while maintaining a pure, seamless aesthetic.</p>\n<h2>Designer Glass Furniture by Glas Italia</h2>\n<p>Its sophisticated design is the result of complex manufacturing processes, where every edge and joint is precisely finished to enhance the clarity and strength of the glass. The result is an object of remarkable load resistance, with details that reflect the mastery of Italian glassmaking tradition. This Philippe Starck side table, conceived for Glas Italia, translates that technical rigour into a light, almost immaterial presence that suits contemporary interiors.</p>\n<p>Discreet mirror-polished stainless steel feet subtly elevate the piece, adding a touch of elegance and ensuring stability without distracting from the table’s minimalist form.</p>\n<p>Made in Italy, the Crystal side table embodies premium design and timeless appeal—perfect for interiors that value clean lines, luxurious materials, and impeccable execution. Placed beside a sofa or an armchair, it completes a living area with the same quiet precision that defines the finest designer glass furniture.</p>",
+    "medido": {
+      "palabras_antes": 135,
+      "palabras_despues": 188,
+      "conservacion": 1.0,
+      "h2": 1
+    },
+    "keywords": [
+      {
+        "keyword": "crystal side table",
+        "clicks": 0,
+        "impressions": 474,
+        "position": 6.649789029535865,
+        "ctr": 0,
+        "opportunity": "materialize_demand",
+        "opportunity_score": 72
+      },
+      {
+        "keyword": "designer glass furniture",
+        "clicks": 0,
+        "impressions": 1,
+        "position": 13,
+        "ctr": 0,
+        "opportunity": "long_tail",
+        "opportunity_score": 0
+      }
+    ],
+    "validacion": {
+      "aprobado": true,
+      "issues": [
+        "Observación menor (no bloqueante): el cierre 'the same quiet precision that defines the finest designer glass furniture' fuerza algo la keyword al final y repite el concepto de 'designer glass furniture' ya usado en el H2; se acepta por sonar natural, pero es el punto más débil de la edición.",
+        "Detalle de estilo: se alterna ortografía británica ('rigour') con el resto del texto en inglés estándar; conviene unificar.",
+        "El H2 'Designer Glass Furniture by Glas Italia' interrumpe el flujo entre el primer párrafo (materiales/UV bonding) y el segundo (procesos de manufactura), que eran continuos en el original; el corte es aceptable pero ligeramente abrupto."
+      ],
+      "keywords_presentes": [
+        "crystal side table",
+        "designer glass furniture"
+      ],
+      "tono_lujo": true,
+      "razon": "Se conserva íntegro el copy original de tono premium (vidrio templado 24 mm, UV bonding, patas de acero pulido espejo, Made in Italy) y los añadidos aportan información real de ficha (Philippe Starck, Glas Italia) sin inventar precios, materiales ni medidas. El H1 sigue siendo descriptivo (marca + producto), las keywords aparecen de forma natural y el HTML está bien formado (p, h2 correctamente cerrados)."
+    },
+    "intentos": 1,
+    "costo": {
+      "usd": 0.00954,
+      "tokens_in": 9802,
+      "tokens_out": 5750
+    },
+    "baseline": {
+      "posicion": 6.649789029535865,
+      "impresiones": 474,
+      "ventana": "2026-08-04..2026-11-02"
+    }
+  },
+  {
+    "url": "https://cassoni.com/product/illan-luxury-wall-lamp-luceplan/",
+    "slug": "illan-luxury-wall-lamp-luceplan",
+    "status": "processed",
+    "woo_id": 232784,
+    "nombre": "Illan Wall Lamp",
+    "categorias": [
+      "Wall Lamps & Sconces"
+    ],
+    "marca": "Luceplan",
+    "imagen": "",
+    "imagen_remota": "https://cassoni.com/wp-content/uploads/cache/thumbs_900x900/232793_cassoni-luceplan-illan-wall-lamp-01-img01.webp",
+    "imagen_error": "el CDN del sitio responde 403 a este servidor",
+    "atributos": [
+      "Collection: New Brand! Discover LUCEPLAN",
+      "Style: Contemporary",
+      "Designer: Zsuzsanna Horvath"
+    ],
+    "gsc": {
+      "keyword": "illan lamp",
+      "position": 8.770301624129932,
+      "impressions": 431,
+      "clicks": 0,
+      "ctr": 0,
+      "opportunity": "materialize_demand",
+      "score": 70
+    },
+    "h1_antes": "Illan Wall Lamp",
+    "h1_despues": "Illan Lamp by Luceplan | Wall Sconce",
+    "desc_antes": "<p>The Illan wall lamp brings the poetic lightness and innovative spirit of Zsuzsanna Horvath’s design into a refined, space-saving format. This elegant wall light features a die-cast aluminum body housing an efficient LED source that casts a soft, warm glow upward, enriching interiors with atmospheric, eco-friendly illumination. Its distinctive shade is crafted from laser-cut, layered wood, an ultra-thin and flexible material that defines Illan’s iconic geometric silhouette. In a commitment to sustainable design, the wooden element is made from surplus material left over from producing the Illan suspension lamp, transforming production scraps into a sculptural, decorative feature.</p>\n<p>Lightweight, contemporary, and environmentally conscious, the Illan wall lamp is a perfect choice for those seeking designer wall lighting, warm LED ambience, and Italian craftsmanship that merges technology, beauty, and sustainability. UL Approved (Product build according to the National Electrical Code’s requirements and tested by Underwriters Laboratories). Made in Italy.</p>\n<p><strong>Light source:</strong> LED 21W 1265lm 2700K/3000K CRI 90 Dimmable. UL Approved.</p>\n<p><img src=\"https://cassoni.com/wp-content/uploads/2025/11/c-UL-us.jpg\" alt=\"\" width=\"90\" height=\"14\" class=\"alignnone size-full wp-image-230107\" /></p>\n",
+    "desc_despues": "<p>The Illan wall lamp brings the poetic lightness and innovative spirit of Zsuzsanna Horvath’s design into a refined, space-saving format. Compact and graphic, it belongs to that small group of luxury wall lights that reveal their sculptural, geometric presence even when the light is switched off. This elegant wall light features a die-cast aluminum body housing an efficient LED source that casts a soft, warm glow upward, enriching interiors with atmospheric, eco-friendly illumination. Its distinctive shade is crafted from laser-cut, layered wood, an ultra-thin and flexible material that defines Illan’s iconic geometric silhouette. In a commitment to sustainable design, the wooden element is made from surplus material left over from producing the Illan suspension lamp, transforming production scraps into a sculptural, decorative feature. That meeting of technical precision and natural texture is what distinguishes it within contemporary wall light design.</p><h2>A contemporary sconce with a sustainable core</h2><p>Lightweight, contemporary, and environmentally conscious, the Illan wall lamp is a perfect choice for those seeking designer wall lighting, warm LED ambience, and Italian craftsmanship that merges technology, beauty, and sustainability. UL Approved (Product build according to the National Electrical Code’s requirements and tested by Underwriters Laboratories). Made in Italy.</p><p><strong>Light source:</strong> LED 21W 1265lm 2700K/3000K CRI 90 Dimmable. UL Approved.</p><p><img src=\"https://cassoni.com/wp-content/uploads/2025/11/c-UL-us.jpg\" alt=\"\" width=\"90\" height=\"14\" class=\"alignnone size-full wp-image-230107\" /></p>",
+    "medido": {
+      "palabras_antes": 158,
+      "palabras_despues": 208,
+      "conservacion": 1.0,
+      "h2": 1
+    },
+    "keywords": [
+      {
+        "keyword": "illan lamp",
+        "clicks": 0,
+        "impressions": 431,
+        "position": 8.770301624129932,
+        "ctr": 0,
+        "opportunity": "materialize_demand",
+        "opportunity_score": 70
+      },
+      {
+        "keyword": "luceplan ilan",
+        "clicks": 0,
+        "impressions": 6,
+        "position": 5.333333333333333,
+        "ctr": 0,
+        "opportunity": "long_tail",
+        "opportunity_score": 0
+      },
+      {
+        "keyword": "luxury wall lights",
+        "clicks": 0,
+        "impressions": 4,
+        "position": 37.5,
+        "ctr": 0,
+        "opportunity": "long_tail",
+        "opportunity_score": 0
+      }
+    ],
+    "validacion": {
+      "aprobado": true,
+      "issues": [
+        "La keyword 'luceplan ilan' no aparece literalmente (el texto solo incluye 'Luceplan' en el H1). Además está mal escrita ('ilan' con una sola L): forzarla tal cual introduciría una falta de ortografía, por lo que conviene resolverla como variante correcta ('Luceplan Illan') o descartarla.",
+        "Inserción algo artificial de 'luxury wall lights': la frase 'it belongs to that small group of luxury wall lights that reveal their sculptural, geometric presence…' suena a muletilla promocional y agrega un juicio de valor que no estaba en el original; se puede suavizar para que fluya con el tono editorial de lujo.",
+        "Repetición de conceptos ya presentes: 'sculptural' y 'geometric' ya figuraban en el párrafo original ('iconic geometric silhouette', 'sculptural, decorative feature') y la edición los vuelve a usar casi en la misma oración, generando redundancia.",
+        "El cierre añadido ('That meeting of technical precision and natural texture is what distinguishes it within contemporary wall light design') es relleno que repite la idea de diseño contemporáneo sin aportar información nueva.",
+        "H1: aunque sigue siendo descriptivo, pierde precisión al pasar de 'Illan Wall Lamp' a 'Illan Lamp by Luceplan | Wall Sconce'; mezcla 'Lamp' y 'Sconce' para el mismo producto y desplaza el término principal."
+      ],
+      "keywords_presentes": [
+        "illan lamp",
+        "luxury wall lights"
+      ],
+      "tono_lujo": true,
+      "razon": "La edición conserva el tono de lujo, no inventa datos (medidas, materiales y fuente de luz coinciden con la ficha) y mantiene el HTML correcto; solo hay repeticiones y una inserción de keyword algo forzada, más la keyword 'luceplan ilan' ausente y mal escrita, por lo que se aprueba con observaciones menores."
+    },
+    "intentos": 2,
+    "costo": {
+      "usd": 0.024226,
+      "tokens_in": 11199,
+      "tokens_out": 18047
+    },
+    "baseline": {
+      "posicion": 8.770301624129932,
+      "impresiones": 431,
+      "ventana": "2026-08-04..2026-11-02"
+    }
+  },
+  {
+    "url": "https://cassoni.com/product/cas-dvhc-hermes-lounge-chair-01/",
+    "slug": "cas-dvhc-hermes-lounge-chair-01",
+    "status": "processed",
+    "woo_id": 9707,
+    "nombre": "Hermes Lounge Chair",
+    "categorias": [
+      "Lounge Chairs"
+    ],
+    "marca": "DV Home Collection",
+    "imagen": "",
+    "imagen_remota": "https://cassoni.com/wp-content/uploads/2022/11/cas-dvhc-hermes-lounge-chair-01-img01.jpg",
+    "imagen_error": "el CDN del sitio responde 403 a este servidor",
+    "atributos": [
+      "Collection: New Glamour Collection",
+      "Style: Glamour"
+    ],
+    "gsc": {
+      "keyword": "hermes lounge chair",
+      "position": 9.262830482115085,
+      "impressions": 643,
+      "clicks": 1,
+      "ctr": 0.0015552099533437014,
+      "opportunity": "materialize_demand",
+      "score": 71
+    },
+    "h1_antes": "Hermes Lounge Chair",
+    "h1_despues": "Hermes Lounge Chair",
+    "desc_antes": "<p>The high-end Hermes lounge chair has a solid wood structure covered with foam polyurethane with different density and a stylish round metal swivel base offered in a variety of finishes.</p>\n<p>The shell has a refined ergonomic curve that allows a completely relax while sitting. The cover is available in fabric or leather and the external part of the backrest is elegantly decorated with a vertical seam.</p>\n<p>Also, to add more comfort, square decorative cushions (19”5/8 or 15”3/4), filled with goose feathers, are available upon request.</p>\n<p>Sophistication and functionality are represented in this Glamour Italian furniture piece. Made in Italy.</p>\n",
+    "desc_despues": "<p>The high-end Hermes lounge chair has a solid wood structure covered with foam polyurethane with different density and a stylish round metal swivel base offered in a variety of finishes. As a swivel armchair, it allows a fluid, intuitive movement without altering the balanced proportions of the shell.</p><p>The shell has a refined ergonomic curve that allows a completely relax while sitting. The cover is available in fabric or leather and the external part of the backrest is elegantly decorated with a vertical seam. The leather upholstery option brings a denser, more tactile character to the seat, while the fabric version preserves a softer expression.</p><p>Also, to add more comfort, square decorative cushions (19”5/8 or 15”3/4), filled with goose feathers, are available upon request. These details contribute to the calm, tailored comfort that defines the piece.</p><p>Sophistication and functionality are represented in this Glamour Italian furniture piece. Made in Italy. Its measured profile and refined finishes make it suitable for both residential and hospitality interiors.</p>",
+    "medido": {
+      "palabras_antes": 99,
+      "palabras_despues": 165,
+      "conservacion": 1.0,
+      "h2": 0
+    },
+    "keywords": [
+      {
+        "keyword": "hermes lounge chair",
+        "clicks": 1,
+        "impressions": 643,
+        "position": 9.262830482115085,
+        "ctr": 0.0015552099533437014,
+        "opportunity": "materialize_demand",
+        "opportunity_score": 71
+      }
+    ],
+    "validacion": {
+      "aprobado": true,
+      "issues": [],
+      "keywords_present": [
+        "hermes lounge chair"
+      ],
+      "tono_lujo": true,
+      "razon": "La edición conserva el tono de lujo, el H1 sigue siendo descriptivo, la keyword aparece de forma natural y no se detectan datos inventados, repeticiones problemáticas ni HTML roto."
+    },
+    "intentos": 1,
+    "costo": {
+      "usd": 0.010119,
+      "tokens_in": 7224,
+      "tokens_out": 6877
+    },
+    "baseline": {
+      "posicion": 9.262830482115085,
+      "impresiones": 643,
+      "ventana": "2026-08-04..2026-11-02"
+    }
+  },
+  {
+    "url": "https://cassoni.com/product/cas-si-slim-sideboard-01/",
+    "slug": "cas-si-slim-sideboard-01",
+    "status": "rejected",
+    "woo_id": 8721,
+    "nombre": "Madia Slim Sideboard",
+    "categorias": [
+      "Sideboards & Cupboards",
+      "Sideboards & Cupboards"
+    ],
+    "marca": "Sovet Italia",
+    "imagen": "",
+    "imagen_remota": "https://cassoni.com/wp-content/uploads/cache/thumbs_900x900/8722_cas-si-slim-sideboard-01-img01.webp",
+    "imagen_error": "el CDN del sitio responde 403 a este servidor",
+    "atributos": [
+      "Collection: New Contemporary Collection, New Contemporary Collection, New Contemporary Collection, New Contemporary Collection, New Contemporary Collection, New Contemporary Collection, New Contemporary Collection, New Contemporary Collection, New Contemporary Collection, New Contemporary Collection, New Contemporary Collection, New Contemporary Collection, New Contemporary Collection, New Contemporary Collection, New Contemporary Collection, New Contemporary Collection, New Contemporary Collection, New Contemporary Collection, New Contemporary Collection, New Contemporary Collection, New Contemporary Collection, New Contemporary Collection, New Contemporary Collection, New Contemporary Collection, New Contemporary Collection, New Contemporary Collection, New Contemporary Collection, New Contemporary Collection, New Contemporary Collection, New Contemporary Collection, New Contemporary Collection, New Contemporary Collection, New Contemporary Collection, New Contemporary Furniture Collection, New Contemporary Furniture Collection, New Contemporary Lighting Collection, New Contemporary Lighting Collection, New Contemporary Lighting Collection, New Contemporary Lighting Collection, New Contemporary Lighting Collection, New Contemporary Lighting Collection, New Contemporary Murano Collection, New Contemporary Office Collection, New Entertainment Collection, New Glamour Collection, New Glamour Collection, New Glamour Collection, New Glamour Collection, New Glamour Collection, New Glamour Collection, New Glamour Collection, New Glamour Collection, New Glamour Collection, New Glamour Collection, New Glamour Collection, New Glamour Furniture Collection, New Glamour Italian Collection, New High-end Office Collection, New Italian Office Collection, New Lighting Collection, New Lighting Collection, New Lighting Collection, New Lighting Collection, New Lighting Collection, New Luxury Murano Lighting Collection, New Modern Collection, New Modern Collection, New Modern Collection, New Modern Collection, New Modern Collection, New Modern Collection, New Modern Collection, New Modern Collection, New Modern Collection, New Modern Collection, New Modern Collection, New Modern Collection, New Modern Furniture Collection, New Modern Furniture Collection, New Modern Furniture Collection, New Modern Italian Collection, New Modern Lighting Collection, New Modern Lighting Collection, New Murano Lighting Collection, New Outdoor Collection, New Outdoor Collection, New Outdoor Collection, New Outdoor Collection, New Outdoor Collection, New Outdoor Collection, New Outdoor Collection, New Outdoor Collection, New Outdoor Collection, New Outdoor Collection, New Outdoor Collection, New Outdoor Collection, New Outdoor Collection, New Outdoor Collection, New Outdoor Collection, New Outdoor Collection, New Outdoor Collection, New Outdoor Collection, New Outdoor Collection, New Stylish Lighting Collection, New Traditional Murano Collection, New Transitional Collection, New Transitional Collection, New Transitional Collection, New Transitional Collection, New Transitional Collection, New Transitional Collection, New Transitional Collection, New Transitional Collection, New Transitional Collection, New Transitional Collection, New Transitional Collection, New Transitional Collection, New Transitional Collection, New Transitional Collection, New Transitional Collection, New Transitional Seating Collection, Wellness Therapy Collection, Refined Outdoor Collection, New Contemporary Collection (May 2023), New Modern Collection (May 2023), New Contemporary Collection (March 2023), New Glamour Collection (March 2023), Wellness Therapy Collection (March 2023), New Outdoor Collection (February 2023)",
+      "Style: Modern",
+      "Designer: Matthias Demacker",
+      "Filter by Typology: Sideboards",
+      "Filter by Top Material: Glass, Ceramic",
+      "Filter by Length: &lt;47&quot;, 71\" - 79\"",
+      "Filter by Doors: 2 Doors, 4 Doors",
+      "Filter by Doors / Drawers Material: Wood",
+      "Filter by Height: Standard, High",
+      "Filter by Structure Material: Wood"
+    ],
+    "gsc": {
+      "keyword": "slim sideboard",
+      "position": 8.432835820895523,
+      "impressions": 402,
+      "clicks": 0,
+      "ctr": 0,
+      "opportunity": "materialize_demand",
+      "score": 70
+    },
+    "h1_antes": "Madia Slim Sideboard",
+    "h1_despues": "Slim Sideboard by Sovet Italia",
+    "desc_antes": "<p>Italian sideboard with 4 doors with aluminum base and legs, offered in various finishes. Slim features a high-end structure in mdf veneered, Canaletto walnut or oak stained wengé a refined top available in net glass or ceramic. Height-adjustable smoked glass internal shelf.</p>\n<p>A natural evolution that completes the Slim collection. The rounded edges of the wooden structure perfectly merge with the aluminum parts. The different finishes of the top create original solutions that will surely fit any Modern living or dining area. Made in Italy.</p>\n",
+    "desc_despues": "<p>Italian sideboard with 4 doors with aluminum base and legs, offered in various finishes. Slim features a high-end structure in mdf veneered, Canaletto walnut or oak stained wengé a refined top available in net glass or ceramic. Height-adjustable smoked glass internal shelf. A contemporary madia that pairs a sober wooden volume with the lightness of the aluminum base, and is also available in a two-door version. Designed by Matthias Demacker for Sovet Italia.</p>\n<p>A natural evolution that completes the Slim collection. The rounded edges of the wooden structure perfectly merge with the aluminum parts. The different finishes of the top create original solutions that will surely fit any Modern living or dining area. The name says it plainly: a slim sideboard of contained depth, meant to sit against the wall and leave the space around it free. The contrast between the warmth of the Canaletto walnut and the crisp surface of the ceramic top defines the character of the piece, while the smoked glass shelf keeps the interior visually light. The wooden structure rests on slender aluminum legs, a detail that underlines the vertical proportions of the design. Made in Italy.</p>",
+    "medido": {
+      "palabras_antes": 85,
+      "palabras_despues": 191,
+      "conservacion": 1.0,
+      "h2": 0
+    },
+    "keywords": [
+      {
+        "keyword": "slim sideboard",
+        "clicks": 0,
+        "impressions": 402,
+        "position": 8.432835820895523,
+        "ctr": 0,
+        "opportunity": "materialize_demand",
+        "opportunity_score": 70
+      },
+      {
+        "keyword": "madia",
+        "clicks": 0,
+        "impressions": 3,
+        "position": 2.333333333333333,
+        "ctr": 0,
+        "opportunity": "hold_top",
+        "opportunity_score": 40
+      }
+    ],
+    "validacion": {
+      "aprobado": false,
+      "issues": [
+        "Repetición de conceptos ya presentes en el párrafo original: 'slender aluminum legs' reitera 'aluminum base and legs'; 'the crisp surface of the ceramic top' y 'the warmth of the Canaletto walnut' reiteran los acabados ya listados; 'the smoked glass shelf keeps the interior visually light' duplica 'Height-adjustable smoked glass internal shelf'. El texto añadido es en gran medida una reformulación de specs existentes, no un aporte nuevo.",
+        "Keyword forzada en una frase de relleno: 'The name says it plainly: a slim sideboard of contained depth...' explica el nombre del producto en tono de folleto, recurso poco elegante para una pieza de lujo y con función puramente SEO.",
+        "'A contemporary madia' inserta el término italiano de forma algo abrupta en una frase en inglés; se entiende en el rubro, pero queda como calce léxico antes que como lenguaje natural de la marca.",
+        "El primer párrafo quedó sobrecargado: se le encolaron tres oraciones de copy comercial a un bloque que era puramente descriptivo-técnico, perdiendo el ritmo pausado del original."
+      ],
+      "keywords_presentes": [
+        "slim sideboard",
+        "madia"
+      ],
+      "tono_lujo": true,
+      "razon": "El H1 sigue siendo descriptivo, el HTML está intacto, no hay datos inventados (la versión de 2 puertas, el diseñador y los materiales están en ficha) y ambas keywords aparecen. Pero la edición falla en calidad: casi todo lo agregado reformula specs ya dichos (base de aluminio, tapa cerámica, estante de vidrio fumé) y recurre a una frase de relleno que explica el nombre del producto, lo que diluye el tono editorial de lujo. Requiere re-trabajo para aportar información nueva en lugar de repetir."
+    },
+    "intentos": 2,
+    "costo": {
+      "usd": 0.036018,
+      "tokens_in": 21784,
+      "tokens_out": 27109
+    },
+    "baseline": {
+      "posicion": 8.432835820895523,
+      "impresiones": 402,
+      "ventana": "2026-08-04..2026-11-02"
+    }
+  },
+  {
+    "url": "https://cassoni.com/product/cas-i4m-tucroma-armchair/",
+    "slug": "cas-i4m-tucroma-armchair",
+    "status": "processed",
+    "woo_id": 10097,
+    "nombre": "Tucroma Armchair",
+    "categorias": [
+      "Office Chairs & Armchairs",
+      "Chairs & Armchairs"
+    ],
+    "marca": "4 Mariani",
+    "imagen": "",
+    "imagen_remota": "https://cassoni.com/wp-content/uploads/cache/thumbs_900x900/18552_cas-i4m-tucroma-armchair-01-img17.webp",
+    "imagen_error": "el CDN del sitio responde 403 a este servidor",
+    "atributos": [
+      "Collection: New Contemporary Office Collection",
+      "Style: Contemporary",
+      "Designer: Guido Faleschini"
+    ],
+    "gsc": {
+      "keyword": "tucroma chair",
+      "position": 7.28921568627451,
+      "impressions": 408,
+      "clicks": 9,
+      "ctr": 0.022058823529411766,
+      "opportunity": "materialize_demand",
+      "score": 71
+    },
+    "h1_antes": "Tucroma Armchair",
+    "h1_despues": "Tucroma Chair by 4 Mariani",
+    "desc_antes": "<p>Tucroma Armchair stands out for its linear and at the same time innovative shape. The simplicity of the steel tubular frame, available in various elegant finishes, gives to the shape an effect of continuity in the lines and big comfort in the seating. The seat and back cushions covered in fabric or leather, are fixed one to the other through two large straps of saddle leather. For its essentiality, Tucroma is perfect either in professional and residential environments, providing unique comfort and style. Made in Italy.</p>\n",
+    "desc_despues": "<p>Tucroma Armchair stands out for its linear and at the same time innovative shape. The simplicity of the steel tubular frame, available in various elegant finishes, gives to the shape an effect of continuity in the lines and big comfort in the seating. The seat and back cushions covered in fabric or leather, are fixed one to the other through two large straps of saddle leather. For its essentiality, Tucroma is perfect either in professional and residential environments, providing unique comfort and style. Made in Italy.</p>\n<h2>Contemporary Office Armchair</h2>\n<p>Designed by Guido Faleschini, the <strong>sled base armchair</strong> rests on a continuous metal structure that lightens its presence in the room, while the armrests and the regular backrest height define a composed, upright posture. With a leather cover, the piece reads as an <strong>Italian leather armchair</strong>, the upholstery and the frame meeting in a single, quiet profile. The available finishes of the frame allow the piece to be calibrated to the surrounding palette, and the sober line of the back makes it easy to place in series, in a waiting area or around a meeting table. The sled profile keeps the footprint visually light, so the piece can be repeated through a room without weighing on the overall layout.</p>",
+    "medido": {
+      "palabras_antes": 86,
+      "palabras_despues": 209,
+      "conservacion": 1.0,
+      "h2": 1
+    },
+    "keywords": [
+      {
+        "keyword": "tucroma chair",
+        "clicks": 9,
+        "impressions": 408,
+        "position": 7.28921568627451,
+        "ctr": 0.022058823529411766,
+        "opportunity": "materialize_demand",
+        "opportunity_score": 71
+      }
+    ],
+    "validacion": {
+      "aprobado": true,
+      "issues": [
+        "Redundancia conceptual dentro del párrafo nuevo: la idea de 'ligereza visual' de la base sled se enuncia dos veces ('lightens its presence in the room' / 'keeps the footprint visually light') y la idea de repetición en serie aparece también duplicada ('place in series, in a waiting area or around a meeting table' / 'can be repeated through a room without weighing on the overall layout'). Es repetición interna, no del texto original, pero conviene condensarla.",
+        "El H1 pasó de 'Tucroma Armchair' a 'Tucroma Chair by 4 Mariani': sigue siendo descriptivo y el keyword entra de forma natural, pero 'Chair' es más genérico que 'Armchair' en un producto con armrests y difiere del slug/URL (tucroma-armchair). Cambio menor, no bloqueante.",
+        "El H2 'Contemporary Office Armchair' replica casi literalmente la Collection ('New Contemporary Office Collection') y la categoría; roza el relleno de keyword aunque sin sonar antinatural."
+      ],
+      "keywords_presentes": [
+        "tucroma chair"
+      ],
+      "tono_lujo": true,
+      "razon": "La edición conserva el párrafo original intacto y suma un bloque descriptivo con tono editorial sereno y propio del lujo, sin precios ni datos inventados (sled, metal, leather, Guido Faleschini y backrest regular provienen de los atributos oficiales). El keyword aparece solo en el H1, de forma natural y sin forzado en el cuerpo. Los reparos son de estilo —redundancia interna en el nuevo párrafo y un H1 algo más genérico— y no comprometen la calidad de la ficha."
+    },
+    "intentos": 2,
+    "costo": {
+      "usd": 0.017849,
+      "tokens_in": 17463,
+      "tokens_out": 11167
+    },
+    "baseline": {
+      "posicion": 7.28921568627451,
+      "impresiones": 408,
+      "ventana": "2026-08-04..2026-11-02"
+    }
+  },
+  {
+    "url": "https://cassoni.com/product/cas-tal-cruise-teak-sofa-01/",
+    "slug": "cas-tal-cruise-teak-sofa-01",
+    "status": "rejected",
+    "woo_id": 5058,
+    "nombre": "Cruise Sofa",
+    "categorias": [
+      "Sofas & Sectionals"
+    ],
+    "marca": "Talenti",
+    "imagen": "",
+    "imagen_remota": "https://cassoni.com/wp-content/uploads/cache/thumbs_900x900/5059_cas-tal-cruise-teak-sofa-01-img01.webp",
+    "imagen_error": "el CDN del sitio responde 403 a este servidor",
+    "atributos": [
+      "Collection: New Outdoor Collection",
+      "Style: Outdoor",
+      "Designer: Ludovica + Roberto Palomba",
+      "Filter by Typology: Sofa",
+      "Filter by Cover: Fabric",
+      "Filter by Size: 95\" - 102\"",
+      "Filter by Armrest: With Armrests",
+      "Filter by Shape: Straight"
+    ],
+    "gsc": {
+      "keyword": "cruise couch",
+      "position": 4.457420924574209,
+      "impressions": 822,
+      "clicks": 3,
+      "ctr": 0.0036496350364963502,
+      "opportunity": "materialize_demand",
+      "score": 78
+    },
+    "h1_antes": "Cruise Sofa",
+    "h1_despues": "Cruise Couch Teak Outdoor",
+    "desc_antes": "<p>The exclusive three seater sofa of the refined Cruise teak collection is created with a nautical and nature inspired style. Indeed, the high-end structure is entirely realized in teak wood, the use of synthetic rope is reserved to the armrests and backrest and the cushions are made with weather resistant fabrics, making the product perfect for outdoor living areas. Here you have a stylish Italian furniture ideal for relaxing moments outside.Made in Italy.</p>\n",
+    "desc_despues": "<p>The exclusive three seater sofa of the refined Cruise teak collection is created with a nautical and nature inspired style. Indeed, the high-end structure is entirely realized in teak wood, the use of synthetic rope is reserved to the armrests and backrest and the cushions are made with weather resistant fabrics, making the product perfect for outdoor living areas. Here you have a stylish Italian furniture ideal for relaxing moments outside. Made in Italy.</p>\n<h2>Teak Wood Sofa for Outdoor Living</h2>\n<p>Designed by Ludovica + Roberto Palomba for the New Outdoor Collection, the cruise couch follows the straight silhouette with armrests that defines the series, holding a conversation area together without raising its voice. The teak outdoor sofa is conceived for continuity between interior and exterior, and its sober geometry suits private residences as much as contract projects, where a single piece is asked to set the character of the space. Precisely detailed and discreet in proportion, it is a finely resolved interpretation of Italian outdoor seating.</p>",
+    "medido": {
+      "palabras_antes": 73,
+      "palabras_despues": 166,
+      "conservacion": 1.0,
+      "h2": 1
+    },
+    "keywords": [
+      {
+        "keyword": "cruise couch",
+        "clicks": 3,
+        "impressions": 822,
+        "position": 4.457420924574209,
+        "ctr": 0.0036496350364963502,
+        "opportunity": "materialize_demand",
+        "opportunity_score": 78
+      },
+      {
+        "keyword": "cruise+furniture",
+        "clicks": 0,
+        "impressions": 5,
+        "position": 7,
+        "ctr": 0,
+        "opportunity": "long_tail",
+        "opportunity_score": 0
+      }
+    ],
+    "validacion": {
+      "aprobado": false,
+      "issues": [
+        "Keyword 'cruise furniture' ausente: solo se incorporó 'cruise couch' (H1 y cuerpo); la segunda keyword obligatoria no aparece en ningún lado.",
+        "H1 'Cruise Couch Teak Outdoor' suena a acumulación de keywords (sustantivos yuxtapuestos sin conector) y pierde naturalidad descriptiva frente al original 'Cruise Sofa'; además abandona el término 'Sofa' que es el que usa la categoría (Sofas & Sectionals).",
+        "Repetición de conceptos ya presentes en el párrafo original: teak ('entirely realized in teak wood' → 'The teak outdoor sofa'), outdoor living ('perfect for outdoor living areas' → 'Teak Wood Sofa for Outdoor Living'), armrests ('reserved to the armrests' → 'straight silhouette with armrests') e italiano ('stylish Italian furniture' → 'Italian outdoor seating'). El bloque nuevo aporta poco vocabulario nuevo y recicla el del original.",
+        "El H2 'Teak Wood Sofa for Outdoor Living' duplica casi literalmente el concepto 'outdoor living areas' del primer párrafo, reforzando la redundancia.",
+        "Tono: se mantiene elevado en general, pero la frase 'holding a conversation area together without raising its voice' es una personificación algo forzada/confusa para el registro de la marca; conviene una formulación más sobria."
+      ],
+      "keywords_presentes": [
+        "cruise couch"
+      ],
+      "tono_lujo": true,
+      "razon": "No hay datos inventados (diseñador, colección, silueta y armrests coinciden con los atributos reales) y el tono sigue siendo premium, pero falta la keyword 'cruise furniture', el H1 quedó como una cadena de keywords poco natural y el bloque añadido repite conceptos (teak, outdoor living, armrests, italiano) ya presentes en el párrafo original en lugar de sumar información nueva."
+    },
+    "intentos": 2,
+    "costo": {
+      "usd": 0.02136,
+      "tokens_in": 8595,
+      "tokens_out": 16467
+    },
+    "baseline": {
+      "posicion": 4.457420924574209,
+      "impresiones": 822,
+      "ventana": "2026-08-04..2026-11-02"
+    }
+  },
+  {
+    "url": "https://cassoni.com/product/cas-rug-club-sofa-01/",
+    "slug": "cas-rug-club-sofa-01",
+    "status": "processed",
+    "woo_id": 7181,
+    "nombre": "Club Sofa",
+    "categorias": [
+      "Sofas & Sectionals"
+    ],
+    "marca": "Rugiano",
+    "imagen": "",
+    "imagen_remota": "https://cassoni.com/wp-content/uploads/cache/thumbs_900x900/7182_cas-rug-club-sofa-01-img01.webp",
+    "imagen_error": "el CDN del sitio responde 403 a este servidor",
+    "atributos": [
+      "Collection: New Glamour Collection",
+      "Style: Glamour"
+    ],
+    "gsc": {
+      "keyword": "club sofa",
+      "position": 7.466176470588235,
+      "impressions": 1360,
+      "clicks": 0,
+      "ctr": 0,
+      "opportunity": "materialize_demand",
+      "score": 80
+    },
+    "h1_antes": "Club Sofa",
+    "h1_despues": "Rugiano Club Sofa",
+    "desc_antes": "<p>This is a designer Italian Sofa, part of the exclusive Club collection. It stands out for the innovative structure created by refined brushed brass or bronze drawn tubes that, combined with the upholstered leather or fabric, create a stylish pattern. A high-end Glamour furniture, ideal to fit in any sophisticated living area.Made in Italy.</p>\n",
+    "desc_despues": "<p>This is a designer Italian Sofa, part of the exclusive Club collection. It stands out for the innovative structure created by refined brushed brass or bronze drawn tubes that, combined with the upholstered leather or fabric, create a stylish pattern. A high-end Glamour furniture, ideal to fit in any sophisticated living area. Made in Italy.</p>\n<p>The brushed brass frame is the signature of this club sofa: slender drawn tubes outline the back and the armrests, holding the seat within a light, continuous graphic line. The straight silhouette keeps the proportions sober, letting the metal detailing stand out against the upholstery. Fabric or leather upholstery can be specified to suit the palette of the room, from warm neutral tones to deeper, more textured covers.</p>\n<p>Conceived as glamour furniture for residential projects and hospitality lounges, the piece sits naturally in contemporary living rooms as well as in more classic settings, where a measured decorative accent is required. Its presence is discreet yet distinct, and the combination of drawn metal and soft padding keeps the volume balanced from every angle.</p>",
+    "medido": {
+      "palabras_antes": 54,
+      "palabras_despues": 177,
+      "conservacion": 1.0,
+      "h2": 0
+    },
+    "keywords": [
+      {
+        "keyword": "club sofa",
+        "clicks": 0,
+        "impressions": 1360,
+        "position": 7.466176470588235,
+        "ctr": 0,
+        "opportunity": "materialize_demand",
+        "opportunity_score": 80
+      }
+    ],
+    "validacion": {
+      "aprobado": true,
+      "issues": [
+        "Repetición parcial de conceptos ya presentes en el párrafo original: la idea de 'glamour furniture' y la de 'ubicarse en living sofisticado' se reformulan en el segundo párrafo añadido ('Conceived as glamour furniture... contemporary living rooms... more classic settings'), y la disyuntiva 'leather or fabric' del original se repite como 'Fabric or leather upholstery can be specified'. No es grave, pero añade poco valor nuevo.",
+        "El keyword 'club sofa' aparece una sola vez y de forma aceptable, aunque algo genérica ('this club sofa'); no llega a sonar forzado."
+      ],
+      "keywords_presentes": [
+        "club sofa"
+      ],
+      "tono_lujo": true,
+      "razon": "Edición sólida: H1 mejorado (marca + producto, sigue descriptivo), HTML válido (se corrigió el espacio faltante tras 'area.'), sin datos inventados (no se añaden precios, medidas ni materiales no declarados; se respetan brushed brass/bronze, fabric/leather y la silueta recta según atributos). El tono de lujo se mantiene y el keyword se integra con naturalidad. Única observación: cierta redundancia conceptual con el párrafo original, no bloqueante."
+    },
+    "intentos": 1,
+    "costo": {
+      "usd": 0.006784,
+      "tokens_in": 7445,
+      "tokens_out": 5454
+    },
+    "baseline": {
+      "posicion": 7.466176470588235,
+      "impresiones": 1360,
+      "ventana": "2026-08-04..2026-11-02"
+    }
+  },
+  {
+    "url": "https://cassoni.com/product/exquisite-high-end-floyd-nightstand-by-rugiano/",
+    "slug": "exquisite-high-end-floyd-nightstand-by-rugiano",
+    "status": "processed",
+    "woo_id": 279799,
+    "nombre": "Floyd Nightstand",
+    "categorias": [
+      "Nightstands & Dressers"
+    ],
+    "marca": "Rugiano",
+    "imagen": "",
+    "imagen_remota": "https://cassoni.com/wp-content/uploads/cache/thumbs_900x900/279809_cassoni-rugiano-floyd-nightstand-01-img01.webp",
+    "imagen_error": "el CDN del sitio responde 403 a este servidor",
+    "atributos": [
+      "Collection: New RUGIANO Collection",
+      "Style: Glamour"
+    ],
+    "gsc": {
+      "keyword": "floyd nightstand",
+      "position": 4.0673076923076925,
+      "impressions": 208,
+      "clicks": 2,
+      "ctr": 0.009615384615384616,
+      "opportunity": "materialize_demand",
+      "score": 72
+    },
+    "h1_antes": "Floyd Nightstand",
+    "h1_despues": "Floyd Nightstand by Rugiano",
+    "desc_antes": "<p>Crafted by the masters of high-end Italian glamour at Rugiano, the Floyd Nightstand is an elite bedside masterpiece, perfectly suited for palatial master bedrooms, upscale penthouse suites, and luxury boutique hotel chambers. The piece is defined by a pure, compact cylindrical volume entirely clad in premium leather with fine visible stitching that highlights its round silhouette. It reflects a luxury lifestyle that delights in multi-tier architectural detail; a dramatic upper marble top acts as a canvas for striking organic veining, while the open understructure reveals a calibrated interplay of solids and voids featuring a matching second marble shelf—all bound together by a precision bronzed metal framework that integrates a handle-free, seamless storage drawer. Made in Italy.</p>\n",
+    "desc_despues": "<p>Crafted by the masters of high-end Italian glamour at Rugiano, the Floyd Nightstand is an elite bedside masterpiece, perfectly suited for palatial master bedrooms, upscale penthouse suites, and luxury boutique hotel chambers. The piece is defined by a pure, compact cylindrical volume entirely clad in premium leather with fine visible stitching that highlights its round silhouette. It reflects a luxury lifestyle that delights in multi-tier architectural detail; a dramatic upper marble top acts as a canvas for striking organic veining, while the open understructure reveals a calibrated interplay of solids and voids featuring a matching second marble shelf—all bound together by a precision bronzed metal framework that integrates a handle-free, seamless storage drawer. Made in Italy.</p>\n<h2>A Cylindrical Nightstand in Leather and Stone</h2>\n<p>The composition is deliberately quiet: the round volume reads as a sculptural presence, a softer counterpoint to the linear geometries that surround it. What distinguishes the piece is the dialogue of materials — the warmth of the hide against the cool veining of the stone, mediated by the dry lustre of the bronzed metal, with every transition resolved through the quiet precision of Italian craftsmanship. The curve invites the hand as much as the eye, and glamour is entrusted to proportion and finish rather than applied ornament. Within the New RUGIANO Collection, this leather bedside table stands as a study in restraint.</p>",
+    "medido": {
+      "palabras_antes": 116,
+      "palabras_despues": 225,
+      "conservacion": 1.0,
+      "h2": 1
+    },
+    "keywords": [
+      {
+        "keyword": "floyd nightstand",
+        "clicks": 2,
+        "impressions": 208,
+        "position": 4.0673076923076925,
+        "ctr": 0.009615384615384616,
+        "opportunity": "materialize_demand",
+        "opportunity_score": 72
+      }
+    ],
+    "validacion": {
+      "aprobado": true,
+      "issues": [
+        "Redundancia leve: el nuevo párrafo retoma conceptos ya presentes en la descripción original (volumen cilíndrico/redondo, cuero, veta de mármol, metal bronceado, craftsmanship italiano). Aporta valor por el enfoque estético —'glamour entrusted to proportion'— pero no introduce información nueva (podría haberse apoyado en el dato oficial de medida Ø21\"5/8 x 21\"1/4H o en la colección).",
+        "El H1 se amplió a 'Floyd Nightstand by Rugiano': sigue siendo descriptivo y no genera problema, solo se deja constancia del cambio."
+      ],
+      "keywords_presentes": [
+        "floyd nightstand"
+      ],
+      "tono_lujo": true,
+      "razon": "La edición conserva el registro de lujo, inserta la keyword de forma natural en H1 y en el cuerpo, no inventa datos (precios, materiales ni medidas) y el HTML está correctamente cerrado. El único reparo es cualitativo y menor: el bloque añadido reformula materiales y formas ya descritos en lugar de sumar información nueva."
+    },
+    "intentos": 2,
+    "costo": {
+      "usd": 0.021254,
+      "tokens_in": 10959,
+      "tokens_out": 15599
+    },
+    "baseline": {
+      "posicion": 4.0673076923076925,
+      "impresiones": 208,
+      "ventana": "2026-08-04..2026-11-02"
+    }
+  }
+]
