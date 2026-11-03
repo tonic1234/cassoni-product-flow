@@ -201,3 +201,44 @@ Medición del después:
 
 Y el lote de 20 cambió su composición: `geef foto` desapareció y en esa ficha entró
 `pebble sofa` (`evidencia/2026-11-02-seleccion-20-filtrada.txt`).
+
+---
+
+## 14. Auditoría externa y flujo v2 (3-nov-2026)
+
+Revisión del repo completo leyendo el código (27 commits) + cambio de flujo pedido
+por el equipo SEO. Historial de git limpio: ninguna credencial versionada.
+
+### Hallazgos y estado
+
+| # | Severidad | Hallazgo | Estado | Test |
+|---|---|---|---|---|
+| 1 | 🔴 | `--env staging` apuntaba a `https://cassoni.com` (preflight del 2-nov): un `--write` escribía en producción | ✅ `Config.validate` lo rechaza | `test_config.py::TestStagingNoApuntaAProduccion` |
+| 2 | 🔴 | Re-correr una lista re-editaba fichas ya escritas y pisaba la línea base | ✅ idempotente, `--forzar` para rehacer | `test_pipeline.py::test_una_ficha_escrita_no_se_vuelve_a_editar` |
+| 3 | 🔴 | La medición comparaba 90 días previos contra 14 posteriores, y medía fichas en seco | ✅ ventanas iguales, solo `applied=1` | `test_revisar.py::TestRevisarUrl` |
+| 4 | 🔴 | HTML del LLM sin control, escrito con claves de admin | ✅ `html_inseguro` en el gate | `test_checklist.py::TestHtmlSeguro` |
+| 5 | 🟠 | Un timeout de WooCommerce tumbaba el lote | ✅ todo error → `WooError`; el CLI aísla cada ficha | `test_woo.py::test_un_error_de_red_sale_como_wooerror` |
+| 6 | 🟠 | `reason` no existía en la tabla: los motivos de fallo se perdían | ✅ columna + migración | `test_pipeline.py::test_fallo_al_escribir_queda_failed_con_motivo` |
+| 7 | 🟠 | Fichas salteadas quedaban `in_queue` | ✅ toda salida cierra con status y motivo | `test_pipeline.py::test_ficha_no_publicada_no_queda_in_queue` |
+| 8 | 🟠 | Si el filtro anti-canibalización vaciaba todo, se reintroducía la keyword filtrada | ✅ no aplica: ya no hay "principal" | `test_keywords.py` |
+| 9 | 🟠 | El scheduler reintentaba rechazadas para siempre | ✅ 2 intentos y abandonada | `test_scheduler.py::test_las_rechazadas_se_abandonan_tras_dos_intentos` |
+| 10 | 🟠 | El validador veía solo 2.500 caracteres | ✅ texto completo (12.000) | `test_validator.py::test_el_validador_ve_el_texto_completo` |
+| 11 | 🟠 | JSON envuelto en ```` ```json ```` rompía el parseo | ✅ se quita el envoltorio | `test_llm.py::test_json_envuelto_en_fence_se_acepta` |
+| 12 | 🟠 | DataForSEO escrito pero desconectado (y mal planteado: reemplazaba GSC) | ✅ enriquecimiento con caché | `test_volumen.py` |
+
+### Flujo v2 (decisiones D-011 a D-018)
+
+H1 `{Nombre} by {Marca}` · 3 keywords con volumen que faltan en la descripción ·
+competidores cuando faltan · anti-canibalización entre fichas escritas · 10 por día ·
+medición por keyword.
+
+Salida de la suite: `evidencia/2026-11-03-flujo-v2-GREEN.txt`
+
+```bash
+bash scripts/verify.sh
+# VERIFY: VERDE
+```
+
+**Pendiente de verificar contra servicios reales:** la API de resultados orgánicos
+de DataForSEO y la lectura de páginas de competidores solo están probadas con
+fakes. La primera corrida en seco con la lista de SEO es la prueba real.

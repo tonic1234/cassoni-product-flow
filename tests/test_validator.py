@@ -1,21 +1,43 @@
 # -*- coding: utf-8 -*-
-"""El re-trabajo del validador no puede perder datos de la ficha.
+"""Validador: reglas mecánicas + LLM, con re-trabajo que no pierde datos.
 
-Hallazgo del piloto real (2-nov): el 2do pase rebotaba con "Falta la keyword
-principal" y "hay 0 secundarias" porque `_rework` devolvía sólo h1 y description.
-El editor sí las producía: las tiraba el validador.
+Hallazgos que siguen cubiertos (piloto 2-nov): el re-trabajo le dice al editor
+POR QUÉ rechazaron, y el validador juzga con los atributos oficiales de la
+ficha. Nuevo (3-nov): el validador ve el texto completo (antes cortaba en 2.500
+caracteres) y el H1 de plantilla viaja intacto por los re-trabajos.
 """
 from cassoni.config import Config
-from cassoni.validator import Validator
+from cassoni.validator import MAX_CHARS_TEXTO, Validator
+
+ORIG = ("<p>This is a designer Italian Sofa, part of the exclusive Club collection. "
+        "It stands out for the innovative structure created by refined brushed brass "
+        "or bronze drawn tubes that, combined with the upholstered leather or fabric, "
+        "create a stylish pattern. A high-end Glamour furniture, ideal to fit in any "
+        "sophisticated living area. Made in Italy.</p>")
+RELLENO = ("<p>The piece is conceived as a quiet statement rather than a decorative "
+           "gesture, and its presence grows the longer one stays in the room. "
+           "Proportion, material and finish are balanced so that this club sofa can sit "
+           "at the centre of a living area without ever competing with it. "
+           "Each element is finished by hand, and the result is a furniture piece "
+           "meant to age slowly and well. The upholstery sits taut over the frame, "
+           "and the joints are kept visible on purpose, so that the construction "
+           "reads clearly from every angle. Nothing is hidden and nothing is "
+           "overstated: the sofa states its quality through restraint, and that "
+           "restraint is precisely what makes it feel at home in a room that is "
+           "already full of objects.</p>")
+EDITADA = ORIG + RELLENO
+FICHA = {"h1": "Club Sofa by Rugiano", "description": EDITADA,
+         "keywords": [{"keyword": "club sofa", "why": "es un club sofa"}]}
+KWS = [{"keyword": "club sofa", "volume": 880}]
 
 
 class _EditorFake:
     def __init__(self, salida):
         self.salida = salida
-        self.llamadas = 0
+        self.llamadas = []
 
     def edit(self, **kw):
-        self.llamadas += 1
+        self.llamadas.append(kw)
         return dict(self.salida)
 
 
@@ -25,141 +47,87 @@ def _cfg():
     return c
 
 
-FICHA = {"h1": "Rugiano Club Sofa", "description": "<p>texto</p>",
-         "keyword_principal": "club sofa",
-         "secondary_keywords": [{"keyword": "leather upholstery", "why": "tapizado"},
-                                {"keyword": "brass structure", "why": "estructura"}],
-         "discarded": [], "used_keywords": ["club sofa"],
-         "selection_reason": "única candidata"}
-
-
-def test_rework_conserva_la_ficha_completa():
-    v = Validator(_cfg(), llm=None)
-    v._context = {}
-    out = v._rework(_EditorFake(FICHA), "u",
-                    {"h1": "h", "description": "d"}, [{"keyword": "club sofa"}], ["issue"])
-    assert out["keyword_principal"] == "club sofa"
-    assert len(out["secondary_keywords"]) == 2
-    assert out["h1"] == "Rugiano Club Sofa"
-
-
-def test_segunda_pasada_no_se_auto_rechaza_por_campos_perdidos(monkeypatch):
-    """Con un validador LLM que aprueba, el 2do pase debe aprobar si el editor
-    devolvió una ficha completa (antes rebotaba por sus propios campos borrados)."""
-    v = Validator(_cfg(), llm=None)
-
-    class LLMQueRechazaLaPrimera:
-        def __init__(self):
-            self.n = 0
-
-        def complete_json(self, system, user, **kw):
-            self.n += 1
-            if self.n == 1:
-                return {"aprobado": False, "issues": ["dato inventado"], "razon": "x"}
-            return {"aprobado": True, "issues": [], "razon": "ok"}
-
-    v.llm = LLMQueRechazaLaPrimera()
-    editor = _EditorFake(FICHA)
-    orig = ("<p>This is a designer Italian Sofa, part of the exclusive Club collection. "
-            "It stands out for the innovative structure created by refined brushed brass "
-            "or bronze drawn tubes that, combined with the upholstered leather or fabric, "
-            "create a stylish pattern. A high-end Glamour furniture, ideal to fit in any "
-            "sophisticated living area. Made in Italy.</p>")
-    # el editor devuelve la MISMA descripción original: conservación 100% -> sin issues mecánicos
-    relleno = ("The piece is conceived as a quiet statement rather than a decorative "
-               "gesture, and its presence grows the longer one stays in the room. "
-               "Proportion, material and finish are balanced so that the sofa can sit "
-               "at the centre of a living area without ever competing with it. "
-               "Each element is finished by hand, and the result is a furniture piece "
-               "meant to age slowly and well. The upholstery sits taut over the frame, "
-               "and the joints are kept visible on purpose, so that the construction "
-               "reads clearly from every angle. Nothing is hidden and nothing is "
-               "overstated: the sofa states its quality through restraint, and that "
-               "restraint is precisely what makes it feel at home in a room that is "
-               "already full of objects.")
-    ficha = dict(FICHA, description=orig + " " + relleno)
-    res = v.pass_or_rework(url="u", original_h1="Club Sofa", original_desc=orig,
-                           edited=dict(ficha), target_keywords=["club sofa"],
-                           editor=_EditorFake(ficha), backup_keywords=[{"keyword": "club sofa"}],
-                           context={}, max_passes=2)
-    assert res["aprobado"] is True, res["validacion"]
-    assert res["edited"]["keyword_principal"] == "club sofa"
-
-
 class _LLMCaptura:
-    def __init__(self):
-        self.user = ""
+    def __init__(self, respuestas=None):
+        self.users = []
+        self.respuestas = list(respuestas or [])
+
+    @property
+    def user(self):
+        return self.users[-1] if self.users else ""
 
     def complete_json(self, system, user, **kw):
-        self.user = user
+        self.users.append(user)
+        if self.respuestas:
+            return self.respuestas.pop(0)
         return {"aprobado": True, "issues": [], "razon": "ok"}
 
 
-def test_el_validador_ve_los_atributos_oficiales_de_la_ficha():
-    """Piloto real (2-nov): marcó como 'inventadas' las medidas 62"3/8 y 122" y la
-    'New Glamour Collection'. Todo eso son atributos REALES de WooCommerce; el
-    validador los juzgaba sin verlos (falso positivo)."""
-    llm = _LLMCaptura()
-    v = Validator(_cfg(), llm)
-    v.validate(url="u", original_h1="Club Sofa", original_desc="<p>corto</p>",
-               edited_h1="Rugiano Club Sofa",
-               edited_desc="<p>Available from 62\"3/8 to 122\"W</p>",
-               target_keywords=["club sofa"],
-               attributes=("Size: 62\"3/8W x 33\"1/2D x 28\"H", "Collection: New Glamour Collection"),
-               brand="Rugiano", categories=("Sofas & Sectionals",))
-    assert "Atributos oficiales de la ficha" in llm.user
-    assert 'New Glamour Collection' in llm.user
-    assert "62\"3/8W" in llm.user
-    assert "Rugiano" in llm.user
+def test_aprueba_si_reglas_y_llm_aprueban():
+    v = Validator(_cfg(), _LLMCaptura())
+    res = v.pass_or_rework(url="u", original_desc=ORIG, edited=dict(FICHA), keywords=KWS,
+                           editor=_EditorFake(FICHA))
+    assert res["aprobado"] is True, res["validacion"]
+    assert res["intentos"] == 1
 
 
-def test_pass_or_rework_pasa_los_atributos_al_validador():
-    llm = _LLMCaptura()
-    v = Validator(_cfg(), llm)
-    orig = ("<p>" + " ".join(["Elegante sofá de cuero negro con estructura de latón "
-                              "cepillado y tapizado italiano."] * 1) + "</p>")
-    v.pass_or_rework(url="u", original_h1="Club Sofa", original_desc=orig,
-                     edited=dict(FICHA, description=orig + " " + "palabra " * 160),
-                     target_keywords=["club sofa"], editor=_EditorFake(FICHA),
-                     backup_keywords=[{"keyword": "club sofa"}],
-                     context={"attributes": ("Size: 122\"W",),
-                              "brand": "Rugiano", "categories": ("Sofas & Sectionals",)})
-    assert "122\"W" in llm.user
+def test_segunda_pasada_aprueba_y_conserva_el_h1():
+    llm = _LLMCaptura([{"aprobado": False, "issues": ["dato inventado"], "razon": "x"},
+                       {"aprobado": True, "issues": [], "razon": "ok"}])
+    editor = _EditorFake(FICHA)
+    res = Validator(_cfg(), llm).pass_or_rework(
+        url="u", original_desc=ORIG, edited=dict(FICHA), keywords=KWS, editor=editor)
+    assert res["aprobado"] is True
+    assert res["intentos"] == 2
+    assert editor.llamadas[0]["h1"] == "Club Sofa by Rugiano"
 
 
-class _EditorEspia:
-    def __init__(self):
-        self.ultimo_kw = {}
-
-    def edit(self, **kw):
-        self.ultimo_kw = kw
-        return dict(FICHA)
+def test_rechaza_si_la_keyword_no_quedo():
+    sin_kw = dict(FICHA, description=EDITADA.replace("this club sofa", "this piece"))
+    res = Validator(_cfg(), _LLMCaptura()).pass_or_rework(
+        url="u", original_desc=ORIG, edited=sin_kw, keywords=KWS,
+        editor=_EditorFake(sin_kw))
+    assert res["aprobado"] is False
+    assert any("club sofa" in i for i in res["validacion"]["issues"])
 
 
 def test_el_rework_le_dice_al_editor_por_que_rechazaron():
-    """El validador recibía los issues y los descartaba: el editor rehacía a
-    ciegas y el segundo pase repetía el mismo error (piloto 2-nov)."""
-    v = Validator(_cfg(), llm=None)
-    v._context = {}
-    ed = _EditorEspia()
-    v._rework(ed, "u", {"h1": "h", "description": "d"}, [{"keyword": "k"}],
-              ["conserva solo 67% de las oraciones originales"])
-    assert ed.ultimo_kw.get("feedback")
-    assert "67%" in " ".join(ed.ultimo_kw["feedback"])
+    """El editor rehacía a ciegas y repetía el error (piloto 2-nov)."""
+    llm = _LLMCaptura([{"aprobado": False, "issues": ["conserva solo 67%"], "razon": "x"}] * 2)
+    editor = _EditorFake(FICHA)
+    Validator(_cfg(), llm).pass_or_rework(url="u", original_desc=ORIG, edited=dict(FICHA),
+                                          keywords=KWS, editor=editor)
+    assert "67%" in " ".join(editor.llamadas[0]["feedback"])
+
+
+def test_el_validador_ve_los_atributos_oficiales_de_la_ficha():
+    """Piloto real (2-nov): marcó como 'inventadas' medidas que eran atributos."""
+    llm = _LLMCaptura()
+    Validator(_cfg(), llm).validate(
+        url="u", h1="Club Sofa by Rugiano", original_desc="<p>corto</p>",
+        edited_desc="<p>Available from 62\"3/8 to 122\"W</p>", target_keywords=["club sofa"],
+        attributes=("Size: 62\"3/8W x 33\"1/2D x 28\"H", "Collection: New Glamour Collection"),
+        brand="Rugiano", categories=("Sofas & Sectionals",))
+    assert "Atributos oficiales de la ficha" in llm.user
+    assert "New Glamour Collection" in llm.user
+    assert "Rugiano" in llm.user
+
+
+def test_el_validador_ve_el_texto_completo():
+    """Antes cortaba en 2.500 caracteres: lo inventado al final no se revisaba."""
+    llm = _LLMCaptura()
+    largo = "<p>" + "x" * 5000 + " DATO-FINAL</p>"
+    Validator(_cfg(), llm).validate(url="u", h1="h", original_desc="<p>o</p>",
+                                    edited_desc=largo, target_keywords=["k"])
+    assert "DATO-FINAL" in llm.user
+    assert MAX_CHARS_TEXTO >= 10000
 
 
 def test_el_editor_imprime_el_feedback_en_el_prompt():
     from cassoni.editor import Editor
-    capturado = {}
-
-    class LLM:
-        def complete_json(self, system, user, **kw):
-            capturado["user"] = user
-            return dict(FICHA)
-
-    ed = Editor(_cfg(), LLM())
-    ed.edit(url="u", current_h1="H", current_description="<p>x</p>",
-            keywords=[{"keyword": "k"}], keyword_principal="k",
-            feedback=["conserva solo 67% de las oraciones originales"])
-    assert "RECHAZADA" in capturado["user"].upper()
-    assert "67%" in capturado["user"]
+    llm = _LLMCaptura([dict(FICHA)])
+    Editor(_cfg(), llm).edit(url="u", h1="H", current_description="<p>x</p>",
+                             keywords=[{"keyword": "club sofa"}],
+                             feedback=["conserva solo 67% de las oraciones originales"])
+    assert "RECHAZADA" in llm.user.upper()
+    assert "67%" in llm.user

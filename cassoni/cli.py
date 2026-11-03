@@ -9,9 +9,9 @@ Tres formas de usarlo:
   # 2) el agente ELIGE el trabajo solo, desde GSC
   python -m cassoni.cli --env prod --seleccionar 20 --out evidencia/lote.json
 
-  # 3) procesar un lote (dry-run por defecto; --write para editar de verdad)
-  python -m cassoni.cli --env prod --urls lote.txt --batch 20
-  python -m cassoni.cli --env prod --urls lote.txt --write --scheduler
+  # 3) procesar la lista de SEO (dry-run por defecto; --write para editar de verdad)
+  python -m cassoni.cli --env prod --urls lista.txt --batch 10
+  python -m cassoni.cli --env prod --urls lista.txt --write --scheduler
 
   # 4) medir el efecto a 14/28 días
   python -m cassoni.cli --env prod --revisar --days 14
@@ -125,6 +125,8 @@ def parse_args(argv=None) -> argparse.Namespace:
     p.add_argument("--revisar", action="store_true",
                    help="medir el efecto sobre las fichas ya editadas")
     p.add_argument("--preflight", action="store_true", help="chequear conexiones y salir")
+    p.add_argument("--forzar", action="store_true",
+                   help="re-editar fichas ya escritas (por defecto se saltean)")
     return p.parse_args(argv)
 
 
@@ -137,8 +139,8 @@ def main(argv=None) -> int:
         cfg.db_url = args.db
     missing = cfg.validate()
     if missing:
-        print(f"FALTAN credenciales para env '{args.env}': {missing}", file=sys.stderr)
-        print("El pipeline NO puede correr en vivo sin ellas.", file=sys.stderr)
+        print(f"Configuración inválida para env '{args.env}': {missing}", file=sys.stderr)
+        print("El pipeline NO puede correr así.", file=sys.stderr)
         return 2
 
     if args.preflight:
@@ -180,7 +182,7 @@ def main(argv=None) -> int:
 
     print(f"CASSonI pipeline | env={cfg.env} | dry_run={cfg.dry_run}")
     print(f"  wc_base={cfg.wc_base}")
-    pipe = Pipeline(cfg)
+    pipe = Pipeline(cfg, forzar=args.forzar)
 
     if args.scheduler:
         from .scheduler import Scheduler
@@ -193,7 +195,18 @@ def main(argv=None) -> int:
 
     urls = [l.strip() for l in open(args.urls) if l.strip() and not l.startswith("#")]
     limit = args.batch or len(urls)
-    results = [pipe.process(u) for u in urls[:limit]]
+    lote = urls[:limit]
+    try:
+        pipe.precargar(lote)
+    except Exception as exc:
+        logging.getLogger("cassoni.cli").warning("precarga degradada: %s", exc)
+    results = []
+    for u in lote:
+        try:
+            results.append(pipe.process(u))
+        except Exception as exc:          # una ficha nunca corta el lote
+            from .orchestrator import Result
+            results.append(Result(url=u, status="failed", reason=f"excepción: {exc}"))
     _print_results(results)
     print("\nResumen DB:", pipe.db.summary())
     _print_costo(pipe)
@@ -208,6 +221,8 @@ def _print_costo(pipe):
     c = fn()
     print(f"\nCosto LLM: US$ {c.get('usd', 0):.4f} · {c.get('llamadas', 0)} llamadas · "
           f"{c.get('tokens_in', 0):,} tokens entrada · {c.get('tokens_out', 0):,} salida")
+    dfs = getattr(getattr(pipe, "volumenes", None), "costo_usd", 0) or 0
+    print(f"Costo DataForSEO: US$ {dfs:.4f}")
 
 
 def _print_results(results):
@@ -221,6 +236,12 @@ def _print_results(results):
         print(f"  {flag} {r.status:9s} {r.url}")
         if r.edited_h1:
             print(f"       H1 → {r.edited_h1[:90]}")
+        if getattr(r, "h1_aviso", ""):
+            print(f"       ! {r.h1_aviso}")
+        if r.selected:
+            kws = ", ".join(f"{k.get('keyword')} ({k.get('volume') or 's/d'})"
+                            for k in r.selected)
+            print(f"       keywords → {kws}")
         if r.reason:
             print(f"       ({r.reason})")
 

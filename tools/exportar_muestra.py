@@ -67,7 +67,10 @@ def exportar(db_url: str, out: Path, *, con_woo: bool = True,
             except Exception as exc:
                 producto = {"_error": str(exc)}
         gsc = _json(f.get("gsc_keywords"), []) or []
-        principal = f.get("baseline_keyword") or ""
+        # flujo v2: no hay keyword principal; se muestra la primera keyword objetivo
+        objetivos = _json(f.get("selected_keywords"), []) or []
+        principal = (f.get("baseline_keyword")
+                     or (objetivos[0].get("keyword") if objetivos else "") or "")
         fila_gsc = next((g for g in gsc if (g.get("keyword") or "") == principal), {})
         attrs = [f"{a.get('name')}: {', '.join(str(o) for o in (a.get('options') or []))}"
                  for a in (producto.get("attributes") or [])

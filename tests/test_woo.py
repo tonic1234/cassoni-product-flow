@@ -71,3 +71,23 @@ def test_write_ok_when_enabled(cfg_write):
     out = wc.update_product(120563, name="Editado", description="<p>d</p>", allowed=True)
     assert out["id"] == 120563
     assert out["name"] == "Editado"
+
+def test_un_error_de_red_sale_como_wooerror(cfg):
+    """Auditoría 3-nov: un timeout de requests tumbaba el lote entero."""
+    import requests
+
+    class Caida:
+        headers = {}
+
+        def get(self, *a, **k):
+            raise requests.ConnectionError("timeout")
+
+        def post(self, *a, **k):
+            raise requests.ConnectionError("timeout")
+
+    w = WooCommerce(cfg, session=Caida())
+    with pytest.raises(WooError):
+        w.get_product_by_slug("x")
+    cfg.dry_run = False
+    with pytest.raises(WooError):
+        WooCommerce(cfg, session=Caida()).update_product(1, name="n", description="d")

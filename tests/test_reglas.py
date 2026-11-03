@@ -7,8 +7,12 @@ from cassoni import reglas
 
 
 class TestConstantes:
-    def test_h1_max_60(self):
-        assert reglas.H1_MAX_CHARS == 60
+    def test_h1_por_plantilla(self):
+        # equipo SEO 3-nov: H1 = nombre + fabricante, misma estructura siempre
+        assert reglas.H1_PLANTILLA == "{nombre} by {marca}"
+
+    def test_tres_keywords_objetivo(self):
+        assert reglas.KW_OBJETIVO == 3
 
     def test_desc_larga_150_300(self):
         assert reglas.LARGA_MIN_WORDS == 150
@@ -34,5 +38,6 @@ class TestTextos:
         # el prompt se arma desde acá: la spec no puede vivir solo en un .md
         txt = "\n".join(v for k, v in vars(reglas).items()
                         if k.isupper() and isinstance(v, str))
-        for s in ("60", "150", "300", "canibalización", "keyword principal"):
+        for s in ("by {Marca}", "150", "300", "canibalización", "DataForSEO",
+                  "NO estaban en la descripción"):
             assert s in txt

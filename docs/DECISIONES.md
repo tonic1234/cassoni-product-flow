@@ -102,3 +102,75 @@ Cada ficha editada guarda posición, impresiones, clics y CTR de su consulta obj
    150 palabras y muchas no tienen atributos suficientes para expandir sin agregar
    texto genérico. Hay que decidir: ¿se permite texto de categoría, se baja el
    mínimo, o no se tocan esas fichas?
+
+---
+
+## D-011 · H1 por plantilla: `{Nombre} by {Marca}`
+**3-nov-2026 · decisión del equipo SEO**
+El H1 deja de ser una keyword elegida por el LLM. Es el nombre del producto más
+el fabricante, siempre con la misma estructura, para dar consistencia visual. Lo
+arma `cassoni/h1.py` sin LLM y se escribe en el campo `name`. Reemplaza la regla
+"H1 ≤ 60 con la keyword principal exacta" (D-003 queda sin efecto para el H1).
+Descartado: dejar que el LLM proponga el H1 (varía entre fichas).
+
+---
+
+## D-012 · Tres keywords que NO están en la descripción, con volumen
+**3-nov-2026 · decisión del equipo SEO**
+GSC trae las consultas de la ficha; DataForSEO les suma volumen; se eligen hasta 3
+que tengan volumen y no estén ya (frase exacta) en la descripción larga. El LLM no
+elige: solo las incorpora de forma coherente con el texto actual. Si DataForSEO no
+informa volumen, alcanza con demanda real en GSC (≥30 impresiones): `None` no es 0.
+
+---
+
+## D-013 · DataForSEO como enriquecimiento con caché, no como filtro
+**3-nov-2026**
+El `KeywordMapper` original reemplazaba las keywords de GSC por las de DataForSEO y
+tiraba todo lo de menos de 50 búsquedas: en fichas de producto eso deja la ficha
+sin keywords. Ahora el volumen solo se suma, se pide una vez por lote (cuesta lo
+mismo 10 keywords que 1.000) y queda en caché 30 días.
+
+---
+
+## D-014 · Si faltan keywords: el mismo producto en 3 competidores
+**3-nov-2026 · paso ② de la pizarra**
+Se busca "{Nombre} {Marca}" en la API de resultados orgánicos de DataForSEO (no se
+scrapea Google), se toman las 3 primeras páginas de otros sitios por encima de
+cassoni y se leen sus H1, H2 y texto. Las frases que repiten ≥2 competidores, que
+son de este producto y que no tenemos, se validan con volumen. Al LLM no le llega
+texto de la competencia. Se respeta `robots.txt`. Descartado: Playwright contra
+Google (términos de uso, CAPTCHAs, bloqueos).
+
+---
+
+## D-015 · Anti-canibalización entre fichas ya escritas
+**3-nov-2026 · "en la medida de lo posible"**
+Las keywords escritas en una ficha quedan registradas. Otra ficha no la usa si hay
+alternativas; si no las hay, la usa y queda marcada con `compartida_con` para que
+SEO lo vea.
+
+---
+
+## D-016 · Goteo de 10 fichas por día desde la lista de SEO
+**3-nov-2026 · pizarra: "5-10 URLs/día"**
+El cupo baja de 50 a 10. La lista la arma SEO y crece día a día. Una ficha
+rechazada o fallida se reintenta una vez; después queda abandonada (antes se
+reintentaba para siempre y gastaba LLM en cada intento).
+
+---
+
+## D-017 · Medición por keyword con ventanas del mismo largo
+**3-nov-2026 · corrige D-010**
+Antes se comparaba la suma de 90 días previos contra 14 días posteriores: casi todo
+salía "bajó". Ahora, para N días, se piden a GSC N días antes y N días después de
+la edición, para cada una de las 3 keywords, y solo de fichas escritas de verdad.
+
+---
+
+## D-018 · Idempotencia y HTML seguro
+**3-nov-2026 · auditoría externa**
+Una ficha escrita no se vuelve a editar salvo `--forzar` (re-correr la lista
+editaba encima y pisaba la línea base). La edición no puede agregar HTML que el
+original no tenía (scripts, iframes, eventos, enlaces, imágenes): con claves de
+admin, WordPress no filtra el contenido.

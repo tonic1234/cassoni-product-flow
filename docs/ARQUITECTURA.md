@@ -1,83 +1,96 @@
-# Arquitectura
+# Arquitectura (flujo v2 · 3-nov-2026)
 
 ## La cadena
 
 ```
-                     ┌──────────────────────────────────────────────┐
-                     │ GSC (sólo lectura, sc-domain:cassoni.com)    │
-                     │  90 días · queries por página · 200 filas    │
-                     └───────────────┬──────────────────────────────┘
-                                     │ filas crudas
-                     ┌───────────────▼──────────────────────────────┐
-  SELECCIÓN          │ selector.py  (puro)                          │
-  (qué se toca)      │  es_producto · filtrar_paginas ·             │
-                     │  elegir_keyword · priorizar · lote_a_json    │
-                     └───────────────┬──────────────────────────────┘
-                                     │ lote: url + keyword + puntaje
-                     ┌───────────────▼──────────────────────────────┐
-  EDICIÓN            │ orchestrator.process(url)                    │
-  (cómo se edita)    │  woo.get_product_by_slug                     │
-                     │  gsc.queries_for_page                        │
-                     │  opportunities.fusionar_gsc / ordenar        │
-                     │  checklist.filtrar_canibalizacion            │
-                     │  checklist.seleccionar_diversas              │
-                     │  editor.edit  ──►  validador.pass_or_rework  │
-                     └───────────────┬──────────────────────────────┘
-                                     │ ficha aprobada / rechazada
-                     ┌───────────────▼──────────────────────────────┐
-  ESCRITURA          │ woo.update_product(name, description)        │
-  (con gate)         │  sólo si cfg.write_enabled Y aprobado        │
-                     └───────────────┬──────────────────────────────┘
-                                     │
-                     ┌───────────────▼──────────────────────────────┐
-  MEDICIÓN           │ db.py (baseline_*) + revisar.comparar        │
-                     │  a 14/28 días: subió / igual / bajó          │
-                     └──────────────────────────────────────────────┘
+  lista.txt (SEO, crece día a día)
+        │  hasta 10 fichas/día · 9-18 lun-vie · pausas aleatorias   scheduler.py
+        ▼
+  ┌──────────────────────────────────────────────────────────────────────────┐
+  │ precarga del lote: GSC por ficha → UN pedido de volumen a DataForSEO     │
+  │                    (caché 30 días en la base)            volumen.py      │
+  └───────────────────────────────┬──────────────────────────────────────────┘
+                                  ▼  por ficha                orchestrator.py
+  ┌──────────────────────────────────────────────────────────────────────────┐
+  │ ¿ya escrita? → skipped (salvo --forzar)                                  │
+  │ WooCommerce: nombre, marca, categorías, atributos, descripción           │
+  │ H1 = "{Nombre} by {Marca}"                                h1.py (sin LLM)│
+  │ keywords: GSC + volumen → de este producto → NO están en la descripción  │
+  │           → con volumen → anti-canibalización → 1 por palabra → top 3    │
+  │                                                          keywords.py     │
+  │ ¿faltan? → mismo producto en DataForSEO SERP → 3 competidores por        │
+  │           encima nuestro → sus H1/H2/texto → frases que repiten ≥2 y     │
+  │           no tenemos → volumen                          competidores.py  │
+  │ editor LLM: mete las 3 keywords en la descripción actual    editor.py    │
+  │ validador: reglas en código (keywords exactas, 150-300 palabras, ≤2 H2,  │
+  │            80% conservado, HTML seguro) + LLM (tono, datos inventados)   │
+  │            → hasta 2 pases                                validator.py   │
+  └───────────────────────────────┬──────────────────────────────────────────┘
+                                  ▼  solo con --write y aprobada
+  ┌──────────────────────────────────────────────────────────────────────────┐
+  │ WooCommerce: name + description                               woo.py     │
+  │ base: 3 keywords objetivo con línea base · applied · edited_at   db.py   │
+  └───────────────────────────────┬──────────────────────────────────────────┘
+                                  ▼  a 14 / 28 días
+  ┌──────────────────────────────────────────────────────────────────────────┐
+  │ cada keyword: N días antes vs N días después (mismo largo)  revisar.py   │
+  │ subió / igual / bajó / apareció                                          │
+  └──────────────────────────────────────────────────────────────────────────┘
 ```
 
 ## Módulos y contratos
 
 | Módulo | Qué hace | Toca la red |
 |---|---|---|
-| `cassoni/config.py` | Lee `.env.<env>`, resuelve rutas relativas contra la carpeta del `.env` | no |
-| `cassoni/gsc.py` | `pages()`, `queries_for_page()`, `top_keywords_for_url()` (compat) | GSC, lectura |
-| `cassoni/selector.py` | Convierte filas de GSC en lote priorizado | no (puro) |
-| `cassoni/opportunities.py` | Clasifica y puntúa; `elegir_principal`, `ordenar_candidatas`, `fusionar_gsc` | no (puro) |
-| `cassoni/checklist.py` | Gate mecánico: longitudes, H2, palabras, conservación, anti-canibalización, diversidad | no (puro) |
-| `cassoni/editor.py` | Prompt y contrato del editor; reintenta si el JSON viene incompleto | LLM |
+| `cassoni/config.py` | Lee `.env.<env>`; rechaza `staging` apuntando a producción | no |
+| `cassoni/gsc.py` | `queries_for_page(url, days | start/end)`, `pages()` | GSC, lectura |
+| `cassoni/h1.py` | `h1_plantilla(nombre, marca)`: idempotente | no (puro) |
+| `cassoni/keywords.py` | `elegir_keywords(...)`: la regla de las 3 keywords | no (puro) |
+| `cassoni/volumen.py` | Volumen con caché; un pedido por lote | DataForSEO |
+| `cassoni/competidores.py` | SERP → competidores → candidatas | DataForSEO + sitios públicos (robots.txt) |
+| `cassoni/dataforseo.py` | `search_volume`, `serp_organico`, costo acumulado | DataForSEO |
+| `cassoni/checklist.py` | Gate mecánico + `html_inseguro` + anti-canibalización + diversidad | no (puro) |
+| `cassoni/editor.py` | Prompt del editor: solo la descripción larga | LLM |
 | `cassoni/validator.py` | Mecánico + LLM; re-trabajo hasta 2 pases | LLM |
-| `cassoni/woo.py` | Lectura de fichas y `update_product` con gate | WooCommerce |
-| `cassoni/db.py` | Trazas, línea base y revisiones | SQLite/PostgreSQL |
-| `cassoni/revisar.py` | Comparación a N días y veredicto | GSC (vía cliente) |
-| `cassoni/cli.py` | `--preflight`, `--seleccionar`, `--urls`, `--revisar` | orquesta |
+| `cassoni/woo.py` | Lectura de fichas y `update_product` con gate; errores → `WooError` | WooCommerce |
+| `cassoni/db.py` | Trazas, keywords objetivo, caché de volumen, revisiones | SQLite/PostgreSQL |
+| `cassoni/revisar.py` | Medición por keyword con ventanas iguales | GSC |
+| `cassoni/scheduler.py` | Cupo diario, horario, reintentos con tope | orquesta |
+| `cassoni/cli.py` | `--preflight`, `--urls`, `--scheduler`, `--revisar`, `--forzar` | orquesta |
 
 ## Estados de una ficha
 
 | Estado | Significado |
 |---|---|
-| `in_queue` | encolada, sin procesar |
-| `processed` | edición aprobada **y** aplicada (o lista para aplicar en dry-run) |
-| `rejected` | la edición no pasó el gate; **no se escribe** y se registran los motivos |
-| `skipped` | no se procesa (draft, sin keywords, URL que no es ficha) |
-| `failed` | error técnico (WooCommerce, GSC, LLM) |
+| `in_queue` | encolada; solo existe mientras se procesa |
+| `processed` | aprobada; `applied=1` si se escribió, `0` si fue en seco |
+| `rejected` | el gate la frenó; **no se escribe**; motivo en `reason` |
+| `skipped` | no corresponde (draft, ya editada, URL que no es ficha) |
+| `failed` | error técnico; motivo en `reason` |
 
-`rejected` existe desde el 2-nov-2026: antes un rechazo del validador se guardaba como
-`processed` y el lote nocturno habría reportado éxito sobre fichas que no se tocaron.
+Toda salida del ciclo deja status y motivo: ninguna ficha queda colgada en `in_queue`.
 
 ## Dónde vive cada dato
 
 | Dato | Dónde | Se versiona |
 |---|---|---|
 | Credenciales | `.env.<env>` + `creds/` | **no** (gitignore) |
-| Trazas de cada ficha | `cassoni.db` (SQLite) o PostgreSQL | no |
-| Lote seleccionado | `evidencia/lote-*.json` | sí |
-| Salidas de tests (RED/GREEN) | `evidencia/*-RED.txt`, `*-GREEN.txt` | sí |
-| Regla del cliente | `docs/REGLA-SEO-FICHAS.md` | sí |
+| Trazas de cada ficha | `cassoni_processed_products` | no |
+| Keywords objetivo + línea base | `cassoni_keyword_objetivo` | no |
+| Caché de volumen | `cassoni_keyword_volume` | no |
+| Revisiones | `cassoni_reviews` (una fila por keyword y por N) | no |
+| Estado del goteo | `cassoni_sched.json` | no |
 
 ## Decisiones de seguridad
 
 - GSC es sólo lectura: `gsc.py` no tiene ninguna función de escritura.
-- El gate de escritura es doble: `cfg.write_enabled` (que exige `--write`) **y**
-  `val["aprobado"]`. Un dry-run nunca llama a `update_product`.
+- `--env staging` no puede apuntar a la tienda real (`Config.validate`).
+- Gate de escritura doble: `--write` **y** aprobación del validador.
+- Idempotencia: una ficha escrita no se reescribe salvo `--forzar`.
+- HTML seguro: la edición no puede agregar scripts, iframes, estilos, formularios,
+  atributos de evento, URLs `javascript:`, ni enlaces o imágenes nuevas. El texto
+  se escribe con claves de admin y WordPress no lo filtra.
+- Competidores: se respeta `robots.txt`, se identifica el bot, y al LLM nunca le
+  llega texto ajeno, solo keywords.
 - Un campo, un escritor: el agente toca `name` y `description`. `short_description`,
   meta title/description y ALT son del n8n.

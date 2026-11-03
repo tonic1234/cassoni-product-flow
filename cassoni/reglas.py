@@ -7,7 +7,10 @@ se cambia este archivo (con sus tests) y se regenera la doc.
 from __future__ import annotations
 
 # --- Límites duros de la spec ---
-H1_MAX_CHARS = 60                     # título: máx 60 caracteres
+H1_PLANTILLA = "{nombre} by {marca}"  # H1 fijo (SEO 3-nov-2026): sin LLM, misma
+                                      # estructura en todas las fichas (cassoni/h1.py)
+KW_OBJETIVO = 3                       # keywords que se incorporan a la desc larga
+KW_MIN = 1                            # con menos de 1 no hay nada que editar
 LARGA_MIN_WORDS = 150                 # descripción larga: mínimo
 LARGA_MAX_WORDS = 300                 # descripción larga: máximo
 MAX_H2 = 2                            # máx 2 H2 en la descripción larga
@@ -23,8 +26,13 @@ REPETICION_MAX_PALABRA = 8            # tope de veces que una misma palabra (no
                                       # funcional) puede aparecer en la desc larga
 
 # --- Texto canónico de reglas (lo que ve el LLM, mismo origen que el checklist) ---
-REGLAS_H1 = ("Título/H1: máximo 60 caracteres; marca (si aplica) + modelo + categoría "
-             "completa; es la keyword principal, EXACTA.")
+REGLAS_H1 = ("Título/H1: siempre '{Nombre} by {Marca}', armado por código con la "
+             "misma estructura en todas las fichas. El editor NO lo toca.")
+REGLAS_KEYWORDS = ("Keywords objetivo: hasta 3 por ficha, elegidas por código (GSC + "
+                   "volumen de DataForSEO, o competidores que venden el mismo producto). "
+                   "Son keywords que NO estaban en la descripción: cada una tiene que "
+                   "quedar EXACTA en la descripción larga, 1 o 2 veces, en una oración "
+                   "donde encaje natural.")
 REGLAS_KEYWORD_JUNTA = ("Las palabras de cada keyword van JUNTAS y en el MISMO orden "
                         "('leather sofa' es 'leather sofa'). La única variable aceptable "
                         "es que se antecedan por un artículo ('of', 'the', etc.). "
@@ -32,8 +40,10 @@ REGLAS_KEYWORD_JUNTA = ("Las palabras de cada keyword van JUNTAS y en el MISMO o
 REGLAS_DESC_CORTA = ("Descripción corta (above the fold): incluye la keyword principal "
                      "exacta tal cual el H1; corta; una sola idea central; SIN H2.")
 REGLAS_DESC_LARGA = ("Descripción larga (below the fold): 150 a 300 palabras; 1 o 2 H2 "
-                     "como máximo; 2 o 3 keywords secundarias repartidas entre H2 y "
-                     "párrafos; cada secundaria aparece como máximo 2 veces.")
+                     "como máximo; las keywords objetivo repartidas entre H2 y "
+                     "párrafos; cada una aparece como máximo 2 veces.")
+REGLAS_HTML = ("HTML: no agregues scripts, iframes, estilos, formularios, atributos "
+               "de evento (onclick...) ni enlaces o imágenes que no estén en el original.")
 REGLAS_SECUNDARIAS = ("Keywords secundarias: variantes por material, estilo, uso o "
                       "sinónimo de categoría; específicas de ESTE producto, nunca "
                       "genéricas de toda la categoría.")
@@ -65,14 +75,13 @@ REGLAS_DIVERSIFICAR = ("DIVERSIFICACIÓN (anti-repetición): si varias keywords 
                        "máximo 2 veces y el resto del texto usa SUS PARTES (material, "
                        "estilo, uso) como variaciones naturales. Repetir la palabra "
                        "compartida una y otra vez ('sofa sofa sofa') está prohibido.")
-REGLAS_OUTPUT = ("Output por ficha: H1 / descripción larga con H2 "
-                 "marcados / keywords secundarias + por qué son específicas / descartadas "
-                 "+ a qué contenido pertenecen.")
+REGLAS_OUTPUT = ("Output por ficha: descripción larga con H2 marcados / dónde quedó "
+                 "cada keyword objetivo y por qué encaja en ESTE producto.")
 
 
 def reglas_completas() -> str:
     """Bloque de reglas completo para los prompts (editor y validador)."""
     return "\n".join([
-        REGLAS_H1, REGLAS_DESC_CORTA, REGLAS_DESC_LARGA, REGLAS_SECUNDARIAS,
-        REGLAS_ANTICANIBALIZACION, REGLAS_NO_GO, REGLAS_CONSERVAR, REGLAS_OUTPUT,
+        REGLAS_H1, REGLAS_KEYWORDS, REGLAS_DESC_LARGA, REGLAS_ANTICANIBALIZACION,
+        REGLAS_NO_GO, REGLAS_CONSERVAR, REGLAS_HTML,
     ])

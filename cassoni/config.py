@@ -5,6 +5,7 @@ from __future__ import annotations
 import os
 from dataclasses import dataclass, field
 from pathlib import Path
+from urllib.parse import urlsplit
 
 
 def _load_env_file(path: Path) -> dict:
@@ -25,6 +26,10 @@ def _load_env_file(path: Path) -> dict:
 
 
 VALID_ENVS = ("staging", "prod")
+# hosts de la tienda REAL: un .env de staging que apunte acá escribiría en
+# producción creyendo que está en staging (pasó: preflight del 2-nov con
+# env=staging y base=https://cassoni.com). Se sobreescribe con CASSONI_PROD_HOSTS.
+PROD_HOSTS_DEFAULT = ("cassoni.com", "www.cassoni.com")
 
 
 @dataclass
@@ -45,6 +50,10 @@ class Config:
     dfs_max_requests_min: int = 12
     dfs_retries: int = 3
     dfs_bulk_size: int = 1000
+    dfs_location_code: int = 2840              # EE.UU. (la tienda es en inglés)
+    dfs_language_code: str = "en"
+    dfs_min_volume: int = 10                   # debajo: Google Ads no informa
+    dfs_cache_dias: int = 30                   # el volumen es mensual
     # --- LLM ---
     llm_base_url: str = ""                     # OpenAI-compatible endpoint
     llm_api_key: str = ""
@@ -55,7 +64,8 @@ class Config:
     workday_end: int = 18
     pause_min_s: int = 30
     pause_max_s: int = 300
-    daily_target: int = 50
+    daily_target: int = 10                     # pizarra: 5-10 fichas por día
+    prod_hosts: tuple = PROD_HOSTS_DEFAULT
 
     @staticmethod
     def load(env: str = "staging", dry_run: bool | None = None,
@@ -96,13 +106,24 @@ class Config:
             if resto.startswith("./") or (resto and not resto.startswith("/")):
                 ruta = (base_dir / resto.lstrip("./")).resolve()
                 c.db_url = f"sqlite:///{ruta}"
-        try:
-            c.dfs_max_requests_min = int(os.environ.get("CASSONI_DFS_MAX_REQ_MIN")
-                                         or data.get("CASSONI_DFS_MAX_REQ_MIN")
-                                         or c.dfs_max_requests_min)
-        except ValueError:
-            pass
+        for campo, clave in (("dfs_max_requests_min", "CASSONI_DFS_MAX_REQ_MIN"),
+                             ("dfs_location_code", "CASSONI_DFS_LOCATION"),
+                             ("dfs_min_volume", "CASSONI_DFS_MIN_VOLUMEN"),
+                             ("dfs_cache_dias", "CASSONI_DFS_CACHE_DIAS"),
+                             ("daily_target", "CASSONI_FICHAS_POR_DIA")):
+            try:
+                setattr(c, campo, int(g(clave) or getattr(c, campo)))
+            except ValueError:
+                pass
+        c.dfs_language_code = g("CASSONI_DFS_LANGUAGE", c.dfs_language_code)
+        hosts = g("CASSONI_PROD_HOSTS")
+        if hosts:
+            c.prod_hosts = tuple(h.strip().lower() for h in hosts.split(",") if h.strip())
         return c
+
+    @property
+    def wc_host(self) -> str:
+        return (urlsplit(self.wc_base).hostname or "").lower()
 
     def validate(self) -> list[str]:
         """Devuelve la lista de campos faltantes (vacío = todo ok)."""
@@ -117,6 +138,9 @@ class Config:
             missing.append("CASSONI_DFS_LOGIN/PASSWORD")
         if not self.llm_base_url or not self.llm_api_key or not self.llm_editor_model:
             missing.append("CASSONI_LLM_* (base/key/editor_model)")
+        if self.env == "staging" and self.wc_host in self.prod_hosts:
+            missing.append(f"CASSONI_WC_BASE: env=staging apunta a PRODUCCIÓN "
+                           f"({self.wc_host}); usá --env prod o una base de staging")
         return missing
 
     @property

@@ -74,3 +74,29 @@ def test_retry_on_null(cfg):
     out = f.search_volume(["kw1"], )
     assert out[0]["volume"] == 123
     assert calls["n"] == 2
+
+def test_serp_organico_y_costo(cfg):
+    def fake_post(payload):
+        assert payload[0]["keyword"] == "pedro sofa"
+        return {"status_code": 20000, "cost": 0.002, "tasks": [{"result": [{"items": [
+            {"type": "paid", "url": "https://ad.com"},
+            {"type": "organic", "rank_absolute": 2, "url": "https://a.com/p",
+             "domain": "a.com", "title": "Pedro"}]}]}]}
+    f = DataForSEOFetcher(cfg, _post=fake_post)
+    f.cfg.dfs_max_requests_min = 0
+    out = f.serp_organico("pedro sofa")
+    assert out == [{"rank": 2, "url": "https://a.com/p", "domain": "a.com",
+                    "title": "Pedro", "description": ""}]
+    assert f.costo_usd == 0.002
+
+
+def test_mercado_desde_la_config(cfg):
+    vistos = []
+
+    def fake_post(payload):
+        vistos.append(payload[0])
+        return {"status_code": 20000, "tasks": [{"result": []}]}
+    cfg.dfs_location_code, cfg.dfs_language_code = 2724, "es"
+    cfg.dfs_max_requests_min = 0
+    DataForSEOFetcher(cfg, _post=fake_post).search_volume(["sofa"])
+    assert vistos[0]["location_code"] == 2724 and vistos[0]["language_code"] == "es"

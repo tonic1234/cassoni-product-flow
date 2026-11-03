@@ -73,28 +73,16 @@ class TestReglasDuras:
                 f"<h2>Materiales y cuidados</h2><p>{p2}</p>")
 
     def _editado(self, **kw):
-        base = dict(
-            h1="Sofá de Cuero Negro Modelo Belinda",
-            keyword_principal="sofá de cuero negro",
-            description=self._desc_larga_ok(),
-            secondary_keywords=[{"keyword": "sofá de cuero de lujo", "why": "uso"},
-                                {"keyword": "sofá negro", "why": "estilo"}],
-            discarded=[],
-        )
+        base = dict(h1="Belinda Sofa by Cassoni", description=self._desc_larga_ok())
         base.update({k: v for k, v in kw.items() if v is not None})
         return base
 
-    def test_h1_ok_60(self):
-        # 60 caracteres EXACTOS, conteniendo la keyword principal exacta
-        principal = "sofá de cuero negro"
-        e = self._editado(h1=(principal + " " + "S" * (60 - len(principal) - 1)))
-        assert len(e["h1"]) == 60
-        assert checklist.check_reglas(e) == []
+    def test_descripcion_ok_pasa(self):
+        assert checklist.check_reglas(self._editado()) == []
 
-    def test_h1_mas_de_60_falla(self):
-        e = self._editado(h1="S" * 61)
-        issues = checklist.check_reglas(e)
-        assert any("60" in i and "H1" in i for i in issues)
+    def test_el_h1_ya_no_se_valida_aca(self):
+        # contrato v2: el H1 lo arma cassoni/h1.py por plantilla, no el editor
+        assert checklist.check_reglas(self._editado(h1="S" * 200)) == []
 
     def test_desc_larga_bajo_minimo(self):
         e = self._editado(description="<p>Muy corto.</p>")
@@ -110,42 +98,63 @@ class TestReglasDuras:
         e = self._editado(description="<h2>A</h2><p>x</p><h2>B</h2><p>y</p><h2>C</h2><p>z</p>")
         assert any("2" in i and "H2" in i for i in checklist.check_reglas(e))
 
-    def test_secundarias_de_0_a_1_fallan(self):
-        e = self._editado(secondary_keywords=[])
-        assert any("secundaria" in i.lower() for i in checklist.check_reglas(e))
-        e1 = self._editado(secondary_keywords=[{"keyword": "solo una", "why": "x"}])
-        assert any("secundaria" in i.lower() for i in checklist.check_reglas(e1))
+    def test_keyword_objetivo_ausente_falla(self):
+        # pizarra: "detectar que esté o no esté esa kw"
+        issues = checklist.check_reglas(self._editado(), keywords=["sofá modular"])
+        assert any("sofá modular" in i and "EXACTA" in i for i in issues)
 
-    def test_secundarias_mas_de_3_fallan(self):
-        e = self._editado(secondary_keywords=[{"keyword": f"kw {i}", "why": "x"}
-                                              for i in range(4)])
-        assert any("secundaria" in i.lower() for i in checklist.check_reglas(e))
+    def test_keyword_objetivo_presente_pasa(self):
+        e = self._editado(description=self._desc_larga_ok().replace(
+            "este mueble", "este sofá modular"))
+        assert checklist.check_reglas(e, keywords=["sofá modular"]) == []
 
-    def test_secundaria_usada_mas_de_2_veces_falla(self):
-        # la secundaria "canoa de cuero" aparece 3 veces en la desc -> viola máx 2 usos
-        desc = "<p>canoa de cuero, canoa de cuero, canoa de cuero y otra canoa.</p>"
-        e = self._editado(description=desc,
-                          secondary_keywords=[{"keyword": "canoa de cuero", "why": "x"},
-                                              {"keyword": "canoa de madera", "why": "y"}])
-        issues = checklist.check_reglas(e)
+    def test_keyword_con_palabras_intercaladas_no_cuenta(self):
+        e = self._editado(description=self._desc_larga_ok().replace(
+            "este mueble", "este sofá muy modular"))
+        assert checklist.check_reglas(e, keywords=["sofá modular"])
+
+    def test_keyword_usada_mas_de_2_veces_falla(self):
+        desc = self._desc_larga_ok().replace(
+            "</p>", " Canoa de cuero, canoa de cuero y canoa de cuero.</p>", 1)
+        issues = checklist.check_reglas(self._editado(description=desc),
+                                        keywords=["canoa de cuero"])
         assert any("2 veces" in i for i in issues)
 
-    def test_sin_porque_en_secundaria_falla(self):
-        e = self._editado(secondary_keywords=[{"keyword": "kw", "why": ""},
-                                              {"keyword": "kw2", "why": "ok"}])
-        assert any("por qu" in i.lower() or "why" in i.lower() for i in checklist.check_reglas(e))
 
-    def test_keyword_principal_no_exacta_en_h1_falla(self):
-        # la keyword principal debe estar EXACTA en el H1 (regla del documento)
-        e = self._editado(h1="Sofá elegante de lujo",
-                          keyword_principal="sofá de cuero negro")
-        issues = checklist.check_reglas(e)
-        assert any("principal" in i.lower() for i in issues)
+class TestHtmlSeguro:
+    """El texto del LLM se escribe con claves REST de admin: WordPress no lo
+    filtra. Lo que el original no tenía, la edición no lo puede agregar."""
+    ORIG = '<p>Texto <a href="https://cassoni.com/x">link</a>.</p>'
 
-    def test_keyword_principal_exacta_en_h1_pasa(self):
-        e = self._editado(h1="Sofá de Cuero Negro modelo Belinda",
-                          keyword_principal="sofá de cuero negro")
-        assert checklist.check_reglas(e) == []
+    def test_igual_al_original_pasa(self):
+        assert checklist.html_inseguro(self.ORIG, self.ORIG + "<p>Más.</p>") == []
+
+    def test_script_nuevo_falla(self):
+        assert checklist.html_inseguro(self.ORIG, self.ORIG + "<script>x()</script>")
+
+    def test_iframe_nuevo_falla(self):
+        assert checklist.html_inseguro(self.ORIG, self.ORIG + '<iframe src="//x"></iframe>')
+
+    def test_atributo_de_evento_falla(self):
+        out = checklist.html_inseguro(self.ORIG, '<p onclick="x()">a</p>' + self.ORIG)
+        assert any("evento" in i for i in out)
+
+    def test_url_javascript_falla(self):
+        out = checklist.html_inseguro("", '<a href="javascript:alert(1)">a</a>')
+        assert any("javascript" in i for i in out)
+
+    def test_enlace_nuevo_falla(self):
+        out = checklist.html_inseguro(self.ORIG, self.ORIG + '<a href="https://spam.x">c</a>')
+        assert any("spam.x" in i for i in out)
+
+    def test_imagen_nueva_falla(self):
+        assert checklist.html_inseguro(self.ORIG, self.ORIG + '<img src="https://x/y.png">')
+
+    def test_check_reglas_incluye_el_html(self):
+        desc = TestReglasDuras()._desc_larga_ok() + "<script>x()</script>"
+        issues = checklist.check_reglas({"description": desc},
+                                        original_description=TestReglasDuras()._desc_larga_ok())
+        assert any("script" in i for i in issues)
 
 
 class TestRepeticion:

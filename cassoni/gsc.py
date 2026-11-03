@@ -106,9 +106,16 @@ class GSCClient:
         return out
 
     def queries_for_page(self, url: str, *, days: int = DIAS_DEFAULT,
-                         row_limit: int = FILAS_POR_FICHA) -> list[dict]:
-        """Consultas de UNA página, ordenadas por impresiones desc (no por clics)."""
-        start, end = self._ventana(days)
+                         row_limit: int = FILAS_POR_FICHA,
+                         start: Optional[dt.date] = None,
+                         end: Optional[dt.date] = None) -> list[dict]:
+        """Consultas de UNA página, ordenadas por impresiones desc (no por clics).
+        Con `start`/`end` se pide esa ventana exacta (medición antes/después);
+        si no, los últimos `days` días."""
+        if start and end:
+            start, end = start.isoformat(), end.isoformat()
+        else:
+            start, end = self._ventana(days)
         rows = self._query({
             "startDate": start, "endDate": end,
             "dimensions": ["query"],

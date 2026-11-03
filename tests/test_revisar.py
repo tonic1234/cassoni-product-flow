@@ -20,12 +20,16 @@ def _cfg(tmp_path, name="rev.db"):
 
 
 class FakeGSC:
-    def __init__(self, rows):
+    """`rows` = filas de DESPUÉS; `antes` = filas de la ventana previa."""
+    def __init__(self, rows, antes=None):
         self.rows = rows
+        self.antes = antes or []
         self.calls = []
 
-    def queries_for_page(self, url, *, days=90, row_limit=200):
-        self.calls.append({"url": url, "days": days, "row_limit": row_limit})
+    def queries_for_page(self, url, *, days=90, row_limit=200, start=None, end=None):
+        self.calls.append({"url": url, "days": days, "start": start, "end": end})
+        if start is not None and len(self.calls) == 1:
+            return list(self.antes)
         return list(self.rows)
 
 
@@ -93,45 +97,84 @@ class TestComparar:
         assert v["delta_impressions"] == 150
 
 
+import datetime as dt
+
+URL = "https://cassoni.com/product/a/"
+EDITADA = dt.datetime(2026, 9, 1, 12, 0)
+
+
+def _escrita(tmp_path, kws=("sofa modular", "club sofa")):
+    db = DB(_cfg(tmp_path))
+    pid = db.enqueue(URL, "a")
+    db.record(pid, applied=1, edited_at=EDITADA, status="processed")
+    db.guardar_objetivos(URL, [{"keyword": k} for k in kws], aplicada=True)
+    return db
+
+
 class TestRevisarUrl:
-    def test_sin_linea_base_avisa_y_no_consulta(self, tmp_path):
+    def test_sin_flujo_v2_avisa_y_no_consulta(self, tmp_path):
         db = DB(_cfg(tmp_path))
-        db.enqueue("https://cassoni.com/product/a/", "a")
+        db.enqueue(URL, "a")
         gsc = FakeGSC([])
-        out = revisar.revisar_url(db, gsc, "https://cassoni.com/product/a/")
+        out = revisar.revisar_url(db, gsc, URL)
         assert out["verdict"] == "sin_baseline"
         assert gsc.calls == []
 
-    def test_compara_contra_la_consulta_objetivo(self, tmp_path):
+    def test_una_corrida_en_seco_no_se_mide(self, tmp_path):
+        """Auditoría 3-nov: se medían fichas que nunca se escribieron."""
         db = DB(_cfg(tmp_path))
-        url = "https://cassoni.com/product/a/"
-        pid = db.enqueue(url, "a")
-        db.record(pid, baseline_keyword="sofa modular", baseline_position=12.0,
-                  baseline_impressions=300, baseline_clicks=0, baseline_ctr=0.0)
-        gsc = FakeGSC([
-            {"keyword": "otra cosa", "clicks": 9, "impressions": 999,
-             "position": 1.0, "ctr": 0.009},
-            {"keyword": "sofa modular", "clicks": 5, "impressions": 420,
-             "position": 6.0, "ctr": 0.0119},
-        ])
-        out = revisar.revisar_url(db, gsc, url, days=14)
-        assert out["verdict"] == "subio"
-        assert out["keyword"] == "sofa modular"
-        assert out["position"] == 6.0
-        assert out["days"] == 14
-        assert gsc.calls[0]["days"] == 14
-        # queda registrada la revisión
-        revs = db.reviews_for(url)
-        assert len(revs) == 1
-        assert revs[0].verdict == "subio"
+        pid = db.enqueue(URL, "a")
+        db.record(pid, status="processed")
+        db.guardar_objetivos(URL, [{"keyword": "sofa modular"}], aplicada=False)
+        out = revisar.revisar_url(db, FakeGSC([]), URL)
+        assert out["verdict"] == "sin_baseline"
 
-    def test_si_la_consulta_desaparecio_lo_dice(self, tmp_path):
-        db = DB(_cfg(tmp_path))
-        url = "https://cassoni.com/product/a/"
-        pid = db.enqueue(url, "a")
-        db.record(pid, baseline_keyword="sofa modular", baseline_position=12.0,
-                  baseline_impressions=300, baseline_clicks=0, baseline_ctr=0.0)
-        gsc = FakeGSC([{"keyword": "otra cosa", "clicks": 9, "impressions": 999,
-                        "position": 1.0, "ctr": 0.009}])
-        out = revisar.revisar_url(db, gsc, url, days=14)
-        assert out["verdict"] == "sin_datos"
+    def test_antes_de_tiempo_queda_pendiente(self, tmp_path):
+        db = _escrita(tmp_path)
+        gsc = FakeGSC([])
+        out = revisar.revisar_url(db, gsc, URL, days=14, hoy=dt.date(2026, 9, 10))
+        assert out["verdict"] == "pendiente"
+        assert gsc.calls == []
+
+    def test_ventanas_del_mismo_largo(self, tmp_path):
+        """Auditoría 3-nov: comparaba la suma de 90 días contra 14."""
+        db = _escrita(tmp_path)
+        gsc = FakeGSC([])
+        revisar.revisar_url(db, gsc, URL, days=14, hoy=dt.date(2026, 10, 1))
+        antes, despues = gsc.calls
+        assert (antes["end"] - antes["start"]).days == (despues["end"] - despues["start"]).days
+        assert antes["end"] < EDITADA.date() < despues["start"]
+
+    def test_mide_cada_keyword_objetivo(self, tmp_path):
+        db = _escrita(tmp_path)
+        gsc = FakeGSC(
+            rows=[{"keyword": "sofa modular", "clicks": 5, "impressions": 420,
+                   "position": 6.0, "ctr": 0.0119},
+                  {"keyword": "club sofa", "clicks": 1, "impressions": 80,
+                   "position": 14.0, "ctr": 0.0125}],
+            antes=[{"keyword": "sofa modular", "clicks": 0, "impressions": 300,
+                    "position": 12.0, "ctr": 0.0}])
+        out = revisar.revisar_url(db, gsc, URL, days=14, hoy=dt.date(2026, 10, 1))
+        por_kw = {m["keyword"]: m for m in out["keywords"]}
+        assert por_kw["sofa modular"]["verdict"] == "subio"
+        assert por_kw["club sofa"]["verdict"] == "subio"      # de 0 clics a 1
+        assert out["verdict"] == "subio"
+        assert len(db.reviews_for(URL)) == 2
+
+    def test_keyword_que_aparece_por_primera_vez(self, tmp_path):
+        db = _escrita(tmp_path, kws=("velvet upholstery",))
+        gsc = FakeGSC(rows=[{"keyword": "velvet upholstery", "clicks": 0,
+                             "impressions": 50, "position": 30.0, "ctr": 0}])
+        out = revisar.revisar_url(db, gsc, URL, days=14, hoy=dt.date(2026, 10, 1))
+        assert out["keywords"][0]["verdict"] == "aparecio"
+
+    def test_si_no_hay_datos_lo_dice(self, tmp_path):
+        db = _escrita(tmp_path, kws=("sofa modular",))
+        out = revisar.revisar_url(db, FakeGSC([]), URL, days=14, hoy=dt.date(2026, 10, 1))
+        assert out["keywords"][0]["verdict"] == "sin_datos"
+
+    def test_lote_solo_toma_las_escritas(self, tmp_path):
+        db = _escrita(tmp_path)
+        db.enqueue("https://cassoni.com/product/seco/", "seco")
+        res = revisar.revisar_lote(db, FakeGSC([]), days=14)
+        assert [r["url"] for r in res] == [URL]

@@ -6,13 +6,15 @@ La spec (docs/REGLA-SEO-FICHAS.md + cassoni/reglas.py) tiene dos naturalezas:
 - reglas MECÁNICAS (longitudes, conteos, repeticiones, anti-canibalización) → acá,
   deterministas y testeables, para que el gate no dependa de la suerte del prompt.
 
-check_reglas(editado) -> list[str]  (issues; vacío = pasa)
+check_reglas(editado, original, keywords) -> list[str]  (issues; vacío = pasa)
+html_inseguro(original, editado) -> list[str]
 filtrar_canibalizacion(candidatas, principals_ya_usadas, categorias, blogs_guia) -> dict
 """
 from __future__ import annotations
 
 import re
 import unicodedata
+from html.parser import HTMLParser
 from typing import Iterable
 
 from . import reglas
@@ -169,31 +171,75 @@ def palabra_dominante(html: str, max_apariciones: int | None = None) -> str:
     return top if n > limite else ""
 
 
-def check_reglas(editado: dict, original_description: str = "") -> list[str]:
-    """Devuelve la lista de issues (vacía si cumple TODO). `editado` es el output
-    estructurado del editor (alcance: SOLO H1 + descripción larga):
-    {h1, keyword_principal, description, secondary_keywords:[{keyword,why}],
-    discarded:[...]}. `original_description`: si se pasa, también se verifica
-    que la edición conserve lo esencial del texto original (no reescribir)."""
+# --- HTML seguro ---
+_TAGS_PROHIBIDOS = {"script", "iframe", "object", "embed", "style", "form", "input",
+                    "button", "link", "meta", "base", "frame", "frameset", "svg", "math"}
+
+
+class _Tags(HTMLParser):
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.tags: dict[str, int] = {}
+        self.eventos: list[str] = []
+        self.urls_peligrosas: list[str] = []
+        self.links: set[str] = set()
+        self.imagenes: set[str] = set()
+
+    def handle_starttag(self, tag, attrs):
+        self.tags[tag] = self.tags.get(tag, 0) + 1
+        for nombre, valor in attrs:
+            nombre, valor = (nombre or "").lower(), (valor or "").strip()
+            if nombre.startswith("on"):
+                self.eventos.append(f"{tag} {nombre}")
+            if nombre in ("href", "src", "action", "formaction", "srcset"):
+                if re.match(r"^\s*(javascript|data|vbscript):", valor, re.I):
+                    self.urls_peligrosas.append(valor[:60])
+                if nombre == "href":
+                    self.links.add(valor)
+                elif nombre == "src":
+                    self.imagenes.add(valor)
+
+
+def _tags(html: str) -> _Tags:
+    p = _Tags()
+    try:
+        p.feed(html or "")
+    except Exception:
+        pass
+    return p
+
+
+def html_inseguro(original: str, editado: str) -> list[str]:
+    """Lo que la edición agregó al HTML y no puede llegar a la tienda. El texto del
+    LLM se escribe con claves REST de admin: WordPress NO lo filtra."""
+    o, e = _tags(original), _tags(editado)
+    issues = []
+    for tag in sorted(_TAGS_PROHIBIDOS):
+        if e.tags.get(tag, 0) > o.tags.get(tag, 0):
+            issues.append(f"El HTML agrega una etiqueta prohibida <{tag}>")
+    if e.eventos:
+        issues.append(f"El HTML tiene atributos de evento ({', '.join(e.eventos[:3])})")
+    if e.urls_peligrosas:
+        issues.append("El HTML tiene URLs javascript:/data:")
+    nuevos = sorted(e.links - o.links)
+    if nuevos:
+        issues.append(f"La edición agrega enlaces que no estaban: {', '.join(nuevos[:3])}")
+    if e.imagenes - o.imagenes:
+        issues.append("La edición agrega imágenes que no estaban")
+    return issues
+
+
+def check_reglas(editado: dict, original_description: str = "",
+                 keywords: Iterable[str] = ()) -> list[str]:
+    """Issues de la edición (vacía = cumple TODO). Alcance: SOLO la descripción
+    larga (el H1 lo arma cassoni/h1.py por plantilla).
+    `editado`: {description, ...}. `keywords`: las keywords objetivo, que tienen
+    que quedar EXACTAS en la descripción (la pizarra: "detectar que esté o no
+    esté esa kw")."""
     issues: list[str] = []
-    h1 = (editado.get("h1") or "").strip()
-    principal = norm(editado.get("keyword_principal") or "")
     desc = editado.get("description") or ""
-    secs = editado.get("secondary_keywords") or []
+    plain_desc = strip_html(desc)
 
-    # H1: máx 60 caracteres
-    if len(h1) > reglas.H1_MAX_CHARS:
-        issues.append(f"H1 supera los {reglas.H1_MAX_CHARS} caracteres "
-                      f"(tiene {len(h1)})")
-
-    # keyword principal EXACTA en el H1
-    if principal:
-        if not kw_exacta_en(h1, principal):
-            issues.append("La keyword principal no está EXACTA en el H1")
-    else:
-        issues.append("Falta la keyword principal (keyword_principal)")
-
-    # descripción larga: 150-300 palabras
     wc = word_count(desc)
     if wc < reglas.LARGA_MIN_WORDS:
         issues.append(f"La descripción larga no llega a las {reglas.LARGA_MIN_WORDS} "
@@ -202,7 +248,6 @@ def check_reglas(editado: dict, original_description: str = "") -> list[str]:
         issues.append(f"La descripción larga supera las {reglas.LARGA_MAX_WORDS} "
                       f"palabras (tiene {wc})")
 
-    # conservación del texto original (nunca reescribir desde cero)
     if original_description:
         ratio = conservacion(original_description, desc)
         if ratio < reglas.CONSERVACION_MIN:
@@ -211,7 +256,6 @@ def check_reglas(editado: dict, original_description: str = "") -> list[str]:
                 f"{ratio:.0%} de las oraciones del original "
                 f"(mínimo {reglas.CONSERVACION_MIN:.0%})")
 
-    # anti-repetición: una misma palabra no puede dominar el texto
     dominante = palabra_dominante(desc)
     if dominante:
         issues.append(
@@ -219,31 +263,23 @@ def check_reglas(editado: dict, original_description: str = "") -> list[str]:
             f"(más de {reglas.REPETICION_MAX_PALABRA} veces, 'sofa sofa sofa' está "
             f"prohibido)")
 
-    # descripción larga: máx 2 H2
     h2c = h2_count(desc)
     if h2c > reglas.MAX_H2:
         issues.append(f"La descripción larga tiene más de {reglas.MAX_H2} H2 "
                       f"(tiene {h2c})")
 
-    # secundarias: 2-3, cada una con su porqué y máx 2 usos
-    if len(secs) < reglas.SEC_MIN:
-        issues.append(f"Se necesitan {reglas.SEC_MIN} a {reglas.SEC_MAX} keywords "
-                      f"secundarias (hay {len(secs)})")
-    if len(secs) > reglas.SEC_MAX:
-        issues.append(f"Máximo {reglas.SEC_MAX} keywords secundarias (hay {len(secs)})")
-    plain_desc = strip_html(desc)
-    for s in secs:
-        kw = (s.get("keyword") or "").strip()
-        why = (s.get("why") or "").strip()
+    for kw in keywords:
+        kw = (kw or "").strip()
         if not kw:
-            issues.append("Hay una secundaria sin keyword")
-        if not why:
-            issues.append(f"La secundaria '{kw}' no explica por qué es específica")
-        usos = usos_de(kw, plain_desc) if kw else 0
-        if usos > reglas.SEC_MAX_USOS:
-            issues.append(f"La secundaria '{kw}' aparece más de {reglas.SEC_MAX_USOS} "
+            continue
+        usos = usos_de(kw, plain_desc)
+        if usos == 0:
+            issues.append(f"La keyword '{kw}' no quedó EXACTA en la descripción")
+        elif usos > reglas.SEC_MAX_USOS:
+            issues.append(f"La keyword '{kw}' aparece más de {reglas.SEC_MAX_USOS} "
                           f"veces (aparece {usos})")
 
+    issues.extend(html_inseguro(original_description, desc))
     return issues
 
 

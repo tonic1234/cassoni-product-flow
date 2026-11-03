@@ -5,6 +5,7 @@
 ```bash
 python3 -m venv venv && ./venv/bin/pip install -r requirements.txt
 cp .env.staging.example .env.staging   # completar credenciales (nunca en git)
+cp .env.staging.example .env.prod      # idem, con la base de la tienda real
 ```
 
 El service account de GSC va en `creds/gsc-service-account.json` (0600). Tiene que
@@ -14,113 +15,121 @@ tener la propiedad `sc-domain:cassoni.com` compartida como **Restringido**. El p
 Las rutas relativas del `.env` se resuelven contra la carpeta del `.env`, no contra
 el directorio desde el que se corre el comando.
 
-## Los cuatro comandos
+### Staging nunca apunta a producción
+
+`--env staging` con `CASSONI_WC_BASE=https://cassoni.com` **se rechaza** (pasaba: el
+preflight del 2-nov corrió así, y un `--write` habría escrito en la tienda real).
+Para leer producción en seco se usa `--env prod`, que es dry-run por defecto. Los
+hosts de producción se configuran con `CASSONI_PROD_HOSTS` (por defecto
+`cassoni.com,www.cassoni.com`).
+
+## El flujo del día
+
+1. SEO agrega URLs al final de `lista.txt` (una por línea, `#` = comentario).
+2. El agente toma las pendientes, **hasta 10 por día**, en horario hábil y con
+   pausas aleatorias.
+3. Cada ficha: H1 `{Nombre} by {Marca}` + 3 keywords que faltaban en la
+   descripción larga. Si se escribió, no se vuelve a tocar.
 
 ```bash
 # 1) ¿está todo conectado? No gasta LLM.
 ./venv/bin/python -m cassoni.cli --env prod --preflight
 
-# 2) elegir el trabajo (escribe evidencia/lote-<fecha>-<N>.json)
-./venv/bin/python -m cassoni.cli --env prod --seleccionar 20 --days 90 --pausa 1
+# 2) probar la lista en seco (no toca el sitio)
+./venv/bin/python -m cassoni.cli --env prod --urls lista.txt --batch 10
 
-# 3) procesar (DRY-RUN por defecto: no toca el sitio)
-./venv/bin/python -m cassoni.cli --env prod --urls lote.txt --batch 20
+# 3) el goteo diario, escribiendo de verdad
+./venv/bin/python -m cassoni.cli --env prod --urls lista.txt --write --scheduler
 
-# 4) escribir de verdad (exige que el validador apruebe, ficha por ficha)
-./venv/bin/python -m cassoni.cli --env prod --urls lote.txt --write --scheduler
-
-# 5) medir el efecto
+# 4) medir el efecto de cada keyword
 ./venv/bin/python -m cassoni.cli --env prod --revisar --days 14
+./venv/bin/python -m cassoni.cli --env prod --revisar --days 28
+
+# rehacer una ficha ya escrita (por defecto se saltea)
+./venv/bin/python -m cassoni.cli --env prod --urls una.txt --write --forzar
 ```
+
+`--seleccionar N` sigue disponible para que el agente *proponga* fichas desde GSC,
+pero la lista que manda es la de SEO.
+
+## Cron (no instalado todavía)
+
+Correrlo varias veces en el día es seguro: el cupo diario y el estado viven en
+`cassoni_sched.json`. Ejemplo para el servidor:
+
+```cron
+# lun-vie, cada hora de 9 a 17: procesa lo que falte del cupo del día
+0 9-17 * * 1-5  cd /root/cassoni-agent && ./venv/bin/python -m cassoni.cli --env prod --urls lista.txt --write --scheduler >> logs/agente.log 2>&1
+# lunes 8:00: medición semanal a 14 y 28 días
+0 8 * * 1       cd /root/cassoni-agent && ./venv/bin/python -m cassoni.cli --env prod --revisar --days 14 >> logs/revisar.log 2>&1
+```
+
+Recomendado: correrlo con un usuario sin privilegios en vez de `root`.
 
 ## Qué mirar en la salida
 
 ```
-Resultados: {'processed': 17, 'rejected': 2, 'skipped': 1}
-Resumen DB: {'total': 20, 'processed': 17, 'rejected': 2, 'failed': 0, ...}
+  ✓ processed https://cassoni.com/product/cas-cprn-pedro-sofa-01/
+       H1 → Pedro Sofa by Cassoni
+       keywords → leather chesterfield (1900), pedro modular (90), tufted back (s/d)
+       (escrita)
+Resultados: {'processed': 8, 'rejected': 1, 'skipped': 1}
+Costo LLM: US$ 0.1600 · 24 llamadas · ...
+Costo DataForSEO: US$ 0.0750
 ```
 
-- `processed` = aprobada **y** aplicada.
-- `rejected` = el gate la frenó. El motivo de cada rechazo queda en
-  `validation_result.issues` de la DB y se imprime en la consola.
-- `skipped` = no correspondía (draft, sin consultas en GSC, URL que no es ficha).
-
-Un lote sano no debe tener `failed`. Si hay `failed`, es un error técnico y el
-mensaje dice de qué pieza (WooCommerce, GSC o LLM).
-
-## Ritmo
-
-`--scheduler` procesa de 9 a 18 (lun-vie) con pausas aleatorias de 30 s a 5 min, y
-reanuda al día siguiente lo que quedó pendiente (`cassoni_sched.json`). El objetivo
-por defecto es 50 fichas/día.
-
-**No hay ningún cron ni timer instalado todavía.** El plan de puesta en marcha
-contempla un timer de systemd, pero hasta que exista y esté verificado, el agente
-corre sólo cuando alguien ejecuta el comando. No se documenta como automático lo que
-no lo es.
-
-## Credenciales
-
-| Qué | Dónde | Permiso |
+| Estado | Qué significa | Qué pasa mañana |
 |---|---|---|
-| GSC | `creds/gsc-service-account.json` | lectura (`webmasters.readonly`) |
-| WooCommerce | `.env.<env>` `CASSONI_WC_KEY/SECRET` | lectura + escritura de productos |
-| DataForSEO | `.env.<env>` `CASSONI_DFS_LOGIN/PASSWORD` | lectura |
-| LLM | `.env.<env>` `CASSONI_LLM_*` | API oficial de DeepSeek |
+| `processed` | aprobada; escrita con `--write` (o lista para escribir en seco) | hecha |
+| `rejected` | el validador la frenó; **no se escribe**; motivo en `reason` | se reintenta 1 vez más, después queda *abandonada* |
+| `skipped` | no corresponde (draft, ya editada, URL que no es ficha) | hecha |
+| `failed` | error técnico (WooCommerce, GSC, LLM); motivo en `reason` | se reintenta 1 vez más |
+
+Las abandonadas quedan en `cassoni_sched.json` → `abandonadas` para que SEO las mire.
+
+## Credenciales y variables
+
+| Variable | Para qué | Por defecto |
+|---|---|---|
+| `CASSONI_WC_BASE/KEY/SECRET` | WooCommerce (lectura + escritura de productos) | — |
+| `CASSONI_GSC_SERVICE_ACCOUNT_FILE`, `CASSONI_GSC_SITE` | GSC, sólo lectura | `sc-domain:cassoni.com` |
+| `CASSONI_DFS_LOGIN/PASSWORD` | DataForSEO: volumen + resultados orgánicos | — |
+| `CASSONI_DFS_LOCATION` / `CASSONI_DFS_LANGUAGE` | mercado de DataForSEO | `2840` (EE.UU.) / `en` |
+| `CASSONI_DFS_MIN_VOLUMEN` | volumen mínimo de una keyword | `10` |
+| `CASSONI_DFS_CACHE_DIAS` | vigencia de la caché de volumen | `30` |
+| `CASSONI_FICHAS_POR_DIA` | cupo diario del scheduler | `10` |
+| `CASSONI_PROD_HOSTS` | hosts que `--env staging` no puede usar | `cassoni.com,www.cassoni.com` |
+| `CASSONI_LLM_*` | editor y validador | — |
 
 `bash scripts/verify.sh` falla si aparece una credencial en texto plano en el repo.
 
-## Costos
+## Costos (medidos, no estimados)
 
-- GSC: gratis (cuota de API).
-- DataForSEO: se cobra por request de volumen; hoy el CLI no lo usa (el mapper es
-  opcional) y el lote se arma sólo con GSC.
-- LLM: ~1 a 2 minutos de `deepseek-flash` por ficha, con hasta 2 pases de
-  validador. La columna `llm_cost` de la DB existe pero **todavía no se llena**: el
-  costo real por ficha se mide con el panel del proveedor, no con la traza. Es una
-  deuda declarada, no un dato que se pueda citar.
+- **LLM**: cada llamada guarda su `usage`; la ficha registra `llm_tokens_in/out` y
+  `llm_cost`. Precios en `cassoni/costos.py`.
+- **DataForSEO**: el costo que informa la API se suma por corrida y por ficha
+  (`dfs_cost`). El volumen se pide **una vez por lote** (hasta 1.000 keywords por
+  pedido) y queda en caché 30 días. Los resultados orgánicos (competidores) se
+  piden solo para las fichas a las que GSC no les dio 3 keywords.
+- **GSC**: gratis (cuota de API).
 
 ## Cuando algo falla
 
 | Síntoma | Causa más probable | Qué hacer |
 |---|---|---|
-| `FALTAN credenciales` | `.env` incompleto | completar y volver a correr `--preflight` |
+| `Configuración inválida ... apunta a PRODUCCIÓN` | `.env.staging` con la base real | usar `--env prod` o una base de staging |
+| `Configuración inválida ... CASSONI_*` | `.env` incompleto | completar y correr `--preflight` |
 | GSC `403` | se usó `https://cassoni.com/` como sitio | usar `sc-domain:cassoni.com` |
-| GSC `FileNotFoundError` | service account en ruta relativa y cwd distinto | correr desde la raíz del repo (ya resuelto desde 2-nov) |
-| Todo `rejected` | la ficha no tiene insumo para llegar a 150 palabras, o el validador ve datos que no están en la ficha | leer `validation_result.issues`; ver D-008 |
-| `failed: editor LLM` | cuota, clave o timeout del proveedor | revisar `--preflight` (ping a `/models`) |
-| WooCommerce `401` | clave sin permiso de escritura | pedir clave read+write |
-
-## Costos (medidos, no estimados)
-
-Cada llamada al LLM devuelve su `usage`; el agente lo guarda por ficha
-(`llm_tokens_in`, `llm_tokens_out`, `llm_cost`) y muestra el total de la corrida al
-terminar:
-
-```
-Costo LLM: US$ 0.2071 · 42 llamadas · 96.400 tokens entrada · 21.300 salida
-```
-
-El cálculo usa los precios oficiales de `deepseek-flash` (USD por 1M tokens, tarifa
-**peak**, el peor caso): entrada cache miss **0,30**, cache hit **0,006**, salida
-**1,20**. Fuente: `api-docs.deepseek.com/quick_start/pricing`. Los precios viven en
-`cassoni/costos.py` con tests propios.
-
-GSC y el catálogo no tienen costo. DataForSEO sólo gasta si se activa el mapper de
-volumen, que hoy el CLI no usa.
+| `skipped: ya editada` | la ficha ya se escribió | es lo esperado; `--forzar` si hay que rehacerla |
+| Muchas `processed` con "solo H1" | ninguna keyword con volumen falta en la descripción | revisar `selection_reason` en la DB |
+| `rejected` por HTML | la edición agregó un enlace, script o imagen | el gate funciona; no se escribe |
+| `failed: LLM` | cuota, clave o timeout del proveedor | `--preflight` (ping a `/models`) |
+| `failed: escritura WooCommerce` | clave sin permiso de escritura o caída | pedir clave read+write / reintentar |
 
 ## Muestra para validar con el cliente
 
 ```bash
-# 1) correr las fichas elegidas (dry-run: no toca el sitio)
 ./venv/bin/python -m cassoni.cli --env prod --urls muestra.txt --batch 10 --db sqlite:///muestra.db
-
-# 2) exportar la base interna a JSON auditable
 ./venv/bin/python tools/exportar_muestra.py --db sqlite:///muestra.db --out muestra.json
-
-# 3) generar la página de revisión (antes/después, de dónde salió cada dato, costo)
 ./venv/bin/python tools/generar_muestra.py --json muestra.json --out index.html
 ```
-
-La página no se publica sola: se copia al webroot y se le agrega el handle de Caddy
-con `Cache-Control: no-cache` (ver `case-web-publishing`).

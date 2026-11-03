@@ -1,24 +1,26 @@
 # -*- coding: utf-8 -*-
-"""Test end-to-end del orquestador: ciclo completo con clientes mockeados.
+"""Test end-to-end del orquestador (flujo v2, equipo SEO 3-nov-2026).
 
-CONTRATO NUEVO (18-sep-2026, spec "Reglas de contenido SEO para fichas de
-producto"): el editor devuelve ficha completa {h1, short_description,
-description, keyword_principal, secondary_keywords, discarded}; el validador
-corre reglas mecánicas (checklist) ANTES del LLM; el update de WooCommerce
-incluye short_description; el pipeline recibe categorías/marca/atributos y las
-keywords ya usadas de fichas hermanas (anti-canibalización). Los tests viejos se
-actualizaron a este contrato con OK explícito: manda la spec.
+    H1 = "{Nombre} by {Marca}" (plantilla, sin LLM) en el campo name
+    3 keywords: GSC + volumen DFS, solo las que NO están en la descripción
+    si faltan: el mismo producto en competidores mejor posicionados
+    anti-canibalización: hermanas, categorías y keywords ya escritas en otras fichas
+    idempotencia: una ficha escrita no se vuelve a editar salvo --forzar
+
+Todo con fakes: sin red, sin LLM real.
 """
-import pytest
+import re
 
 from cassoni.config import Config
 from cassoni.db import DB
 from cassoni.orchestrator import Pipeline
 
-# --- descripción larga spec-compliant del fake: edición quirúrgica del original
-# --- ("Elegante sofá de cuero negro.") + relleno hasta >=150 palabras, 2 H2 ---
+URL = "https://x.com/product/cas-cprn-pedro-sofa-01/"
+
+# descripción ORIGINAL de >150 palabras: el editor fake solo AGREGA una oración,
+# así la conservación queda en 100% y el largo dentro de 150-300
 _FRASES = [
-    "Elegante sofá de cuero negro.",   # oración del ORIGINAL: debe sobrevivir intacta
+    "Elegante sofá de cuero negro.",
     "Diseñado en líneas sobrias, este mueble combina estructura de madera maciza "
     "con tapicería de cuero, y cada costura queda rematada a mano.",
     "El respaldo ofrece un descanso profundo, los apoyabrazos redondeados completan "
@@ -32,8 +34,8 @@ _FRASES = [
     "Cada unidad pasa por un control de calidad previo al despacho, se embala con "
     "protección en todas sus aristas y el transportista coordina la recepción con el cliente.",
 ]
-_DESC_OK = ("<h2>Diseño</h2><p>" + " ".join(_FRASES[:4]) + "</p>"
-            "<h2>Materiales</h2><p>" + " ".join(_FRASES[4:]) + "</p>")
+DESC_ORIG = ("<h2>Diseño</h2><p>" + " ".join(_FRASES[:4]) + "</p>"
+             "<h2>Materiales</h2><p>" + " ".join(_FRASES[4:]) + "</p>")
 
 
 class FakeWoo:
@@ -41,338 +43,355 @@ class FakeWoo:
         self.product = {
             "id": 120563, "name": "Pedro Sofá", "slug": "cas-cprn-pedro-sofa-01",
             "status": "publish", "type": "simple",
-            "permalink": "https://x.com/product/cas-cprn-pedro-sofa-01",
+            "permalink": URL,
             "short_description": "Elegante sofá de cuero negro.",
-            "description": "<p>Elegante sofá de cuero negro.</p>",
+            "description": DESC_ORIG,
             "categories": [{"id": 5, "name": "Sofas"}],
-            "attributes": [{"name": "Marca", "options": ["Cassoni"]},
-                           {"name": "Material", "options": ["Cuero"]}],
+            "brands": [{"id": 1, "name": "Cassoni"}],
+            "attributes": [{"name": "Material", "options": ["Cuero"]}],
         }
         self.writes = []
         self.sibling_calls = []
+        self.falla_escritura = None
+
     def get_product_by_slug(self, slug):
         assert slug == "cas-cprn-pedro-sofa-01"
         return self.product
-    def get_variations(self, product):
-        return [] if product["type"] != "variable" else []
+
     def products_by_category(self, category_id, per_page=100):
         self.sibling_calls.append(category_id)
         return [{"id": 120563, "name": "Pedro Sofá", "slug": "p1"},
-                {"id": 999, "name": "Otro Sofá Belinda", "slug": "p2"}]
+                {"id": 999, "name": "sofá belinda", "slug": "p2"}]
+
     def update_product(self, product_id, *, name, description, allowed=True):
+        if self.falla_escritura:
+            raise self.falla_escritura
         self.writes.append((name, description))
         return {"id": product_id, "name": name}
 
 
+def _q(kw, impr=100, pos=8.0, clics=2):
+    return {"keyword": kw, "clicks": clics, "impressions": impr, "position": pos,
+            "ctr": clics / impr if impr else 0}
+
+
 class FakeGSC:
-    def top_keywords_for_url(self, url, *, days=365, row_limit=10):
-        return [{"keyword": "sofá de cuero", "clicks": 5, "impressions": 100,
-                 "position": 8, "ctr": 0.05},
-                {"keyword": "sofá de lujo", "clicks": 3, "impressions": 80,
-                 "position": 10, "ctr": 0.04}]
+    def __init__(self, filas=None):
+        self.filas = filas if filas is not None else [
+            _q("sofá de cuero", 900),            # ya está en la descripción
+            _q("sofá chesterfield", 400),
+            _q("pedro modular", 300),
+            _q("cuero capitoné", 200),
+            _q("mesa de comedor", 500),          # no es de este producto
+        ]
+        self.llamadas = 0
+
+    def top_keywords_for_url(self, url, **kw):
+        self.llamadas += 1
+        return list(self.filas)
+
+
+class FakeVolumenes:
+    def __init__(self, vol):
+        self.vol = vol
+        self.pedidos = []
+        self.costo_usd = 0.0
+
+    def obtener(self, kws):
+        kws = list(kws)
+        self.pedidos.append(kws)
+        self.costo_usd += 0.075
+        return {k: {"volume": self.vol.get(k)} for k in kws}
+
+    def anotar(self, filas):
+        return [{**f, "volume": self.vol.get(f["keyword"])} for f in filas]
+
+
+class FakeCompetidores:
+    def __init__(self, paginas):
+        self.paginas = paginas
+        self.consultas = []
+
+    def buscar(self, consulta, n=3):
+        self.consultas.append(consulta)
+        return self.paginas
+
+
+def _objetivo(user):
+    bloque = user.split("KEYWORDS OBJETIVO")[1].split("Responde SOLO")[0]
+    return re.findall(r"^- (.+?) \(volumen", bloque, flags=re.M)
 
 
 class FakeLLM:
-    def __init__(self):
-        self.calls = 0
-        self.last_user = ""
+    """Editor: agrega UNA oración con todas las keywords. Validador: aprueba."""
+
+    def __init__(self, aprueba=True):
+        self.aprueba = aprueba
         self.editor_user = ""
-    def complete(self, system, user, **kw):
-        return ""
-    def complete_json(self, system, user, *, model=None, temperature=0.2,
-                      max_tokens=1800):
+        self.calls = 0
+
+    def complete_json(self, system, user, **kw):
         self.calls += 1
-        self.last_user = user
-        if "control de calidad" in system.lower() or "Eval" in system:
-            self.editor_user = self.editor_user  # el call anterior fue el editor
-            return {"aprobado": True, "issues": [], "keywords_presentes": ["sofá de cuero"],
-                    "tono_lujo": True, "razon": "ok"}
+        if "control de calidad" in system.lower():
+            return {"aprobado": self.aprueba, "issues": [] if self.aprueba else ["tono"],
+                    "razon": "ok" if self.aprueba else "no"}
         self.editor_user = user
-        return {
-            "h1": "Sofá de cuero Cassoni Pedro Sofá",
-            "keyword_principal": "sofá de cuero",
-            "description": _DESC_OK,
-            "secondary_keywords": [
-                {"keyword": "sofá de lujo", "why": "variante de uso"},
-                {"keyword": "sofá de cuero negro", "why": "por material y acabado"}],
-            "discarded": [{"keyword": "sofá de la colección hermana",
-                           "belongs_to": "otra ficha"}],
-            "used_keywords": ["sofá de cuero", "sofá de lujo"],
-            "selection_reason": "la de mayor volumen",
-        }
+        kws = _objetivo(user)
+        frase = "Pensado como " + ", ".join(kws) + "."
+        desc = user.split("Descripción larga actual (HTML, la que hay que editar):\n")[1]
+        desc = desc.split("\n\nKEYWORDS OBJETIVO")[0]
+        return {"description": desc.replace("</p>", f" {frase}</p>", 1),
+                "keywords": [{"keyword": k, "why": "x"} for k in kws]}
+
+    def consumo(self):
+        return {"tokens_in": 100 * self.calls, "tokens_out": 50 * self.calls,
+                "usd": 0.001 * self.calls, "llamadas": self.calls}
 
 
 def _cfg(tmp_path, dry_run=True):
     c = Config(env="staging", dry_run=dry_run)
     c.db_url = f"sqlite:///{tmp_path}/e2e.db"
-    c.gsc_service_account_file = str(tmp_path / "x")
     c.llm_editor_model = "editor"
     c.llm_validator_model = "validator"
     return c
 
 
-def _pipeline(tmp_path, dry_run=True):
+VOL = {"sofá chesterfield": 1900, "pedro modular": 90,
+       "cuero capitoné": 40, "mesa de comedor": 5000}
+
+
+def _pipeline(tmp_path, dry_run=True, gsc=None, vol=VOL, competidores=None,
+              aprueba=True, forzar=False, db=None):
     cfg = _cfg(tmp_path, dry_run)
-    db = DB(cfg)
-    llm = FakeLLM()
     from cassoni.editor import Editor
-    editor = Editor(cfg, llm)
-    return Pipeline(cfg, db=db, woo=FakeWoo(), gsc=FakeGSC(), llm=llm,
-                    editor=editor, dry_run=dry_run)
+    llm = FakeLLM(aprueba)
+    return Pipeline(cfg, db=db or DB(cfg), woo=FakeWoo(), gsc=gsc or FakeGSC(),
+                    volumenes=FakeVolumenes(vol) if vol is not None else None,
+                    competidores=competidores, llm=llm, editor=Editor(cfg, llm),
+                    dry_run=dry_run, forzar=forzar)
 
 
-def test_e2e_dry_run(tmp_path):
-    pipe = _pipeline(tmp_path, dry_run=True)
-    res = pipe.process("https://x.com/product/cas-cprn-pedro-sofa-01/")
-    assert res.status == "processed"
-    assert res.aprobado is True
-    assert res.aplicado is True          # dry_run registra el intento
-    assert "Sofá de cuero" in res.edited_h1
-    # el FakeWoo no recibió writes porque el orquestador en dry_run no llama update
-    assert pipe.woo.writes == []
-    # DB guardó antes/despues
-    row = pipe.db.get_state(res.url)
-    assert row.edited_h1 == res.edited_h1
-    assert row.original_h1 == "Pedro Sofá"
-
-
-def test_e2e_write_enabled(tmp_path):
+# --- H1 por plantilla ---------------------------------------------------------
+def test_h1_es_nombre_by_marca(tmp_path):
     pipe = _pipeline(tmp_path, dry_run=False)
-    res = pipe.process("https://x.com/product/cas-cprn-pedro-sofa-01/")
+    res = pipe.process(URL)
     assert res.status == "processed"
-    assert res.aplicado is True
-    assert len(pipe.woo.writes) == 1
-    name, desc = pipe.woo.writes[0]
-    assert name == res.edited_h1
-    assert desc == res.edited_description
+    assert res.edited_h1 == "Pedro Sofá by Cassoni"
+    assert pipe.woo.writes[0][0] == "Pedro Sofá by Cassoni"     # va al campo name
 
 
-def test_e2e_editor_recibe_contexto_anti_canibalizacion(tmp_path):
-    # (spec 18-sep) el editor recibe fichas hermanas para no canibalizar
-    pipe = _pipeline(tmp_path, dry_run=True)
-    pipe.process("https://x.com/product/cas-cprn-pedro-sofa-01/")
-    assert pipe.woo.sibling_calls == [5]       # categoría del producto
-    assert "Otro Sofá Belinda" in pipe.editor.llm.editor_user
-    assert "Categoría(s): Sofas" in pipe.editor.llm.editor_user
-    assert "Marca: Cassoni" in pipe.editor.llm.editor_user
-    assert "Material: Cuero" in pipe.editor.llm.editor_user
-
-
-def test_e2e_filtro_canibalizacion_filtra_categoria(tmp_path):
-    # (spec 18-sep: nunca descartar asumiendo — el filtro usa las categorías REALES)
-    pipe = _pipeline(tmp_path, dry_run=True)
-    class GscConCategoria:
-        def top_keywords_for_url(self, url, **kw):
-            return [{"keyword": "sofas", "clicks": 9, "impressions": 900,
-                     "position": 5, "ctr": 0.06},
-                    {"keyword": "sofá de cuero", "clicks": 5, "impressions": 100,
-                     "position": 8, "ctr": 0.05}]
-    pipe.gsc = GscConCategoria()
-    res = pipe.process("https://x.com/product/cas-cprn-pedro-sofa-01/")
-    assert res.status == "processed"
-    # "sofas" == categoría real del producto -> descartada; la específica pasa
-    assert "sofá de cuero" in pipe.editor.llm.editor_user
-    assert "\n- sofas " not in pipe.editor.llm.editor_user
-
-
-def test_e2e_sku_publish_filter(tmp_path):
-    pipe = _pipeline(tmp_path, dry_run=True)
-    pipe.woo.product["status"] = "draft"
-    res = pipe.process("https://x.com/product/cas-cprn-pedro-sofa-01/")
-    assert res.status == "skipped"
-    assert "draft" in res.reason
-
-
-def test_e2e_gsc_empty_skips(tmp_path):
-    pipe = _pipeline(tmp_path, dry_run=True)
-    class SilentGSC:
-        def top_keywords_for_url(self, url, **kw):
-            return []
-    pipe.gsc = SilentGSC()
-    res = pipe.process("https://x.com/product/cas-cprn-pedro-sofa-01/")
-    assert res.status == "skipped"
-    assert "sin keywords" in res.reason
-
-
-def test_e2e_non_product_url(tmp_path):
+def test_el_llm_no_decide_el_h1(tmp_path):
     pipe = _pipeline(tmp_path)
-    res = pipe.process("https://x.com/product-category/sofas/")
-    assert res.status == "skipped"
+    pipe.process(URL)
+    assert "H1 (fijo, NO se edita): Pedro Sofá by Cassoni" in pipe.llm.editor_user
 
-def test_e2e_la_principal_sale_de_la_oportunidad_no_del_volumen(tmp_path):
-    """Auditoría 13-oct: la principal era candidates[0] por volumen de DataForSEO.
-    La consulta que ya está en el top no tiene nada que ganar; la que está en
-    posición 12 con demanda es la que se trabaja."""
-    pipe = _pipeline(tmp_path, dry_run=True)
 
-    class GscConOportunidad:
-        def top_keywords_for_url(self, url, **kw):
-            return [
-                # 5.000 impresiones, posición 2: ya rankea (hold_top)
-                {"keyword": "sofá de cuero", "clicks": 400, "impressions": 5000,
-                 "position": 2.0, "ctr": 0.08},
-                # 300 impresiones, posición 12: demanda que se puede materializar
-                {"keyword": "sofá modular de lujo", "clicks": 0, "impressions": 300,
-                 "position": 12.0, "ctr": 0.0},
-            ]
+# --- selección de keywords ----------------------------------------------------
+def test_tres_keywords_con_volumen_que_no_estan_en_la_descripcion(tmp_path):
+    pipe = _pipeline(tmp_path)
+    res = pipe.process(URL)
+    elegidas = [k["keyword"] for k in res.selected]
+    assert len(elegidas) == 3
+    assert "sofá de cuero" not in elegidas           # ya estaba en la descripción
+    assert "mesa de comedor" not in elegidas         # no es de este producto
+    assert elegidas[0] == "sofá chesterfield"        # la de más volumen primero
 
-    pipe.gsc = GscConOportunidad()
-    res = pipe.process("https://x.com/product/cas-cprn-pedro-sofa-01/")
+
+def test_sin_volumen_alcanza_con_impresiones_reales(tmp_path):
+    pipe = _pipeline(tmp_path, vol={})               # DFS no informa nada
+    res = pipe.process(URL)
     assert res.status == "processed"
-    prompt = pipe.editor.llm.editor_user
-    assert "KEYWORD PRINCIPAL" in prompt
-    linea = prompt.split("KEYWORD PRINCIPAL (obligatoria, EXACTA en el H1):")[1].split("\n")[1]
-    assert linea.strip() == "sofá modular de lujo"
-    # y la de-posición-2 NO entra como secundaria: comparten la palabra 'sofá' y la
-    # diversidad ahora respeta la oportunidad (antes ordenaba por volumen y la revetía)
-    bloque = prompt.split("Keywords candidatas")[1].split("Keywords ya usadas")[0]
-    assert "sofá modular de lujo" in bloque
-    assert "sofá de cuero" not in bloque
+    assert len(res.selected) == 3
 
 
-def test_e2e_guarda_la_linea_base_de_la_consulta_objetivo(tmp_path):
-    """Sin punto de partida no se puede medir el efecto: la ficha editada guarda
-    la posición/impresiones/clics de su consulta objetivo al momento de editar."""
-    pipe = _pipeline(tmp_path, dry_run=True)
+def test_keyword_ya_escrita_en_otra_ficha_no_se_repite_si_hay_alternativa(tmp_path):
+    pipe = _pipeline(tmp_path)
+    pipe.db.guardar_objetivos("https://x.com/product/otra/",
+                              [{"keyword": "sofá chesterfield"}], aplicada=True)
+    pipe.gsc.filas.append(_q("sofá tapizado", 150))
+    res = pipe.process(URL)
+    elegidas = [k["keyword"] for k in res.selected]
+    assert "sofá chesterfield" not in elegidas
+    assert "sofá tapizado" in elegidas
 
-    class GscConOportunidad:
-        def top_keywords_for_url(self, url, **kw):
-            return [{"keyword": "sofá modular de lujo", "clicks": 0,
-                     "impressions": 300, "position": 12.0, "ctr": 0.0}]
 
-    pipe.gsc = GscConOportunidad()
-    res = pipe.process("https://x.com/product/cas-cprn-pedro-sofa-01/")
+def test_categoria_real_no_se_usa_como_keyword(tmp_path):
+    gsc = FakeGSC([_q("sofas", 900), _q("sofá chesterfield", 400)])
+    pipe = _pipeline(tmp_path, gsc=gsc, vol={"sofas": 9000, "sofá chesterfield": 1900})
+    res = pipe.process(URL)
+    assert [k["keyword"] for k in res.selected] == ["sofá chesterfield"]
+
+
+def test_un_solo_pedido_de_volumen_para_todo_el_lote(tmp_path):
+    pipe = _pipeline(tmp_path)
+    pipe.precargar([URL])
+    pipe.process(URL)
+    assert len(pipe.volumenes.pedidos) == 1
+    assert pipe.gsc.llamadas == 1                     # GSC también queda en caché
+
+
+# --- competidores (paso ② de la pizarra) --------------------------------------
+PAGINAS = [
+    {"url": f"https://tienda{i}.com/p", "domain": f"tienda{i}.com", "rank": i,
+     "title": "Pedro Sofa", "h1": ["Pedro Sofá Velvet Edition"],
+     "h2": ["Velvet upholstery"], "texto": "A pedro sofá in velvet upholstery."}
+    for i in (1, 2, 3)
+]
+
+
+def test_sin_gsc_busca_el_mismo_producto_en_competidores(tmp_path):
+    comp = FakeCompetidores(PAGINAS)
+    pipe = _pipeline(tmp_path, gsc=FakeGSC([]), competidores=comp,
+                     vol={"pedro sofa": 50, "velvet upholstery": 0})
+    res = pipe.process(URL)
+    assert comp.consultas == ["Pedro Sofá Cassoni"]
+    assert res.competidores
+    assert any(k.get("origen") == "competidor" for k in res.selected)
+
+
+def test_competidores_solo_si_faltan_keywords(tmp_path):
+    comp = FakeCompetidores(PAGINAS)
+    pipe = _pipeline(tmp_path, competidores=comp)
+    pipe.process(URL)
+    assert comp.consultas == []                      # GSC ya dio 3
+
+
+# --- sin keywords: solo H1 ----------------------------------------------------
+def test_sin_keywords_aplica_solo_el_h1(tmp_path):
+    pipe = _pipeline(tmp_path, dry_run=False, gsc=FakeGSC([]), vol={})
+    res = pipe.process(URL)
     assert res.status == "processed"
-    row = pipe.db.get_state(res.url)
-    assert row.baseline_keyword == "sofá modular de lujo"
-    assert row.baseline_position == 12.0
-    assert row.baseline_impressions == 300
-    assert row.baseline_clicks == 0
-    assert row.baseline_window and ".." in row.baseline_window
-    assert row.baseline_at is not None
-
-
-class _ValidadorRechaza:
-    """El validador real encontró issues graves y no aprobó (2 intentos)."""
-
-    def pass_or_rework(self, **kw):
-        return {"aprobado": False,
-                "validacion": {"aprobado": False,
-                               "issues": ["Falta la keyword principal (keyword_principal)",
-                                          "La descripción larga fue reescrita desde cero"]},
-                "edited": kw["edited"], "intentos": 2}
-
-
-def test_e2e_edicion_rechazada_no_se_reporta_como_processed(tmp_path):
-    """Hallazgo del piloto real (2-nov): el validador rechazó la edición y el
-    pipeline devolvió status='processed' y la guardó como processed. Un rechazo
-    reportado como éxito es el peor error posible en un lote nocturno."""
-    pipe = _pipeline(tmp_path, dry_run=True)
-    pipe.validator = _ValidadorRechaza()
-    res = pipe.process("https://x.com/product/cas-cprn-pedro-sofa-01/")
-    assert res.status == "rejected"
-    assert res.aprobado is False
-    assert res.aplicado is False
-    row = pipe.db.get_state(res.url)
-    assert row.status == "rejected"
-    assert pipe.db.summary()["rejected"] == 1
-
-
-def test_e2e_rechazada_en_write_no_toca_woocommerce(tmp_path):
-    pipe = _pipeline(tmp_path, dry_run=False)
-    pipe.validator = _ValidadorRechaza()
-    res = pipe.process("https://x.com/product/cas-cprn-pedro-sofa-01/")
-    assert res.status == "rejected"
-    assert pipe.woo.writes == []
-
-
-class _ValidadorExplota:
-    def pass_or_rework(self, **kw):
-        from cassoni.llm import LLMError
-        raise LLMError("El modelo no devolvió JSON válido (truncado)")
-
-
-def test_e2e_un_fallo_del_validador_no_tumba_el_pipeline(tmp_path):
-    """En un lote nocturno, una ficha que hace explotar al validador (JSON truncado,
-    timeout) no puede matar el proceso: se marca failed y se sigue."""
-    pipe = _pipeline(tmp_path, dry_run=True)
-    pipe.validator = _ValidadorExplota()
-    res = pipe.process("https://x.com/product/cas-cprn-pedro-sofa-01/")
-    assert res.status == "failed"
-    assert "LLM" in res.reason or "JSON" in res.reason
-    assert pipe.db.get_state(res.url).status == "failed"
-
-
-def test_e2e_descarta_consultas_que_no_son_del_producto(tmp_path):
-    """Lote real (2-nov): 'geef foto' (basura de GSC) y 'liberator lounger' (otro
-    mueble) entraban como principal. Con el nombre real del producto se descartan
-    y se usa la siguiente; si no queda ninguna, la ficha se saltea."""
-    pipe = _pipeline(tmp_path, dry_run=True)
-
-    class GscConBasura:
-        def top_keywords_for_url(self, url, **kw):
-            return [
-                {"keyword": "geef foto", "clicks": 0, "impressions": 5000,
-                 "position": 6.0, "ctr": 0.0},
-                {"keyword": "pedro sofa", "clicks": 1, "impressions": 300,
-                 "position": 11.0, "ctr": 0.003},
-            ]
-
-    pipe.gsc = GscConBasura()
-    res = pipe.process("https://x.com/product/cas-cprn-pedro-sofa-01/")
-    assert res.status == "processed"
-    linea = pipe.editor.llm.editor_user.split(
-        "KEYWORD PRINCIPAL (obligatoria, EXACTA en el H1):")[1].split("\n")[1]
-    assert linea.strip() == "pedro sofa"
-
-
-def test_e2e_si_todas_las_consultas_son_ajenas_se_saltea(tmp_path):
-    pipe = _pipeline(tmp_path, dry_run=True)
-
-    class GscTodoAjeno:
-        def top_keywords_for_url(self, url, **kw):
-            return [{"keyword": "geef foto", "clicks": 0, "impressions": 5000,
-                     "position": 6.0, "ctr": 0.0}]
-
-    pipe.gsc = GscTodoAjeno()
-    res = pipe.process("https://x.com/product/cas-cprn-pedro-sofa-01/")
-    assert res.status == "skipped"
-    assert "del producto" in res.reason
+    assert pipe.woo.writes == [("Pedro Sofá by Cassoni", DESC_ORIG)]
     assert pipe.llm.calls == 0
 
 
-class _FakeLLMConCosto(FakeLLM):
-    """Como el cliente real: acumula usage y expone consumo()."""
-
-    def __init__(self):
-        super().__init__()
-        self._consumo = {"tokens_in": 0, "tokens_out": 0, "usd": 0.0, "llamadas": 0}
-
-    def complete_json(self, system, user, **kw):
-        out = super().complete_json(system, user, **kw)
-        self._consumo["tokens_in"] += 4200
-        self._consumo["tokens_out"] += 900
-        self._consumo["usd"] += 0.0023
-        self._consumo["llamadas"] += 1
-        return out
-
-    def consumo(self):
-        return dict(self._consumo)
+def test_sin_keywords_y_h1_que_ya_cumple_se_saltea(tmp_path):
+    pipe = _pipeline(tmp_path, dry_run=False, gsc=FakeGSC([]), vol={})
+    pipe.woo.product["name"] = "Pedro Sofá by Cassoni"
+    res = pipe.process(URL)
+    assert res.status == "skipped"
+    assert pipe.db.get_state(URL).status == "skipped"
 
 
-def test_e2e_registra_tokens_y_costo_de_la_ficha(tmp_path):
-    """Sin costo por ficha no se puede decidir un lote de 13.000."""
-    cfg = _cfg(tmp_path, dry_run=True)
-    from cassoni.db import DB
-    from cassoni.editor import Editor
-
-    db = DB(cfg)
-    llm = _FakeLLMConCosto()
-    pipe = Pipeline(cfg, db=db, woo=FakeWoo(), gsc=FakeGSC(), llm=llm,
-                    editor=Editor(cfg, llm), dry_run=True)
-    res = pipe.process("https://x.com/product/cas-cprn-pedro-sofa-01/")
+# --- escritura, dry-run e idempotencia ----------------------------------------
+def test_dry_run_no_escribe_y_no_cuenta_como_aplicada(tmp_path):
+    pipe = _pipeline(tmp_path, dry_run=True)
+    res = pipe.process(URL)
     assert res.status == "processed"
-    row = db.get_state(res.url)
-    assert row.llm_tokens_in == 8400          # editor + validador
-    assert row.llm_tokens_out == 1800
+    assert res.aplicado is False
+    assert pipe.woo.writes == []
+    row = pipe.db.get_state(URL)
+    assert row.applied == 0 and row.dry_run == 1
+    assert row.original_h1 == "Pedro Sofá"
+
+
+def test_write_escribe_name_y_description(tmp_path):
+    pipe = _pipeline(tmp_path, dry_run=False)
+    res = pipe.process(URL)
+    assert res.aplicado is True
+    name, desc = pipe.woo.writes[0]
+    assert desc == res.edited_description
+    row = pipe.db.get_state(URL)
+    assert row.applied == 1 and row.edited_at is not None and row.dry_run == 0
+
+
+def test_una_ficha_escrita_no_se_vuelve_a_editar(tmp_path):
+    """Auditoría 3-nov: re-correr la lista editaba encima de lo editado y
+    pisaba la línea base con métricas de después."""
+    pipe = _pipeline(tmp_path, dry_run=False)
+    pipe.process(URL)
+    res = pipe.process(URL)
+    assert res.status == "skipped"
+    assert "ya editada" in res.reason
+    assert len(pipe.woo.writes) == 1
+
+
+def test_forzar_permite_rehacerla(tmp_path):
+    pipe = _pipeline(tmp_path, dry_run=False)
+    pipe.process(URL)
+    pipe.forzar = True
+    pipe.process(URL)
+    assert len(pipe.woo.writes) == 2
+
+
+def test_dry_run_se_puede_repetir(tmp_path):
+    pipe = _pipeline(tmp_path, dry_run=True)
+    pipe.process(URL)
+    assert pipe.process(URL).status == "processed"
+
+
+# --- estados y fallos ---------------------------------------------------------
+def test_rechazada_no_escribe_y_queda_rejected(tmp_path):
+    pipe = _pipeline(tmp_path, dry_run=False, aprueba=False)
+    res = pipe.process(URL)
+    assert res.status == "rejected"
+    assert pipe.woo.writes == []
+    assert pipe.db.get_state(URL).status == "rejected"
+
+
+def test_fallo_al_escribir_queda_failed_con_motivo(tmp_path):
+    """Antes quedaba 'rejected' (como si lo hubiera rechazado el validador) y el
+    motivo se perdía: la tabla no tenía columna `reason`."""
+    from cassoni.woo import WooError
+    pipe = _pipeline(tmp_path, dry_run=False)
+    pipe.woo.falla_escritura = WooError("POST products/120563: 503")
+    res = pipe.process(URL)
+    assert res.status == "failed"
+    row = pipe.db.get_state(URL)
+    assert row.status == "failed"
+    assert "503" in row.reason
+    assert row.applied == 0
+
+
+def test_ficha_no_publicada_no_queda_in_queue(tmp_path):
+    pipe = _pipeline(tmp_path)
+    pipe.woo.product["status"] = "draft"
+    res = pipe.process(URL)
+    assert res.status == "skipped"
+    row = pipe.db.get_state(URL)
+    assert row.status == "skipped" and "draft" in row.reason
+
+
+def test_un_fallo_del_llm_no_tumba_el_lote(tmp_path):
+    from cassoni.llm import LLMError
+    pipe = _pipeline(tmp_path)
+
+    def roto(*a, **k):
+        raise LLMError("timeout")
+    pipe.llm.complete_json = roto
+    res = pipe.process(URL)
+    assert res.status == "failed"
+    assert "timeout" in pipe.db.get_state(URL).reason
+
+
+def test_url_que_no_es_producto(tmp_path):
+    assert _pipeline(tmp_path).process("https://x.com/product-category/sofas/").status == "skipped"
+
+
+# --- traza y medición ---------------------------------------------------------
+def test_guarda_las_tres_keywords_con_su_linea_base(tmp_path):
+    pipe = _pipeline(tmp_path, dry_run=False)
+    pipe.process(URL)
+    objetivos = pipe.db.objetivos_de(URL)
+    assert len(objetivos) == 3
+    o = next(x for x in objetivos if x.keyword == "sofá chesterfield")
+    assert o.baseline_impressions == 400 and o.baseline_position == 8.0
+    assert o.volume == 1900 and o.aplicada == 1
+
+
+def test_registra_costos_llm_y_dataforseo(tmp_path):
+    pipe = _pipeline(tmp_path)
+    pipe.precargar([URL])
+    pipe.process(URL)
+    row = pipe.db.get_state(URL)
     assert float(row.llm_cost) > 0
+    assert row.llm_tokens_in > 0
+    assert row.dfs_cost is not None
+
+
+def test_el_editor_recibe_el_contexto_de_la_ficha(tmp_path):
+    pipe = _pipeline(tmp_path)
+    pipe.process(URL)
+    assert pipe.woo.sibling_calls == [5]
+    u = pipe.llm.editor_user
+    assert "Categoría(s): Sofas" in u and "Marca: Cassoni" in u and "Material: Cuero" in u

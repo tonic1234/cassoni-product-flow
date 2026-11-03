@@ -119,3 +119,9 @@ def test_json_truncado_se_reintenta_con_mas_presupuesto(monkeypatch):
     assert out["h1"] == "ok"
     assert len(llamadas) == 2
     assert llamadas[1] > llamadas[0]      # segundo intento con más presupuesto
+
+
+def test_json_envuelto_en_fence_se_acepta():
+    from cassoni.llm import _sin_fence
+    assert _sin_fence('```json\n{"a": 1}\n```') == '{"a": 1}'
+    assert _sin_fence('{"a": 1}') == '{"a": 1}'

@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 import logging
+import re
 from typing import Optional
 
 import httpx
@@ -17,6 +18,15 @@ log = logging.getLogger("cassoni.llm")
 
 class LLMError(Exception):
     pass
+
+
+_FENCE = re.compile(r"^```(?:json)?\s*(.*?)\s*```$", re.S | re.I)
+
+
+def _sin_fence(raw: str) -> str:
+    """Claude y otros envuelven el JSON en ```json ... ```: se saca el envoltorio."""
+    m = _FENCE.match(raw.strip())
+    return m.group(1) if m else raw
 
 
 class LLMClient:
@@ -75,7 +85,7 @@ class LLMClient:
                 temperature=temperature, max_tokens=mt)
             if raw and raw.strip():
                 try:
-                    return json.loads(raw)
+                    return json.loads(_sin_fence(raw))
                 except json.JSONDecodeError as exc:
                     if intent == 1:
                         # JSON truncado o roto: se reintenta con más presupuesto

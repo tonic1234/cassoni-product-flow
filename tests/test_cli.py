@@ -124,7 +124,7 @@ class TestPreflight:
 
 def _cfg(tmp_path):
     from cassoni.config import Config
-    c = Config(env="staging", dry_run=True)
+    c = Config(env="prod", dry_run=True)
     c.db_url = f"sqlite:///{tmp_path}/cli.db"
     c.wc_base = "https://cassoni.com"
     c.wc_key, c.wc_secret = "ck", "cs"

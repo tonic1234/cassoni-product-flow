@@ -71,3 +71,36 @@ class TestRutasRelativasAlEnvFile:
             f"CASSONI_GSC_SERVICE_ACCOUNT_FILE={tmp_path}/abs.json\n")
         cfg = Config.load(env="staging", env_file=tmp_path / ".env.staging")
         assert cfg.gsc_service_account_file == f"{tmp_path}/abs.json"
+
+
+class TestStagingNoApuntaAProduccion:
+    """Auditoría 3-nov: el preflight del 2-nov corrió con env=staging y
+    base=https://cassoni.com. Un --write ahí escribía en la tienda real."""
+
+    def _cfg(self, env, base):
+        c = Config(env=env)
+        c.wc_base, c.wc_key, c.wc_secret = base, "k", "s"
+        c.gsc_service_account_file = "x"
+        c.dfs_login = c.dfs_password = "x"
+        c.llm_base_url, c.llm_api_key, c.llm_editor_model = "u", "k", "m"
+        return c
+
+    def test_staging_con_base_de_produccion_es_invalido(self):
+        faltan = self._cfg("staging", "https://cassoni.com").validate()
+        assert any("PRODUCCIÓN" in f for f in faltan)
+
+    def test_staging_con_www_tambien(self):
+        assert self._cfg("staging", "https://www.cassoni.com/").validate()
+
+    def test_prod_con_base_de_produccion_es_valido(self):
+        assert self._cfg("prod", "https://cassoni.com").validate() == []
+
+    def test_staging_real_es_valido(self):
+        assert self._cfg("staging", "https://22f34d534b.nxcli.io").validate() == []
+
+    def test_hosts_de_produccion_configurables(self, monkeypatch, tmp_path):
+        monkeypatch.setenv("CASSONI_PROD_HOSTS", "tienda.example")
+        monkeypatch.setenv("CASSONI_WC_BASE", "https://tienda.example")
+        c = Config.load(env="staging", env_file=tmp_path / "nada.env")
+        assert c.prod_hosts == ("tienda.example",)
+        assert any("PRODUCCIÓN" in f for f in c.validate())

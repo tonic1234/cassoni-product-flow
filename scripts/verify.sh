@@ -26,9 +26,10 @@ if ! "$PY" -m pytest tests/ -q; then
 fi
 
 paso "3/4 secretos"
-# claves de WooCommerce, claves privadas y tokens de Google no van al repo.
+# claves de WooCommerce, claves de LLM (sk-...), claves privadas, el JSON de la
+# cuenta de servicio de GSC y tokens de Google no van al repo.
 # Se escanea lo VERSIONADO (git grep): creds/ y .env* son locales y están ignorados.
-PATRON='ck_[a-f0-9]{20,}|cs_[a-f0-9]{20,}|-----BEGIN [A-Z ]*PRIVATE KEY-----|AQ[A-Za-z0-9_-]{28,}'
+PATRON='ck_[a-f0-9]{20,}|cs_[a-f0-9]{20,}|sk-[A-Za-z0-9_-]{24,}|-----BEGIN [A-Z ]*PRIVATE KEY-----|"private_key_id": *"[a-f0-9]{20,}|AQ[A-Za-z0-9_-]{28,}'
 if git rev-parse --git-dir >/dev/null 2>&1; then
   if git grep -InE "$PATRON" -- '*.py' '*.md' '*.json' '*.sh' '*.yml' '*.txt' 2>/dev/null; then
     fallo "hay credenciales versionadas"

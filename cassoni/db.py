@@ -3,8 +3,10 @@
 
 Registra por producto: URL, slug, keywords de GSC, volumen DataForSEO, cuáles
 se seleccionaron y por qué, dónde se insertaron (H1/desc), texto antes/después,
-resultado de validación, costo real y la LÍNEA BASE de la consulta objetivo
-(posición/impresiones/clics al momento de editar) para poder medir el efecto.
+resultado de validación, costo real y las KEYWORDS OBJETIVO de cada ficha (las
+3 que se incorporaron, con su línea base) para poder medir el efecto de cada una.
+También guarda la caché de volumen de DataForSEO y sirve de registro
+anti-canibalización: qué keyword quedó asignada a qué ficha.
 
 Backend: SQLite (dev/test) o PostgreSQL (prod) — el schema es el mismo
 (SQLAlchemy). La migración es idempotente: `create_all` crea lo que falta y
@@ -15,6 +17,8 @@ from __future__ import annotations
 import json
 import logging
 from datetime import datetime, timezone
+
+from datetime import timedelta
 
 from sqlalchemy import (Column, DateTime, Float, Integer, String, Text,
                         create_engine, select, text)
@@ -35,7 +39,8 @@ class ProcessedProduct(Base):
     id = Column(Integer, primary_key=True)
     url = Column(String(500), index=True, nullable=False)
     slug = Column(String(255))
-    status = Column(String(20), default="in_queue")  # in_queue|processed|skipped|failed
+    status = Column(String(20), default="in_queue")  # in_queue|processed|rejected|skipped|failed
+    reason = Column(Text)                # por qué terminó en ese status
     # keywords
     gsc_keywords = Column(Text)          # JSON [{keyword,clicks,impressions}]
     df_keywords = Column(Text)           # JSON [{keyword,volume,cpc}]
@@ -65,6 +70,8 @@ class ProcessedProduct(Base):
     # meta
     host_env = Column(String(10))        # staging|prod
     dry_run = Column(Integer, default=1)
+    applied = Column(Integer, default=0)  # 1 = se escribió de verdad en WooCommerce
+    edited_at = Column(DateTime)          # cuándo se escribió (base de la medición)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc),
                         onupdate=lambda: datetime.now(timezone.utc))
@@ -88,6 +95,37 @@ class Review(Base):
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
 
+class KeywordVolume(Base):
+    """Caché de volumen de DataForSEO. volume NULL = DFS no lo informa (no es 0)."""
+    __tablename__ = "cassoni_keyword_volume"
+    keyword = Column(String(255), primary_key=True)
+    location = Column(Integer, primary_key=True)
+    volume = Column(Integer)
+    cpc = Column(Float)
+    competition = Column(Float)
+    fetched_at = Column(DateTime)
+
+
+class KeywordObjetivo(Base):
+    """Una de las (hasta) 3 keywords que se incorporaron a una ficha.
+
+    Sirve para dos cosas: medir el efecto de CADA keyword y no asignar la misma
+    keyword a dos fichas (anti-canibalización entre fichas ya editadas)."""
+    __tablename__ = "cassoni_keyword_objetivo"
+    id = Column(Integer, primary_key=True)
+    url = Column(String(500), index=True, nullable=False)
+    keyword = Column(String(255), index=True, nullable=False)
+    origen = Column(String(20))          # gsc | competidor
+    volume = Column(Integer)
+    compartida_con = Column(String(500))  # URL de otra ficha que ya la usa (si no quedó otra)
+    baseline_position = Column(Float)
+    baseline_impressions = Column(Integer)
+    baseline_clicks = Column(Integer)
+    baseline_ctr = Column(Float)
+    aplicada = Column(Integer, default=0)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+
+
 # columnas agregadas después de la primera versión del schema
 _COLUMNAS_NUEVAS = [
     ("baseline_keyword", "VARCHAR(255)"),
@@ -99,6 +137,9 @@ _COLUMNAS_NUEVAS = [
     ("baseline_at", "TIMESTAMP"),
     ("llm_tokens_in", "INTEGER"),
     ("llm_tokens_out", "INTEGER"),
+    ("reason", "TEXT"),
+    ("applied", "INTEGER DEFAULT 0"),
+    ("edited_at", "TIMESTAMP"),
 ]
 
 
@@ -170,6 +211,63 @@ class DB:
         with self.Session() as s:
             return list(s.execute(select(Review).where(Review.url == url)
                                   .order_by(Review.created_at)).scalars())
+
+    # --- caché de volumen ---
+    def volumenes_frescos(self, keywords: list[str], location: int,
+                          max_dias: int) -> dict[str, dict]:
+        """{kw: {volume, cpc, competition}} de lo que está en caché y no venció."""
+        if not keywords:
+            return {}
+        limite = datetime.now(timezone.utc).replace(tzinfo=None) - timedelta(days=max_dias)
+        with self.Session() as s:
+            filas = s.execute(select(KeywordVolume).where(
+                KeywordVolume.keyword.in_(keywords),
+                KeywordVolume.location == location)).scalars().all()
+            return {f.keyword: {"volume": f.volume, "cpc": f.cpc,
+                                "competition": f.competition}
+                    for f in filas if f.fetched_at and f.fetched_at >= limite}
+
+    def guardar_volumenes(self, datos: dict[str, dict | None], location: int) -> None:
+        ahora = datetime.now(timezone.utc).replace(tzinfo=None)
+        with self.Session() as s:
+            for kw, d in datos.items():
+                d = d or {}
+                row = s.get(KeywordVolume, (kw, location)) or KeywordVolume(
+                    keyword=kw, location=location)
+                row.volume = d.get("volume")
+                row.cpc = d.get("cpc")
+                row.competition = d.get("competition")
+                row.fetched_at = ahora
+                s.merge(row)
+            s.commit()
+
+    # --- keywords objetivo ---
+    def guardar_objetivos(self, url: str, objetivos: list[dict], *, aplicada: bool) -> None:
+        """Reemplaza las keywords objetivo de la ficha por las de esta corrida."""
+        with self.Session() as s:
+            s.query(KeywordObjetivo).filter_by(url=url).delete()
+            for o in objetivos:
+                s.add(KeywordObjetivo(
+                    url=url, keyword=o["keyword"], origen=o.get("origen", "gsc"),
+                    volume=o.get("volume"), compartida_con=o.get("compartida_con"),
+                    baseline_position=o.get("position"),
+                    baseline_impressions=o.get("impressions"),
+                    baseline_clicks=o.get("clicks"), baseline_ctr=o.get("ctr"),
+                    aplicada=1 if aplicada else 0))
+            s.commit()
+
+    def objetivos_de(self, url: str) -> list[KeywordObjetivo]:
+        with self.Session() as s:
+            return list(s.execute(select(KeywordObjetivo).where(
+                KeywordObjetivo.url == url).order_by(KeywordObjetivo.id)).scalars())
+
+    def keywords_asignadas(self, excepto_url: str = "") -> dict[str, str]:
+        """{keyword normalizada: url} de las keywords YA escritas en otras fichas."""
+        with self.Session() as s:
+            filas = s.execute(select(KeywordObjetivo).where(
+                KeywordObjetivo.aplicada == 1,
+                KeywordObjetivo.url != excepto_url)).scalars().all()
+            return {" ".join(f.keyword.lower().split()): f.url for f in filas}
 
     def summary(self) -> dict:
         with self.Session() as s:

@@ -1,9 +1,11 @@
 # Agente SEO — Cassoni
 
-Optimiza fichas de producto de **cassoni.com** (13.079 publicadas): decide qué ficha
-vale la pena tocar a partir de Google Search Console, y edita **sólo el H1 y la
-descripción larga** incorporando keywords con la regla del cliente. Mide el efecto a
-14/28 días.
+Optimiza fichas de producto de **cassoni.com** (13.079 publicadas). Cada día toma
+hasta 10 fichas de la lista que arma el equipo SEO, pone el H1 en el formato
+**`{Nombre} by {Marca}`** e incorpora en la **descripción larga** las 3 keywords con
+volumen de búsqueda que todavía no tiene. Mide el efecto de cada keyword a 14/28 días.
+
+**Landing explicativa:** [`docs/landing/index.html`](docs/landing/index.html).
 
 Este repo está pensado para ser **auditado desde afuera**: cada afirmación tiene un
 comando que la reproduce y una salida guardada en `evidencia/`.
@@ -15,43 +17,49 @@ git clone https://github.com/tonic1234/cassoni-product-flow && cd cassoni-produc
 python3 -m venv venv && ./venv/bin/pip install -r requirements.txt
 bash scripts/verify.sh                                    # tests + secretos + doc
 ./venv/bin/python -m cassoni.cli --env prod --preflight   # GSC / Woo / LLM
-./venv/bin/python -m cassoni.cli --env prod --seleccionar 20 --days 90
+./venv/bin/python -m cassoni.cli --env prod --urls lista.txt --batch 10   # en seco
 ```
 
-`--preflight` y `--seleccionar` no escriben nada y no gastan LLM. Para las
+`--preflight` no escribe ni gasta LLM. `--urls` sin `--write` corre en seco. Para las
 credenciales ver [docs/OPERACION.md](docs/OPERACION.md).
 
 ## Qué hace, en orden
 
-1. **Elige** las fichas con más oportunidad real: posición 4-20 con demanda, o mucho
-   aparecer con CTR bajo. Descarta el ruido (posición > 30 sin un clic), todo lo que
-   no sea `/product/` y las consultas que no son del producto (GSC devuelve
-   `geef foto` o `liberator lounger` en fichas donde no corresponden).
-2. **Lee** la ficha real de WooCommerce (texto, categorías, marca, atributos) y las
-   consultas de GSC de los últimos 90 días.
-3. **Filtra** keywords: anti-canibalización determinista (contra los H1 de las fichas
-   hermanas y las categorías reales) y una sola keyword por palabra compartida.
-4. **Edita** con un LLM: H1 ≤ 60 caracteres con la keyword principal exacta, y la
-   descripción larga editada sobre la existente (mínimo 80% de las oraciones
-   originales intactas), 150-300 palabras, máximo 2 H2, 2-3 secundarias.
-5. **Valida** en dos capas: reglas mecánicas en código primero, LLM después (tono,
-   datos inventados, HTML). Si no aprueba, re-trabaja hasta dos veces.
-6. **Escribe** sólo si el gate está abierto (`--write`) y la ficha fue aprobada.
-7. **Mide**: guarda la línea base de la consulta objetivo y compara a 14/28 días.
+1. **Toma la lista del día**: las URLs que SEO va sumando a `lista.txt`, hasta 10
+   por día, en horario hábil y con pausas aleatorias (para no editar en masa).
+2. **Lee** la ficha real de WooCommerce (nombre, marca, categorías, atributos,
+   descripción). Si ya fue escrita, la saltea.
+3. **H1 por plantilla**: `{Nombre} by {Marca}`, siempre igual, sin LLM.
+4. **Keywords**: las de GSC de la ficha + volumen de DataForSEO (un solo pedido por
+   lote, con caché). Se quedan las que son del producto, **no están ya en la
+   descripción** y tienen volumen, con anti-canibalización (fichas hermanas,
+   categorías y keywords ya escritas en otras fichas). Hasta 3.
+5. **Si faltan**: busca el mismo producto en Google vía DataForSEO, lee las 3
+   páginas de competidores que rankean por encima y saca frases que repiten y
+   nosotros no tenemos. Validadas con volumen.
+6. **Edita** con un LLM: mete las 3 keywords en la descripción actual, conservando
+   al menos el 80% de las oraciones originales.
+7. **Valida** en dos capas: reglas en código (cada keyword exacta, 150-300 palabras,
+   ≤2 H2, conservación, HTML seguro) y LLM (tono, datos inventados). Hasta 2 pases.
+8. **Escribe** `name` + `description` solo con `--write` y aprobada.
+9. **Mide** cada keyword: N días antes vs N días después de la edición.
 
-## Estado real (2-nov-2026)
+## Estado real (3-nov-2026)
 
 | Pieza | Estado |
 |---|---|
-| Selección de trabajo desde GSC | ✅ funciona (`--seleccionar 20` en 1m21s) |
-| Lectura de GSC (90 días, 200 filas) | ✅ corregida |
-| Keyword principal por oportunidad | ✅ con tests |
-| Línea base y revisión | ✅ con tests |
-| Preflight | ✅ verde contra producción |
-| Suite de tests | ✅ 209 verdes |
-| Piloto de punta a punta | ✅ **3 de 3** fichas reales aprobadas en dry-run tras el filtro de relevancia (antes: 1 de 3) |
-| Escritura en producción | ⛔ **no ejecutada**: el primer lote debe aprobarlo el equipo SEO |
-| Cron / timer | ⛔ **no instalado**: el agente corre a mano |
+| H1 por plantilla `{Nombre} by {Marca}` | ✅ con tests |
+| 3 keywords que faltan, con volumen (GSC + DataForSEO) | ✅ con tests |
+| Competidores cuando faltan keywords | ✅ con tests (sin probar contra la API real) |
+| Caché de volumen y costo de DataForSEO por ficha | ✅ con tests |
+| Anti-canibalización entre fichas escritas | ✅ con tests |
+| Idempotencia (no re-editar) y HTML seguro | ✅ con tests |
+| Medición por keyword con ventanas iguales | ✅ con tests |
+| Staging no puede apuntar a producción | ✅ con tests |
+| Suite de tests | ✅ 291 verdes |
+| Corrida real del flujo v2 | ⛔ **pendiente**: correr `--batch 10` en seco con la lista de SEO |
+| Escritura en producción | ⛔ **no ejecutada**: el primer lote lo aprueba el equipo SEO |
+| Cron | ⛔ **no instalado** (ejemplo en `docs/OPERACION.md`) |
 
 ## Muestra para validar con el cliente
 
@@ -92,5 +100,6 @@ scripts/verify.sh   la puerta (VERDE = terminado)
 - El agente **no** toca `short_description`, meta title/description ni ALT: son del
   n8n (un solo escritor por campo).
 - GSC es sólo lectura.
-- Sin cron instalado, no hay nada corriendo solo. Cuando exista, se documenta acá.
-- El costo real por ficha todavía no se registra en la traza (`llm_cost` vacío).
+- La regla de 150-300 palabras sigue vigente: una ficha cuyo original ya supera
+  300 palabras va a salir rechazada. Decisión pendiente del equipo SEO.
+- Sin cron instalado, no hay nada corriendo solo.

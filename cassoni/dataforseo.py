@@ -7,6 +7,10 @@
   limit (máx requests/min) y con retry/backoff ante result=null intermitente.
 - La API devuelve volúmenes en el MISMO orden del array de entrada → mapeo
   directo (indice) sin hash.
+- `serp_organico` trae los resultados orgánicos de Google para una consulta
+  (paso ② de la pizarra: quién rankea mejor que nosotros con el mismo producto),
+  sin scrapear Google.
+- `costo_usd` acumula el costo real que informa la API en cada respuesta.
 """
 from __future__ import annotations
 
@@ -25,7 +29,7 @@ class DataForSEOFetcher:
     """Enfoque limpio de la API real (validado 28-ago)."""
 
     SEARCH_VOLUME_URL = "https://api.dataforseo.com/v3/keywords_data/google_ads/search_volume/live"
-    SERP_URL = "https://api.dataforseo.com/v3/dataforseo_labs/google/serp_tasks_live"  # referencia
+    SERP_URL = "https://api.dataforseo.com/v3/serp/google/organic/live/advanced"
 
     def __init__(self, config: Config, session: Optional[requests.Session] = None,
                  _post: Optional[Callable] = None):
@@ -34,6 +38,7 @@ class DataForSEOFetcher:
         self._post = _post  # inyectable para tests
         self._lock = threading.Lock()
         self._last_req = 0.0
+        self.costo_usd = 0.0
 
     def _throttle(self):
         """Máx `dfs_max_requests_min` requests por minuto."""
@@ -47,9 +52,10 @@ class DataForSEOFetcher:
             time.sleep(wait)
 
     def search_volume(self, keywords: list[str],
-                      location_code: int = 2840) -> list[Optional[dict]]:
+                      location_code: Optional[int] = None) -> list[Optional[dict]]:
         """Volumen para una tanda de keywords. Devuelve, en el MISMO orden,
         el resultado de cada keyword (dict) o None si falló tras retries."""
+        location_code = location_code or self.cfg.dfs_location_code
         results: list[Optional[dict]] = [None] * len(keywords)
         for chunk_start in range(0, len(keywords), self.cfg.dfs_bulk_size):
             chunk = keywords[chunk_start: chunk_start + self.cfg.dfs_bulk_size]
@@ -58,7 +64,7 @@ class DataForSEOFetcher:
                 try:
                     payload = [{
                         "location_code": location_code,
-                        "language_code": "en",
+                        "language_code": self.cfg.dfs_language_code,
                         "keywords": chunk,
                         "search_partners": False,
                     }]
@@ -73,7 +79,8 @@ class DataForSEOFetcher:
                         break
                     time.sleep(2 ** attempt)
                     continue
-                rows = data.get("tasks", [{}])[0].get("result", [])
+                self.costo_usd += float(data.get("cost") or 0)
+                rows = data.get("tasks", [{}])[0].get("result", []) or []
                 for i, row in enumerate(rows):
                     pos = i
                     if pos < len(chunk):
@@ -89,12 +96,36 @@ class DataForSEOFetcher:
                 break
         return results
 
-    def _request(self, payload: list[dict]) -> Optional[dict]:
+    def serp_organico(self, keyword: str, depth: int = 10) -> list[dict]:
+        """Resultados orgánicos de Google para `keyword`, en orden:
+        [{rank, url, domain, title, description}]. Vacío si la API falla."""
+        payload = [{"keyword": keyword, "location_code": self.cfg.dfs_location_code,
+                    "language_code": self.cfg.dfs_language_code, "depth": depth}]
+        for attempt in range(self.cfg.dfs_retries + 1):
+            self._throttle()
+            try:
+                data = self._request(payload, url=self.SERP_URL)
+            except requests.RequestException:
+                data = None
+            if data and data.get("status_code") == 20000:
+                self.costo_usd += float(data.get("cost") or 0)
+                result = (data.get("tasks") or [{}])[0].get("result") or [{}]
+                items = (result[0] or {}).get("items") or []
+                return [{"rank": it.get("rank_absolute") or it.get("rank_group"),
+                         "url": it.get("url", ""), "domain": it.get("domain", ""),
+                         "title": it.get("title", ""),
+                         "description": it.get("description", "")}
+                        for it in items if it.get("type") == "organic"]
+            if attempt < self.cfg.dfs_retries:
+                time.sleep(2 ** attempt)
+        return []
+
+    def _request(self, payload: list[dict], url: Optional[str] = None) -> Optional[dict]:
         if self._post is not None:
             return self._post(payload)
         auth = base64.b64encode(f"{self.cfg.dfs_login}:{self.cfg.dfs_password}"
                                 .encode()).decode()
-        r = self._session.post(self.SEARCH_VOLUME_URL, json=payload,
+        r = self._session.post(url or self.SEARCH_VOLUME_URL, json=payload,
                                headers={"Authorization": f"Basic {auth}"},
                                timeout=60)
         r.raise_for_status()

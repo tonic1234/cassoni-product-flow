@@ -5,10 +5,9 @@ from cassoni.editor import SYSTEM_PROMPT
 
 
 class TestPromptContrato:
-    def test_candidatas_ya_filtradas(self):
-        # el LLM NO puede descartar lo que el filtro determinista ya dejó pasar
-        s = SYSTEM_PROMPT.lower()
-        assert "ya pasaron" in s and "no las descartes" in s
+    def test_las_keywords_vienen_elegidas_por_codigo(self):
+        # contrato v2: el LLM no elige ni descarta, solo incorpora
+        assert "elegidas por código" in SYSTEM_PROMPT
 
     def test_no_reescribir(self):
         assert "NUNCA la reescribas desde cero" in SYSTEM_PROMPT
@@ -23,14 +22,12 @@ class TestPromptContrato:
         # criterio del SEO (18-sep): juntas, mismo orden, solo artículo delante
         assert "MISMO orden" in SYSTEM_PROMPT
 
-    def test_genera_variantes_si_llegan_menos_de_3(self):
-        # diversidad (18-sep): si faltan candidatas, las genera desde atributos
-        # SIN repetir la palabra ya usada
-        assert "MENOS DE 3 candidatas" in SYSTEM_PROMPT
-        assert "repetir la palabra ya usada" in SYSTEM_PROMPT
+    def test_alcance_solo_descripcion_larga(self):
+        assert "Solo editás la descripción larga" in SYSTEM_PROMPT
+        assert "El H1 y la descripción corta NO se tocan" in SYSTEM_PROMPT
 
-    def test_alcance_solo_h1_y_long(self):
-        assert "SOLO edita H1 y descripción larga" in SYSTEM_PROMPT
+    def test_html_seguro_en_el_prompt(self):
+        assert "no agregues scripts" in SYSTEM_PROMPT
 
 class _LLMGuion:
     """Devuelve respuestas en orden y cuenta las llamadas."""
@@ -52,30 +49,37 @@ def _editor(monkeypatch, llm):
     return Editor(cfg, llm)
 
 
-def test_keyword_principal_vacia_cae_al_default(tmp_path):
-    """El piloto real (2-nov) devolvió keyword_principal='' y el checklist lo leyó
-    como 'falta la keyword principal' aunque el H1 la tenía."""
-    llm = _LLMGuion([{"h1": "Rugiano Club Sofa", "description": "<p>x</p>",
-                      "keyword_principal": "", "secondary_keywords": [], "discarded": []}])
-    ed = _editor(None, llm)
-    out = ed.edit(url="u", current_h1="Club Sofa", current_description="<p>x</p>",
-                  keywords=[{"keyword": "club sofa"}], keyword_principal="club sofa")
-    assert out["keyword_principal"] == "club sofa"
+def test_el_h1_no_lo_decide_el_llm():
+    """Aunque el modelo devuelva un H1, el editor devuelve el de plantilla."""
+    llm = _LLMGuion([{"h1": "Otro H1 inventado", "description": "<p>x club sofa</p>",
+                      "keywords": [{"keyword": "club sofa", "why": "es un club sofa"}]}])
+    out = _editor(None, llm).edit(url="u", h1="Club Sofa by Rugiano",
+                                  current_description="<p>x</p>",
+                                  keywords=[{"keyword": "club sofa"}])
+    assert out["h1"] == "Club Sofa by Rugiano"
+    assert "Club Sofa by Rugiano" in llm.llamadas[0]
 
 
 def test_json_incompleto_se_reintenta_una_vez():
-    """Si el modelo omite claves obligatorias (secundarias, descripción), se le
+    """Si el modelo omite claves obligatorias (descripción, una keyword), se le
     pide de nuevo con el faltante explícito en vez de aceptar el JSON a medias."""
-    incompleto = {"h1": "H1", "description": "", "secondary_keywords": []}
-    completo = {"h1": "H1", "description": "<p>ok</p>", "keyword_principal": "k",
-                "secondary_keywords": [{"keyword": "s1", "why": "por material"},
-                                       {"keyword": "s2", "why": "por uso"}],
-                "discarded": []}
+    incompleto = {"description": "", "keywords": []}
+    completo = {"description": "<p>ok</p>",
+                "keywords": [{"keyword": "k1", "why": "a"}, {"keyword": "k2", "why": "b"}]}
     llm = _LLMGuion([incompleto, completo])
-    ed = _editor(None, llm)
-    out = ed.edit(url="u", current_h1="H1", current_description="<p>x</p>",
-                  keywords=[{"keyword": "k"}], keyword_principal="k")
+    out = _editor(None, llm).edit(url="u", h1="H1", current_description="<p>x</p>",
+                                  keywords=[{"keyword": "k1"}, {"keyword": "k2"}])
     assert len(llm.llamadas) == 2
     assert "falt" in llm.llamadas[1].lower()      # le dice QUÉ faltó
     assert out["description"] == "<p>ok</p>"
-    assert len(out["secondary_keywords"]) == 2
+    assert len(out["keywords"]) == 2
+
+
+def test_sin_keywords_no_llama_al_llm():
+    import pytest
+    from cassoni.llm import LLMError
+    llm = _LLMGuion([])
+    with pytest.raises(LLMError):
+        _editor(None, llm).edit(url="u", h1="H1", current_description="<p>x</p>",
+                                keywords=[])
+    assert llm.llamadas == []
