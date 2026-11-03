@@ -160,7 +160,7 @@ def _cfg(tmp_path, dry_run=True):
 
 
 VOL = {"sofá chesterfield": 1900, "modular pedro": 90,
-       "cuero capitoné": 40, "mesa de comedor": 5000}
+       "cuero capitoné": 60, "mesa de comedor": 5000}
 
 
 def _pipeline(tmp_path, dry_run=True, gsc=None, vol=VOL, competidores=None,
@@ -410,3 +410,32 @@ def test_la_precarga_hace_dos_pedidos_de_volumen_para_todo_el_lote(tmp_path):
     pipe.process(URL)
     assert len(pipe.volumenes.pedidos) == 1        # sin GSC: solo el de competidores
     assert len(comp.consultas) == 1                # la búsqueda no se paga dos veces
+
+
+class FakeInvestigacion:
+    def __init__(self, ideas):
+        self.ideas = ideas
+        self.semillas = []
+
+    def ideas_de_keywords(self, semillas, limite=200):
+        self.semillas.append(list(semillas))
+        return list(self.ideas)
+
+
+def test_la_investigacion_trae_keywords_nuevas_con_volumen(tmp_path):
+    """Lo que la ficha todavía no atrae: tipo + material que la ficha tiene."""
+    inv = FakeInvestigacion([
+        {"keyword": "leather chesterfield sofa", "volume": 1600, "difficulty": 30,
+         "intent": "commercial", "origen": "investigacion"},
+        {"keyword": "velvet sofa", "volume": 50000, "difficulty": 40,
+         "intent": "commercial", "origen": "investigacion"}])
+    cfg = _cfg(tmp_path)
+    from cassoni.editor import Editor
+    llm = FakeLLM()
+    pipe = Pipeline(cfg, db=DB(cfg), woo=FakeWoo(), gsc=FakeGSC([]), volumenes=None,
+                    competidores=None, investigacion=inv, llm=llm, editor=Editor(cfg, llm))
+    res = pipe.process(URL)
+    kws = {k["keyword"]: k for k in res.selected}
+    assert inv.semillas and any("sofa" in s for s in inv.semillas[0])
+    assert "velvet sofa" not in kws                  # la ficha no es de terciopelo
+    assert kws["leather chesterfield sofa"]["origen"] == "investigacion"

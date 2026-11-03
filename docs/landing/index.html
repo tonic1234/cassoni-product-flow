@@ -262,6 +262,11 @@ tr.flash td { animation: flash .9s ease; }
 .kw small { color: #C9B6E8; font-variant-numeric: tabular-nums; }
 .kw .org { font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; padding: 1px 6px; border-radius: 4px; background: rgba(255,255,255,.12); color: #E7DCF8; }
 .kw.comp .org { background: var(--rose); color: var(--paper-fg); }
+.aporte { display: flex; flex-wrap: wrap; gap: 10px; }
+.aporte span { font-size: 13px; padding: 7px 12px; border-radius: 10px; background: #F3EEFB; color: var(--paper-fg); }
+.aporte b { color: var(--violet-deep); font-variant-numeric: tabular-nums; }
+.aporte span.cero { background: var(--paper-2); color: var(--paper-mute); }
+.kw.inv .org { background: var(--ok); color: var(--paper-fg); }
 .desc { font-size: 15px; line-height: 1.75; color: var(--paper-fg); display: grid; gap: 10px; border-left: 2px solid var(--paper-2); padding-left: 16px; }
 .desc .bh2 { font-family: var(--display); font-size: 18px; }
 .desc ins { text-decoration: none; background: linear-gradient(transparent 55%, #E3D0FF 55%); }
@@ -851,7 +856,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
         if (i % 2) padre.appendChild(h("b", null, parte)); else if (parte) padre.appendChild(document.createTextNode(parte));
       });
     }
-    var ok = 0, no = 0, gsc = 0, comp = 0, usd = 0, agregadas = 0;
+    var ok = 0, no = 0, gsc = 0, comp = 0, usd = 0, agregadas = 0, volTotal = 0;
     cont.innerHTML = "";
     fichas.forEach(function (f) {
       var c = clase(f);
@@ -880,14 +885,28 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
       if (f.keywords.length) {
         var kw = h("div", "kws");
         f.keywords.forEach(function (k) {
-          var ch = h("span", "kw" + (k.origen === "competidor" ? " comp" : ""));
+          var ch = h("span", "kw" + (k.origen === "competidor" ? " comp" : k.origen === "investigacion" ? " inv" : ""));
           ch.appendChild(h("span", null, k.keyword));
           ch.appendChild(h("small", null, (k.volumen == null ? "vol s/d" : n$(k.volumen) + "/mes") + (k.impresiones ? " · " + n$(k.impresiones) + " impr" : "")));
-          ch.appendChild(h("span", "org", k.origen === "competidor" ? "competidor" : "GSC"));
+          ch.appendChild(h("span", "org", k.origen === "competidor" ? "competidor" : k.origen === "investigacion" ? "investigación" : "GSC"));
           kw.appendChild(ch);
         });
         b.appendChild(kw);
       }
+      var va = f.valor || {};
+      var ap = h("div", "aporte");
+      var s1 = h("span", (va.h1_busquedas || []).length ? null : "cero");
+      s1.appendChild(document.createTextNode("H1 nuevo: cubre "));
+      s1.appendChild(h("b", null, String((va.h1_busquedas || []).length)));
+      s1.appendChild(document.createTextNode(" búsquedas de marca + modelo (" + n$(va.h1_impresiones || 0) + " impr. en 90 días)"));
+      ap.appendChild(s1);
+      var s2 = h("span", va.volumen_nuevo ? null : "cero");
+      s2.appendChild(document.createTextNode("Keywords nuevas en la descripción: "));
+      s2.appendChild(h("b", null, n$(va.volumen_nuevo || 0)));
+      s2.appendChild(document.createTextNode(" búsquedas/mes"));
+      ap.appendChild(s2);
+      b.appendChild(ap);
+      volTotal += va.volumen_nuevo || 0;
       var kwsTxt = f.keywords.map(function (k) { return k.keyword; });
       var desc = h("div", "desc");
       (f.bloques || []).forEach(function (bl) {
@@ -921,7 +940,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
     });
     var res = document.getElementById("prueba-resumen");
     [[fichas.length, "fichas reales"], [ok, "aprobadas"], [no, "rechazadas"], [gsc + comp, "keywords nuevas"],
-     [comp, "salieron de competidores"], ["US$ " + usd.toFixed(2), "costo total"]].forEach(function (s) {
+     [n$(volTotal), "búsquedas/mes sumadas"], ["US$ " + usd.toFixed(2), "costo total"]].forEach(function (s) {
       var d = h("div", "stat"); d.appendChild(h("b", null, String(s[0]))); d.appendChild(h("small", null, s[1])); res.appendChild(d);
     });
     document.querySelectorAll(".filtro[data-f]").forEach(function (bt) {

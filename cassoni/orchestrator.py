@@ -134,7 +134,7 @@ class _FalloGSC(Exception):
 class Pipeline:
     def __init__(self, config: Config, *, db: Optional[DB] = None,
                  woo: Optional[WooCommerce] = None, gsc=_DEFECTO,
-                 volumenes=_DEFECTO, competidores=_DEFECTO,
+                 volumenes=_DEFECTO, competidores=_DEFECTO, investigacion=_DEFECTO,
                  editor: Optional[Editor] = None, llm: Optional[LLMClient] = None,
                  dry_run: bool | None = None, forzar: bool = False):
         self.cfg = config
@@ -150,6 +150,9 @@ class Pipeline:
             competidores = comp_def if competidores is _DEFECTO else competidores
         self.volumenes = volumenes
         self.competidores = competidores
+        # investigación de keywords (DataForSEO Labs): la fuente de keywords NUEVAS
+        self.investigacion = (getattr(volumenes, "fetcher", None)
+                              if investigacion is _DEFECTO else investigacion)
         self.llm = llm or LLMClient(config)
         self.editor = editor or Editor(config, self.llm)
         from .validator import Validator
@@ -158,6 +161,7 @@ class Pipeline:
         self._gsc_cache: dict[str, list[dict]] = {}
         self._woo_cache: dict[str, dict] = {}
         self._comp_cache: dict[str, tuple[list[dict], list[dict]]] = {}
+        self._ideas_cache: dict[str, list[dict]] = {}
 
     # --- helpers ---
     def _keywords_ya_usadas(self, product: dict) -> tuple:
@@ -244,6 +248,7 @@ class Pipeline:
         except Exception as exc:
             raise _FalloGSC(str(exc)) from exc
         kw_rows = self._con_volumen(kw_rows)
+        ideas = self._ideas(url, nombre, marca, categorias, atributos)
         elegir = dict(descripcion=desc_orig, texto_producto=texto_producto,
                       h1_hermanas=self._keywords_ya_usadas(product), categorias=categorias,
                       asignadas=self.db.keywords_asignadas(excepto_url=url),
@@ -252,8 +257,22 @@ class Pipeline:
                       nombre=nombre, marca=marca)
         return dict(nombre=nombre, desc_orig=desc_orig, categorias=categorias,
                     marca=marca, atributos=atributos, h1=h1, h1_aviso=h1_aviso,
-                    texto_producto=texto_producto, kw_rows=kw_rows, elegir=elegir,
-                    sel=elegir_keywords(kw_rows, **elegir))
+                    texto_producto=texto_producto, kw_rows=kw_rows + ideas, elegir=elegir,
+                    sel=elegir_keywords(kw_rows + ideas, **elegir))
+
+    def _ideas(self, url: str, nombre: str, marca: str, categorias, atributos) -> list[dict]:
+        """Keywords que la ficha todavía no atrae (una consulta por ficha, en caché)."""
+        if self.investigacion is None:
+            return []
+        if url not in self._ideas_cache:
+            from .investigacion import semillas
+            sem = semillas(nombre, marca, categorias, atributos)
+            try:
+                self._ideas_cache[url] = self.investigacion.ideas_de_keywords(sem) if sem else []
+            except Exception as exc:
+                log.warning("Investigación de keywords no disponible (%s)", exc)
+                self._ideas_cache[url] = []
+        return self._ideas_cache[url]
 
     def _con_volumen(self, filas: list[dict]) -> list[dict]:
         if self.volumenes is None or not filas:
@@ -264,7 +283,7 @@ class Pipeline:
             log.warning("Volumen degradado (%s): sigo con GSC", exc)
             return filas
 
-    def _costos(self) -> dict:
+    def _costos(self) -> dict:  # noqa: D401
         fn = getattr(self.llm, "consumo", None)
         llm = {"tokens_in": 0, "tokens_out": 0, "usd": 0.0, "llamadas": 0}
         if callable(fn):

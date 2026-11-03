@@ -52,7 +52,7 @@ class Config:
     dfs_bulk_size: int = 1000
     dfs_location_code: int = 2840              # EE.UU. (la tienda es en inglés)
     dfs_language_code: str = "en"
-    dfs_min_volume: int = 10                   # debajo: Google Ads no informa
+    dfs_min_volume: int = 50                   # piso de volumen mensual (SEO, 3-nov)
     dfs_cache_dias: int = 30                   # el volumen es mensual
     dfs_presupuesto_usd: float = 0.0          # tope de gasto por corrida (0 = sin tope)
     # --- LLM ---

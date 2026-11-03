@@ -33,6 +33,8 @@ _SIMBOLOS_PROHIBIDOS = set(",!@%^()={};~`<>?\\|*")
 # costo por pedido medido el 3-nov-2026 (respuesta 'cost' de la API)
 COSTO_VOLUMEN_USD = 0.09        # hasta 1.000 keywords por pedido
 COSTO_SERP_USD = 0.002          # una búsqueda orgánica
+COSTO_IDEAS_USD = 0.03          # estimado (Labs cobra por pedido + por resultado):
+                                # se reemplaza por el real con la primera corrida
 
 
 def _sin_saldo(exc: Exception) -> str:
@@ -68,6 +70,7 @@ class DataForSEOFetcher:
 
     SEARCH_VOLUME_URL = "https://api.dataforseo.com/v3/keywords_data/google_ads/search_volume/live"
     SERP_URL = "https://api.dataforseo.com/v3/serp/google/organic/live/advanced"
+    IDEAS_URL = "https://api.dataforseo.com/v3/dataforseo_labs/google/keyword_ideas/live"
 
     def __init__(self, config: Config, session: Optional[requests.Session] = None,
                  _post: Optional[Callable] = None):
@@ -207,41 +210,75 @@ class DataForSEOFetcher:
                 break
         return results
 
-    def serp_organico(self, keyword: str, depth: int = 10) -> list[dict]:
-        """Resultados orgánicos de Google para `keyword`, en orden:
-        [{rank, url, domain, title, description}]. Vacío si la API falla."""
-        if not self._alcanza(COSTO_SERP_USD):
-            return []
-        payload = [{"keyword": keyword, "location_code": self.cfg.dfs_location_code,
-                    "language_code": self.cfg.dfs_language_code, "depth": depth}]
+    def _tarea(self, payload: list[dict], url: str, costo: float, para: str) -> Optional[dict]:
+        """Hace un pedido 'live' y devuelve el primer `result` de la tarea, o None.
+        Corta sin reintentar si la cuenta no puede operar (saldo, verificación,
+        pausa) o si el pedido pasaría el presupuesto de la corrida."""
+        if not self._alcanza(costo):
+            return None
         for attempt in range(self.cfg.dfs_retries + 1):
             self._throttle()
             try:
-                data = self._request(payload, url=self.SERP_URL)
+                data = self._request(payload, url=url)
             except requests.RequestException as exc:
                 motivo = _sin_saldo(exc)
                 if motivo:
                     self.sin_saldo = motivo
-                    log.error("DataForSEO: %s. Sin competidores.", motivo)
-                    return []
+                    log.error("DataForSEO: %s. Sin %s.", motivo, para)
+                    return None
                 data = None
             tarea = ((data or {}).get("tasks") or [{}])[0]
             if _tarea_bloqueada(tarea):
                 self.sin_saldo = _tarea_bloqueada(tarea)
-                log.error("DataForSEO: %s. Sin competidores.", self.sin_saldo)
-                return []
+                log.error("DataForSEO: %s. Sin %s.", self.sin_saldo, para)
+                return None
             if data and data.get("status_code") == 20000 and tarea.get("status_code") in (None, 20000):
                 self.costo_usd += float(data.get("cost") or 0)
-                result = tarea.get("result") or [{}]
-                items = (result[0] or {}).get("items") or []
-                return [{"rank": it.get("rank_absolute") or it.get("rank_group"),
-                         "url": it.get("url", ""), "domain": it.get("domain", ""),
-                         "title": it.get("title", ""),
-                         "description": it.get("description", "")}
-                        for it in items if it.get("type") == "organic"]
+                return (tarea.get("result") or [{}])[0] or {}
+            if tarea.get("status_code") not in (None, 20000):
+                log.warning("DataForSEO rechazó el pedido de %s: %s %s", para,
+                            tarea.get("status_code"), tarea.get("status_message"))
+                return None
             if attempt < self.cfg.dfs_retries:
                 time.sleep(2 ** attempt)
-        return []
+        return None
+
+    def serp_organico(self, keyword: str, depth: int = 10) -> list[dict]:
+        """Resultados orgánicos de Google para `keyword`, en orden:
+        [{rank, url, domain, title, description}]. Vacío si la API falla."""
+        payload = [{"keyword": keyword, "location_code": self.cfg.dfs_location_code,
+                    "language_code": self.cfg.dfs_language_code, "depth": depth}]
+        res = self._tarea(payload, self.SERP_URL, COSTO_SERP_USD, "competidores")
+        items = (res or {}).get("items") or []
+        return [{"rank": it.get("rank_absolute") or it.get("rank_group"),
+                 "url": it.get("url", ""), "domain": it.get("domain", ""),
+                 "title": it.get("title", ""), "description": it.get("description", "")}
+                for it in items if it.get("type") == "organic"]
+
+    def ideas_de_keywords(self, semillas: list[str], limite: int = 200) -> list[dict]:
+        """Investigación de keywords (DataForSEO Labs, keyword_ideas): búsquedas
+        relacionadas con las semillas que la ficha TODAVÍA no atrae, con volumen,
+        dificultad (0-100) e intención. [{keyword, volume, cpc, difficulty,
+        intent}]. Vacío si la API falla o no alcanza el presupuesto."""
+        semillas = [k for k in dict.fromkeys(s.strip().lower() for s in semillas)
+                    if self.keyword_valida(k)][:20]
+        if not semillas:
+            return []
+        payload = [{"keywords": semillas, "location_code": self.cfg.dfs_location_code,
+                    "language_code": self.cfg.dfs_language_code, "limit": limite,
+                    "include_serp_info": False}]
+        res = self._tarea(payload, self.IDEAS_URL, COSTO_IDEAS_USD, "investigación de keywords")
+        out = []
+        for it in (res or {}).get("items") or []:
+            info = it.get("keyword_info") or {}
+            props = it.get("keyword_properties") or {}
+            intent = (it.get("search_intent_info") or {}).get("main_intent")
+            if not it.get("keyword"):
+                continue
+            out.append({"keyword": it["keyword"], "volume": info.get("search_volume"),
+                        "cpc": info.get("cpc"), "difficulty": props.get("keyword_difficulty"),
+                        "intent": intent, "origen": "investigacion"})
+        return out
 
     def _request(self, payload: list[dict], url: Optional[str] = None) -> Optional[dict]:
         if self._post is not None:

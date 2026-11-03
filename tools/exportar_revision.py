@@ -29,6 +29,7 @@ from cassoni.checklist import (_BLOQUE_RX, _PUNT_PEGADA_RX, _SENT_RX,  # noqa: E
                                conservacion, h2_count, norm, oraciones,
                                strip_html, word_count)
 from cassoni.config import Config                  # noqa: E402
+from cassoni.keywords import cubierta_por_el_h1    # noqa: E402
 from cassoni.woo import WooCommerce                # noqa: E402
 
 _ABRE_RX = re.compile(r"<(h[1-6]|p|li|div|section|blockquote|tr)\b", re.I)
@@ -79,6 +80,21 @@ def competidores(motivo_sel: str) -> list[str]:
     return [u.strip() for u in m.group(1).split(",")] if m else []
 
 
+def valor(f: dict, marca: str) -> dict:
+    """El aporte en números: búsquedas de GSC que el H1 nuevo cubre y el viejo no
+    (las de marca + modelo), y el volumen mensual de las keywords agregadas."""
+    nombre = f.get("original_h1") or ""
+    gsc = _json(f.get("gsc_keywords"), []) or []
+    nuevas_h1 = [g for g in gsc if cubierta_por_el_h1(g.get("keyword", ""), nombre, marca)
+                 and not cubierta_por_el_h1(g.get("keyword", ""), nombre, "")]
+    kws = _json(f.get("selected_keywords"), []) or []
+    aprobada = f.get("status") == "processed"
+    return {"h1_busquedas": [{"keyword": g["keyword"], "impresiones": g.get("impressions")}
+                             for g in nuevas_h1],
+            "h1_impresiones": sum(g.get("impressions") or 0 for g in nuevas_h1),
+            "volumen_nuevo": sum(k.get("volume") or 0 for k in kws) if aprobada else 0}
+
+
 def miniatura(url: str, ancho: int = 520) -> str:
     """data URI JPEG de ~520px (sips de macOS). '' si no se pudo."""
     if not url:
@@ -118,7 +134,9 @@ def exportar(db_url: str, env: str, *, fotos: bool) -> list[dict]:
         edit = f.get("edited_description") or orig
         val = _json(f.get("validation_result"), {}) or {}
         sel = f.get("selection_reason") or ""
+        marca = ((producto.get("brands") or [{}])[0].get("name") or "")
         salida.append({
+            "valor": valor(f, marca),
             "url": f["url"], "status": f["status"], "motivo": f.get("reason") or "",
             "marca": ((producto.get("brands") or [{}])[0].get("name") or ""),
             "categorias": [c2.get("name", "").replace("&amp;", "&")
@@ -127,6 +145,7 @@ def exportar(db_url: str, env: str, *, fotos: bool) -> list[dict]:
             "h1_antes": f.get("original_h1") or "", "h1_despues": f.get("edited_h1") or "",
             "keywords": [{"keyword": o["keyword"], "origen": o.get("origen") or "gsc",
                           "volumen": o.get("volume"),
+                          "dificultad": None,
                           "impresiones": o.get("baseline_impressions"),
                           "posicion": o.get("baseline_position"),
                           "compartida_con": o.get("compartida_con")}

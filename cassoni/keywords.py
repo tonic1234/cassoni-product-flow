@@ -201,9 +201,13 @@ def potencial(fila: dict) -> float:
     if demanda is None:
         demanda = (fila.get("impressions") or 0) / 3
     pos = fila.get("position")
-    if not pos:                       # candidata de competidores: sin posición propia
-        return demanda * 0.02
+    if not pos:                       # investigación o competidores: la ficha todavía no
+        kd = fila.get("difficulty") or 0       # aparece; pesa lo que cuesta entrar
+        return demanda * 0.02 * max(0.0, 1 - kd / 100)
     return demanda * max(0.0, _CTR[3] - _ctr(pos))
+
+
+KD_MAX = 60                # dificultad (0-100) por encima de la cual una ficha no compite
 
 
 def _orden(fila: dict) -> tuple:
@@ -231,6 +235,9 @@ def elegir_keywords(candidatas: Iterable[dict], *, descripcion: str,
     asignadas = asignadas or {}
     categorias = list(categorias)
     tipos = tipo_de_producto(nombre, categorias) if nombre is not None else set()
+    atributos_palabras = ({w for w in _palabras(texto_especifico or "")
+                           - _palabras(nombre or "") - _palabras(marca) if len(w) >= 3}
+                          if nombre is not None else set())
     tipos_propios = set(tipos)     # solo nombre + categoría: 'mattress' en un atributo
                                    # de la cama no convierte a la cama en colchón
     if nombre is not None and texto_especifico:
@@ -256,6 +263,16 @@ def elegir_keywords(candidatas: Iterable[dict], *, descripcion: str,
         elif c.get("spell") or parece_typo(kw, f"{nombre} {marca}" if nombre is not None
                                            else texto_producto):
             descartadas.append({"keyword": kw, "motivo": "parece un error de tipeo"})
+        elif c.get("intent") == "informational":
+            descartadas.append({"keyword": kw, "motivo": "búsqueda informativa: es para "
+                                                         "un artículo, no para la ficha"})
+        elif (c.get("difficulty") or 0) > KD_MAX:
+            descartadas.append({"keyword": kw, "motivo": f"demasiado competida para una ficha "
+                                                         f"(dificultad {c['difficulty']})"})
+        elif (c.get("origen") == "investigacion" and nombre is not None
+              and not (_palabras(kw) & atributos_palabras)):
+            descartadas.append({"keyword": kw, "motivo": "no menciona ningún material, "
+                                                         "acabado o estilo de la ficha"})
         elif _INFORMATIVA_RX.search(kw):
             descartadas.append({"keyword": kw, "motivo": "búsqueda informativa: es para "
                                                          "un artículo, no para la ficha"})

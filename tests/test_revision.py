@@ -35,3 +35,21 @@ def test_el_json_no_puede_cerrar_el_script():
     out = inyectar(html, {"fichas": [{"t": "</script><script>alert(1)</script>"}]})
     assert out.count("</script>") == 2
     assert "<\\/script>" in out
+
+
+def test_valor_cuenta_lo_que_aporta_el_h1_y_las_keywords():
+    import json
+    from exportar_revision import valor
+    fila = {"original_h1": "Illan Wall Lamp", "status": "processed",
+            "gsc_keywords": json.dumps([
+                {"keyword": "luceplan illan", "impressions": 120},
+                {"keyword": "illan luceplan", "impressions": 30},
+                {"keyword": "illan wall lamp", "impressions": 400},   # el H1 viejo ya la cubría
+                {"keyword": "designer wall sconces", "impressions": 9}]),
+            "selected_keywords": json.dumps([{"keyword": "contemporary wall lamp", "volume": 880},
+                                             {"keyword": "led wall sconce", "volume": 1300}])}
+    v = valor(fila, "Luceplan")
+    assert [b["keyword"] for b in v["h1_busquedas"]] == ["luceplan illan", "illan luceplan"]
+    assert v["h1_impresiones"] == 150
+    assert v["volumen_nuevo"] == 2180
+    assert valor(dict(fila, status="rejected"), "Luceplan")["volumen_nuevo"] == 0
