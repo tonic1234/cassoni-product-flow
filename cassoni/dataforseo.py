@@ -52,6 +52,17 @@ def _sin_saldo(exc: Exception) -> str:
     return f"{base} ({codigo}) {detalle}".strip()
 
 
+def _tarea_bloqueada(tarea: dict) -> str:
+    """Códigos de tarea 401xx/402xx/403xx: la cuenta no puede operar (pausada,
+    sin saldo, sin verificar). Vienen con HTTP 200, dentro de la respuesta.
+    Prueba real 3-nov: 40201 'temporarily paused access' devolvía 0 resultados
+    sin ningún aviso."""
+    codigo = tarea.get("status_code")
+    if isinstance(codigo, int) and 40100 <= codigo < 40400:
+        return f"cuenta bloqueada ({codigo}) {tarea.get('status_message') or ''}".strip()
+    return ""
+
+
 class DataForSEOFetcher:
     """Enfoque limpio de la API real (validado 28-ago)."""
 
@@ -176,6 +187,10 @@ class DataForSEOFetcher:
                     continue
                 self.costo_usd += float(data.get("cost") or 0)
                 tarea = (data.get("tasks") or [{}])[0]
+                if _tarea_bloqueada(tarea):
+                    self.sin_saldo = _tarea_bloqueada(tarea)
+                    log.error("DataForSEO: %s", self.sin_saldo)
+                    return results
                 if tarea.get("status_code") not in (None, 20000):
                     log.warning("DataForSEO rechazó la tarea: %s %s",
                                 tarea.get("status_code"), tarea.get("status_message"))
@@ -210,9 +225,14 @@ class DataForSEOFetcher:
                     log.error("DataForSEO: %s. Sin competidores.", motivo)
                     return []
                 data = None
-            if data and data.get("status_code") == 20000:
+            tarea = ((data or {}).get("tasks") or [{}])[0]
+            if _tarea_bloqueada(tarea):
+                self.sin_saldo = _tarea_bloqueada(tarea)
+                log.error("DataForSEO: %s. Sin competidores.", self.sin_saldo)
+                return []
+            if data and data.get("status_code") == 20000 and tarea.get("status_code") in (None, 20000):
                 self.costo_usd += float(data.get("cost") or 0)
-                result = (data.get("tasks") or [{}])[0].get("result") or [{}]
+                result = tarea.get("result") or [{}]
                 items = (result[0] or {}).get("items") or []
                 return [{"rank": it.get("rank_absolute") or it.get("rank_group"),
                          "url": it.get("url", ""), "domain": it.get("domain", ""),

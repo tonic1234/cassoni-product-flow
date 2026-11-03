@@ -198,3 +198,19 @@ def test_presupuesto_por_corrida(cfg):
     assert f.serp_organico("x") == [] or f.costo_usd <= 0.10   # 0.092: entra justo
     assert f.sin_presupuesto is True
     assert len(llamadas) <= 2
+
+
+def test_cuenta_pausada_dentro_de_la_respuesta(cfg):
+    """Prueba real 3-nov: HTTP 200 con tarea 40201 'temporarily paused access'."""
+    llamadas = []
+
+    def fake_post(payload):
+        llamadas.append(1)
+        return {"status_code": 20000, "cost": 0, "tasks": [{"status_code": 40201,
+                "status_message": "We have temporarily paused access as a precaution."}]}
+    cfg.dfs_max_requests_min = 0
+    f = DataForSEOFetcher(cfg, _post=fake_post)
+    assert f.serp_organico("sofa") == []
+    assert "40201" in f.sin_saldo and "paused" in f.sin_saldo
+    assert f.search_volume(["sofa"]) == [None]
+    assert len(llamadas) == 2                     # sin reintentos
