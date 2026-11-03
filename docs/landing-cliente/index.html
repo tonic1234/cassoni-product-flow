@@ -1,0 +1,1439 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cassoni Product Flow — Informe Técnico · Dendra</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --night:  #2B2B28;
+  --carbon: #363633;
+  --lime:   #CCE535;
+  --cream:  #E3E1CD;
+  --white:  #FFFFFF;
+  --ink:    #1A1A18;
+  --muted:  rgba(255,255,255,0.38);
+  --border: rgba(255,255,255,0.07);
+  --f: 'Plus Jakarta Sans', 'Barlow', system-ui, sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--night);
+  font-family:var(--f);
+  color:var(--white);
+  -webkit-font-smoothing:antialiased;
+  line-height:1.6;
+}
+h1,h2,h3,h4{font-family:var(--f);font-weight:800;line-height:1.1}
+h2{font-size:clamp(2rem,5vw,3.5rem);letter-spacing:-0.02em}
+h3{font-size:1.25rem;letter-spacing:-0.01em}
+p{color:rgba(255,255,255,0.62)}
+.container{max-width:1100px;margin:0 auto;padding:0 32px}
+
+/* ─── HEADER ─────────────────────────── */
+.site-header{
+  position:sticky;top:0;z-index:10;
+  background:rgba(43,43,40,0.92);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  padding:14px 0;
+}
+.site-header .container{
+  display:flex;justify-content:space-between;align-items:center;
+}
+.site-header .logo{height:20px}
+.site-header .logo svg{height:20px;width:auto;display:block}
+.site-header .meta{
+  font-size:10px;letter-spacing:0.18em;
+  color:var(--muted);text-transform:uppercase;
+  font-weight:500;
+}
+
+/* ─── HERO ──────────────────────────── */
+.hero{
+  padding:80px 0 60px;
+  border-bottom:1px solid var(--border);
+  position:relative;overflow:hidden;
+}
+.hero .isotipo-bg{
+  position:absolute;right:-40px;top:50%;transform:translateY(-50%);
+  opacity:0.06;width:340px;pointer-events:none;
+}
+.hero .tag{
+  font-size:10px;letter-spacing:0.22em;text-transform:uppercase;
+  color:var(--lime);margin-bottom:20px;font-weight:700;
+}
+.hero h1{
+  font-size:clamp(2.4rem,6vw,4.2rem);
+  font-weight:800;letter-spacing:-0.03em;
+  line-height:1.05;margin-bottom:24px;max-width:780px;
+}
+.hero h1 span{color:var(--lime)}
+.hero .subtitle{
+  font-size:1.1rem;color:var(--muted);max-width:560px;line-height:1.7;
+}
+
+/* ─── SECTION ───────────────────────── */
+section{padding:64px 0}
+section + section{border-top:1px solid var(--border)}
+.section-label{
+  font-size:10px;letter-spacing:0.22em;text-transform:uppercase;
+  color:var(--lime);margin-bottom:12px;font-weight:700;
+}
+.section-number{color:var(--muted)}
+
+/* ─── CARDS ─────────────────────────── */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.card{
+  background:var(--carbon);border-radius:6px;padding:28px 24px;
+  border-left:3px solid transparent;
+}
+.card.accent{border-left-color:var(--lime)}
+.card h3{color:var(--white);margin-bottom:8px;font-size:1.05rem}
+.card p{font-size:0.9rem;color:rgba(255,255,255,0.5)}
+.card .stat{
+  font-size:2.4rem;font-weight:800;color:var(--lime);
+  line-height:1;margin-bottom:4px;
+}
+
+/* ─── COST TABLE ────────────────────── */
+.cost-table{width:100%;border-collapse:collapse;margin:24px 0}
+.cost-table th{
+  text-align:left;padding:12px 16px;
+  font-size:10px;letter-spacing:0.14em;text-transform:uppercase;
+  color:var(--muted);font-weight:600;border-bottom:1px solid var(--border);
+}
+.cost-table td{
+  padding:14px 16px;font-size:0.92rem;
+  border-bottom:1px solid var(--border);vertical-align:top;
+}
+.cost-table tr:last-child td{border-bottom:none;font-weight:700;color:var(--white)}
+.cost-table .highlight td{background:rgba(204,229,53,0.06)}
+.cost-table .num{font-feature-settings:"tnum";text-align:right;white-space:nowrap}
+.cost-table .total td{font-size:1.1rem;color:var(--lime)}
+
+/* ─── PIPELINE FLOW ────────────────── */
+.flow{
+  display:flex;flex-wrap:wrap;gap:12px;align-items:center;
+  padding:70px 0 24px;overflow-x:auto;
+}
+.flow-node{
+  background:var(--carbon);border-radius:6px;
+  padding:16px 20px;text-align:center;
+  min-width:130px;flex-shrink:0;
+  border:1px solid rgba(255,255,255,0.06);
+  position:relative;
+}
+.flow-node[data-tip]::after{
+  content:attr(data-tip);
+  position:absolute;bottom:calc(100% + 10px);left:50%;
+  transform:translateX(-50%);
+  width:230px;
+  background:var(--ink);color:var(--cream);
+  font-size:0.72rem;line-height:1.45;text-align:center;
+  padding:10px 12px;border-radius:6px;
+  border:1px solid rgba(204,229,53,0.25);
+  box-shadow:0 10px 30px rgba(0,0,0,0.4);
+  opacity:0;pointer-events:none;z-index:30;
+  transition:opacity .15s ease;
+}
+.flow-node[data-tip]:hover::after{opacity:1}
+.flow-node[data-tip]::before{
+  content:"";position:absolute;bottom:calc(100% + 4px);left:50%;
+  transform:translateX(-50%);
+  border:6px solid transparent;border-top-color:var(--ink);
+  opacity:0;pointer-events:none;z-index:30;
+  transition:opacity .15s ease;
+}
+.flow-node[data-tip]:hover::before{opacity:1}
+.flow-node .tip-hint{
+  display:block;margin-top:6px;
+  font-size:0.62rem;letter-spacing:0.08em;text-transform:uppercase;
+  color:var(--muted);
+}
+.flow-node.accent{border-color:var(--lime)}
+.flow-node .label{
+  font-size:10px;letter-spacing:0.12em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:4px;font-weight:600;
+}
+.flow-node .name{font-size:0.85rem;font-weight:700;color:var(--white)}
+.flow-arrow{
+  color:var(--lime);font-size:1.4rem;flex-shrink:0;
+  opacity:0.6;
+}
+
+/* ─── CALLOUT ───────────────────────── */
+.callout{
+  background:var(--carbon);border-left:4px solid var(--lime);
+  border-radius:0 6px 6px 0;padding:24px 28px;margin:24px 0;
+}
+.callout h3{color:var(--lime);margin-bottom:8px}
+.callout p{font-size:0.92rem}
+
+/* ─── FOOTER ────────────────────────── */
+.site-footer{
+  border-top:1px solid var(--border);
+  padding:28px 0;text-align:center;
+}
+.site-footer p{
+  font-size:10px;letter-spacing:0.16em;color:var(--muted);
+  text-transform:uppercase;
+}
+
+/* ─── RESPONSIVE ───────────────────── */
+@media(max-width:768px){
+  .container{padding:0 20px}
+  .hero{padding:48px 0 40px}
+  .hero .isotipo-bg{width:200px;right:-60px}
+  section{padding:40px 0}
+  .cards{grid-template-columns:1fr}
+  .flow{flex-direction:column;align-items:stretch}
+  .flow-arrow{transform:rotate(90deg);text-align:center}
+}
+@media(max-width:480px){
+  .cost-table{font-size:0.8rem}
+  .cost-table td,.cost-table th{padding:10px 8px}
+}
+.ic{display:inline-block;width:1em;height:1em;vertical-align:-0.125em;flex:none}
+
+/* ─── ESCENARIO SWITCH ───────────────── */
+.esc-switch{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 4px}
+.esc-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--carbon);border:1px solid var(--border);border-radius:999px;
+  color:var(--muted);font-family:var(--f);font-size:0.78rem;font-weight:600;
+  padding:8px 14px;cursor:pointer;transition:all .15s ease;
+}
+.esc-btn svg{width:0.95em;height:0.95em}
+.esc-btn:hover{color:var(--white);border-color:rgba(204,229,53,0.4)}
+.esc-btn.active{background:var(--lime);border-color:var(--lime);color:var(--ink)}
+.esc-btn.active svg{stroke:var(--ink)}
+
+  /* ── Sección 02.1 · flujo del agente (archify) ── */
+  .arch-card{background:var(--carbon,#363633);border:1px solid rgba(227,225,205,0.14);border-radius:14px;padding:14px}
+  .arch-svg-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .arch-svg-wrap svg{width:100%;height:auto;display:block;min-width:880px}
+  .arch-svg-wrap::-webkit-scrollbar{height:8px}
+  .arch-svg-wrap::-webkit-scrollbar-thumb{background:rgba(204,229,53,0.4);border-radius:4px}
+</style>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+<symbol id="i-calculator" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="20" x="4" y="2" rx="2" /><line x1="8" x2="16" y1="6" y2="6" /><line x1="16" x2="16" y1="14" y2="18" /><path d="M16 10h.01" /><path d="M12 10h.01" /><path d="M8 10h.01" /><path d="M12 14h.01" /><path d="M8 14h.01" /><path d="M12 18h.01" /><path d="M8 18h.01" /></symbol>
+<symbol id="i-medal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.21 15 2.66 7.14a2 2 0 0 1 .13-2.2L4.4 2.8A2 2 0 0 1 6 2h12a2 2 0 0 1 1.6.8l1.6 2.14a2 2 0 0 1 .14 2.2L16.79 15" /><path d="M11 12 5.12 2.2" /><path d="m13 12 5.88-9.8" /><path d="M8 7h8" /><circle cx="12" cy="17" r="5" /><path d="M12 18v-2h-.5" /></symbol>
+<symbol id="i-trophy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" /><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" /><path d="M4 22h16" /><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22" /><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22" /><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" /></symbol>
+<symbol id="i-chart-column" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16" /><path d="M18 17V9" /><path d="M13 17V5" /><path d="M8 17v-3" /></symbol>
+<symbol id="i-coins" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6" /><path d="M18.09 10.37A6 6 0 1 1 10.34 18" /><path d="M7 6h1v4" /><path d="m16.71 13.88.7.71-2.82 2.82" /></symbol>
+<symbol id="i-lightbulb" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5" /><path d="M9 18h6" /><path d="M10 22h4" /></symbol>
+<symbol id="i-microscope" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 18h8" /><path d="M3 22h18" /><path d="M14 22a7 7 0 1 0 0-14h-1" /><path d="M9 14h2" /><path d="M9 12a2 2 0 0 1-2-2V6h6v4a2 2 0 0 1-2 2Z" /><path d="M12 6V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3" /></symbol>
+<symbol id="i-wrench" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" /></symbol>
+<symbol id="i-package" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z" /><path d="M12 22V12" /><path d="m3.3 7 7.703 4.734a2 2 0 0 0 1.994 0L20.7 7" /><path d="m7.5 4.27 9 5.15" /></symbol>
+<symbol id="i-flag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" /><line x1="4" x2="4" y1="22" y2="15" /></symbol>
+<symbol id="i-zap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></symbol>
+<symbol id="i-repeat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4" /><path d="M3 11v-1a4 4 0 0 1 4-4h14" /><path d="m7 22-4-4 4-4" /><path d="M21 13v1a4 4 0 0 1-4 4H3" /></symbol>
+</svg>
+
+
+<!-- ══════════════════════════════════════════════
+     HEADER
+     ══════════════════════════════════════════════ -->
+<header class="site-header">
+  <div class="container">
+    <div class="logo">
+      <svg height="20" viewBox="0 0 359.31 80.68" xmlns="http://www.w3.org/2000/svg">
+        <path fill="#ffffff" d="M0,0h23.41C40.91,0,50.79,9.43,50.79,26.36v26.93c0,17.73-9.66,27.39-27.5,27.39H0V0ZM31.25,54.43v-29.09c0-8.07-2.39-11.93-8.3-11.93h-3.98v53.86h3.98c5.46,0,8.3-5,8.3-12.84"/>
+        <polygon fill="#ffffff" points="96.46 66.47 96.46 80.68 56.23 80.68 56.23 0 95.66 0 95.66 14.2 75.21 14.2 75.21 32.04 94.18 32.04 94.18 46.25 75.21 46.25 75.21 66.47 96.46 66.47"/>
+        <path fill="#ffffff" d="M101.9,0h20l11.02,32.61c1.02,3.75,2.27,7.61,3.18,11.13h.34c-.23-5.57-.34-11.13-.34-16.59V0h16.36v80.68h-17.95l-12.61-36.81c-1.36-4.32-2.61-8.29-3.52-12.16h-.34c.23,5.11.34,10.34.34,15.8v33.18h-16.48V0Z"/>
+        <path fill="#ffffff" d="M157.9,0h23.41c17.5,0,27.38,9.43,27.38,26.36v26.93c0,17.73-9.66,27.39-27.5,27.39h-23.29V0ZM189.15,54.43v-29.09c0-8.07-2.39-11.93-8.3-11.93h-3.98v53.86h3.98c5.46,0,8.3-5,8.3-12.84"/>
+        <path fill="#ffffff" d="M214.13,0h23.64c18.41,0,25.57,8.52,25.57,22.39v3.3c0,9.2-3.41,15.11-9.09,18.29l10.8,36.7h-19.77l-7.61-32.04h-4.55v32.04h-18.97V0ZM236.4,37.04c5.57,0,7.39-3.18,7.39-10.11v-5.68c0-6.36-1.93-8.64-7.39-8.64h-3.3v24.43h3.3Z"/>
+        <path fill="#ffffff" d="M285.82,0h25.11l15.45,80.68h-19.09l-2.27-16.59h-13.29l-2.27,16.59h-18.98L285.82,0ZM303.2,50.68l-3.29-24.2-1.36-11.02h-.34l-1.36,11.02-3.29,24.2h9.66Z"/>
+        <path fill="#ffffff" d="M333.2,66.48v-5.51c0-8.78,5.37-14.15,13.19-14.15s12.92,5.37,12.92,14.15v5.51c0,8.69-5.32,14.19-13.01,14.19s-13.1-5.55-13.1-14.19M356.22,66.48v-5.51c0-7.05-4.05-11.42-9.83-11.42s-10.05,4.32-10.05,11.42v5.51c0,7.05,4.09,11.46,9.97,11.46s9.92-4.41,9.92-11.46M340.52,54.38h5.55c4.05,0,6.23,1.68,6.23,5.1v.91c0,2.28-1.09,3.78-2.77,4.5l3.23,7.92h-4.5l-2.59-7.23h-.86v7.23h-4.28v-18.43ZM345.62,62.52c1.36,0,2.09-.68,2.09-2.09v-1.09c0-1.41-.77-1.91-2.09-1.91h-.82v5.1h.82Z"/>
+      </svg>
+    </div>
+    <div class="meta">CASSONI × DENDRA · INFORME TÉCNICO · JULIO 2026</div>
+  </div>
+</header>
+
+<!-- ══════════════════════════════════════════════
+     HERO
+     ══════════════════════════════════════════════ -->
+<section class="hero">
+  <div class="isotipo-bg">
+    <svg viewBox="0 0 250.36 304.4" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path fill="#cce535" d="M249.26,128.85h-97.61l68.78-68.78-31.52-31.52-68.46,68.46V0h-44.58v105.66c0,10.6-7.84,19.37-18.03,20.83-1.73.25-3.01,1.71-3.01,3.46v44.51c0,1.75,1.28,3.21,3.01,3.46,10.2,1.46,18.03,10.23,18.03,20.83v104.1c0,.86.7,1.56,1.56,1.56h41.04c.86,0,1.56-.7,1.56-1.56v-96.93l67.36,67.36c.61.61,1.59.61,2.2,0l29.32-29.32c.61-.61.61-1.59,0-2.2l-67.89-67.89h98.25c.61,0,1.1-.49,1.1-1.1v-42.8c0-.61-.49-1.1-1.1-1.1Z"/>
+      <rect fill="#cce535" x="0" y="129.7" width="40.17" height="45"/>
+    </svg>
+  </div>
+  <div class="container">
+    <p class="tag">Cassoni — Automatización SEO</p>
+    <h1>Pipeline de <span>optimización SEO</span> para catálogo de productos de lujo</h1>
+    <p class="subtitle">
+      Sistema automatizado que extrae la ficha completa de productos desde WooCommerce,
+      identifica keywords de alto volumen mediante Search Console y DataForSEO,
+      y las incorpora en H1 y descripciones con validación por LLM.
+    </p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     01 — RESUMEN EJECUTIVO
+     ══════════════════════════════════════════════ -->
+<section>
+  <div class="container">
+    <p class="section-label"><span class="section-number">(01)</span> — Resumen Ejecutivo</p>
+    <h2 style="margin-bottom:24px">Qué <span style="color:var(--lime)">construimos.</span></h2>
+    
+    <div class="callout">
+      <h3>Objetivo</h3>
+      <p>
+        Cassoni opera una tienda WooCommerce con <strong style="color:var(--white)">11.000 productos</strong> de mobiliario de lujo.
+        Cada producto tiene un H1 y una descripción larga ya redactados.
+        El pipeline toma una lista de URLs, extrae la ficha completa vía API,
+        busca keywords de alto volumen específicas del nicho,
+        y las incorpora quirúrgicamente en los textos existentes sin romper el tono
+        ni la redacción original. Todo queda registrado en una base de trazabilidad.
+      </p>
+    </div>
+
+    <div class="cards" style="margin-top:32px">
+      <div class="card accent">
+        <div class="stat">11.000</div>
+        <h3>Productos</h3>
+        <p>Catálogo completo de muebles de lujo en WooCommerce.</p>
+      </div>
+      <div class="card accent">
+        <div class="stat">~$346&nbsp;USD</div>
+        <h3>Costo Total Asociado</h3>
+        <p>DataForSEO (volumen + SERP) + Gemini Flash. Consumo real estimado — costo asociado al proyecto.</p>
+      </div>
+      <div class="card accent">
+        <div class="stat">2</div>
+        <h3>Campos Optimizados</h3>
+        <p>H1 (1 keyword principal) + Descripción larga (hasta 9 keywords secundarias).</p>
+      </div>
+      <div class="card">
+        <div class="stat">7</div>
+        <h3>Componentes</h3>
+        <p>Extractor, WooCommerce, GSC, DataForSEO, LLM editor, Validador, DB de trazabilidad.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     02 — ARQUITECTURA DEL PIPELINE
+     ══════════════════════════════════════════════ -->
+<section>
+  <div class="container">
+    <p class="section-label"><span class="section-number">(02)</span> — Arquitectura</p>
+    <h2 style="margin-bottom:24px">Flujo del <span style="color:var(--lime)">pipeline.</span></h2>
+
+    <div class="flow">
+      <div class="flow-node" data-tip="La entrada: una lista de URLs de productos de Cassoni.">
+        <div class="label">INPUT</div>
+        <div class="name">Lista de URLs</div>
+        <span class="tip-hint">Ver detalle</span>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node" data-tip="Convierte cada URL en un slug y verifica que sea un producto.">
+        <div class="label">01 · EXTRACTOR</div>
+        <div class="name">URL → Slug</div>
+        <span class="tip-hint">Ver detalle</span>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node accent" data-tip="Obtiene la ficha completa del producto: nombre, descripción, precio, categorías, imágenes y variaciones.">
+        <div class="label">02 · WOOCOMMERCE</div>
+        <div class="name">Ficha JSON Completa</div>
+        <span class="tip-hint">Ver detalle</span>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node" data-tip="Trae las 10 keywords por las que ese producto aparece en búsquedas de Google.">
+        <div class="label">03 · GSC API</div>
+        <div class="name">Top 10 Keywords</div>
+        <span class="tip-hint">Ver detalle</span>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node" data-tip="Filtra las keywords por volumen de búsqueda y elimina las repetidas entre productos.">
+        <div class="label">04 · DATAFORSEO</div>
+        <div class="name">Filtra × Volumen</div>
+        <span class="tip-hint">Ver detalle</span>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node accent" data-tip="Edita el H1 y la descripción incorporando las keywords sin perder el tono de lujo.">
+        <div class="label">05 · LLM</div>
+        <div class="name">Edita H1 + Desc</div>
+        <span class="tip-hint">Ver detalle</span>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node" data-tip="Revisa coherencia, tono y keywords antes de dar el texto por bueno.">
+        <div class="label">06 · VALIDADOR</div>
+        <div class="name">Control de Calidad</div>
+        <span class="tip-hint">Ver detalle</span>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node" data-tip="Registra cada decisión: keywords elegidas, texto antes y después, y el resultado de la validación.">
+        <div class="label">07 · DB</div>
+        <div class="name">Trazabilidad</div>
+        <span class="tip-hint">Ver detalle</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     02.1 — EL FLUJO DEL AGENTE EN DETALLE (ARCHIFY)
+     ══════════════════════════════════════════════ -->
+<section id="flujo-agente">
+  <div class="container">
+    <p class="section-label"><span class="section-number">(02.1)</span> — El flujo del agente en detalle</p>
+    <h2 style="margin-bottom:12px">Cómo trabaja el <span style="color:var(--lime)">agente, paso a paso.</span></h2>
+    <p style="margin-bottom:28px;max-width:760px">
+      Cada ficha recorre una cadena de 11 etapas. Las fuentes de datos son reales (WooCommerce, Google Search Console,
+      DataForSEO), las reglas que deciden son <strong style="color:var(--white)">deterministas y verificables</strong>
+      —el LLM solo escribe— y ninguna edición llega a producción sin pasar el gate.
+    </p>
+
+    <div class="arch-card" style="margin-bottom:12px">
+      <div class="arch-svg-wrap">
+        <svg viewBox="0 0 1180 620" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagrama de arquitectura del flujo del agente SEO de Cassoni">
+          <defs>
+            <pattern id="arch-grid" width="40" height="40" patternUnits="userSpaceOnUse">
+              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(227,225,205,0.06)" stroke-width="0.5"/>
+            </pattern>
+            <marker id="arch-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(204,229,53,0.85)"/>
+            </marker>
+            <marker id="arch-arrow-dim" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(227,225,205,0.45)"/>
+            </marker>
+            <marker id="arch-arrow-rew" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#e0b34a"/>
+            </marker>
+          </defs>
+          <rect width="1180" height="620" fill="url(#arch-grid)"/>
+
+          <!-- ══════ FLECHAS (detrás de las cajas) ══════ -->
+          <!-- fila 1: entradas -->
+          <line x1="160" y1="96" x2="245" y2="96" stroke="rgba(204,229,53,0.85)" stroke-width="1.5" marker-end="url(#arch-arrow)"/>
+          <line x1="345" y1="96" x2="430" y2="96" stroke="rgba(204,229,53,0.85)" stroke-width="1.5" marker-end="url(#arch-arrow)"/>
+          <line x1="700" y1="96" x2="785" y2="96" stroke="rgba(204,229,53,0.85)" stroke-width="1.5" marker-end="url(#arch-arrow)"/>
+          <line x1="885" y1="96" x2="970" y2="96" stroke="rgba(204,229,53,0.85)" stroke-width="1.5" marker-end="url(#arch-arrow)"/>
+          <line x1="1070" y1="96" x2="1130" y2="96" stroke="rgba(204,229,53,0.85)" stroke-width="1.5" marker-end="url(#arch-arrow)"/>
+
+          <!-- pasaje fila1 -> fila2 -->
+          <path d="M 1130 96 L 1160 96 L 1160 196 L 1130 196" fill="none" stroke="rgba(204,229,53,0.85)" stroke-width="1.5" marker-end="url(#arch-arrow)"/>
+          <!-- fila 2 -> fila 3 -->
+          <path d="M 1060 196 L 1130 196 L 1130 296 L 1060 296" fill="none" stroke="rgba(204,229,53,0.85)" stroke-width="1.5" marker-end="url(#arch-arrow)"/>
+          <!-- fila 3 -> fila 4 -->
+          <path d="M 1060 396 L 1130 396 L 1130 496 L 1060 496" fill="none" stroke="rgba(204,229,53,0.85)" stroke-width="1.5" marker-end="url(#arch-arrow)"/>
+          <!-- rework: validador -> editor (dashed ámbar) -->
+          <path d="M 640 460 C 620 540, 420 560, 420 360" fill="none" stroke="#e0b34a" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#arch-arrow-rew)"/>
+          <!-- expansor: faltantes diversidad -> DataForSEO (dashed) -->
+          <path d="M 370 220 C 300 240, 300 140, 390 150" fill="none" stroke="rgba(227,225,205,0.5)" stroke-width="1.3" stroke-dasharray="3 4" marker-end="url(#arch-arrow-dim)"/>
+
+          <!-- ══════ FILA 1 — ENTRADAS Y DATOS (y=40..130) ══════ -->
+          <rect x="30"  y="52" width="130" height="88" rx="10" fill="#2B2B28" stroke="rgba(204,229,53,0.85)" stroke-width="1.5"/>
+          <text x="95" y="86" text-anchor="middle" fill="#E3E1CD" font-family="'JetBrains Mono',monospace" font-size="12" font-weight="600">INPUT</text>
+          <text x="95" y="104" text-anchor="middle" fill="rgba(227,225,205,0.85)" font-family="'JetBrains Mono',monospace" font-size="9">Lista de URLs</text>
+          <text x="95" y="122" text-anchor="middle" fill="rgba(204,229,53,0.8)" font-family="'JetBrains Mono',monospace" font-size="8">lote del día</text>
+
+          <rect x="255" y="52" width="90" height="88" rx="10" fill="#2B2B28" stroke="rgba(227,225,205,0.4)" stroke-width="1.5"/>
+          <text x="300" y="82" text-anchor="middle" fill="#E3E1CD" font-family="'JetBrains Mono',monospace" font-size="11" font-weight="600">EXTRACT</text>
+          <text x="300" y="99" text-anchor="middle" fill="rgba(227,225,205,0.85)" font-family="'JetBrains Mono',monospace" font-size="9">URL → slug</text>
+          <text x="300" y="116" text-anchor="middle" fill="rgba(227,225,205,0.6)" font-family="'JetBrains Mono',monospace" font-size="8">solo productos</text>
+
+          <rect x="440" y="52" width="260" height="88" rx="10" fill="#2B2B28" stroke="rgba(204,229,53,0.6)" stroke-width="1.5"/>
+          <text x="570" y="80" text-anchor="middle" fill="#E3E1CD" font-family="'JetBrains Mono',monospace" font-size="11" font-weight="600">WOOCOMMERCE · ficha JSON</text>
+          <text x="570" y="98" text-anchor="middle" fill="rgba(227,225,205,0.85)" font-family="'JetBrains Mono',monospace" font-size="9">name · description · categorías</text>
+          <text x="570" y="113" text-anchor="middle" fill="rgba(227,225,205,0.85)" font-family="'JetBrains Mono',monospace" font-size="9">marca · atributos · hermanas</text>
+          <text x="570" y="128" text-anchor="middle" fill="rgba(204,229,53,0.7)" font-family="'JetBrains Mono',monospace" font-size="8">solo lectura + write al final (gate)</text>
+
+          <rect x="795" y="52" width="90" height="88" rx="10" fill="#2B2B28" stroke="rgba(227,225,205,0.4)" stroke-width="1.5"/>
+          <text x="840" y="82" text-anchor="middle" fill="#E3E1CD" font-family="'JetBrains Mono',monospace" font-size="11" font-weight="600">GSC</text>
+          <text x="840" y="99" text-anchor="middle" fill="rgba(227,225,205,0.85)" font-family="'JetBrains Mono',monospace" font-size="9">top-10 kw</text>
+          <text x="840" y="116" text-anchor="middle" fill="rgba(227,225,205,0.6)" font-family="'JetBrains Mono',monospace" font-size="8">+ oportunidades</text>
+
+          <rect x="980" y="52" width="90" height="88" rx="10" fill="#2B2B28" stroke="rgba(227,225,205,0.4)" stroke-width="1.5"/>
+          <text x="1025" y="78" text-anchor="middle" fill="#E3E1CD" font-family="'JetBrains Mono',monospace" font-size="10" font-weight="600">DATAFORSEO</text>
+          <text x="1025" y="95" text-anchor="middle" fill="rgba(227,225,205,0.85)" font-family="'JetBrains Mono',monospace" font-size="9">volumen bulk</text>
+          <text x="1025" y="112" text-anchor="middle" fill="rgba(227,225,205,0.6)" font-family="'JetBrains Mono',monospace" font-size="8">dedup global</text>
+          <text x="1025" y="127" text-anchor="middle" fill="rgba(227,225,205,0.6)" font-family="'JetBrains Mono',monospace" font-size="8">+ expansor*</text>
+
+          <!-- ══════ FILA 2 — REGLAS DETERMINISTAS (y=150..240) ══════ -->
+          <rect x="30" y="150" width="190" height="92" rx="10" fill="#363633" stroke="#e0b34a" stroke-width="1.5"/>
+          <text x="125" y="176" text-anchor="middle" fill="#E3E1CD" font-family="'JetBrains Mono',monospace" font-size="11" font-weight="600">FILTRO ANTI-CANIBALIZACIÓN</text>
+          <text x="125" y="196" text-anchor="middle" fill="rgba(227,225,205,0.85)" font-family="'JetBrains Mono',monospace" font-size="9">vs H1 reales de hermanas</text>
+          <text x="125" y="212" text-anchor="middle" fill="rgba(227,225,205,0.85)" font-family="'JetBrains Mono',monospace" font-size="9">vs categorías reales de la tienda</text>
+          <text x="125" y="228" text-anchor="middle" fill="rgba(224,179,74,0.9)" font-family="'JetBrains Mono',monospace" font-size="8">determinista · nunca asume</text>
+
+          <rect x="240" y="150" width="160" height="92" rx="10" fill="#363633" stroke="#e0b34a" stroke-width="1.5"/>
+          <text x="320" y="176" text-anchor="middle" fill="#E3E1CD" font-family="'JetBrains Mono',monospace" font-size="11" font-weight="600">DIVERSIDAD</text>
+          <text x="320" y="196" text-anchor="middle" fill="rgba(227,225,205,0.85)" font-family="'JetBrains Mono',monospace" font-size="9">1 sola por palabra</text>
+          <text x="320" y="212" text-anchor="middle" fill="rgba(227,225,205,0.85)" font-family="'JetBrains Mono',monospace" font-size="9">('sofa' ≠ 'sofa sofa')</text>
+          <text x="320" y="228" text-anchor="middle" fill="rgba(227,225,205,0.6)" font-family="'JetBrains Mono',monospace" font-size="8">faltantes → expansor</text>
+
+          <rect x="420" y="150" width="200" height="92" rx="10" fill="#363633" stroke="#e0b34a" stroke-width="1.5"/>
+          <text x="520" y="176" text-anchor="middle" fill="#E3E1CD" font-family="'JetBrains Mono',monospace" font-size="11" font-weight="600">KEYWORD PRINCIPAL</text>
+          <text x="520" y="196" text-anchor="middle" fill="rgba(227,225,205,0.85)" font-family="'JetBrains Mono',monospace" font-size="9">la de mayor volumen</text>
+          <text x="520" y="212" text-anchor="middle" fill="rgba(227,225,205,0.85)" font-family="'JetBrains Mono',monospace" font-size="9">el H1 la usa EXACTA</text>
+          <text x="520" y="228" text-anchor="middle" fill="rgba(227,225,205,0.6)" font-family="'JetBrains Mono',monospace" font-size="8">junta, mismo orden</text>
+
+          <rect x="640" y="150" width="430" height="92" rx="10" fill="#363633" stroke="rgba(227,225,205,0.3)" stroke-width="1.5" stroke-dasharray="6 4"/>
+          <text x="855" y="176" text-anchor="middle" fill="rgba(227,225,205,0.75)" font-family="'JetBrains Mono',monospace" font-size="10">EXPANSOR* (si faltan secundarias con palabras distintas)</text>
+          <text x="855" y="196" text-anchor="middle" fill="rgba(227,225,205,0.7)" font-family="'JetBrains Mono',monospace" font-size="9">1 · variantes ancladas en ATRIBUTOS de la ficha ($0)</text>
+          <text x="855" y="214" text-anchor="middle" fill="rgba(227,225,205,0.7)" font-family="'JetBrains Mono',monospace" font-size="9">2 · DataForSEO related keywords (dedup, costo medido)</text>
+          <text x="855" y="230" text-anchor="middle" fill="rgba(204,229,53,0.75)" font-family="'JetBrains Mono',monospace" font-size="8">se dispara solo cuando hace falta</text>
+
+          <!-- ══════ FILA 3 — LLM + VALIDACIÓN (y=260..350) ══════ -->
+          <rect x="30" y="260" width="240" height="120" rx="10" fill="#2B2B28" stroke="rgba(204,229,53,0.85)" stroke-width="1.5"/>
+          <text x="150" y="286" text-anchor="middle" fill="#E3E1CD" font-family="'JetBrains Mono',monospace" font-size="11" font-weight="600">EDITOR LLM</text>
+          <text x="150" y="304" text-anchor="middle" fill="rgba(227,225,205,0.85)" font-family="'JetBrains Mono',monospace" font-size="9">edita H1 + long description</text>
+          <text x="150" y="320" text-anchor="middle" fill="rgba(227,225,205,0.85)" font-family="'JetBrains Mono',monospace" font-size="9">sobre el texto ACTUAL (quirúrgico)</text>
+          <text x="150" y="336" text-anchor="middle" fill="rgba(227,225,205,0.85)" font-family="'JetBrains Mono',monospace" font-size="9">tono de marca · sin 'sofa sofa'</text>
+          <text x="150" y="352" text-anchor="middle" fill="rgba(204,229,53,0.8)" font-family="'JetBrains Mono',monospace" font-size="8">NUNCA reescribe desde cero</text>
+          <text x="150" y="367" text-anchor="middle" fill="rgba(227,225,205,0.6)" font-family="'JetBrains Mono',monospace" font-size="8">deepseek-v4-flash (razona + JSON)</text>
+
+          <rect x="290" y="260" width="240" height="120" rx="10" fill="#2B2B28" stroke="rgba(204,229,53,0.6)" stroke-width="1.5"/>
+          <text x="410" y="286" text-anchor="middle" fill="#E3E1CD" font-family="'JetBrains Mono',monospace" font-size="11" font-weight="600">VALIDADOR · 2 capas</text>
+          <text x="410" y="304" text-anchor="middle" fill="rgba(227,225,205,0.85)" font-family="'JetBrains Mono',monospace" font-size="9">1 · reglas MECÁNICAS en código:</text>
+          <text x="410" y="320" text-anchor="middle" fill="rgba(227,225,205,0.85)" font-family="'JetBrains Mono',monospace" font-size="9">60 chars · 150–300 palabras · 2 H2</text>
+          <text x="410" y="336" text-anchor="middle" fill="rgba(227,225,205,0.85)" font-family="'JetBrains Mono',monospace" font-size="9">conservación ≥80% · sin repetir</text>
+          <text x="410" y="352" text-anchor="middle" fill="rgba(227,225,205,0.85)" font-family="'JetBrains Mono',monospace" font-size="9">2 · LLM: tono y naturalidad</text>
+          <text x="410" y="367" text-anchor="middle" fill="rgba(224,179,74,0.9)" font-family="'JetBrains Mono',monospace" font-size="8">falla → rework al editor (máx 2)</text>
+
+          <rect x="550" y="260" width="100" height="120" rx="10" fill="#363633" stroke="#e0b34a" stroke-width="1.5"/>
+          <text x="600" y="298" text-anchor="middle" fill="#E3E1CD" font-family="'JetBrains Mono',monospace" font-size="11" font-weight="600">GATE</text>
+          <text x="600" y="318" text-anchor="middle" fill="rgba(227,225,205,0.85)" font-family="'JetBrains Mono',monospace" font-size="9">prohibido</text>
+          <text x="600" y="334" text-anchor="middle" fill="rgba(227,225,205,0.85)" font-family="'JetBrains Mono',monospace" font-size="9">si no</text>
+          <text x="600" y="350" text-anchor="middle" fill="rgba(227,225,205,0.85)" font-family="'JetBrains Mono',monospace" font-size="9">aprueba</text>
+
+          <rect x="670" y="260" width="200" height="120" rx="10" fill="#2B2B28" stroke="rgba(227,225,205,0.4)" stroke-width="1.5"/>
+          <text x="770" y="286" text-anchor="middle" fill="#E3E1CD" font-family="'JetBrains Mono',monospace" font-size="11" font-weight="600">WOOCOMMERCE</text>
+          <text x="770" y="304" text-anchor="middle" fill="rgba(227,225,205,0.85)" font-family="'JetBrains Mono',monospace" font-size="9">dry_run → NO toca nada</text>
+          <text x="770" y="322" text-anchor="middle" fill="rgba(227,225,205,0.85)" font-family="'JetBrains Mono',monospace" font-size="9">write → solo con gate abierto</text>
+          <text x="770" y="340" text-anchor="middle" fill="rgba(227,225,205,0.85)" font-family="'JetBrains Mono',monospace" font-size="9">edita name + description</text>
+          <text x="770" y="358" text-anchor="middle" fill="rgba(204,229,53,0.8)" font-family="'JetBrains Mono',monospace" font-size="8">short_description se respeta</text>
+
+          <rect x="890" y="260" width="180" height="120" rx="10" fill="#363633" stroke="rgba(204,229,53,0.5)" stroke-width="1.5"/>
+          <text x="980" y="286" text-anchor="middle" fill="#E3E1CD" font-family="'JetBrains Mono',monospace" font-size="11" font-weight="600">DB TRAZABILIDAD</text>
+          <text x="980" y="304" text-anchor="middle" fill="rgba(227,225,205,0.85)" font-family="'JetBrains Mono',monospace" font-size="9">antes/después por producto</text>
+          <text x="980" y="322" text-anchor="middle" fill="rgba(227,225,205,0.85)" font-family="'JetBrains Mono',monospace" font-size="9">keywords + motivos</text>
+          <text x="980" y="340" text-anchor="middle" fill="rgba(227,225,205,0.85)" font-family="'JetBrains Mono',monospace" font-size="9">validación + costos reales</text>
+          <text x="980" y="358" text-anchor="middle" fill="rgba(227,225,205,0.6)" font-family="'JetBrains Mono',monospace" font-size="8">SQLite dev / PG prod</text>
+
+          <!-- ══════ FILA 4 — RITMO HUMANO (y=420..) ══════ -->
+          <rect x="30" y="440" width="1020" height="110" rx="12" fill="#363633" stroke="rgba(204,229,53,0.35)" stroke-width="1.5" stroke-dasharray="8 4"/>
+          <text x="540" y="464" text-anchor="middle" fill="rgba(204,229,53,0.85)" font-family="'JetBrains Mono',monospace" font-size="11" font-weight="600">SCHEDULER · ritmo humano (envuelve toda la jornada)</text>
+          <text x="70" y="494" fill="rgba(227,225,205,0.85)" font-family="'JetBrains Mono',monospace" font-size="9.5">lunes a viernes · 9:00–18:00</text>
+          <text x="70" y="514" fill="rgba(227,225,205,0.85)" font-family="'JetBrains Mono',monospace" font-size="9.5">~50 productos/día · pausas 30s–5min no uniformes</text>
+          <text x="70" y="534" fill="rgba(227,225,205,0.85)" font-family="'JetBrains Mono',monospace" font-size="9.5">cargas diarias variables (días de 30 y de 70)</text>
+          <text x="70" y="530" fill="rgba(204,229,53,0.85)" font-family="'JetBrains Mono',monospace" font-size="8">indistinguible de una persona frente a Google</text>
+          <text x="70" y="544" fill="rgba(204,229,53,0.85)" font-family="'JetBrains Mono',monospace" font-size="8">reanudable: retoma al día siguiente lo pendiente</text>
+          <text x="560" y="534" fill="rgba(227,225,205,0.6)" font-family="'JetBrains Mono',monospace" font-size="8.5">catálogo completo (11.000) ≈ 220 días hábiles</text>
+
+          <!-- leyenda -->
+          <rect x="30" y="572" width="1120" height="34" rx="8" fill="#2B2B28" stroke="rgba(227,225,205,0.15)" stroke-width="1"/>
+          <rect x="52" y="584" width="10" height="10" rx="2" fill="none" stroke="rgba(204,229,53,0.85)" stroke-width="1.5"/>
+          <text x="70" y="593" fill="rgba(227,225,205,0.85)" font-family="'JetBrains Mono',monospace" font-size="9">flujo principal</text>
+          <rect x="230" y="584" width="10" height="10" rx="2" fill="none" stroke="#e0b34a" stroke-width="1.5"/>
+          <text x="248" y="593" fill="rgba(227,225,205,0.85)" font-family="'JetBrains Mono',monospace" font-size="9">reglas deterministas / gate</text>
+          <line x1="432" y1="589" x2="462" y2="589" stroke="#e0b34a" stroke-width="1.5" stroke-dasharray="5 4"/>
+          <text x="470" y="593" fill="rgba(227,225,205,0.85)" font-family="'JetBrains Mono',monospace" font-size="9">rework (validador → editor)</text>
+          <line x1="682" y1="589" x2="712" y2="589" stroke="rgba(227,225,205,0.5)" stroke-width="1.3" stroke-dasharray="3 4"/>
+          <text x="720" y="593" fill="rgba(227,225,205,0.85)" font-family="'JetBrains Mono',monospace" font-size="9">expansor (solo si faltan)</text>
+          <text x="930" y="593" fill="rgba(204,229,53,0.8)" font-family="'JetBrains Mono',monospace" font-size="9">* pendiente de implementar</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="cards" style="margin-top:28px">
+      <div class="card">
+        <div class="stat" style="font-size:18px">01–02</div>
+        <h3>Entrada y extracción</h3>
+        <p>La lista de URLs se convierte en slugs. Solo se procesan <strong style="color:var(--white)">productos publicados</strong> (los drafts se saltean).</p>
+      </div>
+      <div class="card">
+        <div class="stat" style="font-size:18px">03–04</div>
+        <h3>Datos reales</h3>
+        <p>GSC trae las keywords con posición/impresiones (y su <em>oportunidad</em>); DataForSEO filtra por volumen con bulking y dedup global.</p>
+      </div>
+      <div class="card">
+        <div class="stat" style="font-size:18px">05–06</div>
+        <h3>Reglas, no opiniones</h3>
+        <p>Anti-canibalización contra datos reales (H1 de hermanas, categorías de la tienda) y <strong style="color:var(--white)">una sola keyword por palabra compartida</strong>.</p>
+      </div>
+      <div class="card">
+        <div class="stat" style="font-size:18px">07–08</div>
+        <h3>Escribir, validar</h3>
+        <p>El LLM edita H1 + long sobre el texto actual (conservación ≥80%). El validador primero corre <strong style="color:var(--white)">reglas duras en código</strong>, después el LLM.</p>
+      </div>
+      <div class="card">
+        <div class="stat" style="font-size:18px">09–10</div>
+        <h3>Gate y escritura</h3>
+        <p>Nada se publica sin gate. En <strong style="color:var(--white)">dry-run</strong> el pipeline corre completo y no toca nada; el write exige validez + aprobación.</p>
+      </div>
+      <div class="card">
+        <div class="stat" style="font-size:18px">11</div>
+        <h3>Traza y ritmo</h3>
+        <p>Cada decisión queda en la DB (antes/después, motivos, costos). El scheduler trabaja 9–18 con cargas variables, sin patrones detectables.</p>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:28px">
+      <h3>La prueba real — Connor Sofa by Borzalino</h3>
+      <p style="margin-bottom:8px">
+        Se corrió el agente sobre una ficha <strong style="color:var(--white)">real de cassoni.com</strong>, en frío (sin escribir nada en el sitio):
+      </p>
+      <p style="margin-bottom:6px">🔹 H1: <span style="color:var(--lime)">Borzalino Connor Sofa</span> · long description: 87 → <strong style="color:var(--white)">167 palabras</strong>, conservación del original: <strong style="color:var(--white)">100%</strong>.</p>
+      <p style="margin-bottom:6px">🔹 Secundarias con palabras distintas y porqué anclado en atributos reales · gate mecánico: <strong style="color:var(--white)">0 issues</strong>.</p>
+      <p style="margin-bottom:0">🔹 Se detectó y corrigió un bug real (tope de tokens del razonador) con su test de regresión.</p>
+    </div>
+
+    <div class="callout" style="margin-top:20px;border-color:rgba(224,179,74,0.5)">
+      <h3>EN SIMPLE</h3>
+      <p>Es un redactor SEO virtual que trabaja de 9 a 18 sin que Google lo distinga de una persona. Lee cada ficha, busca las palabras correctas con fuentes reales, decide con reglas fijas (no con corazonadas), reescribe solo lo mínimo indispensable, y nada se publica sin pasar un control doble. Todo queda anotado: qué cambió, por qué y cuánto costó.</p>
+    </div>
+
+    <p style="font-size:13px;opacity:1;color:var(--cream);margin-top:20px;border-top:1px solid var(--border);padding-top:14px">
+      Estado de la implementación: etapas 01–10 implementadas y testeadas (<strong style="color:var(--lime)">113 tests</strong> en suite, evidencia RED/GREEN en el repo).
+      Pendientes para producción: key de WooCommerce con permisos, verificar acceso GSC, despliegue a CASE y el expansor (etapa señalada con *).
+    </p>
+  </div>
+</section>
+<!-- ══════════════════════════════════════════════
+     03 — COMPONENTES EN DETALLE
+     ══════════════════════════════════════════════ -->
+<section>
+  <div class="container">
+    <p class="section-label"><span class="section-number">(03)</span> — Componentes</p>
+    <h2 style="margin-bottom:24px">Cada pieza <span style="color:var(--lime)">en detalle.</span></h2>
+
+    <!-- 01 · EXTRACTOR -->
+    <div class="card accent" style="margin-bottom:16px">
+      <h3>01 · Extractor de URL a Slug</h3>
+      <p>
+        Script Python que procesa cualquier URL de WooCommerce y determina si es producto,
+        categoría o etiqueta. Soporta múltiples idiomas (español, inglés, portugués, francés),
+        URLs con query params, pretty permalinks, y estructuras custom. 
+        Si no puede determinar el tipo, lo reporta explícitamente.
+      </p>
+      <p style="margin-top:8px;font-size:0.8rem;color:var(--muted)">
+        Endpoint: <code style="color:var(--lime)">/wp-json/wc/v3/products?slug={slug}</code> · 
+        Auth: Consumer Key + Secret (Basic)
+      </p>
+    </div>
+
+    <!-- 02 · WOOCOMMERCE -->
+    <div class="card accent" style="margin-bottom:16px">
+      <h3>02 · WooCommerce API — Ficha Completa</h3>
+      <p>
+        Con el slug, consulta la REST API de WooCommerce y obtiene el objeto JSON completo:
+        nombre, descripción (HTML), short_description, precio, SKU, categorías, tags,
+        imágenes, atributos, variaciones, meta_data, dimensiones, stock, y más.
+        Para productos variables, también extrae todas las variaciones con sus precios y atributos.
+      </p>
+      <p style="margin-top:8px;font-size:0.8rem;color:var(--muted)">
+        Campos clave: <code style="color:var(--lime)">name</code> (H1 actual) · 
+        <code style="color:var(--lime)">description</code> (HTML) · 
+        <code style="color:var(--lime)">permalink</code> · 
+        <code style="color:var(--lime)">categories[]</code>
+      </p>
+    </div>
+
+    <!-- 03 · GSC -->
+    <div class="card" style="margin-bottom:16px">
+      <h3>03 · Google Search Console API</h3>
+      <p>
+        Para cada producto, consulta las <strong style="color:var(--white)">top 10 keywords</strong>
+        por las que esa URL recibió impresiones en los <strong style="color:var(--white)">últimos 12 meses</strong>.
+        Usa OAuth 2.0 para autenticarse contra la propiedad de Cassoni en Search Console.
+        <strong style="color:var(--lime)">La API permite hasta 50.000 filas de datos por día</strong>,
+        más que suficiente para procesar los 11.000 productos del catálogo.
+      </p>
+      <p style="margin-top:8px;font-size:0.8rem;color:var(--muted)">
+        Costo: <span style="color:var(--lime)">$0</span> (gratuito) · 
+        Límite: 50.000 filas/día · 
+        Endpoint: <code style="color:var(--lime)">/webmasters/v3/sites/{site}/searchAnalytics/query</code>
+      </p>
+    </div>
+
+    <!-- 04 · DATAFORSEO -->
+    <div class="card" style="margin-bottom:16px">
+      <h3>04 · DataForSEO — Filtro por Volumen de Búsqueda (Técnica de Bulking)</h3>
+      <p>
+        GSC devuelve 10 keywords por producto → <strong style="color:var(--white)">~110.000 keywords total</strong>
+        (11.000 productos × 10). Pero muchas se repiten entre productos similares.
+      </p>
+      <p style="margin-top:8px;padding:12px 16px;background:rgba(204,229,53,0.06);border-radius:4px;font-size:0.85rem">
+        <strong style="color:var(--lime)">¿Por qué no son 110.000 keywords únicas?</strong><br>
+        Imaginá 5 sofás distintos en el catálogo. GSC devuelve para cada uno:<br>
+        <span style="color:var(--muted)">Sofá A:</span> "sofá de lujo", "sofá milano", "sofá cuero negro", "comprar sofá", "cassoni", ...<br>
+        <span style="color:var(--muted)">Sofá B:</span> "sofá de lujo" <svg class="ic" style="color:var(--lime)"><use href="#i-repeat"/></svg>, "sofá parís", "sofá terciopelo", "comprar sofá" <svg class="ic" style="color:var(--lime)"><use href="#i-repeat"/></svg>, "cassoni" <svg class="ic" style="color:var(--lime)"><use href="#i-repeat"/></svg>, ...<br>
+        <span style="color:var(--muted)">Sofá C:</span> "sofá de lujo" <svg class="ic" style="color:var(--lime)"><use href="#i-repeat"/></svg>, "muebles de diseño", "sillones modernos", "cassoni" <svg class="ic" style="color:var(--lime)"><use href="#i-repeat"/></svg>, ...<br><br>
+        <strong style="color:var(--white)">Patrón:</strong> términos de categoría y marca se repiten en decenas o cientos de URLs.
+        Solo los long-tail específicos ("sofá milano cuero negro") son realmente únicos.<br>
+        <strong style="color:var(--lime)">Resultado:</strong> de 110.000 keywords, tras deduplicar quedan entre 20.000 y 40.000 únicas
+        (~65-80% de solapamiento). El número exacto depende de la diversidad del catálogo
+        y se conocerá al procesar los datos reales de Cassoni.
+      </p>
+      <p style="margin-top:8px">
+        Se realiza una <strong style="color:var(--white)">deduplicación con trazabilidad</strong>:
+        cada keyword única mantiene una lista de las URLs de origen, para poder
+        re-mapear los volúmenes a cada producto después del bulk.
+      </p>
+      <p style="margin-top:8px;padding:12px 16px;background:rgba(204,229,53,0.06);border-radius:4px;font-size:0.85rem">
+        <strong style="color:var(--lime)">Técnica de bulking:</strong> 
+        DataForSEO permite enviar hasta 1.000 keywords en un solo request HTTP.
+        La API cobra <strong style="color:var(--white)">$0,0095 por keyword</strong> (validado con datos reales: 19 keywords consumieron $0,18).
+        El bulking no reduce el costo por keyword, pero sí la velocidad: en lugar de
+        30.000 llamadas individuales, consolidamos todo en 30 requests de 1.000.
+        La API devuelve los volúmenes en el <strong style="color:var(--lime)">mismo orden</strong> del array de entrada,
+        lo que permite re-mapear cada volumen a su keyword y de vuelta a los productos de origen.<br>
+        <strong style="color:var(--white)">Peor caso (40.000 únicas):</strong> $380.<br>
+        <strong style="color:var(--white)">Caso esperado (30.000 únicas):</strong> $285.<br>
+        Es el componente más caro del proyecto y el costo dominante del pipeline.
+      </p>
+      <p style="margin-top:8px">
+        En el pipeline, para cada producto se filtran
+        <strong style="color:var(--white)">hasta 10 keywords</strong> entre las que devolvió GSC,
+        descartando nombres de marca y términos irrelevantes para mobiliario de lujo.
+        Las que quedan se incorporan en H1 (la más descriptiva) y descripción (el resto).
+      </p>
+      <p style="margin-top:8px;font-size:0.8rem;color:var(--muted)">
+        Endpoint: <code style="color:var(--lime)">/v3/keywords_data/google_ads/search_volume/live</code> ·
+        <strong style="color:var(--lime)">Flujo:</strong> GSC por URL → keyword + URL mapping → deduplicar preservando origen → DataForSEO bulk (1.000/req) → resultados mapeados de vuelta a cada producto
+      </p>
+    </div>
+
+    <!-- 05 · LLM -->
+    <div class="card accent" style="margin-bottom:16px">
+      <h3>05 · LLM Editor — Optimización de H1 y Descripción</h3>
+      <p>
+        El LLM recibe el H1 actual y la descripción larga existente, más las keywords
+        seleccionadas. Debe:
+      </p>
+      <ul style="margin-top:8px;padding-left:20px;color:rgba(255,255,255,0.5);font-size:0.9rem;line-height:1.8">
+        <li>Elegir la <strong style="color:var(--white)">keyword más descriptiva</strong> del producto para el H1</li>
+        <li>Insertarla de forma <strong style="color:var(--white)">natural y coherente</strong> sin forzar</li>
+        <li>Incorporar <strong style="color:var(--white)">las keywords restantes en la descripción larga</strong></li>
+        <li>Preservar el <strong style="color:var(--white)">tono de lujo</strong> de Cassoni</li>
+        <li>No repetir conceptos que ya estaban en el texto original</li>
+        <li>Mantener el HTML y formato existentes</li>
+      </ul>
+      <p style="margin-top:8px;font-size:0.8rem;color:var(--muted)">
+        Modelo sugerido: Gemini 2.5 Flash (~$15,40 para 11K productos como editor). Ver comparativa completa en sección 09.
+      </p>
+    </div>
+
+    <!-- 06 · VALIDADOR -->
+    <div class="card" style="margin-bottom:16px">
+      <h3>06 · Agente Validador</h3>
+      <p>
+        Un segundo LLM —o el mismo con un prompt de validación— revisa cada output:
+        coherencia del texto, tono de lujo preservado, keywords efectivamente incorporadas,
+        ausencia de repetición, y que el H1 siga siendo descriptivo del producto.
+        Si detecta problemas, rebota el texto al editor para una segunda pasada.
+      </p>
+      <p style="margin-top:8px;font-size:0.8rem;color:var(--muted)">
+        Ritmo: ~50 productos/día procesados. Cada tanto, el equipo SEO revisa manualmente.
+      </p>
+    </div>
+
+    <!-- 07 · DB -->
+    <div class="card" style="margin-bottom:16px">
+      <h3>07 · Base de Datos de Trazabilidad</h3>
+      <p>
+        Cada producto procesado registra: URL, slug, keywords obtenidas de GSC,
+        volumen de cada una vía DataForSEO, cuáles se seleccionaron y por qué,
+        dónde se insertaron (H1 o descripción), el texto antes y después,
+        y el resultado de la validación. Esto permite auditoría completa,
+        iteración sobre decisiones pasadas, y demostración de impacto SEO.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     04 — ANÁLISIS DE COSTOS
+     ══════════════════════════════════════════════ -->
+<section>
+  <div class="container">
+    <p class="section-label"><span class="section-number">(04)</span> — Costos asociados</p>
+    <h2 style="margin-bottom:24px">Proyección para <span style="color:var(--lime)">11.000 productos.</span></h2>
+
+    <div class="esc-switch" id="esc-switch" role="tablist" aria-label="Escenarios de configuración">
+      <button class="esc-btn active" data-esc="economico" onclick="cambiarEscenario('economico')"><svg class="ic" style="color:#CD7F32"><use href="#i-medal"/></svg> Económico</button>
+      <button class="esc-btn" data-esc="recomendado" onclick="cambiarEscenario('recomendado')"><svg class="ic" style="color:#E6B800"><use href="#i-trophy"/></svg> Recomendado</button>
+      <button class="esc-btn" data-esc="premium" onclick="cambiarEscenario('premium')">Premium</button>
+      <button class="esc-btn" data-esc="calidad" onclick="cambiarEscenario('calidad')"><svg class="ic" style="color:#B8B8C8"><use href="#i-medal"/></svg> Calidad-Precio</button>
+      <button class="esc-btn" data-esc="maxima" onclick="cambiarEscenario('maxima')">Máxima calidad</button>
+    </div>
+
+    <table class="cost-table">
+      <thead>
+        <tr>
+          <th>Componente</th>
+          <th>Volumen</th>
+          <th>Costo Unitario</th>
+          <th class="num">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="highlight">
+          <td>Google Search Console API</td>
+          <td>11.000 consultas (top 10 keywords c/u)</td>
+          <td>Gratuito</td>
+          <td class="num" style="color:var(--lime)">$0,00</td>
+        </tr>
+        <tr>
+          <td>DataForSEO — search volume</td>
+          <td>20.000–40.000 keywords únicas</td>
+          <td>$0,0095 / keyword (validado: 19 kw = $0,18)</td>
+          <td class="num" style="color:var(--lime)">$190–$380</td>
+        </tr>
+        <tr>
+          <td>DataForSEO — SERP analysis</td>
+          <td>3 keywords × 11.000 productos = 33.000 (con dedup: ~10.000–15.000 únicas)</td>
+          <td>$0,002 / keyword</td>
+          <td class="num" style="color:var(--lime)">$20–$30</td>
+        </tr>
+        <tr class="highlight">
+          <td id="llm-editor-nombre">LLM Editor (Gemini Flash)</td>
+          <td>11.000 productos × ~500 tok in + ~500 tok out c/u</td>
+          <td id="llm-editor-unit">$0,30/$2,50 / 1M tok</td>
+          <td class="num" style="color:var(--lime)" id="llm-editor-total">$15,40</td>
+        </tr>
+        <tr>
+          <td id="llm-val-nombre">LLM Validador (Gemini Flash)</td>
+          <td>11.000 productos × ~500 tok in + ~500 tok out c/u</td>
+          <td id="llm-val-unit">$0,30/$2,50 / 1M tok</td>
+          <td class="num" style="color:var(--lime)" id="llm-val-total">$15,40</td>
+        </tr>
+        <tr class="highlight">
+          <td>Infraestructura (VPS)</td>
+          <td>Cloud dedicado — IP ya autorizada en Cloudflare allowlist de Cassoni</td>
+          <td>$0 marginal</td>
+          <td class="num" style="color:var(--lime)">$0,00</td>
+        </tr>
+        <tr class="total">
+          <td colspan="3">Total estimado — Catálogo completo (<span id="total-label">Gemini Flash</span>)</td>
+          <td class="num" id="total-rango">≈ $241–$441 USD <span style="opacity:0.65">· esperado ~$346</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout" style="margin-top:24px">
+      <h3>Proyección ilustrativa</h3>
+      <p>
+        Cifras no vinculantes basadas en precios públicos de cada API a julio 2026.
+        DataForSEO es el costo dominante: search volume $0,0095/kw + SERP analysis $0,002/kw.
+        Con Gemini Flash para edición y validación: <strong style="color:var(--white)">~$241–$441</strong>.
+        Con setup híbrido (Flash editor + Claude validador): <strong style="color:var(--white)">~$324–$524</strong>.
+        Ver sección 09 para el desglose completo por modelo.
+      </p>
+      <p style="margin-top:12px;font-size:0.85rem;color:rgba(255,255,255,0.55)">
+        <strong style="color:var(--white)">Los costos de servicios y APIs pueden variar a lo largo del proceso:</strong>
+        DataForSEO, Google y los proveedores de LLM ajustan sus tarifas periódicamente, y el volumen real de
+        keywords únicas puede diferir del estimado. La base de trazabilidad registra el costo real por producto
+        en cada ejecución, lo que permite detectar desvíos y recalibrar la proyección con datos medidos, no supuestos.
+      </p>
+    </div>
+
+    <div class="callout" style="margin-bottom:20px;border-left-color:rgba(204,229,53,0.5)">
+      <h3><svg class="ic"><use href="#i-calculator"/></svg> Cálculo del costo DataForSEO ($315 en caso esperado)</h3>
+      <p style="font-size:0.85rem">
+        <strong style="color:var(--white)">Search Volume:</strong> GSC devuelve 10 keywords por URL → 110.000 total → tras deduplicar quedan ~30.000 únicas. 
+        30.000 × <strong style="color:var(--lime)">$0,0095</strong> (validado: 19 kw = $0,18) = <strong style="color:var(--white)">$285</strong><br>
+        <strong style="color:var(--white)">SERP Analysis:</strong> de las keywords filtradas por volumen, tomamos hasta 3 por producto → 33.000 total → 
+        tras deduplicar quedan ~15.000 únicas. 15.000 × <strong style="color:var(--lime)">$0,002</strong> = <strong style="color:var(--white)">$30</strong><br>
+        <strong style="color:var(--lime)">Total DataForSEO = $285 + $30 = $315</strong> en el caso esperado. Varía entre $210 y $410 según la tasa de duplicación real del catálogo Cassoni.
+      </p>
+    </div>
+
+    <div class="callout" style="margin-top:16px">
+      <h3><svg class="ic" style="color:#E6B800"><use href="#i-trophy"/></svg> ¿Por qué "Recomendado"?</h3>
+      <p>
+        Gemini Flash procesa el 100% de productos a costo mínimo ($15,40). Una vez por semana,
+        se toma una muestra de 20-30 productos y se re-evalúa con Claude para detectar
+        degradación de calidad o desvíos de tono. Si el muestreo pasa limpio 3 semanas seguidas,
+        se espacia. <strong style="color:var(--lime)">Costo adicional: ~$22/mes en Claude.</strong>
+        Es el mejor equilibrio: velocidad y bajo costo del Flash con la supervisión periódica del Claude.
+      </p>
+    </div>
+
+    <div class="cards" style="margin-top:20px">
+      <div class="card">
+        <h3><svg class="ic"><use href="#i-chart-column"/></svg> Rango real (20K–40K keywords)</h3>
+        <p style="font-size:0.85rem">
+          <strong style="color:var(--lime)">Económico:</strong> $241–$441<br>
+          <strong style="color:var(--lime)">Recomendado:</strong> $263–$463<br>
+          <strong style="color:var(--lime)">Máxima calidad:</strong> $408–$608
+        </p>
+      </div>
+      <div class="card">
+        <h3><svg class="ic"><use href="#i-coins"/></svg> Costo por producto</h3>
+        <p style="font-size:0.85rem">
+          <strong style="color:var(--lime)">Económico:</strong> ~$0,031 / producto<br>
+          <strong style="color:var(--lime)">Recomendado:</strong> ~$0,033 / producto<br>
+          <strong style="color:var(--lime)">Máxima calidad:</strong> ~$0,047 / producto<br>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     05 — PLAN DE IMPLEMENTACIÓN
+     ══════════════════════════════════════════════ -->
+<section>
+  <div class="container">
+    <p class="section-label"><span class="section-number">(05)</span> — Implementación</p>
+    <h2 style="margin-bottom:24px">Fases del <span style="color:var(--lime)">proyecto.</span></h2>
+
+    <div class="cards">
+      <div class="card accent">
+        <h3>Fase 1 — Setup</h3>
+        <p>
+          Verificar credenciales de WooCommerce API (ya disponibles vía equipo SEO).
+          Validar acceso OAuth a Google Search Console (ya configurado).
+          Activar cuenta DataForSEO (plan Light ~$50/mes).
+          Script extractor de URL → slug.
+        </p>
+      </div>
+      <div class="card accent">
+        <h3>Fase 2 — Extracción (Staging)</h3>
+        <p>
+          Conectar WooCommerce API contra el <strong style="color:var(--lime)">sitio de staging</strong> de Cassoni
+          (idéntico a producción). Procesar un lote piloto de 10-20 productos sin riesgo.
+          Validar que la ficha JSON contiene todos los campos necesarios.
+          Script de extracción de GSC para top 10 keywords.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Fase 3 — Keywords</h3>
+        <p>
+          Integrar DataForSEO para filtrar volumen. Afinar la lógica de descarte
+          (marcas, términos genéricos, keywords no relevantes para lujo).
+          Definir criterio de selección de la keyword principal para H1.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Fase 4 — LLM + Validación</h3>
+        <p>
+          Integrar el LLM editor (Gemini Flash) y el agente validador (Claude Sonnet).
+          Nosotros definimos y ajustamos los prompts junto con el equipo de Cassoni;
+          conectamos las APIs y armamos la interfaz para que puedan iterar sin tocar código.
+          Procesar lote piloto con revisión del equipo SEO.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Fase 5 — Escala + Cron</h3>
+        <p>
+          DB de trazabilidad. Procesamiento del catálogo completo (11.000 productos)
+          desde staging, con migración controlada a producción cuando esté validado.
+          Cron en <strong style="color:var(--lime)">horario de oficina con intervalos variables</strong>
+          (9-18 horario local, pausas aleatorias entre requests) para evitar
+          que Google detecte automatización y penalice el sitio.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     06 — ESTRATEGIA DE CRON
+     ══════════════════════════════════════════════ -->
+<section>
+  <div class="container">
+    <p class="section-label"><span class="section-number">(06)</span> — Cron</p>
+    <h2 style="margin-bottom:24px">Ejecución <span style="color:var(--lime)">anti-bot.</span></h2>
+
+    <div class="callout">
+      <h3>Por qué en horario de oficina con intervalos variables</h3>
+      <p>
+        Google detecta patrones de actualización masiva de contenido y puede interpretarlos
+        como manipulación automatizada de SEO, lo que deriva en penalizaciones en el ranking.
+        Un flujo constante de 11.000 productos editados en secuencia a las 3 AM es una firma
+        clara de automatización. En cambio, ediciones espaciadas aleatoriamente durante
+        el horario comercial (9:00–18:00, horario local) son indistinguibles del ritmo de trabajo
+        de un equipo editorial humano. El objetivo es que Google vea un sitio con contenido
+        que mejora orgánicamente, no un sitio siendo optimizado por un bot.
+      </p>
+    </div>
+
+    <div class="cards" style="margin-top:24px">
+      <div class="card accent">
+        <h3>Ventana horaria</h3>
+        <p>
+          <strong style="color:var(--white)">Lunes a viernes, 9:00–18:00</strong> (horario local).<br>
+          Sin ejecución fines de semana ni madrugada.<br>
+          Si un producto queda pendiente, se retoma al día siguiente.
+        </p>
+      </div>
+      <div class="card accent">
+        <h3>Intervalos variables</h3>
+        <p>
+          Tiempo aleatorio entre productos: <strong style="color:var(--white)">30s–5min</strong>.<br>
+          Simula el ritmo de un redactor humano: a veces edita rápido,
+          a veces se toma un café entre producto y producto.<br>
+          Distribución no uniforme para evitar patrones detectables.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Volumen diario</h3>
+        <p>
+          Ritmo fijo: <strong style="color:var(--white)">50 productos/día</strong>.<br>
+          Catálogo completo (11.000) en <strong style="color:var(--white)">~220 días hábiles</strong>.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Implementación</h3>
+        <p>
+          Cron con <strong style="color:var(--lime)">agente supervisor</strong> integrado.<br>
+          <code style="color:var(--lime)">random.uniform(30, 300)</code> segundos entre productos.<br>
+          Solo ejecuta en horario hábil (9-18 horario local, lun-vie).<br>
+          Google ve ediciones a ritmo humano, no un bot.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     07 — STACK TECNOLÓGICO
+     ══════════════════════════════════════════════ -->
+<section>
+  <div class="container">
+    <p class="section-label"><span class="section-number">(07)</span> — Stack</p>
+    <h2 style="margin-bottom:24px">Tecnologías <span style="color:var(--lime)">utilizadas.</span></h2>
+
+    <div class="cards">
+      <div class="card">
+        <h3>Backend</h3>
+        <p><strong style="color:var(--white)">Python 3.11+</strong></p>
+        <p>Scripts modulares: extractor de slug, cliente WooCommerce, cliente GSC, cliente DataForSEO, orquestador del pipeline, validador.</p>
+      </div>
+      <div class="card">
+        <h3>APIs Externas</h3>
+        <p>
+          <strong style="color:var(--white)">WooCommerce REST API v3</strong> — ficha de producto<br>
+          <strong style="color:var(--white)">Google Search Console API</strong> — keywords + impresiones<br>
+          <strong style="color:var(--white)">DataForSEO</strong> — search volume + filtrado
+        </p>
+      </div>
+      <div class="card">
+        <h3>LLM</h3>
+        <p>
+          <strong style="color:var(--white)">Gemini 2.5 Flash</strong> — edición (bajo costo, alta velocidad)<br>
+          <strong style="color:var(--white)">Claude 3.5 Sonnet</strong> — validación (mejor razonamiento)<br>
+          Alternativas: DeepSeek V4, GPT-4o. Ver comparativa en sección 09.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Base de Datos</h3>
+        <p>
+          <strong style="color:var(--white)">PostgreSQL</strong> — trazabilidad de keywords, versiones de texto antes/después, logs de validación.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Infraestructura</h3>
+        <p>
+          <strong style="color:var(--white)">Cloud dedicado</strong> — IP ya autorizada en Cloudflare allowlist de Cassoni (sin bloqueos)<br>
+          <strong style="color:var(--white)">Staging</strong> — sitio idéntico al de producción para pruebas seguras<br>
+          <strong style="color:var(--white)">GitHub</strong> — control de versiones<br>
+          <strong style="color:var(--white)">Cron variable</strong> — ejecución en horario de oficina simulando tráfico humano
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     08 — ¿POR QUÉ NO N8N?
+     ══════════════════════════════════════════════ -->
+<section>
+  <div class="container">
+    <p class="section-label"><span class="section-number">(08)</span> — Por qué Python</p>
+    <h2 style="margin-bottom:24px">Por qué <span style="color:var(--lime)">Python + Cron</span> y no n8n.</h2>
+
+    <p style="color:var(--muted);margin-bottom:24px;font-size:0.9rem">
+      Cassoni ya tiene un workflow de SEO en n8n (33 nodos, 119K imágenes procesadas).
+      Para aquel proyecto, n8n fue la herramienta correcta: un flujo lineal de transformación
+      de datos. Este proyecto es distinto. Estos son los motivos técnicos.
+    </p>
+
+    <div class="cards">
+      <div class="card accent">
+        <h3>1. Esto no es un workflow — es un scheduler</h3>
+        <p>
+          n8n ejecuta workflows: disparador → pasos secuenciales → fin. Este proyecto necesita
+          un <strong style="color:var(--white)">planificador que corra durante meses</strong>, con pausas aleatorias,
+          ventanas horarias, reanudaciones automáticas, y rate limiting coordinado entre 3 APIs distintas.
+          Eso es un cron con lógica de scheduling, no un workflow.
+        </p>
+      </div>
+      <div class="card accent">
+        <h3>2. Bulking: acumular antes de enviar</h3>
+        <p>
+          La técnica de bulking de DataForSEO requiere <strong style="color:var(--white)">acumular keywords de múltiples productos</strong>
+          antes de hacer un solo request de 1.000. n8n procesa items de a uno; no tiene
+          un mecanismo nativo para "juntá 1.000 y después mandá". En Python es un array y un contador.
+        </p>
+      </div>
+      <div class="card">
+        <h3>3. Trazabilidad con SQL real</h3>
+        <p>
+          Cada decisión del pipeline queda registrada en PostgreSQL: qué keyword, qué URL,
+          qué volumen tenía, por qué se eligió, dónde se insertó, texto antes y después,
+          resultado de la validación. n8n puede loguear en JSON, pero consultar
+          "mostrame todas las keywords descartadas por ser marcas" requiere SQL.
+        </p>
+      </div>
+      <div class="card">
+        <h3>4. Agente supervisor 24/7</h3>
+        <p>
+          El pipeline no corre solo: un <strong style="color:var(--white)">agente LLM monitorea cada ejecución</strong>.
+          Si algo falla —GSC sin datos, DataForSEO timeout, LLM responde incoherencias—
+          envía un correo al equipo con el diagnóstico exacto: qué producto, qué paso falló,
+          por qué, y si ya se salteó automáticamente. n8n puede disparar un webhook,
+          pero no redactar un email diciendo <em>"el producto #237 no tiene datos en GSC,
+          es esperable para productos nuevos, lo salteé y seguí"</em>.
+        </p>
+      </div>
+      <div class="card">
+        <h3>5. Versionado con git</h3>
+        <p>
+          Cada cambio en la lógica del pipeline es un commit: qué se modificó y por qué.
+          Si el equipo de SEO dice "volvé a la versión de la semana pasada
+          que funcionaba mejor", es <strong style="color:var(--white)">un git revert</strong>. n8n tiene historial
+          de versiones pero está atado a la UI y no sobrevive a migraciones o cambios de entorno.
+        </p>
+      </div>
+      <div class="card">
+        <h3>6. Evolución sin límites de canvas</h3>
+        <p>
+          Cuando el equipo de SEO pida "agreguemos otra fuente de keywords" o "cambiemos
+          el criterio de selección de 3 a 5", en Python es <strong style="color:var(--white)">código nuevo + deploy</strong>.
+          En n8n es arrastrar nodos en un canvas que ya tiene 33, con el riesgo constante
+          de romper una conexión invisible. A escala de 11.000 productos y meses de operación,
+          el código es más mantenible que un diagrama.
+        </p>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:24px">
+      <h3>n8n fue la herramienta correcta para el proyecto anterior</h3>
+      <p>
+        El workflow de 33 nodos para generar meta descriptions de 119K imágenes era
+        un flujo de transformación: imagen → clasificación → generación → validación.
+        Ahí n8n brilló porque cada item sigue el mismo camino lineal. Este proyecto
+        es un scheduler de largo plazo con bulking, rate limiting coordinado,
+        y una DB relacional de trazabilidad. Para eso, Python + PostgreSQL + Cron
+        es la infraestructura correcta.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     09 — COMPARATIVA DE LLMs
+     ══════════════════════════════════════════════ -->
+<section>
+  <div class="container">
+    <p class="section-label"><span class="section-number">(09)</span> — LLMs</p>
+    <h2 style="margin-bottom:8px">Comparativa de <span style="color:var(--lime)">modelos.</span></h2>
+    <p style="color:var(--muted);margin-bottom:32px;font-size:0.9rem">
+      Costos calculados para 11.000 productos: ~5.5M tokens input + ~5.5M tokens output (editor).
+      El validador duplica el costo. Precios a julio 2026. Cifras no vinculantes.
+    </p>
+
+    <table class="cost-table">
+      <thead>
+        <tr>
+          <th>Modelo</th>
+          <th>Provider</th>
+          <th>Input / 1M tok</th>
+          <th>Output / 1M tok</th>
+          <th class="num">Editor</th>
+          <th class="num">Editor + Validador</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="highlight">
+          <td><strong style="color:var(--white)">Gemini 2.5 Flash</strong></td>
+          <td>Google</td>
+          <td>$0,30</td>
+          <td>$2,50</td>
+          <td class="num" style="color:var(--lime)">$15,40</td>
+          <td class="num" style="color:var(--lime)">$30,80</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--white)">GPT-4o Mini</strong></td>
+          <td>OpenAI</td>
+          <td>$0,15</td>
+          <td>$0,60</td>
+          <td class="num" style="color:var(--lime)">$4,13</td>
+          <td class="num" style="color:var(--lime)">$8,26</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--white)">DeepSeek V4 Pro</strong></td>
+          <td>API oficial</td>
+          <td>$0,435</td>
+          <td>$0,87</td>
+          <td class="num">$7,18</td>
+          <td class="num">$14,36</td>
+        </tr>
+        <tr class="highlight">
+          <td><strong style="color:var(--white)">Gemini 2.5 Pro</strong></td>
+          <td>Google</td>
+          <td>$1,25</td>
+          <td>$10,00</td>
+          <td class="num">$61,88</td>
+          <td class="num">$123,76</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--white)">GPT-4o</strong></td>
+          <td>OpenAI</td>
+          <td>$2,50</td>
+          <td>$10,00</td>
+          <td class="num">$68,75</td>
+          <td class="num">$137,50</td>
+        </tr>
+        <tr class="highlight">
+          <td><strong style="color:var(--white)">Claude 3.5 Sonnet</strong></td>
+          <td>Anthropic</td>
+          <td>$3,00</td>
+          <td>$15,00</td>
+          <td class="num">$99,00</td>
+          <td class="num">$198,00</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--white)">Claude Opus 4</strong></td>
+          <td>Anthropic</td>
+          <td>$15,00</td>
+          <td>$75,00</td>
+          <td class="num">$495,00</td>
+          <td class="num">$990,00</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="cards" style="margin-top:20px">
+      <div class="card accent">
+        <h3><svg class="ic" style="color:#E6B800"><use href="#i-trophy"/></svg> Recomendado: Gemini 2.5 Flash</h3>
+        <p>
+          Mejor relación costo/calidad. $30,80 para el catálogo completo con validador.
+          Google infrastructure, latencia mínima. Ideal para la fase de edición por volumen.
+        </p>
+      </div>
+      <div class="card accent">
+        <h3><svg class="ic" style="color:#B8B8C8"><use href="#i-medal"/></svg> Validación: Claude 3.5 Sonnet</h3>
+        <p>
+          Para el agente validador, donde la calidad del output es crítica,
+          Claude ofrece el mejor razonamiento para detectar inconsistencias.
+          $99 para el catálogo completo como validador (una pasada por producto).
+        </p>
+      </div>
+      <div class="card">
+        <h3><svg class="ic"><use href="#i-lightbulb"/></svg> Setup híbrido óptimo</h3>
+        <p>
+          <strong style="color:var(--lime)">Editor → Gemini 2.5 Flash:</strong> $15,40 (barato, rápido).<br>
+          <strong style="color:var(--lime)">Validador → Claude 3.5 Sonnet:</strong> $99,00 (mejor razonamiento).<br>
+          <strong style="color:var(--white)">Total híbrido: ~$114</strong> en LLMs para 11.000 productos<br>
+          (sin contar DataForSEO).
+          Lo mejor de ambos mundos: costo bajo en edición masiva + calidad Claude en validación.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     10 — ESTIMACIÓN DE DESARROLLO
+     ══════════════════════════════════════════════ -->
+<section>
+  <div class="container">
+    <p class="section-label"><span class="section-number">(10)</span> — Roadmap</p>
+    <h2 style="margin-bottom:24px">Estimación de <span style="color:var(--lime)">desarrollo.</span></h2>
+
+    <p style="color:var(--muted);margin-bottom:24px;font-size:0.9rem">
+      La estructura de datos de WooCommerce de Cassoni ya la conocemos (procesamos 7.800 productos
+      en el proyecto anterior de SEO). Credenciales ya disponibles. <strong style="color:var(--lime)">Las 4 APIs involucradas están maduras, tienen librerías
+      Python listas para usar, documentación exhaustiva y ejemplos de código funcionales.</strong>
+    </p>
+
+    <div class="callout" style="margin-bottom:20px;border-left-color:rgba(204,229,53,0.4)">
+      <h3><svg class="ic"><use href="#i-microscope"/></svg> Validación de APIs</h3>
+      <p style="font-size:0.85rem">
+        <strong style="color:var(--white)">WooCommerce:</strong> wrapper Python oficial (<code>wc-api-python</code>). Fetch de producto en 5 líneas.<br>
+        <strong style="color:var(--white)">GSC API:</strong> Google provee guías completas con código Python listo para copiar. Método <code>searchanalytics.query()</code> con filtro por <code>page</code> para extraer keywords por URL. Autenticación vía OAuth2 o service account.<br>
+        <strong style="color:var(--white)">DataForSEO:</strong> endpoint bulk de 1.000 keywords/request. Basic Auth (base64). Documentación con ejemplos en curl y Python.<br>
+        <strong style="color:var(--white)">LLMs (Gemini, Claude, GPT):</strong> todos usan endpoints OpenAI-compatible. Mismo formato, mismo cliente HTTP.<br>
+        <strong style="color:var(--lime)">Conclusión:</strong> las 4 APIs se conectan en horas, no en días. El trabajo real está en el orquestador, la trazabilidad y los fallbacks — no en la integración.
+      </p>
+    </div>
+
+    <div class="callout" style="margin-bottom:28px;border-left-color:var(--lime)">
+      <h3><svg class="ic"><use href="#i-zap"/></svg> Día 3 — Pipeline completo procesando URLs reales</h3>
+      <p>
+        <strong style="color:var(--white)">Día 1:</strong> credenciales + WooCommerce (fetch de ficha desde staging) + <strong style="color:var(--lime)">schema DB trazabilidad</strong> (qué keywords, qué URL, qué volúmenes, qué decisión).<br>
+        <strong style="color:var(--white)">Día 2:</strong> GSC (OAuth + top 10 keywords) + DataForSEO (volumen) + <strong style="color:var(--lime)">cron variable</strong> (9-18 horario local, intervalos aleatorios 30s-5min).<br>
+        <strong style="color:var(--white)">Día 3:</strong> conexión LLM + orquestador + validador. <strong style="color:var(--lime)">El pipeline procesa URLs reales, registra cada decisión en la DB, y corre en horario de oficina con timing humano.</strong>
+      </p>
+    </div>
+
+    <div class="callout" style="margin:24px 0 28px 0;">
+      <h3><svg class="ic"><use href="#i-wrench"/></svg> Días 4–7 — Fallbacks, control de calidad, primer lote</h3>
+      <p>
+        <strong style="color:var(--white)">Fallbacks:</strong> qué pasa si GSC no tiene datos para esa URL, si DataForSEO falla, si el LLM devuelve texto inválido. Degradación elegante, reintentos, logs.<br>
+        <strong style="color:var(--white)">Primer lote real:</strong> procesar 10 productos en staging, entregar resultados al equipo de SEO para validación de contenido.<br>
+        <strong style="color:var(--white)">Documentación:</strong> guía de operación, cómo leer la trazabilidad, cómo cambiar prompts sin tocar código.
+      </p>
+    </div>
+
+    <div class="cards" style="margin-top:32px">
+      <div class="card accent">
+        <h3><svg class="ic"><use href="#i-zap"/></svg> Día 3</h3>
+        <p style="font-size:1.1rem">
+          <strong style="color:var(--white)">Pipeline completo</strong><br>
+          <span style="font-size:0.85rem;color:var(--muted)">APIs + DB trazabilidad + cron variable + validador. Procesando URLs reales.</span>
+        </p>
+      </div>
+      <div class="card accent">
+        <h3><svg class="ic"><use href="#i-package"/></svg> Día 7</h3>
+        <p style="font-size:1.1rem">
+          <strong style="color:var(--white)">Lote entregado</strong><br>
+          <span style="font-size:0.85rem;color:var(--muted)">10 productos optimizados + fallbacks + documentación.</span>
+        </p>
+      </div>
+      <div class="card">
+        <h3><svg class="ic"><use href="#i-flag"/></svg> Después de semana 1</h3>
+        <p style="font-size:1.1rem">
+          <strong style="color:var(--white)">Optimización opcional</strong><br>
+          <span style="font-size:0.85rem;color:var(--muted)">Bulking DataForSEO. No bloquea: el sistema ya está produciendo.</span>
+        </p>
+      </div>
+    </div>
+
+    <p style="margin-top:24px;color:var(--muted);font-size:0.9rem">
+      <strong style="color:var(--white)">Total:</strong> 1 semana para el pipeline completo con trazabilidad, cron variable,
+      fallbacks, y primer lote de 10 productos. A partir de ahí corre solo a 50/día.
+      La trazabilidad registra desde el primer producto: qué keywords se seleccionaron,
+      por qué (volumen), dónde se insertaron (H1/descripción), texto antes y después.
+    </p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     11 — PRÓXIMOS PASOS
+     ══════════════════════════════════════════════ -->
+<section>
+  <div class="container">
+    <p class="section-label"><span class="section-number">(11)</span> — Próximos Pasos</p>
+    <h2 style="margin-bottom:24px">Para <span style="color:var(--lime)">arrancar.</span></h2>
+
+    <div class="callout">
+      <h3>Dependencias inmediatas</h3>
+      <p>
+        1. Activar cuenta en <strong style="color:var(--white)">DataForSEO</strong> (plan Light, ~$50/mes).<br>
+        2. Coordinar acceso al <strong style="color:var(--white)">sitio de staging</strong> de Cassoni para las pruebas.<br>
+        3. Definir el <strong style="color:var(--white)">lote piloto</strong> de 10-20 productos para la primera validación.<br>
+        4. El equipo SEO de Dendra prepara los <strong style="color:var(--white)">prompts iniciales</strong> del LLM, con revisión del equipo de Cassoni.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     FOOTER
+     ══════════════════════════════════════════════ -->
+<footer class="site-footer">
+  <div class="container">
+    <p>Cassoni × Dendra Creative Agency · Julio 2026 · Confidencial</p>
+  </div>
+</footer>
+
+<script>
+var ESCENARIOS = {
+  economico: {
+    label: 'Gemini Flash',
+    editorNombre: 'LLM Editor (Gemini 2.5 Flash)',
+    editorUnit: '$0,30/$2,50 / 1M tok',
+    editorTotal: '$15,40',
+    valNombre: 'LLM Validador (Gemini 2.5 Flash)',
+    valUnit: '$0,30/$2,50 / 1M tok',
+    valTotal: '$15,40',
+    rango: '≈ $241–$441 USD',
+    esperado: '~$346'
+  },
+  recomendado: {
+    label: 'Gemini Flash + muestreo Claude',
+    editorNombre: 'LLM Editor (Gemini 2.5 Flash)',
+    editorUnit: '$0,30/$2,50 / 1M tok',
+    editorTotal: '$15,40',
+    valNombre: 'LLM Validador (Gemini 2.5 Flash + muestreo Claude)',
+    valUnit: '$0,30/$2,50 / 1M tok + ~$22/mes',
+    valTotal: '$52,80',
+    rango: '≈ $263–$463 USD',
+    esperado: '~$368'
+  },
+  premium: {
+    label: 'DeepSeek V4 Pro + Claude',
+    editorNombre: 'LLM Editor (DeepSeek V4 Pro)',
+    editorUnit: '$0,435/$0,87 / 1M tok',
+    editorTotal: '$7,18',
+    valNombre: 'LLM Validador (Claude 3.5 Sonnet)',
+    valUnit: '$3,00/$15,00 / 1M tok',
+    valTotal: '$99,00',
+    rango: '≈ $316–$516 USD',
+    esperado: '~$421'
+  },
+  calidad: {
+    label: 'Gemini Flash + Claude',
+    editorNombre: 'LLM Editor (Gemini 2.5 Flash)',
+    editorUnit: '$0,30/$2,50 / 1M tok',
+    editorTotal: '$15,40',
+    valNombre: 'LLM Validador (Claude 3.5 Sonnet)',
+    valUnit: '$3,00/$15,00 / 1M tok',
+    valTotal: '$99,00',
+    rango: '≈ $324–$524 USD',
+    esperado: '~$429'
+  },
+  maxima: {
+    label: 'Claude 3.5 Sonnet',
+    editorNombre: 'LLM Editor (Claude 3.5 Sonnet)',
+    editorUnit: '$3,00/$15,00 / 1M tok',
+    editorTotal: '$99,00',
+    valNombre: 'LLM Validador (Claude 3.5 Sonnet)',
+    valUnit: '$3,00/$15,00 / 1M tok',
+    valTotal: '$99,00',
+    rango: '≈ $408–$608 USD',
+    esperado: '~$513'
+  }
+};
+
+function cambiarEscenario(key) {
+  var e = ESCENARIOS[key];
+  if (!e) { return; }
+  document.getElementById('llm-editor-nombre').textContent = e.editorNombre;
+  document.getElementById('llm-editor-unit').textContent = e.editorUnit;
+  document.getElementById('llm-editor-total').textContent = e.editorTotal;
+  document.getElementById('llm-val-nombre').textContent = e.valNombre;
+  document.getElementById('llm-val-unit').textContent = e.valUnit;
+  document.getElementById('llm-val-total').textContent = e.valTotal;
+  document.getElementById('total-label').textContent = e.label;
+  document.getElementById('total-rango').textContent = e.rango + ' · esperado ' + e.esperado;
+  var btns = document.querySelectorAll('.esc-btn');
+  for (var i = 0; i < btns.length; i++) {
+    btns[i].classList.toggle('active', btns[i].getAttribute('data-esc') === key);
+  }
+}
+</script>
+
+</body>
+</html>

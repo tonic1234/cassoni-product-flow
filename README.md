@@ -81,6 +81,7 @@ docs/
   OPERACION.md      comandos, credenciales, qué hacer si falla
   AUDITORIA.md      cada número con el comando que lo reproduce
   REGLA-SEO-FICHAS.md   spec del cliente (fuente)
+  landing-cliente/  el informe que se le mandó al cliente: objetivo y flujo (index.html + PDF)
 PLAN.md             puesta en marcha y unidades de trabajo
 evidencia/          salidas crudas: RED/GREEN de cada unidad, lote real, pilotos
 scripts/verify.sh   la puerta (VERDE = terminado)

@@ -5,6 +5,14 @@ Si un número no coincide al correrlo, el repo está mal, no este documento.
 
 Convención: todo se corre desde la raíz, con el venv del proyecto.
 
+> **Antes de auditar el código, leer la promesa.**
+> El informe técnico que se le entregó al cliente —objetivo, flujo paso a paso y las
+> siete piezas explicadas— está en [`docs/landing-cliente/`](landing-cliente/LANDING.md)
+> (con el `index.html` y el PDF tal como se enviaron) y vive en
+> https://tarsterminal.duckdns.org/cassoni-report/.
+> Ese documento es de julio de 2026: lo que cambió desde entonces está listado en
+> `landing-cliente/LANDING.md` §"Lo que el documento promete y hoy está distinto".
+
 ---
 
 ## 1. El terreno está conectado
@@ -129,8 +137,10 @@ auto-rechazaba) y los `issues` se descartaban sin llegar al editor.
 - **Que el efecto sea positivo**: no hay revisión a 14/28 días con datos posteriores
   a una edición real. El mecanismo existe y está testeado; la medición, todavía no.
 - **Que corra solo**: no hay cron ni timer instalado.
-- **El costo por ficha**: `llm_cost` no se llena; el número hay que tomarlo del
-  panel del proveedor.
+- ~~**El costo por ficha**: `llm_cost` no se llena; el número hay que tomarlo del
+  panel del proveedor.~~ **Corregido el 3-nov-2026**: desde el commit `5591479`
+  `orchestrator.py` llena `llm_cost` / `llm_tokens_in` / `llm_tokens_out` por ficha
+  con los precios de `cassoni/costos.py`, y el total sale al final de la corrida.
 
 ---
 
