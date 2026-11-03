@@ -398,3 +398,15 @@ def test_el_editor_recibe_el_contexto_de_la_ficha(tmp_path):
     assert pipe.woo.sibling_calls == [5]
     u = pipe.llm.editor_user
     assert "Categoría(s): Sofas" in u and "Marca: Cassoni" in u and "Material: Cuero" in u
+
+
+def test_la_precarga_hace_dos_pedidos_de_volumen_para_todo_el_lote(tmp_path):
+    """Prueba real 3-nov: las candidatas de competidores pedían volumen ficha por
+    ficha (US$ 0,09 cada una). Ahora: uno para GSC y uno para competidores."""
+    comp = FakeCompetidores(PAGINAS)
+    pipe = _pipeline(tmp_path, gsc=FakeGSC([]), competidores=comp,
+                     vol={"pedro sofa": 50})
+    pipe.precargar([URL])
+    pipe.process(URL)
+    assert len(pipe.volumenes.pedidos) == 1        # sin GSC: solo el de competidores
+    assert len(comp.consultas) == 1                # la búsqueda no se paga dos veces

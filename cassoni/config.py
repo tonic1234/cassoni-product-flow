@@ -54,6 +54,7 @@ class Config:
     dfs_language_code: str = "en"
     dfs_min_volume: int = 10                   # debajo: Google Ads no informa
     dfs_cache_dias: int = 30                   # el volumen es mensual
+    dfs_presupuesto_usd: float = 0.0          # tope de gasto por corrida (0 = sin tope)
     # --- LLM ---
     llm_base_url: str = ""                     # OpenAI-compatible endpoint
     llm_api_key: str = ""
@@ -116,6 +117,10 @@ class Config:
             except ValueError:
                 pass
         c.dfs_language_code = g("CASSONI_DFS_LANGUAGE", c.dfs_language_code)
+        try:
+            c.dfs_presupuesto_usd = float(g("CASSONI_DFS_PRESUPUESTO_USD") or 0)
+        except ValueError:
+            pass
         hosts = g("CASSONI_PROD_HOSTS")
         if hosts:
             c.prod_hosts = tuple(h.strip().lower() for h in hosts.split(",") if h.strip())

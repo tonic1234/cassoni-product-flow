@@ -30,6 +30,11 @@ log = logging.getLogger("cassoni.dataforseo")
 _SIMBOLOS_PROHIBIDOS = set(",!@%^()={};~`<>?\\|*")
 
 
+# costo por pedido medido el 3-nov-2026 (respuesta 'cost' de la API)
+COSTO_VOLUMEN_USD = 0.09        # hasta 1.000 keywords por pedido
+COSTO_SERP_USD = 0.002          # una búsqueda orgánica
+
+
 def _sin_saldo(exc: Exception) -> bool:
     """402 Payment Required: la cuenta no tiene saldo. No se arregla reintentando
     (prueba real 3-nov: se tragaba en silencio y todo salía 'sin volumen')."""
@@ -51,6 +56,31 @@ class DataForSEOFetcher:
         self._last_req = 0.0
         self.costo_usd = 0.0
         self.sin_saldo = False
+        self.sin_presupuesto = False
+
+    def _alcanza(self, costo: float) -> bool:
+        """Tope de gasto por corrida (CASSONI_DFS_PRESUPUESTO_USD; 0 = sin tope).
+        Si el próximo pedido lo pasaría, no se hace y se sigue sin ese dato."""
+        tope = getattr(self.cfg, "dfs_presupuesto_usd", 0) or 0
+        if tope and self.costo_usd + costo > tope + 1e-9:
+            if not self.sin_presupuesto:
+                log.error("DataForSEO: se alcanzó el presupuesto de la corrida "
+                          "(US$ %.3f de %.3f). No se hacen más pedidos.", self.costo_usd, tope)
+            self.sin_presupuesto = True
+            return False
+        return True
+
+    def saldo(self) -> Optional[dict]:
+        """{login, saldo_usd} de la cuenta. Gratis (appendix/user_data)."""
+        try:
+            auth = (self.cfg.dfs_login, self.cfg.dfs_password)
+            r = self._session.get("https://api.dataforseo.com/v3/appendix/user_data",
+                                  auth=auth, timeout=30)
+            res = r.json()["tasks"][0]["result"][0]
+            return {"login": res.get("login"),
+                    "saldo_usd": (res.get("money") or {}).get("balance")}
+        except Exception:
+            return None
 
     def _throttle(self):
         """Máx `dfs_max_requests_min` requests por minuto."""
@@ -106,6 +136,8 @@ class DataForSEOFetcher:
             posiciones.setdefault(clave, []).append(i)
         for chunk_start in range(0, len(validas), self.cfg.dfs_bulk_size):
             chunk = validas[chunk_start: chunk_start + self.cfg.dfs_bulk_size]
+            if not self._alcanza(COSTO_VOLUMEN_USD):
+                return results
             for attempt in range(self.cfg.dfs_retries + 1):
                 self._throttle()
                 try:
@@ -152,6 +184,8 @@ class DataForSEOFetcher:
     def serp_organico(self, keyword: str, depth: int = 10) -> list[dict]:
         """Resultados orgánicos de Google para `keyword`, en orden:
         [{rank, url, domain, title, description}]. Vacío si la API falla."""
+        if not self._alcanza(COSTO_SERP_USD):
+            return []
         payload = [{"keyword": keyword, "location_code": self.cfg.dfs_location_code,
                     "language_code": self.cfg.dfs_language_code, "depth": depth}]
         for attempt in range(self.cfg.dfs_retries + 1):

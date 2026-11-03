@@ -92,7 +92,14 @@ def preflight(cfg: Config) -> dict:
         out["llm"] = {"ok": False, "error": f"{type(exc).__name__}: {exc}"}
 
     out["dataforseo"] = {"ok": bool(cfg.dfs_login and cfg.dfs_password),
-                         "nota": "credenciales presentes (no se gasta acá)"}
+                         "nota": "credenciales presentes (no se gasta acá)",
+                         "presupuesto_por_corrida_usd": cfg.dfs_presupuesto_usd or "sin tope"}
+    if cfg.dfs_login and cfg.dfs_password:
+        from .dataforseo import DataForSEOFetcher
+        cuenta = DataForSEOFetcher(cfg).saldo()
+        if cuenta:
+            out["dataforseo"].update(cuenta)
+            out["dataforseo"]["ok"] = (cuenta.get("saldo_usd") or 0) > 0
     out["ok"] = all(out[k].get("ok") for k in ("gsc", "woo", "llm")) and not out["faltantes"]
     return out
 

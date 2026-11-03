@@ -163,3 +163,21 @@ def test_sin_saldo_avisa_y_no_reintenta(cfg):
     assert f.serp_organico("sofa") == []
     assert f.sin_saldo is True
     assert len(llamadas) == 2            # uno por método, sin reintentos
+
+
+def test_presupuesto_por_corrida(cfg):
+    """Cuenta de prueba con US$ 1: no se puede pasar del tope."""
+    llamadas = []
+
+    def fake_post(payload):
+        llamadas.append(payload)
+        return {"status_code": 20000, "cost": 0.09, "tasks": [{"status_code": 20000,
+                "result": [{"keyword": k, "search_volume": 1} for k in payload[0].get("keywords", [])]}]}
+    cfg.dfs_max_requests_min = 0
+    cfg.dfs_presupuesto_usd = 0.10
+    f = DataForSEOFetcher(cfg, _post=fake_post)
+    assert f.search_volume(["a"])[0]["volume"] == 1          # 0.09: entra
+    assert f.search_volume(["b"]) == [None]                  # 0.18: no entra
+    assert f.serp_organico("x") == [] or f.costo_usd <= 0.10   # 0.092: entra justo
+    assert f.sin_presupuesto is True
+    assert len(llamadas) <= 2

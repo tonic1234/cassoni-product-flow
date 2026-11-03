@@ -127,6 +127,10 @@ def _dfs_por_defecto(config, db):
 _DEFECTO = object()
 
 
+class _FalloGSC(Exception):
+    pass
+
+
 class Pipeline:
     def __init__(self, config: Config, *, db: Optional[DB] = None,
                  woo: Optional[WooCommerce] = None, gsc=_DEFECTO,
@@ -152,6 +156,8 @@ class Pipeline:
         self.validator = Validator(config, self.llm)
         self._cat_names_cache: dict[int, tuple] = {}
         self._gsc_cache: dict[str, list[dict]] = {}
+        self._woo_cache: dict[str, dict] = {}
+        self._comp_cache: dict[str, tuple[list[dict], list[dict]]] = {}
 
     # --- helpers ---
     def _keywords_ya_usadas(self, product: dict) -> tuple:
@@ -186,8 +192,11 @@ class Pipeline:
         return self._gsc_cache[url]
 
     def precargar(self, urls: list[str]) -> None:
-        """Junta las keywords de GSC de todo el lote y pide el volumen en UN solo
-        pedido a DataForSEO (cuesta lo mismo 10 keywords que 1.000)."""
+        """Arma el lote de DataForSEO en DOS pedidos de volumen para todo el día
+        (cuesta lo mismo 10 keywords que 1.000):
+          1) las keywords de GSC de todas las fichas;
+          2) las candidatas de competidores de las fichas a las que GSC no les
+             alcanzó (antes se pedían ficha por ficha, a US$ 0,09 cada una)."""
         todas: list[str] = []
         for u in urls:
             try:
@@ -199,6 +208,52 @@ class Pipeline:
             todas.extend(f.get("keyword", "") for f in ordenadas[:MAX_KW_A_DFS_POR_FICHA])
         if self.volumenes is not None and todas:
             self.volumenes.obtener(todas)
+        if self.competidores is None or self.volumenes is None:
+            return
+        de_competidores: list[str] = []
+        for u in urls:
+            try:
+                ctx = self._contexto(u, self._producto(extract_slug(u)[0]))
+            except Exception as exc:
+                log.warning("Precarga de competidores salteada en %s (%s)", u, exc)
+                continue
+            if ctx["sel"]["faltan"]:
+                _, cands = self._paginas_competidores(ctx)
+                de_competidores.extend(c["keyword"] for c in cands)
+        if de_competidores:
+            self.volumenes.obtener(de_competidores)
+
+    def _producto(self, slug: str) -> dict:
+        if slug not in self._woo_cache:
+            self._woo_cache[slug] = self.woo.get_product_by_slug(slug)
+        return self._woo_cache[slug]
+
+    def _contexto(self, url: str, product: dict) -> dict:
+        """Todo lo que se decide sin LLM: H1, keywords de GSC con volumen y la
+        primera selección. Lo usan la precarga y el ciclo por ficha."""
+        nombre = product.get("name", "")
+        desc_orig = product.get("description", "") or ""
+        categorias = tuple(c.get("name", "") for c in (product.get("categories") or [])
+                           if c.get("name"))
+        marca, atributos = _brand_y_atributos(product)
+        h1, h1_aviso = h1_plantilla(nombre, marca)
+        texto_producto = " ".join([nombre, *categorias, marca, *atributos]).strip()
+        permalink = product.get("permalink") or url
+        try:
+            kw_rows = self._gsc_de(url) or (self._gsc_de(permalink) if permalink != url else [])
+        except Exception as exc:
+            raise _FalloGSC(str(exc)) from exc
+        kw_rows = self._con_volumen(kw_rows)
+        elegir = dict(descripcion=desc_orig, texto_producto=texto_producto,
+                      h1_hermanas=self._keywords_ya_usadas(product), categorias=categorias,
+                      asignadas=self.db.keywords_asignadas(excepto_url=url),
+                      min_volume=self.cfg.dfs_min_volume, n=reglas.KW_OBJETIVO,
+                      texto_especifico=" ".join([nombre, marca, *atributos]),
+                      nombre=nombre, marca=marca)
+        return dict(nombre=nombre, desc_orig=desc_orig, categorias=categorias,
+                    marca=marca, atributos=atributos, h1=h1, h1_aviso=h1_aviso,
+                    texto_producto=texto_producto, kw_rows=kw_rows, elegir=elegir,
+                    sel=elegir_keywords(kw_rows, **elegir))
 
     def _con_volumen(self, filas: list[dict]) -> list[dict]:
         if self.volumenes is None or not filas:
@@ -251,44 +306,27 @@ class Pipeline:
         slug, _ = extract_slug(url)
         # 1) ficha WooCommerce
         try:
-            product = self.woo.get_product_by_slug(slug)
+            product = self._producto(slug)
         except WooError as exc:
             return self._cerrar(row_id, url, "failed", f"WooCommerce: {exc}")
         if product.get("status") != "publish":
             return self._cerrar(row_id, url, "skipped",
                                 f"producto status='{product.get('status')}'")
-        nombre = product.get("name", "")
-        desc_orig = product.get("description", "") or ""
         sc_orig = product.get("short_description", "") or ""
-        categorias = tuple(c.get("name", "") for c in (product.get("categories") or [])
-                           if c.get("name"))
-        marca, atributos = _brand_y_atributos(product)
-
-        # 2) H1 por plantilla (sin LLM)
-        h1, h1_aviso = h1_plantilla(nombre, marca)
-        texto_producto = " ".join([nombre, *categorias, marca, *atributos]).strip()
-
-        # 3) keywords de GSC + volumen
-        permalink = product.get("permalink") or url
+        # 2-3) H1 por plantilla + keywords de GSC con volumen (sin LLM)
         try:
-            kw_rows = self._gsc_de(url) or (self._gsc_de(permalink) if permalink != url else [])
-        except Exception as exc:
+            ctx = self._contexto(url, product)
+        except _FalloGSC as exc:
             return self._cerrar(row_id, url, "failed", f"GSC: {exc}")
-        kw_rows = self._con_volumen(kw_rows)
-
-        hermanas = self._keywords_ya_usadas(product)
-        asignadas = self.db.keywords_asignadas(excepto_url=url)
-        elegir = dict(descripcion=desc_orig, texto_producto=texto_producto,
-                      h1_hermanas=hermanas, categorias=categorias, asignadas=asignadas,
-                      min_volume=self.cfg.dfs_min_volume, n=reglas.KW_OBJETIVO,
-                      texto_especifico=" ".join([nombre, marca, *atributos]),
-                      nombre=nombre, marca=marca)
-        sel = elegir_keywords(kw_rows, **elegir)
+        nombre, desc_orig, categorias = ctx["nombre"], ctx["desc_orig"], ctx["categorias"]
+        marca, atributos, h1, h1_aviso = ctx["marca"], ctx["atributos"], ctx["h1"], ctx["h1_aviso"]
+        kw_rows, elegir, sel = ctx["kw_rows"], ctx["elegir"], ctx["sel"]
 
         # 4) si faltan: el mismo producto en competidores mejor posicionados
         competidores: list[dict] = []
         if sel["faltan"] and self.competidores is not None:
-            competidores, extra = self._de_competidores(h1, marca, desc_orig, texto_producto)
+            competidores, cands = self._paginas_competidores(ctx)
+            extra = self._con_volumen(cands)
             if extra:
                 sel = elegir_keywords(list(kw_rows) + extra, **elegir)
         objetivos = sel["elegidas"]
@@ -365,24 +403,26 @@ class Pipeline:
                       aprobado=aprobado, aplicado=aplicado, wc_response=wc_resp,
                       h1_aviso=h1_aviso, competidores=competidores)
 
-    def _de_competidores(self, h1: str, marca: str, desc: str,
-                         texto_producto: str) -> tuple[list[dict], list[dict]]:
-        """(competidores leídos, candidatas con volumen) para el mismo producto."""
+    def _paginas_competidores(self, ctx: dict) -> tuple[list[dict], list[dict]]:
+        """(competidores leídos, candidatas SIN volumen) para el mismo producto.
+        Con caché por consulta: la precarga y la ficha no pagan la búsqueda dos
+        veces."""
         from .competidores import candidatas_de_competidores
-        consulta = h1.replace(" by ", " ") if marca else h1
+        consulta = ctx["h1"].replace(" by ", " ") if ctx["marca"] else ctx["h1"]
+        if consulta in self._comp_cache:
+            return self._comp_cache[consulta]
         try:
             paginas = self.competidores.buscar(consulta)
         except Exception as exc:
             log.warning("Competidores no disponibles (%s)", exc)
-            return [], []
-        if not paginas:
-            return [], []
+            paginas = []
         ajenas = [p.get("domain", "").split(".")[0] for p in paginas]
-        cands = candidatas_de_competidores(paginas, descripcion_propia=desc,
-                                           texto_producto=texto_producto,
-                                           marcas_ajenas=ajenas)[:30]
+        cands = candidatas_de_competidores(paginas, descripcion_propia=ctx["desc_orig"],
+                                           texto_producto=ctx["texto_producto"],
+                                           marcas_ajenas=ajenas)[:30] if paginas else []
         resumen = [{"url": p.get("url"), "rank": p.get("rank")} for p in paginas]
-        return resumen, self._con_volumen(cands)
+        self._comp_cache[consulta] = (resumen, cands)
+        return resumen, cands
 
     @staticmethod
     def _motivo_seleccion(sel: dict, competidores: list[dict]) -> str:
