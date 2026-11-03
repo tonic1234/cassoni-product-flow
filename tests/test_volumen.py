@@ -63,5 +63,5 @@ def test_si_dfs_falla_se_sigue_sin_volumen_y_no_se_cachea(tmp_path):
 def test_anotar_suma_volume_sin_filtrar(tmp_path):
     v, _, _ = _vol(tmp_path, Fetcher({"sofa": 100}))
     out = v.anotar([{"keyword": "sofa", "impressions": 5}, {"keyword": "x", "impressions": 9}])
-    assert out == [{"keyword": "sofa", "impressions": 5, "volume": 100},
-                   {"keyword": "x", "impressions": 9, "volume": None}]
+    assert out == [{"keyword": "sofa", "impressions": 5, "volume": 100, "spell": None},
+                   {"keyword": "x", "impressions": 9, "volume": None, "spell": None}]

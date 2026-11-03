@@ -48,7 +48,10 @@ class FakeWoo:
             "description": DESC_ORIG,
             "categories": [{"id": 5, "name": "Sofas"}],
             "brands": [{"id": 1, "name": "Cassoni"}],
-            "attributes": [{"name": "Material", "options": ["Cuero"]}],
+            "attributes": [{"name": "Material", "options": ["Cuero"]},
+                           {"name": "Estilo", "options": ["Chesterfield"]},
+                           {"name": "Acabado", "options": ["Tapizado"]},
+                           {"name": "Configuración", "options": ["Modular"]}],
         }
         self.writes = []
         self.sibling_calls = []
@@ -80,7 +83,7 @@ class FakeGSC:
         self.filas = filas if filas is not None else [
             _q("sofá de cuero", 900),            # ya está en la descripción
             _q("sofá chesterfield", 400),
-            _q("pedro modular", 300),
+            _q("modular pedro", 300),
             _q("cuero capitoné", 200),
             _q("mesa de comedor", 500),          # no es de este producto
         ]
@@ -156,7 +159,7 @@ def _cfg(tmp_path, dry_run=True):
     return c
 
 
-VOL = {"sofá chesterfield": 1900, "pedro modular": 90,
+VOL = {"sofá chesterfield": 1900, "modular pedro": 90,
        "cuero capitoné": 40, "mesa de comedor": 5000}
 
 

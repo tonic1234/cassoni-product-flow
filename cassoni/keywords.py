@@ -46,18 +46,80 @@ def _distancia(a: str, b: str) -> int:
     return prev[-1]
 
 
-def parece_typo(keyword: str, texto_producto: str) -> bool:
-    """'rock coffe table' en la ficha de la Rock Coffee Table: una palabra que no
-    está en el producto pero está a UNA letra de una que sí. Se descarta para no
-    escribir el error en la ficha (prueba real del 3-nov-2026)."""
-    producto = _palabras(texto_producto)
+def _plural(a: str, b: str) -> bool:
+    return a == b + "s" or b == a + "s" or a == b + "es" or b == a + "es"
+
+
+def parece_typo(keyword: str, nombre: str) -> bool:
+    """'rock coffe table' o 'club sofs': una palabra que no está en el NOMBRE del
+    producto (ni la marca) pero está a una letra de una que sí, sin ser su
+    plural. Se descarta para no escribir el error en la ficha. Solo se compara
+    contra el nombre: contra todo el texto había falsos positivos ('grand' por
+    'brand', 'what' por 'that'). Prueba real del 3-nov-2026."""
+    producto = {w for w in _palabras(nombre) if len(w) >= 4}
     for w in _palabras(keyword):
         if len(w) < 4 or w in producto:
             continue
-        if any(abs(len(w) - len(p)) <= 1 and _distancia(w, p) == 1
-               for p in producto if len(p) >= 4):
+        if any(not _plural(w, p) and abs(len(w) - len(p)) <= 1 and _distancia(w, p) == 1
+               for p in producto):
             return True
     return False
+
+
+# palabras de tipo de producto que se usan como sinónimo en las búsquedas
+_SINONIMOS_TIPO = {
+    "sofa": {"couch", "settee", "sectional", "loveseat"},
+    "couch": {"sofa", "settee"},
+    "chair": {"armchair", "seat", "seating"},
+    "armchair": {"chair", "seat"},
+    "lamp": {"light", "lighting", "sconce", "luminaire", "fixture"},
+    "sconce": {"lamp", "light", "lighting"},
+    "table": {"desk"},
+    "bed": {"headboard", "bedframe"},
+    "mirror": {"looking"},
+    "nightstand": {"bedside"},
+    "sideboard": {"credenza", "buffet"},
+}
+# fuera siempre, cuide la marca (prueba real: 'shibari bondage' en una silla)
+PALABRAS_SENSIBLES = {"bondage", "bdsm", "sex", "sexual", "porn", "nude", "naked",
+                      "erotic", "fetish", "xxx", "nsfw"}
+
+
+def tipo_de_producto(nombre: str, categorias: Iterable[str] = ()) -> set[str]:
+    """Palabras que dicen QUÉ es el producto: la última palabra del nombre
+    ('Club Sofa' → sofa, 'Cleopatra Chair (SC1019)' → chair) más las de la
+    categoría, con sus sinónimos."""
+    limpio = re.sub(r"\(.*?\)", " ", nombre or "")
+    palabras = [w for w in re.findall(r"[a-z]+", _plano(limpio)) if len(w) >= 3]
+    tipos = {_singular(palabras[-1])} if palabras else set()
+    for c in categorias:
+        tipos |= {_singular(w) for w in _palabras(c) if len(w) >= 3}
+    for t in list(tipos):
+        tipos |= _SINONIMOS_TIPO.get(t, set())
+    return tipos
+
+
+def nombra_el_tipo(keyword: str, tipos: set[str]) -> bool:
+    return bool({_singular(w) for w in _palabras(keyword)} & tipos)
+
+
+def _plano(s: str) -> str:
+    return unicodedata.normalize("NFKD", (s or "").lower()).encode("ascii", "ignore").decode()
+
+
+def es_especifica(keyword: str, texto_especifico: str, categorias: Iterable[str]) -> bool:
+    """Comparte al menos una palabra con el nombre, la marca o los atributos que
+    NO sea una palabra de la categoría. 'sectionals' sola no dice nada de ESTE
+    producto; 'club sofa' sí ('club')."""
+    de_categoria = set()
+    for c in categorias:
+        de_categoria |= {_singular(w) for w in _palabras(c)}
+    propias = {_singular(w) for w in _palabras(texto_especifico) if len(w) >= 3} - de_categoria
+    return bool({_singular(w) for w in _palabras(keyword)} & propias)
+
+
+def _singular(w: str) -> str:
+    return w[:-1] if len(w) > 4 and w.endswith("s") else w
 
 
 def _con_demanda(fila: dict, min_volume: int) -> bool:
@@ -75,15 +137,28 @@ def elegir_keywords(candidatas: Iterable[dict], *, descripcion: str,
                     texto_producto: str, h1_hermanas: Iterable[str] = (),
                     categorias: Iterable[str] = (),
                     asignadas: Optional[dict[str, str]] = None,
-                    min_volume: int = 10, n: int = N_OBJETIVO) -> dict:
+                    min_volume: int = 10, n: int = N_OBJETIVO,
+                    texto_especifico: Optional[str] = None,
+                    nombre: Optional[str] = None, marca: str = "") -> dict:
     """Devuelve {elegidas, descartadas, faltan}.
 
     `candidatas`: [{keyword, volume?, impressions?, position?, ...}]
     `asignadas`: {keyword normalizada: url} de keywords ya escritas en otras fichas.
+    `texto_especifico`: nombre + marca + atributos; si se pasa, la keyword tiene
+    que compartir una palabra con eso que no sea de la categoría.
+    `nombre`: si se pasa, la keyword tiene que nombrar el tipo de producto
+    ('hermes brand' no habla de la Hermes Maxi Bed) y el tipeo se mide contra él.
     Una keyword asignada a otra ficha solo se usa si no quedan alternativas, y
     sale marcada con `compartida_con` para que SEO lo vea.
     """
     asignadas = asignadas or {}
+    categorias = list(categorias)
+    tipos = tipo_de_producto(nombre, categorias) if nombre is not None else set()
+    if nombre is not None and texto_especifico:
+        # los atributos reales también identifican el producto ('boucle upholstery')
+        tipos |= {_singular(w) for w in
+                  _palabras(texto_especifico) - _palabras(nombre) - _palabras(marca)
+                  if len(w) >= 4}
     plano = strip_html(descripcion)
     descartadas: list[dict] = []
     vistas: set[str] = set()
@@ -95,10 +170,20 @@ def elegir_keywords(candidatas: Iterable[dict], *, descripcion: str,
         if not nk or nk in vistas:
             continue
         vistas.add(nk)
-        if not relevante(kw, texto_producto):
+        if _palabras(kw) & PALABRAS_SENSIBLES:
+            descartadas.append({"keyword": kw, "motivo": "contenido sensible"})
+        elif not relevante(kw, texto_producto):
             descartadas.append({"keyword": kw, "motivo": "no es de este producto"})
-        elif parece_typo(kw, texto_producto + " " + descripcion):
+        elif c.get("spell") or parece_typo(kw, f"{nombre} {marca}" if nombre is not None
+                                           else texto_producto):
             descartadas.append({"keyword": kw, "motivo": "parece un error de tipeo"})
+        elif nombre is not None and not nombra_el_tipo(kw, tipos):
+            descartadas.append({"keyword": kw,
+                                "motivo": "no nombra el producto ni un atributo real"})
+        elif texto_especifico is not None and not es_especifica(kw, texto_especifico,
+                                                                 categorias):
+            descartadas.append({"keyword": kw,
+                                "motivo": "genérica de la categoría, no de este producto"})
         elif kw_exacta_en(plano, kw):
             descartadas.append({"keyword": kw, "motivo": "ya está en la descripción"})
         elif not _con_demanda(c, min_volume):

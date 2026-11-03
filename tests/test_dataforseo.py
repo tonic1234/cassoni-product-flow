@@ -144,3 +144,22 @@ def test_tarea_rechazada_no_se_reintenta_en_loop(cfg):
     cfg.dfs_max_requests_min = 0
     assert DataForSEOFetcher(cfg, _post=fake_post).search_volume(["sofa"]) == [None]
     assert len(llamadas) == 1
+
+
+def test_sin_saldo_avisa_y_no_reintenta(cfg):
+    """Prueba real 3-nov: el 402 se tragaba en silencio y todo salía sin volumen."""
+    import requests
+    llamadas = []
+
+    class Resp:
+        status_code = 402
+
+    def fake_post(payload):
+        llamadas.append(1)
+        raise requests.HTTPError("402", response=Resp())
+    cfg.dfs_max_requests_min = 0
+    f = DataForSEOFetcher(cfg, _post=fake_post)
+    assert f.search_volume(["sofa"]) == [None]
+    assert f.serp_organico("sofa") == []
+    assert f.sin_saldo is True
+    assert len(llamadas) == 2            # uno por método, sin reintentos

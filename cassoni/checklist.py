@@ -323,7 +323,12 @@ def filtrar_canibalizacion(
        "descartadas": [{"keyword": k, "motivo": str, "pertenece_a": str}, ...]}
     """
     principals = {norm(p) for p in principals_ya_usadas}
-    cats = {norm(c) for c in categorias_como_pagina}
+    cats = set()
+    for c in categorias_como_pagina:
+        # "Sofas & Sectionals" es la página de "sofas" Y la de "sectionals"
+        # (prueba real 3-nov: eligió 'sectionals', 74.000/mes, para un club sofa)
+        cats.add(norm(c))
+        cats.update(norm(x) for x in re.split(r"\s*(?:&|,|/|\band\b|\by\b)\s*", c) if norm(x))
     blogs = {norm(b) for b in blogs_guia}
 
     aceptadas, descartadas = [], []

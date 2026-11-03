@@ -280,7 +280,9 @@ class Pipeline:
         asignadas = self.db.keywords_asignadas(excepto_url=url)
         elegir = dict(descripcion=desc_orig, texto_producto=texto_producto,
                       h1_hermanas=hermanas, categorias=categorias, asignadas=asignadas,
-                      min_volume=self.cfg.dfs_min_volume, n=reglas.KW_OBJETIVO)
+                      min_volume=self.cfg.dfs_min_volume, n=reglas.KW_OBJETIVO,
+                      texto_especifico=" ".join([nombre, marca, *atributos]),
+                      nombre=nombre, marca=marca)
         sel = elegir_keywords(kw_rows, **elegir)
 
         # 4) si faltan: el mismo producto en competidores mejor posicionados

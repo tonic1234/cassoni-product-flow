@@ -84,3 +84,63 @@ def test_descarta_errores_de_tipeo():
     assert not parece_typo("marble coffee table", "Rock Coffee Table Rugiano")
     out = _elegir([_kw("pedro leathr", 900)])
     assert out["descartadas"][0]["motivo"] == "parece un error de tipeo"
+
+
+def test_la_categoria_se_separa_en_partes():
+    """Prueba real 3-nov: 'sectionals' (74.000/mes) en la ficha de un club sofa
+    de la categoría 'Sofas & Sectionals'."""
+    out = _elegir([_kw("sectionals", 74000), _kw("pedro chesterfield", 100)],
+                  categorias=["Sofas & Sectionals"])
+    assert [e["keyword"] for e in out["elegidas"]] == ["pedro chesterfield"]
+
+
+def test_genericas_de_categoria_afuera_si_no_nombran_el_producto():
+    from cassoni.keywords import es_especifica
+    cats = ["Sofas & Sectionals"]
+    assert not es_especifica("leather sofas", "Club Sofa Rugiano Material: Brass", cats)
+    assert es_especifica("club sofa", "Club Sofa Rugiano Material: Brass", cats)
+    assert es_especifica("brass sofa", "Club Sofa Rugiano Material: Brass", cats)
+    out = _elegir([_kw("leather sofas", 9000), _kw("pedro leather", 50)],
+                  texto_especifico="Pedro Sofa Cassoni Material: Oak",
+                  categorias=["Sofas"])
+    assert [e["keyword"] for e in out["elegidas"]] == ["pedro leather"]
+
+
+def test_tipeo_sin_falsos_positivos():
+    from cassoni.keywords import parece_typo
+    assert not parece_typo("what is a club sofa", "Club Sofa Rugiano")
+    assert not parece_typo("steinway grand piano", "19800 Steinway Piano Riva Mobili D'Arte")
+    assert not parece_typo("club sofas", "Club Sofa Rugiano")          # plural
+    assert parece_typo("club sofs", "Club Sofa Rugiano")
+
+
+def test_tiene_que_nombrar_el_producto_o_un_atributo():
+    """Prueba real 3-nov: 'hermes brand' (Hermès), 'illan meslier stats' (un
+    arquero), 'shibari bondage' en una silla, 'cruise chairs' en un sofá."""
+    from cassoni.keywords import elegir_keywords
+    cands = [_kw("hermes brand", 2900), _kw("maxi home", 320), _kw("hermes bed", 90),
+             _kw("velvet headboard", 50)]
+    out = elegir_keywords(cands, descripcion="<p>x</p>",
+                          texto_producto="Hermes Maxi Bed DV Home Beds Upholstery: Velvet",
+                          texto_especifico="Hermes Maxi Bed DV Home Upholstery: Velvet",
+                          nombre="Hermes Maxi Bed", marca="DV Home", categorias=["Beds"])
+    kws = [e["keyword"] for e in out["elegidas"]]
+    assert "hermes brand" not in kws and "maxi home" not in kws
+    assert "hermes bed" in kws and "velvet headboard" in kws
+
+
+def test_palabras_sensibles_afuera_siempre():
+    out = _elegir([_kw("shibari bondage", 2400)])
+    assert out["elegidas"] == []
+    from cassoni.keywords import elegir_keywords
+    out = elegir_keywords([_kw("shibari bondage", 2400)], descripcion="",
+                          texto_producto="Shibari Chair Visionnaire")
+    assert out["descartadas"][0]["motivo"] == "contenido sensible"
+
+
+def test_sinonimos_del_tipo():
+    from cassoni.keywords import nombra_el_tipo, tipo_de_producto
+    t = tipo_de_producto("Cruise Teak Sofa Talenti", ["Outdoor Sofas"])
+    assert nombra_el_tipo("cruise couch", t)
+    assert not nombra_el_tipo("cruise chairs", t)
+    assert "chair" in tipo_de_producto("Cleopatra Chair (SC1019)")

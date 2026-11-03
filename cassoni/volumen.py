@@ -61,5 +61,5 @@ class Volumenes:
         out = []
         for f in filas:
             d = vol.get(_norm(f.get("keyword", ""))) or {}
-            out.append({**f, "volume": d.get("volume")})
+            out.append({**f, "volume": d.get("volume"), "spell": d.get("spell")})
         return out

@@ -221,8 +221,12 @@ def _print_costo(pipe):
     c = fn()
     print(f"\nCosto LLM: US$ {c.get('usd', 0):.4f} · {c.get('llamadas', 0)} llamadas · "
           f"{c.get('tokens_in', 0):,} tokens entrada · {c.get('tokens_out', 0):,} salida")
-    dfs = getattr(getattr(pipe, "volumenes", None), "costo_usd", 0) or 0
+    vol = getattr(pipe, "volumenes", None)
+    dfs = getattr(vol, "costo_usd", 0) or 0
     print(f"Costo DataForSEO: US$ {dfs:.4f}")
+    if getattr(getattr(vol, "fetcher", None), "sin_saldo", False):
+        print("ATENCIÓN: DataForSEO sin saldo (402). Las keywords salieron sin volumen "
+              "y sin competidores: recargar y volver a correr.", file=sys.stderr)
 
 
 def _print_results(results):

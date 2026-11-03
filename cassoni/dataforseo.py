@@ -30,6 +30,12 @@ log = logging.getLogger("cassoni.dataforseo")
 _SIMBOLOS_PROHIBIDOS = set(",!@%^()={};~`<>?\\|*")
 
 
+def _sin_saldo(exc: Exception) -> bool:
+    """402 Payment Required: la cuenta no tiene saldo. No se arregla reintentando
+    (prueba real 3-nov: se tragaba en silencio y todo salía 'sin volumen')."""
+    return getattr(getattr(exc, "response", None), "status_code", None) == 402
+
+
 class DataForSEOFetcher:
     """Enfoque limpio de la API real (validado 28-ago)."""
 
@@ -44,6 +50,7 @@ class DataForSEOFetcher:
         self._lock = threading.Lock()
         self._last_req = 0.0
         self.costo_usd = 0.0
+        self.sin_saldo = False
 
     def _throttle(self):
         """Máx `dfs_max_requests_min` requests por minuto."""
@@ -79,7 +86,7 @@ class DataForSEOFetcher:
             comp = idx / 100 if isinstance(idx, (int, float)) else None
         return {"volume": g.get("search_volume"), "competition": comp,
                 "cpc": g.get("cpc"), "competition_index": idx,
-                "monthly": g.get("monthly_searches")}
+                "monthly": g.get("monthly_searches"), "spell": row.get("spell")}
 
     def search_volume(self, keywords: list[str],
                       location_code: Optional[int] = None) -> list[Optional[dict]]:
@@ -110,6 +117,11 @@ class DataForSEOFetcher:
                     }]
                     data = self._request(payload)
                 except requests.RequestException as exc:
+                    if _sin_saldo(exc):
+                        self.sin_saldo = True
+                        log.error("DataForSEO: SIN SALDO (402). Recargar la cuenta; "
+                                  "se sigue sin volumen.")
+                        return results
                     if attempt >= self.cfg.dfs_retries:
                         break
                     time.sleep(2 ** attempt)
@@ -146,7 +158,11 @@ class DataForSEOFetcher:
             self._throttle()
             try:
                 data = self._request(payload, url=self.SERP_URL)
-            except requests.RequestException:
+            except requests.RequestException as exc:
+                if _sin_saldo(exc):
+                    self.sin_saldo = True
+                    log.error("DataForSEO: SIN SALDO (402). Sin competidores.")
+                    return []
                 data = None
             if data and data.get("status_code") == 20000:
                 self.costo_usd += float(data.get("cost") or 0)
