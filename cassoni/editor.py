@@ -30,13 +30,15 @@ REGLAS:
 - PARTÍ DEL TEXTO ACTUAL tal cual viene en el input 'Descripción larga actual':
   tu trabajo es EDITARLO QUIRÚRGICAMENTE (insertar frases donde cada keyword
   encaje natural). NUNCA la reescribas desde cero.
-- CÓMO INSERTAR (prueba real del 3-nov: se agregaron medidas y relleno):
-  por cada keyword, UNA sola oración nueva de 12 a 25 palabras que CONTIENE esa
-  keyword, colocada junto a la oración del original con la que tiene relación.
-  La oración dice qué es el producto en palabras de la keyword: su tipo, su
-  estilo, su material o su uso, en el tono del original. No agregues NINGUNA
-  otra oración: nada de párrafos, datos técnicos ni frases genéricas ("focal
-  point", "any room", "contemporary living").
+- CÓMO INSERTAR (prueba real del 3-nov): por cada keyword, UNA sola oración
+  nueva de 12 a 25 palabras que CONTIENE esa keyword, colocada junto a la
+  oración del original con la que tiene relación (nunca después de "Made in
+  Italy."). Armala con lo que la ficha YA dice: un material, un acabado, una
+  característica o el diseñador que aparecen en la descripción, la descripción
+  corta o los atributos. Como máximo 4 palabras con contenido que no estén en
+  la ficha. Prohibido el interiorismo genérico: "presence", "to the room",
+  "any interior", "tailored", "composed", "conceived for", "brings a",
+  "focal point", "statement piece". No agregues NINGUNA otra oración.
 - {reglas.REGLAS_SIN_MEDIDAS}
 - Si el original es corto, la edición también queda corta: no completes hasta
   ninguna cantidad de palabras.

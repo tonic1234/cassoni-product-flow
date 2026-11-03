@@ -126,7 +126,9 @@ def test_tiene_que_nombrar_el_producto_o_un_atributo():
                           nombre="Hermes Maxi Bed", marca="DV Home", categorias=["Beds"])
     kws = [e["keyword"] for e in out["elegidas"]]
     assert "hermes brand" not in kws and "maxi home" not in kws
-    assert "hermes bed" in kws and "velvet headboard" in kws
+    assert "velvet headboard" in kws
+    # 'hermes bed' ya está entera en el H1 'Hermes Maxi Bed by DV Home'
+    assert {"keyword": "hermes bed", "motivo": "ya la cubre el H1 nuevo"} in out["descartadas"]
 
 
 def test_palabras_sensibles_afuera_siempre():
@@ -144,3 +146,61 @@ def test_sinonimos_del_tipo():
     assert nombra_el_tipo("cruise couch", t)
     assert not nombra_el_tipo("cruise chairs", t)
     assert "chair" in tipo_de_producto("Cleopatra Chair (SC1019)")
+
+
+
+def _gsc(k, vol, impr, pos):
+    return {"keyword": k, "volume": vol, "impressions": impr, "position": pos}
+
+
+def test_manda_la_oportunidad_de_la_pagina_no_el_volumen():
+    """Prueba real 3-nov: 'luxury wall lights' (210/mes) en posición 37."""
+    from cassoni.keywords import elegir_keywords
+    out = elegir_keywords(
+        [_gsc("luxury wall lights", 210, 4, 37.5), _gsc("dimmable wall lamp", 90, 300, 8.0),
+         _gsc("led wall lamp", 2000, 50, 2.0)],
+        descripcion="<p>x</p>", texto_producto="Illan Wall Lamp Luceplan Light: LED dimmable",
+        texto_especifico="Illan Wall Lamp Luceplan Light: LED dimmable",
+        nombre="Illan Wall Lamp", marca="Luceplan", categorias=["Wall Lamps"])
+    kws = [e["keyword"] for e in out["elegidas"]]
+    assert "luxury wall lights" not in kws                    # no compite
+    assert kws[0] == "dimmable wall lamp"                     # posición 8: hay que ganar
+    assert any("posición 38" in d["motivo"] or "posición 37" in d["motivo"]
+               for d in out["descartadas"])
+
+
+def test_marca_y_modelo_es_del_producto_y_la_cubre_el_h1():
+    from cassoni.keywords import cubierta_por_el_h1, es_marca_y_modelo
+    assert es_marca_y_modelo("luceplan illan", "Illan Wall Lamp", "Luceplan")
+    assert cubierta_por_el_h1("illan luceplan", "Illan Wall Lamp", "Luceplan")
+    assert cubierta_por_el_h1("club sofa", "Club Sofa", "Rugiano")
+    assert not cubierta_por_el_h1("brass club sofa", "Club Sofa", "Rugiano")
+
+
+def test_modificadores_del_mismo_producto_conviven():
+    """'brass club sofa' y 'leather club sofa' se distinguen por el material."""
+    from cassoni.keywords import elegir_keywords
+    out = elegir_keywords(
+        [_gsc("brass club sofa", 90, 120, 9.0), _gsc("leather club sofa", 140, 200, 12.0)],
+        descripcion="<p>x</p>", texto_producto="Club Sofa Rugiano Material: Brass, Leather",
+        texto_especifico="Club Sofa Rugiano Material: Brass, Leather",
+        nombre="Club Sofa", marca="Rugiano", categorias=["Sofas & Sectionals"])
+    assert {e["keyword"] for e in out["elegidas"]} == {"brass club sofa", "leather club sofa"}
+
+
+def test_filtros_de_intencion_y_de_otro_producto():
+    """Vista previa real 3-nov."""
+    from cassoni.keywords import elegir_keywords
+    def motivo(kw, nombre, marca, attrs="", cats=()):
+        out = elegir_keywords([_gsc(kw, 100, 100, 8.0)], descripcion="<p>x</p>",
+                              texto_producto=f"{nombre} {marca} {attrs} {' '.join(cats)}",
+                              texto_especifico=f"{nombre} {marca} {attrs}",
+                              nombre=nombre, marca=marca, categorias=list(cats))
+        return out["descartadas"][0]["motivo"] if out["descartadas"] else ""
+    assert "informativa" in motivo("what is a club sofa", "Club Sofa", "Rugiano")
+    assert "otra marca" in motivo("tiffany and co mirror", "Tiffany Mirror", "DV Home", cats=["Mirrors"])
+    assert "otro producto" in motivo("hermes mattress", "Hermes Maxi Bed", "DV Home",
+                                     "Mattress: American King", cats=["Double Beds"])
+    assert "otro producto" in motivo("cleopatra chair sofa", "Cleopatra Chair", "OAK", cats=["Chairs"])
+    assert "compra" in motivo("cleopatra chair wood for sale", "Cleopatra Chair", "OAK", "Wood: Rosewood")
+    assert "H1" in motivo("hermes beds", "Hermes Maxi Bed", "DV Home", cats=["Double Beds"])

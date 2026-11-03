@@ -120,13 +120,19 @@ def _clave_palabras(kw: str) -> set[str]:
     return out
 
 
-def seleccionar_diversas(candidatas: list[dict], max_sec: int = 3) -> dict:
+def seleccionar_diversas(candidatas: list[dict], max_sec: int = 3,
+                         ignorar: Iterable[str] = ()) -> dict:
     """Elige hasta `max_sec` keywords que NO compartan palabras entre sí
     (regla de Antonio 18-sep: de todas las que dicen 'sofa' solo se usa UNA),
     priorizando volumen. Devuelve {elegidas, omitidas, faltantes}.
 
     `faltantes` > 0 = hay que SALIR A BUSCAR más candidatas con palabras
-    distintas para completar las secundarias (expansor)."""
+    distintas para completar las secundarias (expansor).
+    `ignorar`: palabras que no cuentan para el choque (las del H1: 'brass club
+    sofa' y 'leather club sofa' se distinguen por 'brass' y 'leather')."""
+    fuera = set()
+    for w in ignorar:
+        fuera |= _clave_palabras(w)
     ordenadas = sorted(candidatas,
                        key=lambda c: (c.get("opportunity_score") or 0,
                                       c.get("volume") or 0), reverse=True)
@@ -135,11 +141,11 @@ def seleccionar_diversas(candidatas: list[dict], max_sec: int = 3) -> dict:
     usadas: set[str] = set()
     for c in ordenadas:
         kw = c.get("keyword", "")
-        claves = _clave_palabras(kw)
+        claves = _clave_palabras(kw) - fuera
         choque = claves & usadas
         if choque:
             otra = next((e["keyword"] for e in elegidas
-                         if claves & _clave_palabras(e["keyword"])), "")
+                         if claves & (_clave_palabras(e["keyword"]) - fuera)), "")
             omitidas.append({
                 "keyword": kw, "choca_con": otra,
                 "motivo": (f"comparte la palabra '{sorted(choque)[0]}' con '{otra}' "
@@ -240,8 +246,37 @@ def html_inseguro(original: str, editado: str) -> list[str]:
     return issues
 
 
+# frases de interiorismo genérico: no dicen nada de ESTE producto (prueba real
+# 3-nov: "brings a tailored, architectural presence to the room")
+_FRASE_VACIA_RX = re.compile(
+    r"\b(presence|focal point|statement piece|elevat\w*|to the room|any (?:room|interior|"
+    r"space|home|setting)|conceived (?:for|as)|adds? a touch|brings? a\b|perfect "
+    r"(?:for|addition)|must-have|tailored|composed)\b", re.I)
+_PALABRAS_ENLACE = {
+    "with", "its", "this", "these", "those", "which", "while", "where", "when", "each",
+    "both", "more", "most", "than", "then", "very", "such", "other", "piece", "made",
+    "italy", "italian", "whose", "within", "among", "across", "their", "there"}
+MAX_PALABRAS_NUEVAS = 4      # calibrado con la prueba real: 2-4 = bien, 6-9 = relleno
+
+
+def _contenido(texto: str) -> set[str]:
+    return {w for w in re.findall(r"[a-z][a-z'-]+", strip_html(texto).lower())
+            if len(w) >= 4 and w not in _FUNCIONALES and w not in _PALABRAS_ENLACE}
+
+
+def palabras_nuevas(oracion: str, base: str, keywords: Iterable[str] = ()) -> list[str]:
+    """Palabras con contenido de `oracion` que no están en la ficha (`base`) ni en
+    las keywords: si son muchas, la oración está inventando o rellenando."""
+    conocidas = _contenido(base)
+    conocidas |= {w.rstrip("s") for w in conocidas}
+    for k in keywords:
+        conocidas |= _contenido(k)
+    return sorted(w for w in _contenido(oracion)
+                  if w not in conocidas and w.rstrip("s") not in conocidas)
+
+
 def check_reglas(editado: dict, original_description: str = "",
-                 keywords: Iterable[str] = ()) -> list[str]:
+                 keywords: Iterable[str] = (), datos_ficha: str = "") -> list[str]:
     """Issues de la edición (vacía = cumple TODO). Alcance: SOLO la descripción
     larga (el H1 lo arma cassoni/h1.py por plantilla).
     `editado`: {description, ...}. `keywords`: las keywords objetivo, que tienen
@@ -272,6 +307,17 @@ def check_reglas(editado: dict, original_description: str = "",
         if sueltas:
             issues.append(f"Hay {len(sueltas)} oración(es) agregada(s) sin ninguna keyword "
                           f"(relleno): «{sueltas[0][:80]}»")
+        base = f"{original_description} {datos_ficha}"
+        for o in agregadas:
+            vacia = _FRASE_VACIA_RX.search(o)
+            if vacia:
+                issues.append(f"Frase genérica que no describe este producto "
+                              f"(«{vacia.group(0)}»): «{o[:80]}»")
+            nuevas = palabras_nuevas(o, base, kws)
+            if len(nuevas) > MAX_PALABRAS_NUEVAS:
+                issues.append(f"La oración agregada usa {len(nuevas)} palabras que no están "
+                              f"en la ficha ({', '.join(nuevas[:6])}): tiene que apoyarse en "
+                              f"lo que la ficha ya dice")
         if not any(_MEDIDA_RX.search(k) for k in kws):
             con_medidas = [o for o in agregadas if _MEDIDA_RX.search(o)]
             if con_medidas:

@@ -88,8 +88,12 @@ Responde SOLO con JSON:
         last_val = None
         mecanicas: list[str] = []
         for attempt in range(max_passes):
-            mecanicas = check_reglas(last_edited, original_description=original_desc,
-                                     keywords=objetivo)
+            mecanicas = check_reglas(
+                last_edited, original_description=original_desc, keywords=objetivo,
+                datos_ficha=" ".join([*(ctx.get("attributes") or ()),
+                                      ctx.get("current_short_description") or "",
+                                      last_edited.get("h1") or "", ctx.get("brand") or "",
+                                      *(ctx.get("categories") or ())]))
             last_val = self.validate(
                 url=url, h1=last_edited.get("h1", ""), original_desc=original_desc,
                 edited_desc=last_edited.get("description", ""),

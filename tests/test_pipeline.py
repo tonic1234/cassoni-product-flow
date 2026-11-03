@@ -236,8 +236,8 @@ def test_un_solo_pedido_de_volumen_para_todo_el_lote(tmp_path):
 # --- competidores (paso ② de la pizarra) --------------------------------------
 PAGINAS = [
     {"url": f"https://tienda{i}.com/p", "domain": f"tienda{i}.com", "rank": i,
-     "title": "Pedro Sofa", "h1": ["Pedro Sofá Velvet Edition"],
-     "h2": ["Velvet upholstery"], "texto": "A pedro sofá in velvet upholstery."}
+     "title": "Pedro Sofa", "h1": ["Pedro Sofá Chesterfield Tufting"],
+     "h2": ["Chesterfield tufting"], "texto": "A pedro sofá with chesterfield tufting."}
     for i in (1, 2, 3)
 ]
 
@@ -245,7 +245,7 @@ PAGINAS = [
 def test_sin_gsc_busca_el_mismo_producto_en_competidores(tmp_path):
     comp = FakeCompetidores(PAGINAS)
     pipe = _pipeline(tmp_path, gsc=FakeGSC([]), competidores=comp,
-                     vol={"pedro sofa": 50, "velvet upholstery": 0})
+                     vol={"chesterfield tufting": 50})
     res = pipe.process(URL)
     assert comp.consultas == ["Pedro Sofá Cassoni"]
     assert res.competidores
@@ -405,7 +405,7 @@ def test_la_precarga_hace_dos_pedidos_de_volumen_para_todo_el_lote(tmp_path):
     ficha (US$ 0,09 cada una). Ahora: uno para GSC y uno para competidores."""
     comp = FakeCompetidores(PAGINAS)
     pipe = _pipeline(tmp_path, gsc=FakeGSC([]), competidores=comp,
-                     vol={"pedro sofa": 50})
+                     vol={"chesterfield tufting": 50})
     pipe.precargar([URL])
     pipe.process(URL)
     assert len(pipe.volumenes.pedidos) == 1        # sin GSC: solo el de competidores

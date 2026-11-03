@@ -103,6 +103,53 @@ def nombra_el_tipo(keyword: str, tipos: set[str]) -> bool:
     return bool({_singular(w) for w in _palabras(keyword)} & tipos)
 
 
+def es_marca_y_modelo(keyword: str, nombre: str, marca: str) -> bool:
+    """'luceplan illan', 'illan luceplan': búsqueda de ESE producto aunque no
+    nombre el tipo (prueba real: se descartaban siendo las más valiosas)."""
+    kw = {_singular(w) for w in _palabras(keyword)}
+    modelo = {_singular(w) for w in _palabras(nombre) if len(w) >= 3}
+    return bool(kw & modelo) and bool(kw & {_singular(w) for w in _palabras(marca)})
+
+
+def cubierta_por_el_h1(keyword: str, nombre: str, marca: str) -> bool:
+    """Todas sus palabras ya están en el H1 '{Nombre} by {Marca}': agregarla a la
+    descripción no suma ('club sofa' en la Club Sofa, 'luceplan illan' en la
+    Illan Wall Lamp by Luceplan). El H1 nuevo ya cubre esa búsqueda."""
+    h1 = {_singular(w) for w in _palabras(f"{nombre} {marca}")}
+    kw = {_singular(w) for w in _palabras(keyword) if w not in _VACIAS}
+    return bool(kw) and kw <= h1
+
+
+# tipos de producto: si la keyword nombra OTRO tipo, habla de otro producto
+# ('cleopatra chair sofa' en una silla, 'hermes mattress' en una cama)
+TIPOS_DE_PRODUCTO = {
+    "sofa", "couch", "sectional", "loveseat", "chair", "armchair", "stool", "bench",
+    "ottoman", "pouf", "table", "desk", "console", "bed", "mattress", "headboard",
+    "lamp", "chandelier", "sconce", "pendant", "mirror", "sideboard", "cabinet",
+    "dresser", "nightstand", "wardrobe", "rug", "carpet", "piano", "shelf",
+    "bookcase", "vase", "clock", "lounger", "daybed", "bar", "trolley"}
+# lo que busca un artículo y no una ficha (el filtro de blog solo tenía español)
+_INFORMATIVA_RX = re.compile(r"^(what|how|why|when|where|who|which)\b|\b(vs|versus|ideas|"
+                             r"meaning|history|diy|review|reviews|guide)\b", re.I)
+# intención de compra: va en el título o la meta, no en la prosa de la descripción
+_TRANSACCIONAL_RX = re.compile(r"\b(for sale|price|prices|cost|near me|buy|cheap|"
+                               r"discount|sale|outlet|used)\b", re.I)
+# otra marca famosa con el mismo nombre ('tiffany and co', 'steinway and sons' ok)
+_OTRA_MARCA_RX = re.compile(r"\b(and|&)\s*co\b|\bbirkin\b|\bkelly bag\b", re.I)
+
+
+def otro_tipo(keyword: str, tipos: set[str]) -> str:
+    """El tipo de producto que nombra la keyword y que este producto NO es."""
+    for w in _palabras(keyword):
+        t = _singular(w)
+        if t in TIPOS_DE_PRODUCTO and t not in tipos:
+            return t
+    return ""
+
+
+_VACIAS = {"the", "a", "an", "of", "by", "for", "and", "de", "la", "el", "en", "y"}
+
+
 def _plano(s: str) -> str:
     return unicodedata.normalize("NFKD", (s or "").lower()).encode("ascii", "ignore").decode()
 
@@ -119,7 +166,8 @@ def es_especifica(keyword: str, texto_especifico: str, categorias: Iterable[str]
 
 
 def _singular(w: str) -> str:
-    return w[:-1] if len(w) > 4 and w.endswith("s") else w
+    # 'beds' → 'bed' (con > 4 letras se escapaba: 'hermes beds' no se veía cubierta)
+    return w[:-1] if len(w) >= 4 and w.endswith("s") and not w.endswith("ss") else w
 
 
 def _con_demanda(fila: dict, min_volume: int) -> bool:
@@ -129,8 +177,37 @@ def _con_demanda(fila: dict, min_volume: int) -> bool:
     return (fila.get("impressions") or 0) >= MIN_IMPRESIONES_SIN_VOLUMEN
 
 
+# CTR aproximado por posición orgánica (curva pública típica): lo que se gana
+# subiendo una ficha de su posición actual al top 3
+_CTR = {1: .28, 2: .15, 3: .11, 4: .08, 5: .065, 6: .05, 7: .04, 8: .033, 9: .028, 10: .025}
+POSICION_MAX = 30          # más allá, la ficha no compite por esa búsqueda
+
+
+def _ctr(pos: float) -> float:
+    if not pos:
+        return 0.0
+    if pos <= 10:
+        return _CTR[max(1, round(pos))]
+    return 0.012 if pos <= 20 else 0.004
+
+
+def potencial(fila: dict) -> float:
+    """Clics por mes que se ganarían llevando la ficha al top 3 en esa búsqueda.
+    Demanda = volumen de DataForSEO, o impresiones de GSC (90 días → mes) si no
+    hay volumen. Manda la OPORTUNIDAD de esta página, no el volumen genérico:
+    'luxury wall lights' (210/mes, posición 37) vale menos que una búsqueda con
+    impresiones reales en posición 8 (prueba real 3-nov)."""
+    demanda = fila.get("volume")
+    if demanda is None:
+        demanda = (fila.get("impressions") or 0) / 3
+    pos = fila.get("position")
+    if not pos:                       # candidata de competidores: sin posición propia
+        return demanda * 0.02
+    return demanda * max(0.0, _CTR[3] - _ctr(pos))
+
+
 def _orden(fila: dict) -> tuple:
-    return (fila.get("volume") or 0, fila.get("impressions") or 0)
+    return (potencial(fila), fila.get("impressions") or 0)
 
 
 def elegir_keywords(candidatas: Iterable[dict], *, descripcion: str,
@@ -154,6 +231,8 @@ def elegir_keywords(candidatas: Iterable[dict], *, descripcion: str,
     asignadas = asignadas or {}
     categorias = list(categorias)
     tipos = tipo_de_producto(nombre, categorias) if nombre is not None else set()
+    tipos_propios = set(tipos)     # solo nombre + categoría: 'mattress' en un atributo
+                                   # de la cama no convierte a la cama en colchón
     if nombre is not None and texto_especifico:
         # los atributos reales también identifican el producto ('boucle upholstery')
         tipos |= {_singular(w) for w in
@@ -177,7 +256,24 @@ def elegir_keywords(candidatas: Iterable[dict], *, descripcion: str,
         elif c.get("spell") or parece_typo(kw, f"{nombre} {marca}" if nombre is not None
                                            else texto_producto):
             descartadas.append({"keyword": kw, "motivo": "parece un error de tipeo"})
-        elif nombre is not None and not nombra_el_tipo(kw, tipos):
+        elif _INFORMATIVA_RX.search(kw):
+            descartadas.append({"keyword": kw, "motivo": "búsqueda informativa: es para "
+                                                         "un artículo, no para la ficha"})
+        elif _TRANSACCIONAL_RX.search(kw):
+            descartadas.append({"keyword": kw, "motivo": "intención de compra: va en el "
+                                                         "título o la meta, no en la descripción"})
+        elif _OTRA_MARCA_RX.search(kw):
+            descartadas.append({"keyword": kw, "motivo": "habla de otra marca"})
+        elif nombre is not None and otro_tipo(kw, tipos_propios):
+            descartadas.append({"keyword": kw, "motivo": f"nombra otro producto "
+                                                         f"({otro_tipo(kw, tipos_propios)})"})
+        elif nombre is not None and cubierta_por_el_h1(kw, nombre, marca):
+            descartadas.append({"keyword": kw, "motivo": "ya la cubre el H1 nuevo"})
+        elif c.get("position") and c["position"] > POSICION_MAX:
+            descartadas.append({"keyword": kw, "motivo": f"la ficha no compite "
+                                                         f"(posición {c['position']:.0f})"})
+        elif (nombre is not None and not nombra_el_tipo(kw, tipos)
+              and not es_marca_y_modelo(kw, nombre, marca)):
             descartadas.append({"keyword": kw,
                                 "motivo": "no nombra el producto ni un atributo real"})
         elif texto_especifico is not None and not es_especifica(kw, texto_especifico,
@@ -204,7 +300,9 @@ def elegir_keywords(candidatas: Iterable[dict], *, descripcion: str,
                for c in vivas if _norm(c["keyword"]) in asignadas]
 
     libres.sort(key=_orden, reverse=True)
-    div = seleccionar_diversas([dict(c, opportunity_score=0) for c in libres], max_sec=n)
+    h1_palabras = [w for w in _palabras(f"{nombre or ''} {marca}")]
+    puntuar = lambda cs: [dict(c, opportunity_score=potencial(c)) for c in cs]  # noqa: E731
+    div = seleccionar_diversas(puntuar(libres), max_sec=n, ignorar=h1_palabras)
     elegidas = [{k: v for k, v in c.items() if k != "opportunity_score"}
                 for c in div["elegidas"]]
     for o in div["omitidas"]:
@@ -214,8 +312,8 @@ def elegir_keywords(candidatas: Iterable[dict], *, descripcion: str,
     # otra ficha antes que quedarse corto (y queda registrado con quién choca)
     if len(elegidas) < n and reserva:
         reserva.sort(key=_orden, reverse=True)
-        div2 = seleccionar_diversas([dict(c, opportunity_score=0) for c in elegidas + reserva],
-                                    max_sec=n)
+        div2 = seleccionar_diversas(puntuar(elegidas + reserva), max_sec=n,
+                                    ignorar=h1_palabras)
         elegidas = [{k: v for k, v in c.items() if k != "opportunity_score"}
                     for c in div2["elegidas"]]
     usadas = {_norm(e["keyword"]) for e in elegidas}

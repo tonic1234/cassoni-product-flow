@@ -441,3 +441,26 @@ class TestLoAgregado:
         desc = largo.replace("</p>", " This club sofa keeps its brass tubes.</p>")
         assert checklist.check_reglas({"description": desc}, original_description=largo,
                                       keywords=["club sofa"]) == []
+
+
+class TestAnclajeEnLaFicha:
+    """Prueba real 3-nov: frases como 'brings a tailored, architectural presence
+    to the room' pasaban el validador. Lo agregado tiene que salir de la ficha."""
+    ORIG = "<p>Designer Italian sofa with brushed brass tubes and leather upholstery. Made in Italy.</p>"
+    DATOS = "Material: Brass, Leather Collection: Club Designer: Rugiano"
+
+    def _check(self, agregado):
+        desc = self.ORIG.replace("Made in Italy.", agregado + " Made in Italy.")
+        return checklist.check_reglas({"description": desc}, original_description=self.ORIG,
+                                      keywords=["club sofa"], datos_ficha=self.DATOS)
+
+    def test_frase_anclada_pasa(self):
+        assert self._check("The club sofa pairs its brushed brass tubes with leather upholstery.") == []
+
+    def test_interiorismo_generico_falla(self):
+        out = self._check("The club sofa brings a tailored, architectural presence to the room.")
+        assert any("genérica" in i for i in out)
+
+    def test_demasiadas_palabras_fuera_de_la_ficha_falla(self):
+        out = self._check("The club sofa suits spacious primary bedrooms beside a doorway or corridor.")
+        assert any("no están en la ficha" in i for i in out)
