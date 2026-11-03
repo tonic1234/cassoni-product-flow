@@ -161,8 +161,25 @@ def test_sin_saldo_avisa_y_no_reintenta(cfg):
     f = DataForSEOFetcher(cfg, _post=fake_post)
     assert f.search_volume(["sofa"]) == [None]
     assert f.serp_organico("sofa") == []
-    assert f.sin_saldo is True
+    assert "SIN SALDO" in f.sin_saldo
     assert len(llamadas) == 2            # uno por método, sin reintentos
+
+
+def test_cuenta_sin_verificar_avisa_con_el_mensaje_de_la_api(cfg):
+    """Prueba real 3-nov: cuenta nueva, 403 'Please verify your account'."""
+    import requests
+
+    class Resp:
+        status_code = 403
+        def json(self):
+            return {"status_message": "Please verify your account before using the API."}
+
+    def fake_post(payload):
+        raise requests.HTTPError("403", response=Resp())
+    cfg.dfs_max_requests_min = 0
+    f = DataForSEOFetcher(cfg, _post=fake_post)
+    assert f.serp_organico("sofa") == []
+    assert "verify your account" in f.sin_saldo
 
 
 def test_presupuesto_por_corrida(cfg):

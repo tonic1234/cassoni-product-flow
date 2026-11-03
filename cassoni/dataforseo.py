@@ -35,10 +35,21 @@ COSTO_VOLUMEN_USD = 0.09        # hasta 1.000 keywords por pedido
 COSTO_SERP_USD = 0.002          # una búsqueda orgánica
 
 
-def _sin_saldo(exc: Exception) -> bool:
-    """402 Payment Required: la cuenta no tiene saldo. No se arregla reintentando
-    (prueba real 3-nov: se tragaba en silencio y todo salía 'sin volumen')."""
-    return getattr(getattr(exc, "response", None), "status_code", None) == 402
+def _sin_saldo(exc: Exception) -> str:
+    """Problema de CUENTA (no se arregla reintentando): 401 credenciales, 402 sin
+    saldo, 403 cuenta sin verificar. Devuelve el motivo, o '' si es otro error.
+    Prueba real 3-nov: el 402 y el 403 se tragaban en silencio."""
+    resp = getattr(exc, "response", None)
+    codigo = getattr(resp, "status_code", None)
+    if codigo not in (401, 402, 403):
+        return ""
+    try:
+        detalle = resp.json().get("status_message") or ""
+    except Exception:
+        detalle = ""
+    base = {401: "credenciales inválidas", 402: "SIN SALDO",
+            403: "cuenta sin verificar o sin permiso"}[codigo]
+    return f"{base} ({codigo}) {detalle}".strip()
 
 
 class DataForSEOFetcher:
@@ -55,7 +66,7 @@ class DataForSEOFetcher:
         self._lock = threading.Lock()
         self._last_req = 0.0
         self.costo_usd = 0.0
-        self.sin_saldo = False
+        self.sin_saldo = ""                # motivo si la cuenta no puede operar
         self.sin_presupuesto = False
 
     def _alcanza(self, costo: float) -> bool:
@@ -149,10 +160,10 @@ class DataForSEOFetcher:
                     }]
                     data = self._request(payload)
                 except requests.RequestException as exc:
-                    if _sin_saldo(exc):
-                        self.sin_saldo = True
-                        log.error("DataForSEO: SIN SALDO (402). Recargar la cuenta; "
-                                  "se sigue sin volumen.")
+                    motivo = _sin_saldo(exc)
+                    if motivo:
+                        self.sin_saldo = motivo
+                        log.error("DataForSEO: %s. Se sigue sin volumen.", motivo)
                         return results
                     if attempt >= self.cfg.dfs_retries:
                         break
@@ -193,9 +204,10 @@ class DataForSEOFetcher:
             try:
                 data = self._request(payload, url=self.SERP_URL)
             except requests.RequestException as exc:
-                if _sin_saldo(exc):
-                    self.sin_saldo = True
-                    log.error("DataForSEO: SIN SALDO (402). Sin competidores.")
+                motivo = _sin_saldo(exc)
+                if motivo:
+                    self.sin_saldo = motivo
+                    log.error("DataForSEO: %s. Sin competidores.", motivo)
                     return []
                 data = None
             if data and data.get("status_code") == 20000:

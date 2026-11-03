@@ -70,37 +70,16 @@
        "nueva": false
       },
       {
-       "t": "It belongs to the New Glamour line, built on a straight silhouette with armrests.",
-       "nueva": true
-      },
-      {
        "t": "It stands out for the innovative structure created by refined brushed brass or bronze drawn tubes that, combined with the upholstered leather or fabric, create a stylish pattern.",
        "nueva": false
       },
       {
-       "t": "The choice between brushed brass and bronze shifts the temperature of the piece without altering its geometry.",
+       "t": "With its straight silhouette and defined armrests, the club sofa brings a tailored, architectural presence to the room.",
        "nueva": true
       },
       {
        "t": "A high-end Glamour furniture, ideal to fit in any sophisticated living area.",
        "nueva": false
-      }
-     ]
-    },
-    {
-     "tipo": "p",
-     "frases": [
-      {
-       "t": "The Club Sofa is offered in four widths — 62\"3/8, 82\"1/2, 102\"5/8 and 122\"W — all sharing the same 33\"1/2 depth and 28\"H frame.",
-       "nueva": true
-      },
-      {
-       "t": "Because depth and height stay fixed across the four widths, the club sofa holds the same proportions from the shortest to the longest version.",
-       "nueva": true
-      },
-      {
-       "t": "Rugiano applies both covers to the same frame, so a leather version and a fabric one can sit together in a single scheme.",
-       "nueva": true
       },
       {
        "t": "Made in Italy.",
@@ -111,28 +90,25 @@
    ],
    "validador": {
     "aprobado": true,
-    "issues": [
-     "Redundancia menor: la frase 'Because depth and height stay fixed across the four widths, the club sofa holds the same proportions from the shortest to the longest version' repite en dos oraciones la misma idea (medidas constantes de fondo/alto); se podría condensar sin perder información.",
-     "Leve acumulación de datos de ficha en la primera frase ('straight silhouette with armrests', 'New Glamour line') que roza lo catalogal, aunque no rompe el tono."
-    ],
-    "razon": "La edición mantiene el registro de lujo y 'Made in Italy', integra la keyword 'club sofa' de forma natural y los datos añadidos (New Glamour, straight, armrests, cuatro anchos, tapizados cuero/tela) provienen de los atributos reales, sin inventar precios ni materiales. Solo se señala una redundancia conceptual sobre las medidas constantes y una leve densidad de atributos en la apertura, ambas no bloqueantes.",
+    "issues": [],
+    "razon": "La edición inserta 'club sofa' de forma natural en una oración nueva que aporta información coherente con los atributos oficiales (Shape: Straight, With Armrests), sin inventar datos ni alterar el tono de lujo. No hay repetición de conceptos (la frase sobre silueta/armrests añade detalle arquitectónico no presente en el original), el HTML permanece válido y se conserva el cierre 'Made in Italy'.",
     "intentos": 2
    },
    "medido": {
     "palabras_antes": 54,
-    "palabras_despues": 157,
+    "palabras_despues": 72,
     "conservacion": 1.0,
     "h2": 0
    },
    "costo": {
-    "llm_usd": 0.03617,
+    "llm_usd": 0.007821,
     "dfs_usd": 0.0
    }
   },
   {
    "url": "https://cassoni.com/product/cas-tal-cruise-teak-sofa-01/",
-   "status": "processed",
-   "motivo": "dry_run (sin tocar WooCommerce)",
+   "status": "rejected",
+   "motivo": "rechazada por el validador: Keyword 'cruise couch' insertada de forma forzada: 'couch' es un término coloquial que choca con el registro de lujo del resto del texto (que usa 'sofa') y contradice el H1 'Cruise Sofa'.; La frase añadida ('straight, armrest-equipped piece designed by Ludovica + Roberto Palomba for Talenti') es un volcado de atributos técnicos que corta la progresión narrativa del original entre 'nautical and nature inspired style' y 'Indeed, the high-end structure...', dejando el conector 'Indeed' apuntando a la frase insertada en lugar de al argumento original.; Repetición de conceptos: el original ya comunica diseño/colección y materiales; la nueva oración rellena con especificaciones de ficha (shape, armrests) sin aportar valor descriptivo y enfriando el tono editorial.",
    "marca": "Talenti",
    "categorias": [
     "Sofas & Sectionals"
@@ -194,24 +170,12 @@
        "nueva": false
       },
       {
-       "t": "Designed by Ludovica + Roberto Palomba for the New Outdoor Collection, it follows the straight, uncluttered line of the series.",
+       "t": "The cruise couch is a straight, armrest-equipped piece designed by Ludovica + Roberto Palomba for Talenti.",
        "nueva": true
       },
       {
        "t": "Indeed, the high-end structure is entirely realized in teak wood, the use of synthetic rope is reserved to the armrests and backrest and the cushions are made with weather resistant fabrics, making the product perfect for outdoor living areas.",
        "nueva": false
-      },
-      {
-       "t": "The cruise couch measures 96\"3/8W x 43\"1/4D x 28\"3/4H, with the seat set at 14\"5/8 from the ground.",
-       "nueva": true
-      },
-      {
-       "t": "The armrests rise to 24\"3/4 and close both ends of a profile that stays rigorously straight.",
-       "nueva": true
-      },
-      {
-       "t": "A fabric cover completes the upholstery, deliberately plain so the wood grain and the rope weave stay the visible texture of the piece.",
-       "nueva": true
       },
       {
        "t": "Here you have a stylish Italian furniture ideal for relaxing moments outside.",
@@ -225,32 +189,32 @@
     }
    ],
    "validador": {
-    "aprobado": true,
+    "aprobado": false,
     "issues": [
-     "Redundancia conceptual: el eje 'straight' se menciona dos veces ('straight, uncluttered line of the series' y luego 'a profile that stays rigorously straight'), sumado al atributo Shape: Straight de la ficha; se refuerza un mismo concepto sin aportar información nueva.",
-     "Redundancia en el material de tapizado: primero 'the cushions are made with weather resistant fabrics' y después 'A fabric cover completes the upholstery', repitiendo la misma idea (Cover: Fabric ya está en atributos).",
-     "Frase forzada y algo hueca: 'The armrests rise to 24\"3/4 and close both ends of a profile that stays rigorously straight' — suena a relleno para introducir la medida y roza lo ininteligible para un lector de lujo.",
-     "Acumulación de medidas en dos oraciones seguidas (96\"3/8W x 43\"1/4D x 28\"3/4H + SH + AH) que vuelve el párrafo más técnico que editorial, con leve pérdida de fluidez de lujo.",
-     "'Cruise couch' se inserta de forma correcta pero algo mecánica ('The cruise couch measures...'), en un registro más informal que el resto del texto ('couch' frente a 'sofa' del H1)."
+     "Keyword 'cruise couch' insertada de forma forzada: 'couch' es un término coloquial que choca con el registro de lujo del resto del texto (que usa 'sofa') y contradice el H1 'Cruise Sofa'.",
+     "La frase añadida ('straight, armrest-equipped piece designed by Ludovica + Roberto Palomba for Talenti') es un volcado de atributos técnicos que corta la progresión narrativa del original entre 'nautical and nature inspired style' y 'Indeed, the high-end structure...', dejando el conector 'Indeed' apuntando a la frase insertada en lugar de al argumento original.",
+     "Repetición de conceptos: el original ya comunica diseño/colección y materiales; la nueva oración rellena con especificaciones de ficha (shape, armrests) sin aportar valor descriptivo y enfriando el tono editorial.",
+     "Pérdida parcial de tono de lujo: la estructura 'X is a straight, armrest-equipped piece designed by...' es de ficha técnica, no de copy aspiracional; el conjunto queda menos cohesivo y elegante que el original.",
+     "No hay datos inventados (diseñador, marca y tipología provienen de atributos) ni HTML roto."
     ],
-    "razon": "La edición conserva el tono aspiracional y no inventa datos (diseñador, colección y medidas provienen de los atributos reales); el HTML está correcto. Los defectos son de pulido: repetición del eje 'straight' y del concepto de tapizado, y una oración de relleno sobre los apoyabrazos que conviene reescribir, por lo que son observaciones menores y no bloqueantes.",
+    "razon": "La keyword se incorpora de manera antinatural y con un término coloquial ('couch') que rompe el registro de lujo, y la frase insertada vuelca atributos técnicos interrumpiendo la narrativa original; requiere re-trabajo para integrar la keyword de forma elegante y sin duplicar especificaciones.",
     "intentos": 2
    },
    "medido": {
     "palabras_antes": 73,
-    "palabras_despues": 151,
+    "palabras_despues": 89,
     "conservacion": 1.0,
     "h2": 0
    },
    "costo": {
-    "llm_usd": 0.017053,
+    "llm_usd": 0.013088,
     "dfs_usd": 0.0
    }
   },
   {
    "url": "https://cassoni.com/product/cas-oak-sc_1019_chair-01/",
-   "status": "rejected",
-   "motivo": "rechazada por el validador: Tono: el primer párrafo deriva en una ficha técnica (enumeración de alto/ancho/profundidad en 38\"1/8, 18\"1/8, 26\"3/8) que rompe el registro editorial de lujo; suena a catálogo, no a descripción de pieza.; Fraseo forzado/incoherente: 'leaving the high backrest to carry the support of the sitter and to define the narrow, upright profile' es confuso y no aporta información real (el respaldo sostiene por definición); 'the absence of armrests keeps both sides of the seat clear' es relleno vacío.; Repetición de conceptos: el H2 ya nombra la pieza y la primera oración del párrafo vuelve a presentarla ('The Cleopatra Chair is a design by...'), generando redundancia inmediata; además el respaldo alto se menciona tres veces en dos párrafos.",
+   "status": "processed",
+   "motivo": "dry_run (sin tocar WooCommerce)",
    "marca": "OAK",
    "categorias": [
     "Chairs & Armchairs"
@@ -312,81 +276,37 @@
        "nueva": false
       },
       {
+       "t": "The Cleopatra Chair, designed by Luca Scacchetti, pairs a high backrest with an armless profile and rests on wooden legs.",
+       "nueva": true
+      },
+      {
        "t": "Rosewood, Ebony or Citronier finish.",
        "nueva": false
-      }
-     ]
-    },
-    {
-     "tipo": "h2",
-     "frases": [
-      {
-       "t": "The Cleopatra Chair by OAK",
-       "nueva": true
-      }
-     ]
-    },
-    {
-     "tipo": "p",
-     "frases": [
-      {
-       "t": "The Cleopatra Chair is a design by Luca Scacchetti, built on a wooden frame with four legs and an armless seat.",
-       "nueva": true
-      },
-      {
-       "t": "Its high backrest lifts the overall height to 38\"1/8, with a width of 18\"1/8 and a depth of 26\"3/8.",
-       "nueva": true
-      },
-      {
-       "t": "The absence of armrests keeps both sides of the seat clear, leaving the high backrest to carry the support of the sitter and to define the narrow, upright profile of the chair.",
-       "nueva": true
-      }
-     ]
-    },
-    {
-     "tipo": "p",
-     "frases": [
-      {
-       "t": "The leather cover runs over the seat and back, set against the wooden structure.",
-       "nueva": true
-      },
-      {
-       "t": "Rosewood, Ebony and Citronier are wood finishes applied to the frame and legs, so the choice between the three variants concerns the wood alone and leaves the leather cover untouched.",
-       "nueva": true
-      },
-      {
-       "t": "A transitional style governs the piece, holding the classical proportion of the backrest within a sober, essential line that descends to the legs.",
-       "nueva": true
       }
      ]
     }
    ],
    "validador": {
-    "aprobado": false,
-    "issues": [
-     "Tono: el primer párrafo deriva en una ficha técnica (enumeración de alto/ancho/profundidad en 38\"1/8, 18\"1/8, 26\"3/8) que rompe el registro editorial de lujo; suena a catálogo, no a descripción de pieza.",
-     "Fraseo forzado/incoherente: 'leaving the high backrest to carry the support of the sitter and to define the narrow, upright profile' es confuso y no aporta información real (el respaldo sostiene por definición); 'the absence of armrests keeps both sides of the seat clear' es relleno vacío.",
-     "Repetición de conceptos: el H2 ya nombra la pieza y la primera oración del párrafo vuelve a presentarla ('The Cleopatra Chair is a design by...'), generando redundancia inmediata; además el respaldo alto se menciona tres veces en dos párrafos.",
-     "Repetición estructural: el segundo párrafo explica que los acabados Rosewood/Ebony/Citronier son de madera y no afectan el cuero, dato ya implícito en el original ('Wooden chair with leather upholstery. Rosewood, Ebony or Citronier finish'), sin agregar valor descriptivo."
-    ],
-    "razon": "La edición no inventa datos (medidas, diseñador, materiales y estilo provienen de atributos y del original) y el HTML es correcto, pero el texto abandona el tono de lujo y cae en una enumeración de medidas con fraseo intrincado y conceptos repetidos; requiere reescritura con voz editorial y síntesis.",
+    "aprobado": true,
+    "issues": [],
+    "razon": "La edición conserva íntegro el contenido original (tapizado de cuero, acabados Rosewood/Ebony/Citronier) y solo añade datos verificados de los atributos oficiales (diseñador Luca Scacchetti, respaldo alto, perfil sin brazos, patas de madera). La keyword 'Cleopatra Chair' se integra de forma natural como sujeto de la oración, sin forzar repeticiones ni romper el registro descriptivo-elegante propio de la ficha. No hay conceptos duplicados ni datos inventados, y el HTML está bien formado.",
     "intentos": 2
    },
    "medido": {
     "palabras_antes": 10,
-    "palabras_despues": 154,
+    "palabras_despues": 30,
     "conservacion": 1.0,
-    "h2": 1
+    "h2": 0
    },
    "costo": {
-    "llm_usd": 0.019155,
+    "llm_usd": 0.006272,
     "dfs_usd": 0.0
    }
   },
   {
    "url": "https://cassoni.com/product/cas-rug-rock-coffee-table-01/",
    "status": "rejected",
-   "motivo": "rechazada por el validador: La descripción larga no llega a las 150 palabras (tiene 138); Keyword forzada e incoherente: \"black rock coffee table\" se inserta como si existiera una variante de mármol negro, dato que no figura en la descripción original ni en los atributos (solo se dice \"wide range of marble options\"); además suena a query de búsqueda, no a copy de lujo.; Contradicción interna: se conserva \"available in two different sizes\" y a continuación se enumeran cuatro medidas (20\", 46\", 71 1/4\", 72 3/8\"), lo que desmiente la frase original y confunde al lector.",
+   "motivo": "rechazada por el validador: El keyword se inyecta con un dato de color no respaldado: el original y los atributos hablan de tapa en madera pintada Decoro o mármol y patas de latón bronceado, sin mencionar acabado negro; afirmar 'black rock coffee table' introduce una característica de producto no verificada (riesgo de dato inventado/incoherencia con la ficha).; La frase añadida es un pegote sintáctico: aparece como oración suelta entre 'sophisticated sofas' y 'Designed by Rugiano', sin integrarse al hilo del párrafo original.; Redundancia conceptual: 'elegant seating' repite la idea ya expresada en 'to complement sophisticated sofas' y 'glamorous' duplica el atributo Style: Glamour sin aportar información nueva; 'irregular top' y 'metal base' ya están implícitos en la descripción y en los atributos.",
    "marca": "Rugiano",
    "categorias": [
     "Coffee & Side Tables"
@@ -444,24 +364,12 @@
        "nueva": false
       },
       {
-       "t": "Among the marble options, the black rock coffee table sets its irregular top against the warm bronzed brass base.",
-       "nueva": true
-      },
-      {
-       "t": "It belongs to the New Glamour Collection and follows the Glamour style.",
-       "nueva": true
-      },
-      {
-       "t": "Tops span from 20 inches wide up to 72 3/8 inches wide, and the range also includes intermediate formats of 46 and 71 1/4 inches.",
-       "nueva": true
-      },
-      {
-       "t": "Depths run from 21 5/8 to 42 1/8 inches, while the overall height sits at 11 or 14 1/8 inches depending on the format.",
-       "nueva": true
-      },
-      {
        "t": "An innovative and functional coffee table to complement sophisticated sofas.",
        "nueva": false
+      },
+      {
+       "t": "The black rock coffee table brings a sculptural, glamorous note to elegant seating with its irregular top and metal base.",
+       "nueva": true
       },
       {
        "t": "Designed by Rugiano.",
@@ -477,31 +385,29 @@
    "validador": {
     "aprobado": false,
     "issues": [
-     "La descripción larga no llega a las 150 palabras (tiene 138)",
-     "Keyword forzada e incoherente: \"black rock coffee table\" se inserta como si existiera una variante de mármol negro, dato que no figura en la descripción original ni en los atributos (solo se dice \"wide range of marble options\"); además suena a query de búsqueda, no a copy de lujo.",
-     "Contradicción interna: se conserva \"available in two different sizes\" y a continuación se enumeran cuatro medidas (20\", 46\", 71 1/4\", 72 3/8\"), lo que desmiente la frase original y confunde al lector.",
-     "Volcado técnico de medidas (\"Depths run from 21 5/8 to 42 1/8 inches, while the overall height sits at 11 or 14 1/8 inches depending on the format\") rompe el tono editorial de lujo y resulta mecánico y repetitivo; las fracciones tipo 72 3/8 agravan la lectura poco elegante.",
-     "Relleno SEO plano: \"It belongs to the New Glamour Collection and follows the Glamour style\" son datos reales pero enunciados como ficha técnica, sin valor narrativo, y restan sofisticación.",
-     "Se altera levemente el original al llamar \"base\" a lo que el texto describe como \"two refined legs made of bronzed brass metal\"."
+     "El keyword se inyecta con un dato de color no respaldado: el original y los atributos hablan de tapa en madera pintada Decoro o mármol y patas de latón bronceado, sin mencionar acabado negro; afirmar 'black rock coffee table' introduce una característica de producto no verificada (riesgo de dato inventado/incoherencia con la ficha).",
+     "La frase añadida es un pegote sintáctico: aparece como oración suelta entre 'sophisticated sofas' y 'Designed by Rugiano', sin integrarse al hilo del párrafo original.",
+     "Redundancia conceptual: 'elegant seating' repite la idea ya expresada en 'to complement sophisticated sofas' y 'glamorous' duplica el atributo Style: Glamour sin aportar información nueva; 'irregular top' y 'metal base' ya están implícitos en la descripción y en los atributos.",
+     "'Available in two different sizes' del original choca con las cuatro medidas de la ficha, pero la edición no lo corrige ni lo aclara (queda una inconsistencia visible en el texto publicable)."
     ],
-    "razon": "La keyword se incorpora inventando una variante de mármol negro y el agregado de colección/estilo/medidas convierte el párrafo en una ficha técnica que contradice el \"two different sizes\" original y degrada el tono de lujo; requiere re-trabajo.",
+    "razon": "El tono de lujo se mantiene y el HTML es correcto, pero la keyword se resuelve adjudicando un color/acabado 'black' que no consta en la descripción original ni en los atributos, y la oración añadida queda forzada y redundante; requiere re-trabajo para integrar el término sin inventar características.",
     "intentos": 2
    },
    "medido": {
     "palabras_antes": 58,
-    "palabras_despues": 138,
+    "palabras_despues": 78,
     "conservacion": 1.0,
     "h2": 0
    },
    "costo": {
-    "llm_usd": 0.04118,
+    "llm_usd": 0.006934,
     "dfs_usd": 0.0
    }
   },
   {
    "url": "https://cassoni.com/product/luxury-exquisite-masterpiece-19800-steinway-piano-by-riva-mobili-darte/",
-   "status": "rejected",
-   "motivo": "rechazada por el validador: Datos inventados: se agregan 'handcrafted solid wood base, carved in three dimensions', 'hand-applied gold leaf', 'high-gloss coating' y 'brass inlays', que no figuran ni en el original ni en los atributos oficiales (Size, Collection, Style). Es una descripción material fabricada, especialmente grave en una pieza de lujo donde el cliente compra especificaciones verificables.; Keyword forzada y repetida: 'Steinway piano' se inserta dos veces en frases consecutivas ('This Steinway piano rests on...' y '...enrich the surface of this Steinway piano'), cuando el original no lo mencionaba en absoluto. La segunda aparición es claramente mecánica y corta el ritmo narrativo del párrafo.; Ruptura del flujo editorial: la inserción de la primera keyword parte el párrafo original entre las tallas y el nácar, intercalando una frase técnica (base/tallado/oro/gloss) en un texto que hasta ahí era puramente evocativo; queda un salto de registro.",
+   "status": "processed",
+   "motivo": "dry_run (sin tocar WooCommerce)",
    "marca": "Riva Mobili D'Arte",
    "categorias": [
     "Miscellaneous"
@@ -563,6 +469,10 @@
        "nueva": false
       },
       {
+       "t": "As a Steinway piano, this instrument combines the presence of a concert piano with the refinement of handcrafted Italian furniture.",
+       "nueva": true
+      },
+      {
        "t": "Every detail reveals exceptional artisanal mastery: from the harmonious structure to the rich, refined carvings that adorn the base and sides.",
        "nueva": false
       },
@@ -571,28 +481,12 @@
        "nueva": false
       },
       {
-       "t": "This Steinway piano rests on a handcrafted solid wood base, carved in three dimensions and finished with hand-applied gold leaf and a high-gloss coating.",
-       "nueva": true
-      },
-      {
        "t": "The surface is embellished with mother-of-pearl inlays, a noble and luminous material that reflects light in iridescent shades, creating an effect of refined sophistication.",
        "nueva": false
       },
       {
-       "t": "Precious wood and brass inlays further enrich the surface of this Steinway piano, complementing the mother-of-pearl decoration.",
-       "nueva": true
-      },
-      {
        "t": "This piano is a true work of art, a symbol of an era when manual skill and aesthetic taste achieved a level of absolute perfection.",
        "nueva": false
-      },
-      {
-       "t": "The instrument measures approximately 74 5/8 inches in width, 59 inches in depth and 43 1/4 inches in height.",
-       "nueva": true
-      },
-      {
-       "t": "A traditional style governs the overall silhouette, consistent with the Riva Mobili D'Arte collection.",
-       "nueva": true
       },
       {
        "t": "Made in Italy.",
@@ -602,25 +496,19 @@
     }
    ],
    "validador": {
-    "aprobado": false,
-    "issues": [
-     "Datos inventados: se agregan 'handcrafted solid wood base, carved in three dimensions', 'hand-applied gold leaf', 'high-gloss coating' y 'brass inlays', que no figuran ni en el original ni en los atributos oficiales (Size, Collection, Style). Es una descripción material fabricada, especialmente grave en una pieza de lujo donde el cliente compra especificaciones verificables.",
-     "Keyword forzada y repetida: 'Steinway piano' se inserta dos veces en frases consecutivas ('This Steinway piano rests on...' y '...enrich the surface of this Steinway piano'), cuando el original no lo mencionaba en absoluto. La segunda aparición es claramente mecánica y corta el ritmo narrativo del párrafo.",
-     "Ruptura del flujo editorial: la inserción de la primera keyword parte el párrafo original entre las tallas y el nácar, intercalando una frase técnica (base/tallado/oro/gloss) en un texto que hasta ahí era puramente evocativo; queda un salto de registro.",
-     "Volcado de especificaciones en tono catálogo: la frase con las medidas en pulgadas ('74 5/8 inches in width, 59 inches in depth...') y la mención 'A traditional style governs the overall silhouette' rompen el tono de lujo del cierre y compiten con el remate original ('symbol of an era...'). Las medidas ya están en la ficha; repetirlas en prosa no aporta y desluce.",
-     "Redundancia de atributos de ficha: mencionar explícitamente 'consistent with the Riva Mobili D'Arte collection' es innecesario cuando la marca y la colección ya figuran en la ficha, y suena a relleno SEO."
-    ],
-    "razon": "El texto base conserva el tono de lujo, pero la edición falla por datos de materiales inventados (base de madera maciza, pan de oro, laca brillante, incrustaciones de latón) ausentes del original y de los atributos, y por una doble inserción de la keyword que suena forzada y rompe el flujo del párrafo. Requiere re-trabajo: eliminar los materiales no verificados y reubicar una sola mención de la keyword de forma natural.",
-    "intentos": 2
+    "aprobado": true,
+    "issues": [],
+    "razon": "La edición conserva el tono de lujo y la artesanía del original; la keyword se integra de forma coherente con el nombre del producto y no añade datos inventados ni rompe el HTML.",
+    "intentos": 1
    },
    "medido": {
     "palabras_antes": 101,
-    "palabras_despues": 175,
+    "palabras_despues": 121,
     "conservacion": 1.0,
     "h2": 0
    },
    "costo": {
-    "llm_usd": 0.008374,
+    "llm_usd": 0.003614,
     "dfs_usd": 0.0
    }
   },
@@ -682,20 +570,15 @@
    "competidores": [],
    "bloques": [
     {
-     "tipo": "h2",
-     "frases": [
-      {
-       "t": "A large rectangular tiffany style mirror with a metal frame",
-       "nueva": true
-      }
-     ]
-    },
-    {
      "tipo": "p",
      "frases": [
       {
        "t": "The exclusive Italian Tiffany mirror comes with a multilayered structure.",
        "nueva": false
+      },
+      {
+       "t": "As a tiffany style mirror, this wall-mounted design brings a refined geometric presence to the room with its rectangular silhouette and gold leaf finish.",
+       "nueva": true
       },
       {
        "t": "Natural mirror (1/8” thick).",
@@ -704,37 +587,11 @@
       {
        "t": "The refined frame is offered in shining stainless steel, antique bronze satin, shaded glossy, shaded satin, chrome black or dipped in 24Kt gold.",
        "nueva": false
-      }
-     ]
-    },
-    {
-     "tipo": "p",
-     "frases": [
+      },
       {
        "t": "This luxury Italian piece will surely add a Glamour style to any interior space.",
        "nueva": false
       },
-      {
-       "t": "Rectangular in shape and hung vertically on the wall, this tiffany style mirror measures 47\"1/4W x 55\"1/8D, a proportion that gives the reflection more height than width.",
-       "nueva": true
-      },
-      {
-       "t": "The flat glass is enclosed by a metal frame, so the edge stays firm and the reflective surface even from side to side.",
-       "nueva": true
-      },
-      {
-       "t": "Because the piece is fixed to the wall rather than standing on the floor, it occupies a single vertical plane and leaves the volume beneath it free.",
-       "nueva": true
-      },
-      {
-       "t": "Only the frame changes from one version to the next, while the glass stays the same throughout.",
-       "nueva": true
-      }
-     ]
-    },
-    {
-     "tipo": "p",
-     "frases": [
       {
        "t": "Made in Italy.",
        "nueva": false
@@ -744,18 +601,21 @@
    ],
    "validador": {
     "aprobado": true,
-    "issues": [],
-    "razon": "La edición conserva el tono de lujo del original, incorpora la keyword de forma natural y coherente con el producto, no repite conceptos de forma problemática y no introduce datos inventados; los atributos usados coinciden con la ficha.",
-    "intentos": 2
+    "issues": [
+     "Leve redundancia: 'As a tiffany style mirror' repite el concepto ya enunciado en la primera frase ('The exclusive Italian Tiffany mirror'), lo que hace la transición algo mecánica.",
+     "Se menciona 'gold leaf finish' como si fuera el acabado de la pieza, cuando el original lista seis opciones de marco (stainless steel, antique bronze satin, shaded glossy, shaded satin, chrome black o 24Kt gold); conviene formularlo como una de las opciones disponibles para no inducir a error. El dato en sí es real (atributo '24K & Gold leaf finish'), solo la formulación es imprecisa."
+    ],
+    "razon": "La edición conserva el tono de lujo y el texto original casi íntegro; la keyword se integra de forma natural y los datos añadidos (wall-mounted, rectangular, gold leaf) provienen de los atributos oficiales. Solo hay una redundancia menor con el nombre del producto y una formulación que presenta un acabado opcional como si fuera único: ajustes de estilo, no bloqueantes.",
+    "intentos": 1
    },
    "medido": {
     "palabras_antes": 54,
-    "palabras_despues": 158,
+    "palabras_despues": 78,
     "conservacion": 1.0,
-    "h2": 1
+    "h2": 0
    },
    "costo": {
-    "llm_usd": 0.047302,
+    "llm_usd": 0.002392,
     "dfs_usd": 0.0
    }
   },
@@ -832,11 +692,7 @@
        "nueva": false
       },
       {
-       "t": "That non-deformable padding holds its shape, so the upholstery stays taut across the wide surfaces of the frame and the headboard.",
-       "nueva": true
-      },
-      {
-       "t": "The maxi bed is sized for an American King mattress of 76\"3/4 x 80\"D, with overall dimensions of 149\"5/8W x 87\"3/4D x 63\"H.",
+       "t": "The Hermes beds are conceived for spacious primary bedrooms, where the upholstered frame and wide headboard create a composed, tailored presence.",
        "nueva": true
       }
      ]
@@ -849,16 +705,8 @@
        "nueva": false
       },
       {
-       "t": "Because the frame is fully upholstered, the surface stays continuous from the mattress line up to the quilted panel, without a visible break in the silhouette.",
-       "nueva": true
-      },
-      {
        "t": "Also, to add more comfort, goose feather square decorative cushions (19”5/8 or 15”3/4) are available upon request.",
        "nueva": false
-      },
-      {
-       "t": "Within the New Glamour Collection, Hermes beds are defined by this super wide headboard set over a low profile base, which keeps the frame close to the floor.",
-       "nueva": true
       }
      ]
     },
@@ -870,6 +718,10 @@
        "nueva": false
       },
       {
+       "t": "The maxi bed pairs a super-wide headboard with a low-profile base, giving the upholstered form a generous and grounded silhouette.",
+       "nueva": true
+      },
+      {
        "t": "Made in Italy.",
        "nueva": false
       }
@@ -879,21 +731,21 @@
    "validador": {
     "aprobado": true,
     "issues": [
-     "Leve redundancia conceptual: «non-deformable padding holds its shape» reformula el mismo atributo ya enunciado («non-deformable polyurethane foam») sin agregar información nueva.",
-     "La frase sobre la continuidad de la superficie («without a visible break in the silhouette») es una elaboración descriptiva inferida del atributo Upholstered; es plausible pero roza lo especulativo y aporta un tono más técnico que editorial de lujo.",
-     "«super wide headboard» y «large headboard» conviven en el texto nombrando el mismo elemento, lo que genera una repetición menor aunque provenga de atributos reales."
+     "Redundancia leve: el cabecero ya se describe en el párrafo 2 ('large headboard features a refined vertical quilting') y se vuelve a calificar en el párrafo 3 ('super-wide headboard', 'generous and grounded silhouette'); conviene que el cierre aporte un ángulo nuevo en lugar de re-describir el mismo elemento.",
+     "El añadido 'conceived for spacious primary bedrooms' es una proyección de uso no presente en el original; es aceptable como copy de posicionamiento (no inventa datos verificables), pero roza el relleno.",
+     "'Hermes beds' en plural presupone una familia de camas dentro de la colección; el original solo menciona 'the Italian Hermes collection', así que el plural es una leve extrapolación, no un dato falso."
     ],
-    "razon": "La edición conserva el registro de lujo, integra ambas keywords de forma natural y los datos de medidas provienen de los atributos oficiales (sin inventar precios, materiales ni dimensiones). Las observaciones son de estilo menor y no comprometen la fidelidad ni la calidad editorial.",
-    "intentos": 2
+    "razon": "La edición mantiene el registro de lujo ('composed, tailored presence', 'generous and grounded silhouette'), inserta ambas keywords de forma gramatical y coherente con el producto (King, Super Wide headboard, Low profile base, upholstered), respeta el HTML y no introduce precios, medidas ni materiales inventados; solo hay una redundancia menor en torno al cabecero que no compromete la calidad.",
+    "intentos": 1
    },
    "medido": {
     "palabras_antes": 71,
-    "palabras_despues": 169,
+    "palabras_despues": 112,
     "conservacion": 1.0,
     "h2": 0
    },
    "costo": {
-    "llm_usd": 0.04137,
+    "llm_usd": 0.007327,
     "dfs_usd": 0.0
    }
   },
@@ -1045,7 +897,7 @@
        "nueva": false
       },
       {
-       "t": "Specifiable in 2700K or 3000K and dimmable, the LED source makes the Illan one of the more adaptable luxury wall lights in the catalogue.",
+       "t": "Fixed to the wall beside a mirror or a doorway, the Illan lamp supplies dimmable light where a dressing area or corridor requires it.",
        "nueva": true
       },
       {
@@ -1066,16 +918,16 @@
        "nueva": false
       },
       {
-       "t": "Mounted flat against the wall, the Illan lamp measures 11\"W x 5\"1/8D x 11\"H, projecting just over five inches into the room.",
-       "nueva": true
-      },
-      {
        "t": "UL Approved (Product build according to the National Electrical Code’s requirements and tested by Underwriters Laboratories).",
        "nueva": false
       },
       {
        "t": "Made in Italy.",
        "nueva": false
+      },
+      {
+       "t": "Among luxury wall lights, it takes an understated position, closer to a piece of joinery than to a conventional sconce.",
+       "nueva": true
       }
      ]
     },
@@ -1096,27 +948,29 @@
    "validador": {
     "aprobado": true,
     "issues": [
-     "La frase insertada «one of the more adaptable luxury wall lights in the catalogue» introduce un tono algo comercial/comparativo ajeno al registro poético del original y repite la información de temperatura de color y dimabilidad que ya aparece en la línea 'Light source' al pie, generando redundancia interna.",
-     "«Mounted flat against the wall» es una inferencia razonable para un aplique pero no está afirmada en el original; conviene mantenerlo solo si se confirma el tipo de montaje."
+     "La frase añadida sobre colocación («beside a mirror or a doorway… dressing area or corridor requires it») es funcional y algo prosaica; baja levemente el registro lírico del párrafo y corta el flujo entre la descripción de la luz LED y la de la pantalla de madera.",
+     "«supplies dimmable light» duplica el concepto ya presente en la línea de fuente de luz («Dimmable») y en «atmospheric… illumination»: repetición de concepto, no de dato.",
+     "La keyword «luxury wall lights» se inserta en una oración pegada al final del bloque tras «Made in Italy», con una comparación («closer to a piece of joinery than to a conventional sconce») algo imprecisa: se entiende por la pantalla de madera, pero «joinery» no describe con exactitud el producto y suena a añadido para posicionar.",
+     "No hay datos inventados (precios, materiales o medidas) ni HTML roto; las sugerencias de uso son genéricas y no contradicen los atributos oficiales."
     ],
-    "razon": "Las keywords se integran de forma gramaticalmente correcta, las medidas y especificaciones provienen de los atributos oficiales sin datos inventados y el HTML está intacto; solo se señala una leve caída de registro en la frase promocional añadida y cierta redundancia con la línea técnica final, insuficientes para rechazar la edición.",
+    "razon": "La edición conserva el tono y los datos del original e incorpora ambas keywords de forma comprensible, aunque la oración de uso y el cierre con «luxury wall lights» resultan algo añadidos y repiten el concepto de luz regulable; los ajustes son menores y no comprometen la calidad editorial.",
     "intentos": 2
    },
    "medido": {
     "palabras_antes": 158,
-    "palabras_despues": 204,
+    "palabras_despues": 202,
     "conservacion": 1.0,
     "h2": 0
    },
    "costo": {
-    "llm_usd": 0.017617,
+    "llm_usd": 0.032802,
     "dfs_usd": 0.0
    }
   },
   {
    "url": "https://cassoni.com/product/shibari-modern-designer-chair-visionnaire/",
    "status": "rejected",
-   "motivo": "rechazada por el validador: Keyword forzada y gramaticalmente incoherente: se usa el plural \"the shibari chairs\" para un producto individual (una sola silla), lo que delata la inserción artificial de la keyword.; La frase añadida acumula tres especificaciones técnicas (diseñador, medidas en pulgadas con fracciones y presencia de apoyabrazos) dentro de un párrafo poético sobre la silueta y el nudo: rompe el registro editorial de lujo y convierte el cierre en una ficha técnica.; \"are fitted with armrests\" es una formulación de catálogo, no de copy de lujo; contrasta con el tono envolvente del resto del párrafo.",
+   "motivo": "rechazada por el validador: Se agregaron 2 oraciones para 1 keyword(s): solo una oración nueva por keyword, sin relleno; Hay 1 oración(es) agregada(s) sin ninguna keyword (relleno): «tying and binding mean joining, connecting two objects, bringing them together i»; Keyword 'shibari chairs' forzada: se inserta en plural ('The shibari chairs by Visionnaire...') en una ficha de producto individual y como coletilla al final de un párrafo técnico sobre materiales y confort, cortando el flujo y con una incoherencia singular/plural ('...of which this chair is a single expression') que delata el relleno SEO.",
    "marca": "Visionnaire",
    "categorias": [
     "Chairs & Armchairs"
@@ -1186,7 +1040,7 @@
        "nueva": false
       },
       {
-       "t": "Designed by Studiopepe, the shibari chairs measure 23\"5/8W x 27\"1/2D x 30\"3/8H and are fitted with armrests.",
+       "t": "The shibari chairs by Visionnaire, designed by Studiopepe, are conceived as a coherent body of work, of which this chair is a single expression.",
        "nueva": true
       }
      ]
@@ -1207,8 +1061,8 @@
        "nueva": false
       },
       {
-       "t": "Tying and knotting mean joining, connecting two objects, bringing them together in harmonious progress.",
-       "nueva": false
+       "t": "Tying and binding mean joining, connecting two objects, bringing them together in harmonious progress.",
+       "nueva": true
       },
       {
        "t": "Since ancient times the knot has had a clear meaning of junction and commitment between two people.",
@@ -1253,22 +1107,23 @@
    "validador": {
     "aprobado": false,
     "issues": [
-     "Keyword forzada y gramaticalmente incoherente: se usa el plural \"the shibari chairs\" para un producto individual (una sola silla), lo que delata la inserción artificial de la keyword.",
-     "La frase añadida acumula tres especificaciones técnicas (diseñador, medidas en pulgadas con fracciones y presencia de apoyabrazos) dentro de un párrafo poético sobre la silueta y el nudo: rompe el registro editorial de lujo y convierte el cierre en una ficha técnica.",
-     "\"are fitted with armrests\" es una formulación de catálogo, no de copy de lujo; contrasta con el tono envolvente del resto del párrafo.",
-     "La frase se limita a reformular datos ya presentes en los atributos sin aportar narrativa ni valor semántico; el keyword stuffing queda expuesto."
+     "Se agregaron 2 oraciones para 1 keyword(s): solo una oración nueva por keyword, sin relleno",
+     "Hay 1 oración(es) agregada(s) sin ninguna keyword (relleno): «tying and binding mean joining, connecting two objects, bringing them together i»",
+     "Keyword 'shibari chairs' forzada: se inserta en plural ('The shibari chairs by Visionnaire...') en una ficha de producto individual y como coletilla al final de un párrafo técnico sobre materiales y confort, cortando el flujo y con una incoherencia singular/plural ('...of which this chair is a single expression') que delata el relleno SEO.",
+     "Edición no solicitada que degrada el original: 'Tying and knotting' se cambió por 'Tying and binding'. 'Binding' arrastra connotación de atadura/restricción y choca con el propio mensaje del texto ('It is not a noose, not a tight restraint... a soft knot that links without duress'); 'knotting' era el término anclado a la metáfora del nudo.",
+     "La frase añadida ('conceived as a coherent body of work...') no aporta información descriptiva del producto y suena a comunicación corporativa de colección más que al tono sensorial/poético del resto."
     ],
-    "razon": "La edición conserva el texto original y solo injerta una frase con la keyword en plural para un producto único, mezclando medidas, diseñador y apoyabrazos en un párrafo poético; el dato no es inventado (está en atributos), pero la inserción es antinatural y rompe el tono de lujo. Requiere re-trabajo para integrar \"shibari chair(s)\" de forma orgánica y en singular.",
+    "razon": "El tono general de lujo se mantiene y no hay datos inventados ni HTML roto, pero la keyword se inserta de forma artificial (plural en ficha individual, pegada al final de un párrafo técnico) y se introdujo un cambio innecesario ('knotting'→'binding') que contradice el mensaje del propio texto. Requiere re-trabajo.",
     "intentos": 2
    },
    "medido": {
     "palabras_antes": 249,
-    "palabras_despues": 266,
-    "conservacion": 1.0,
+    "palabras_despues": 273,
+    "conservacion": 0.933,
     "h2": 0
    },
    "costo": {
-    "llm_usd": 0.010826,
+    "llm_usd": 0.017061,
     "dfs_usd": 0.0
    }
   }
