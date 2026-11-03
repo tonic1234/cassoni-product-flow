@@ -104,3 +104,22 @@ class TestStagingNoApuntaAProduccion:
         c = Config.load(env="staging", env_file=tmp_path / "nada.env")
         assert c.prod_hosts == ("tienda.example",)
         assert any("PRODUCCIÓN" in f for f in c.validate())
+
+
+def test_comentario_al_final_de_la_linea(tmp_path):
+    """Un '# ...' al final dejaba el tope de gasto sin efecto en silencio."""
+    f = tmp_path / ".env.prod"
+    f.write_text('CASSONI_DFS_PRESUPUESTO_USD=0.30   # tope\nCASSONI_DFS_COMPETIDORES=si_faltan # x\n'
+                 'CASSONI_LLM_API_KEY="abc #no-es-comentario"\n')
+    c = Config.load(env="prod", env_file=f)
+    assert c.dfs_presupuesto_usd == 0.30
+    assert c.dfs_competidores == "si_faltan"
+    assert c.llm_api_key == "abc #no-es-comentario"
+
+
+def test_el_ejemplo_de_env_se_lee_completo(tmp_path):
+    from pathlib import Path
+    ej = Path(__file__).resolve().parent.parent / ".env.staging.example"
+    c = Config.load(env="staging", env_file=ej)
+    assert c.dfs_location_code == 2840 and c.dfs_min_volume == 50
+    assert c.dfs_competidores == "siempre" and c.dfs_presupuesto_usd == 0.50

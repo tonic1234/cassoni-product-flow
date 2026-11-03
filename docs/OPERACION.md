@@ -95,7 +95,9 @@ Las abandonadas quedan en `cassoni_sched.json` → `abandonadas` para que SEO la
 | `CASSONI_GSC_SERVICE_ACCOUNT_FILE`, `CASSONI_GSC_SITE` | GSC, sólo lectura | `sc-domain:cassoni.com` |
 | `CASSONI_DFS_LOGIN/PASSWORD` | DataForSEO: volumen + resultados orgánicos | — |
 | `CASSONI_DFS_LOCATION` / `CASSONI_DFS_LANGUAGE` | mercado de DataForSEO | `2840` (EE.UU.) / `en` |
-| `CASSONI_DFS_MIN_VOLUMEN` | volumen mínimo de una keyword | `10` |
+| `CASSONI_DFS_MIN_VOLUMEN` | volumen mínimo de una keyword | `50` |
+| `CASSONI_DFS_COMPETIDORES` | `siempre` o `si_faltan`: cuándo pedir lo que rankea la competencia | `siempre` |
+| `CASSONI_DFS_PRESUPUESTO_USD` | tope de gasto de DataForSEO por corrida (`0` = sin tope) | `0` |
 | `CASSONI_DFS_CACHE_DIAS` | vigencia de la caché de volumen | `30` |
 | `CASSONI_FICHAS_POR_DIA` | cupo diario del scheduler | `10` |
 | `CASSONI_PROD_HOSTS` | hosts que `--env staging` no puede usar | `cassoni.com,www.cassoni.com` |
@@ -103,15 +105,31 @@ Las abandonadas quedan en `cassoni_sched.json` → `abandonadas` para que SEO la
 
 `bash scripts/verify.sh` falla si aparece una credencial en texto plano en el repo.
 
-## Costos (medidos, no estimados)
+## Costos
 
-- **LLM**: cada llamada guarda su `usage`; la ficha registra `llm_tokens_in/out` y
-  `llm_cost`. Precios en `cassoni/costos.py`.
-- **DataForSEO**: el costo que informa la API se suma por corrida y por ficha
-  (`dfs_cost`). El volumen se pide **una vez por lote** (hasta 1.000 keywords por
-  pedido) y queda en caché 30 días. Los resultados orgánicos (competidores) se
-  piden solo para las fichas a las que GSC no les dio 3 keywords.
-- **GSC**: gratis (cuota de API).
+| Pedido a DataForSEO | Costo | Estado |
+|---|---|---|
+| Volumen (Google Ads), hasta 1.000 keywords | US$ 0,09 | medido |
+| Búsqueda orgánica (competidores) | US$ 0,002 | medido |
+| `ranked_keywords`, por página de competidor (3 por ficha) | ~US$ 0,03 | **estimado** |
+| `keyword_ideas`, una por ficha | ~US$ 0,03 | **estimado** |
+
+Por ficha, estimado: **US$ 0,06-0,12** → ~US$ 1 por día a 10 fichas. El costo real
+lo da `tools/probar_dataforseo.py` antes de la primera corrida; si hace falta se
+baja a 2 competidores o a menos resultados por pedido.
+
+El LLM se mide por ficha (`llm_tokens_in/out`, `llm_cost`): ~US$ 0,01-0,02 por ficha
+con `deepseek-flash`. La corrida imprime el total de los dos.
+
+**Antes de cualquier corrida con DataForSEO**:
+
+```bash
+./venv/bin/python tools/probar_dataforseo.py --env prod --url https://cassoni.com/product/<slug>/
+```
+
+Muestra el saldo, hace una consulta de cada tipo con una ficha, el costo real de
+cada una y una muestra de lo que devuelve. Si la cuenta no puede operar (sin
+saldo, sin verificar, pausada) lo dice y no gasta.
 
 ## Cuando algo falla
 
@@ -125,6 +143,8 @@ Las abandonadas quedan en `cassoni_sched.json` → `abandonadas` para que SEO la
 | `rejected` por HTML | la edición agregó un enlace, script o imagen | el gate funciona; no se escribe |
 | `failed: LLM` | cuota, clave o timeout del proveedor | `--preflight` (ping a `/models`) |
 | `failed: escritura WooCommerce` | clave sin permiso de escritura o caída | pedir clave read+write / reintentar |
+| `ATENCIÓN: DataForSEO no pudo operar` | sin saldo (402), cuenta sin verificar (403) o pausada (40201) | revisar la cuenta en app.dataforseo.com |
+| Muchas fichas "solo H1" | ninguna keyword nueva supera 50/mes | normal en productos de nicho; revisar `selection_reason` |
 
 ## Muestra para validar con el cliente
 

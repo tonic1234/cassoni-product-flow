@@ -19,7 +19,11 @@ def _load_env_file(path: Path) -> dict:
             continue
         # soporta CLAVE="valor" con/quotes
         k, v = s.split("=", 1)
-        v = v.strip().strip('"').strip("'")
+        v = v.strip()
+        # comentario al final de la línea ("50   # piso"): fuera, salvo entre comillas
+        if not v.startswith(('"', "'")) and " #" in v:
+            v = v.split(" #", 1)[0].strip()
+        v = v.strip('"').strip("'")
         if k not in os.environ:
             out[k.strip()] = v
     return out

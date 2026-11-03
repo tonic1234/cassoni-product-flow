@@ -29,18 +29,26 @@ credenciales ver [docs/OPERACION.md](docs/OPERACION.md).
    por día, en horario hábil y con pausas aleatorias (para no editar en masa).
 2. **Lee** la ficha real de WooCommerce (nombre, marca, categorías, atributos,
    descripción). Si ya fue escrita, la saltea.
-3. **H1 por plantilla**: `{Nombre} by {Marca}`, siempre igual, sin LLM.
-4. **Keywords**: las de GSC de la ficha + volumen de DataForSEO (un solo pedido por
-   lote, con caché). Se quedan las que son del producto, **no están ya en la
-   descripción** y tienen volumen, con anti-canibalización (fichas hermanas,
-   categorías y keywords ya escritas en otras fichas). Hasta 3.
-5. **Si faltan**: busca el mismo producto en Google vía DataForSEO, lee las 3
-   páginas de competidores que rankean por encima y saca frases que repiten y
-   nosotros no tenemos. Validadas con volumen.
-6. **Edita** con un LLM: mete las 3 keywords en la descripción actual, conservando
-   al menos el 80% de las oraciones originales.
-7. **Valida** en dos capas: reglas en código (cada keyword exacta, 150-300 palabras,
-   ≤2 H2, conservación, HTML seguro) y LLM (tono, datos inventados). Hasta 2 pases.
+3. **H1 por plantilla**: `{Nombre} by {Marca}`, siempre igual, sin LLM. Cubre las
+   búsquedas de marca + modelo ("rugiano club sofa", "luceplan illan").
+4. **Keywords nuevas, de tres fuentes** (todas con volumen de DataForSEO):
+   - **GSC**: búsquedas por las que la ficha ya aparece en posición 4-30;
+   - **competencia**: las búsquedas que **rankean en el top 20** las 3 páginas que
+     venden el mismo producto y están por encima de cassoni (DataForSEO
+     `ranked_keywords`); puntúan más las que rankean varios competidores;
+   - **investigación**: tipo de producto × material/acabado/estilo de la ficha
+     ("marble coffee table", "outdoor teak sofa") en DataForSEO `keyword_ideas`.
+5. **Filtra y ordena**: fuera lo que ya cubre el H1, lo que no es de este producto
+   (otro tipo de mueble, otra marca, un material que la ficha no tiene), lo
+   informativo, lo de dificultad > 60 y lo de menos de **50 búsquedas por mes**.
+   Gana el potencial de clics para esta ficha. Hasta 3. Si no queda ninguna, la
+   descripción no se toca: la ficha queda solo con el H1.
+6. **Edita** con un LLM: **una oración por keyword**, junto a la oración del
+   original con la que tiene relación y armada con lo que la ficha ya dice. Sin
+   medidas, sin relleno, conservando el 80% de las oraciones originales.
+7. **Valida** en dos capas: reglas en código (keyword exacta, una oración por
+   keyword, máximo 4 palabras que la ficha no dice, sin frases vacías ni medidas,
+   HTML seguro) y LLM (tono, datos inventados). Hasta 2 pases.
 8. **Escribe** `name` + `description` solo con `--write` y aprobada.
 9. **Mide** cada keyword: N días antes vs N días después de la edición.
 
@@ -48,18 +56,20 @@ credenciales ver [docs/OPERACION.md](docs/OPERACION.md).
 
 | Pieza | Estado |
 |---|---|
-| H1 por plantilla `{Nombre} by {Marca}` | ✅ con tests |
-| 3 keywords que faltan, con volumen (GSC + DataForSEO) | ✅ con tests |
-| Competidores cuando faltan keywords | ✅ con tests (sin probar contra la API real) |
-| Caché de volumen y costo de DataForSEO por ficha | ✅ con tests |
-| Anti-canibalización entre fichas escritas | ✅ con tests |
-| Idempotencia (no re-editar) y HTML seguro | ✅ con tests |
-| Medición por keyword con ventanas iguales | ✅ con tests |
-| Staging no puede apuntar a producción | ✅ con tests |
-| Suite de tests | ✅ 291 verdes |
-| Corrida real del flujo v2 | ⛔ **pendiente**: correr `--batch 10` en seco con la lista de SEO |
+| H1 por plantilla `{Nombre} by {Marca}` | ✅ con tests y probado en seco contra la tienda |
+| Keywords de GSC por oportunidad | ✅ probado en seco: aportan poco (casi siempre el nombre, que cubre el H1) |
+| Keywords que rankea la competencia (`ranked_keywords`) | ⚠️ con tests, **sin probar contra la API** (cuenta sin saldo) |
+| Investigación por atributos (`keyword_ideas`) | ⚠️ con tests, **sin probar contra la API** (cuenta sin saldo) |
+| Una oración por keyword, anclada en la ficha, sin medidas | ✅ probado en seco: 12 oraciones, 11 con keyword, 0 medidas |
+| DataForSEO: lotes, caché, tope de gasto, errores de cuenta visibles | ✅ con tests y probado contra la API |
+| Idempotencia, HTML seguro, staging ≠ producción | ✅ con tests |
+| Suite de tests | ✅ 336 verdes |
 | Escritura en producción | ⛔ **no ejecutada**: el primer lote lo aprueba el equipo SEO |
 | Cron | ⛔ **no instalado** (ejemplo en `docs/OPERACION.md`) |
+
+**Antes de la próxima corrida** (con saldo en DataForSEO):
+`./venv/bin/python tools/probar_dataforseo.py --env prod --url <una ficha>` hace una
+consulta de cada tipo, muestra el costo real y confirma el formato de las respuestas.
 
 ## Muestra para validar con el cliente
 
@@ -100,6 +110,8 @@ scripts/verify.sh   la puerta (VERDE = terminado)
 - El agente **no** toca `short_description`, meta title/description ni ALT: son del
   n8n (un solo escritor por campo).
 - GSC es sólo lectura.
-- La regla de 150-300 palabras sigue vigente: una ficha cuyo original ya supera
-  300 palabras va a salir rechazada. Decisión pendiente del equipo SEO.
+- El mínimo de 150 palabras del cliente **ya no bloquea** (obligaba a rellenar con
+  medidas); el máximo de 300 se mide contra el original. Pendiente de confirmar
+  por SEO.
+- Pendiente de SEO: sacar los códigos del H1 ("Cleopatra Chair (SC1019) by OAK").
 - Sin cron instalado, no hay nada corriendo solo.

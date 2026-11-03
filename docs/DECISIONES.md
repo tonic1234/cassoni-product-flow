@@ -174,3 +174,43 @@ Una ficha escrita no se vuelve a editar salvo `--forzar` (re-correr la lista
 editaba encima y pisaba la línea base). La edición no puede agregar HTML que el
 original no tenía (scripts, iframes, eventos, enlaces, imágenes): con claves de
 admin, WordPress no filtra el contenido.
+
+---
+
+## D-019 · Lo que se agrega es la keyword: una oración por keyword, sin medidas ni relleno
+**3-nov-2026 · prueba real en seco**
+La primera prueba agregó 36 oraciones y solo 15 tenían una keyword; 11 eran
+medidas que la ficha ya muestra en sus atributos. Ahora, en código: una oración
+agregada por keyword, cada una con su keyword, sin medidas, con máximo 4 palabras
+que la ficha no dice y sin frases de interiorismo genérico. El mínimo de 150
+palabras deja de bloquear (pendiente de confirmar por SEO).
+
+---
+
+## D-020 · Las keywords nuevas salen de la competencia y de la investigación, no solo de GSC
+**3-nov-2026 · equipo SEO**
+GSC solo trae búsquedas por las que la ficha ya aparece: en productos de nicho, su
+nombre, que el H1 nuevo ya cubre. Agregarlo a la descripción no suma. Las keywords
+de valor son las que la ficha todavía no atrae: las que rankean en el top 20 las
+3 páginas de la competencia con el mismo producto (DataForSEO `ranked_keywords`) y
+las de tipo × material/acabado de la ficha (`keyword_ideas`). Piso de 50
+búsquedas por mes y dificultad ≤ 60. Si nada lo supera, la ficha queda solo con
+el H1. Descartado: leer el HTML de la competencia como fuente principal (adivina
+frases; `ranked_keywords` es el dato real) — queda como respaldo.
+
+---
+
+## D-021 · Selección por oportunidad de la ficha
+**3-nov-2026**
+Se ordena por potencial de clics (demanda × CTR que se gana al top 3 desde la
+posición actual; para competencia e investigación, volumen × dificultad). Fuera:
+lo que ya cubre el H1, posición > 30, informativas, transaccionales, otra marca,
+otro tipo de producto, palabras sensibles y tipeos.
+
+---
+
+## D-022 · DataForSEO: errores de cuenta visibles y tope de gasto
+**3-nov-2026 · prueba real**
+Sin saldo (402), cuenta sin verificar (403) o pausada (40201, con HTTP 200) se
+informan con el mensaje de la API y no se reintentan. `CASSONI_DFS_PRESUPUESTO_USD`
+corta los pedidos que pasarían el tope de la corrida.

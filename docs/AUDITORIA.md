@@ -242,3 +242,23 @@ bash scripts/verify.sh
 **Pendiente de verificar contra servicios reales:** la API de resultados orgánicos
 de DataForSEO y la lectura de páginas de competidores solo están probadas con
 fakes. La primera corrida en seco con la lista de SEO es la prueba real.
+
+---
+
+## 15. Pruebas reales en seco (3-nov-2026)
+
+Cinco corridas en seco contra la tienda (10 fichas, sin escribir). Cada una
+destapó algo que los tests con datos simulados no podían mostrar:
+
+| Hallazgo | Corrección | Test |
+|---|---|---|
+| DataForSEO nunca devolvía volumen: se leía `keyword_data.google_ads`, la API lo da en la raíz | parseo real, cruce por keyword | `test_dataforseo.py::test_formato_real_de_la_api_y_cruce_por_keyword` |
+| Una keyword inválida tumbaba el lote de 1.000 | se filtran antes de enviar | `test_una_keyword_invalida_no_tumba_el_lote` |
+| 402 / 403 / 40201 se tragaban en silencio | se informan y no se reintentan | `test_sin_saldo_avisa_y_no_reintenta`, `test_cuenta_pausada_dentro_de_la_respuesta` |
+| 'shibari bondage', 'hermes brand', 'illan meslier stats', 'sectionals', 'club sofs' | tipo de producto, palabras sensibles, categorías separadas, tipeos | `test_keywords.py` |
+| 36 oraciones agregadas, 15 con keyword, 11 con medidas | una oración por keyword, sin medidas | `test_checklist.py::TestLoAgregado` |
+| Frases genéricas ("presence to the room") | anclaje en la ficha + frases vacías | `test_checklist.py::TestAnclajeEnLaFicha` |
+| Se elegía el propio nombre del producto | fuera lo que cubre el H1; fuentes nuevas (D-020) | `test_investigacion.py`, `test_pipeline.py` |
+
+Pendiente: probar `ranked_keywords` y `keyword_ideas` contra la API real
+(`tools/probar_dataforseo.py`) y la corrida de 10 fichas con el enfoque nuevo.

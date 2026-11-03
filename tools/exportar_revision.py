@@ -170,7 +170,9 @@ def main(argv=None) -> int:
     p.add_argument("--db", required=True)
     p.add_argument("--env", default="prod")
     p.add_argument("--out", required=True)
-    p.add_argument("--fotos", action="store_true", help="incluir miniatura de cada producto")
+    p.add_argument("--fotos", action="store_true",
+                   help="incluir miniatura de cada producto (solo para la landing: en "
+                        "evidencia/ el base64 dispara el escaneo de secretos)")
     a = p.parse_args(argv)
     import datetime as dt
     fichas = exportar(a.db, a.env, fotos=a.fotos)

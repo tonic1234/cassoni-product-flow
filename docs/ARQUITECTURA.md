@@ -15,15 +15,18 @@
   │ ¿ya escrita? → skipped (salvo --forzar)                                  │
   │ WooCommerce: nombre, marca, categorías, atributos, descripción           │
   │ H1 = "{Nombre} by {Marca}"                                h1.py (sin LLM)│
-  │ keywords: GSC + volumen → de este producto → NO están en la descripción  │
-  │           → con volumen → anti-canibalización → 1 por palabra → top 3    │
-  │                                                          keywords.py     │
-  │ ¿faltan? → mismo producto en DataForSEO SERP → 3 competidores por        │
-  │           encima nuestro → sus H1/H2/texto → frases que repiten ≥2 y     │
-  │           no tenemos → volumen                          competidores.py  │
-  │ editor LLM: mete las 3 keywords en la descripción actual    editor.py    │
-  │ validador: reglas en código (keywords exactas, 150-300 palabras, ≤2 H2,  │
-  │            80% conservado, HTML seguro) + LLM (tono, datos inventados)   │
+  │ candidatas de tres fuentes, todas con volumen de DataForSEO:             │
+  │   GSC (la ficha ya aparece, pos 4-30)                                    │
+  │   competencia: SERP "{Nombre} {Marca}" → 3 páginas por encima nuestro    │
+  │     → ranked_keywords (top 20 de cada una)              competidores.py  │
+  │   investigación: tipo × atributos → keyword_ideas      investigacion.py  │
+  │ filtros: no cubierta por el H1 · de este producto · no informativa ·     │
+  │   dificultad ≤ 60 · ≥ 50/mes · anti-canibalización → hasta 3 por         │
+  │   potencial de clics                                     keywords.py     │
+  │ editor LLM: UNA oración por keyword, anclada en la ficha    editor.py    │
+  │ validador: reglas en código (keyword exacta, una oración por keyword,    │
+  │   ≤ 4 palabras fuera de la ficha, sin medidas ni frases vacías, 80%      │
+  │   conservado, HTML seguro) + LLM (tono, datos inventados)                │
   │            → hasta 2 pases                                validator.py   │
   └───────────────────────────────┬──────────────────────────────────────────┘
                                   ▼  solo con --write y aprobada
@@ -47,8 +50,9 @@
 | `cassoni/h1.py` | `h1_plantilla(nombre, marca)`: idempotente | no (puro) |
 | `cassoni/keywords.py` | `elegir_keywords(...)`: la regla de las 3 keywords | no (puro) |
 | `cassoni/volumen.py` | Volumen con caché; un pedido por lote | DataForSEO |
-| `cassoni/competidores.py` | SERP → competidores → candidatas | DataForSEO + sitios públicos (robots.txt) |
-| `cassoni/dataforseo.py` | `search_volume`, `serp_organico`, costo acumulado | DataForSEO |
+| `cassoni/competidores.py` | SERP → 3 competidores → lo que rankean (`ranked_keywords`); respaldo: leer sus títulos | DataForSEO (+ sitios públicos, robots.txt) |
+| `cassoni/investigacion.py` | Semillas tipo × atributos para `keyword_ideas` | no (puro) |
+| `cassoni/dataforseo.py` | volumen, SERP, `ranked_keywords`, `keyword_ideas`; costo, tope y errores de cuenta | DataForSEO |
 | `cassoni/checklist.py` | Gate mecánico + `html_inseguro` + anti-canibalización + diversidad | no (puro) |
 | `cassoni/editor.py` | Prompt del editor: solo la descripción larga | LLM |
 | `cassoni/validator.py` | Mecánico + LLM; re-trabajo hasta 2 pases | LLM |
