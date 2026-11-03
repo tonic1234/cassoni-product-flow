@@ -30,16 +30,16 @@ REGLAS:
 - PARTÍ DEL TEXTO ACTUAL tal cual viene en el input 'Descripción larga actual':
   tu trabajo es EDITARLO QUIRÚRGICAMENTE (insertar frases donde cada keyword
   encaje natural). NUNCA la reescribas desde cero.
-- CÓMO INSERTAR (prueba real del 3-nov: 6 de 10 rechazos fueron por relleno):
-  por cada keyword, UNA sola oración nueva de 12 a 25 palabras, colocada junto a
-  la oración del original con la que tiene relación. Esa oración tiene que aportar
-  un dato REAL que el texto todavía no dice (sacado de los atributos o de la
-  descripción corta); nunca reformules algo que el original ya dice. Nada de
-  párrafos nuevos, frases de interiorismo genéricas ("focal point", "any room",
-  "contemporary living") ni remates comerciales.
-- Si el original no llega a 150 palabras, completá SOLO con datos de los atributos
-  (medidas, materiales, acabados, variantes). Si no hay datos para sumar, quedate
-  corto: el validador prefiere una ficha corta a una con relleno.
+- CÓMO INSERTAR (prueba real del 3-nov: se agregaron medidas y relleno):
+  por cada keyword, UNA sola oración nueva de 12 a 25 palabras que CONTIENE esa
+  keyword, colocada junto a la oración del original con la que tiene relación.
+  La oración dice qué es el producto en palabras de la keyword: su tipo, su
+  estilo, su material o su uso, en el tono del original. No agregues NINGUNA
+  otra oración: nada de párrafos, datos técnicos ni frases genéricas ("focal
+  point", "any room", "contemporary living").
+- {reglas.REGLAS_SIN_MEDIDAS}
+- Si el original es corto, la edición también queda corta: no completes hasta
+  ninguna cantidad de palabras.
 - Es OBLIGATORIO conservar al menos el {reglas.CONSERVACION_MIN:.0%} de las oraciones
   originales INTACTAS: sumá frases nuevas alrededor, nunca reemplaces una existente.
 - {reglas.REGLAS_TONO}

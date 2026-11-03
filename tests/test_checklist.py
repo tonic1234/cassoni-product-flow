@@ -84,10 +84,12 @@ class TestReglasDuras:
         # contrato v2: el H1 lo arma cassoni/h1.py por plantilla, no el editor
         assert checklist.check_reglas(self._editado(h1="S" * 200)) == []
 
-    def test_desc_larga_bajo_minimo(self):
-        e = self._editado(description="<p>Muy corto.</p>")
-        issues = checklist.check_reglas(e)
-        assert any("150" in i for i in issues)
+    def test_corta_ya_no_bloquea(self):
+        # prueba real 3-nov: con originales de 10-73 palabras, exigir 150 obligaba
+        # a rellenar con medidas
+        e = self._editado(description="<p>Muy corto. Un club sofa de latón.</p>")
+        assert checklist.check_reglas(e, original_description="<p>Muy corto.</p>",
+                                      keywords=["club sofa"]) == []
 
     def test_desc_larga_sobre_maximo(self):
         e = self._editado(description="<p>" + "palabra " * 301 + "</p>")
@@ -404,3 +406,38 @@ def test_la_repeticion_que_ya_tenia_el_original_no_rechaza():
     peor = orig + "<p>" + "knot " * 3 + "</p>"
     assert any("knot" in i for i in checklist.check_reglas({"description": peor},
                                                           original_description=orig))
+
+
+
+class TestLoAgregado:
+    """Prueba real 3-nov: 36 oraciones agregadas, solo 15 con keyword, 11 con medidas."""
+    ORIG = "<p>Elegant sofa with brass tubes. Made in Italy.</p>"
+
+    def _check(self, agregado, kws=("club sofa",)):
+        desc = self.ORIG.replace("Made in Italy.", agregado + " Made in Italy.")
+        return checklist.check_reglas({"description": desc}, original_description=self.ORIG,
+                                      keywords=list(kws))
+
+    def test_una_oracion_con_la_keyword_pasa(self):
+        assert self._check("This club sofa keeps the brass tubes as its signature.") == []
+
+    def test_relleno_sin_keyword_falla(self):
+        out = self._check("This club sofa has brass tubes. It suits any contemporary room.")
+        assert any("sin ninguna keyword" in i for i in out)
+        assert any("solo una oración nueva por keyword" in i for i in out)
+
+    def test_medidas_fallan(self):
+        out = self._check('The club sofa measures 96"3/8W x 43"1/4D x 28"3/4H.')
+        assert any("medidas" in i for i in out)
+        out = self._check("This club sofa spans 74 5/8 inches in width.")
+        assert any("medidas" in i for i in out)
+
+    def test_medidas_permitidas_si_la_keyword_es_de_tamano(self):
+        out = self._check("This 90 inch sofa is the widest of the line.", kws=["90 inch sofa"])
+        assert not any("medidas" in i for i in out)
+
+    def test_ficha_larga_puede_crecer_un_poco(self):
+        largo = "<p>" + "Palabra larga. " * 200 + "</p>"
+        desc = largo.replace("</p>", " This club sofa keeps its brass tubes.</p>")
+        assert checklist.check_reglas({"description": desc}, original_description=largo,
+                                      keywords=["club sofa"]) == []

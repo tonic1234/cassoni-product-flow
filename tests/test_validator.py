@@ -25,7 +25,10 @@ RELLENO = ("<p>The piece is conceived as a quiet statement rather than a decorat
            "overstated: the sofa states its quality through restraint, and that "
            "restraint is precisely what makes it feel at home in a room that is "
            "already full of objects.</p>")
-EDITADA = ORIG + RELLENO
+# lo correcto desde el 3-nov: UNA oración nueva, con la keyword, sin medidas ni relleno
+EDITADA = ORIG.replace("Made in Italy.</p>",
+                       "This club sofa keeps the Club collection's brass tubes as its "
+                       "defining feature. Made in Italy.</p>")
 FICHA = {"h1": "Club Sofa by Rugiano", "description": EDITADA,
          "keywords": [{"keyword": "club sofa", "why": "es un club sofa"}]}
 KWS = [{"keyword": "club sofa", "volume": 880}]
@@ -83,7 +86,7 @@ def test_segunda_pasada_aprueba_y_conserva_el_h1():
 
 
 def test_rechaza_si_la_keyword_no_quedo():
-    sin_kw = dict(FICHA, description=EDITADA.replace("this club sofa", "this piece"))
+    sin_kw = dict(FICHA, description=EDITADA.replace("This club sofa", "This piece"))
     res = Validator(_cfg(), _LLMCaptura()).pass_or_rework(
         url="u", original_desc=ORIG, edited=sin_kw, keywords=KWS,
         editor=_EditorFake(sin_kw))

@@ -38,6 +38,6 @@ class TestTextos:
         # el prompt se arma desde acá: la spec no puede vivir solo en un .md
         txt = "\n".join(v for k, v in vars(reglas).items()
                         if k.isupper() and isinstance(v, str))
-        for s in ("by {Marca}", "150", "300", "canibalización", "DataForSEO",
+        for s in ("by {Marca}", "300", "canibalización", "DataForSEO", "medidas",
                   "NO estaban en la descripción"):
             assert s in txt

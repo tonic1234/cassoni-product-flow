@@ -11,7 +11,9 @@ H1_PLANTILLA = "{nombre} by {marca}"  # H1 fijo (SEO 3-nov-2026): sin LLM, misma
                                       # estructura en todas las fichas (cassoni/h1.py)
 KW_OBJETIVO = 3                       # keywords que se incorporan a la desc larga
 KW_MIN = 1                            # con menos de 1 no hay nada que editar
-LARGA_MIN_WORDS = 150                 # descripción larga: mínimo
+LARGA_MIN_WORDS = 150                 # referencia del cliente; desde el 3-nov NO bloquea
+                                      # (con originales cortos obligaba a rellenar)
+PALABRAS_POR_KEYWORD = 30             # lo que puede crecer una ficha ya larga por keyword
 LARGA_MAX_WORDS = 300                 # descripción larga: máximo
 MAX_H2 = 2                            # máx 2 H2 en la descripción larga
 SEC_MIN = 2                           # mínimo de keywords secundarias
@@ -39,9 +41,12 @@ REGLAS_KEYWORD_JUNTA = ("Las palabras de cada keyword van JUNTAS y en el MISMO o
                         "Prohibido intercalar palabras u ordenarlas al revés.")
 REGLAS_DESC_CORTA = ("Descripción corta (above the fold): incluye la keyword principal "
                      "exacta tal cual el H1; corta; una sola idea central; SIN H2.")
-REGLAS_DESC_LARGA = ("Descripción larga (below the fold): 150 a 300 palabras; 1 o 2 H2 "
-                     "como máximo; las keywords objetivo repartidas entre H2 y "
-                     "párrafos; cada una aparece como máximo 2 veces.")
+REGLAS_DESC_LARGA = ("Descripción larga (below the fold): hasta 300 palabras; 1 o 2 H2 "
+                     "como máximo; cada keyword aparece como máximo 2 veces. Si el "
+                     "original es corto, queda corto: se agregan SOLO las oraciones de "
+                     "las keywords, nunca relleno para llegar a 150 palabras.")
+REGLAS_SIN_MEDIDAS = ("No agregues medidas ni dimensiones (pulgadas, centímetros, ancho x "
+                      "profundidad x alto): la ficha ya las muestra en su tabla de atributos.")
 REGLAS_HTML = ("HTML: no agregues scripts, iframes, estilos, formularios, atributos "
                "de evento (onclick...) ni enlaces o imágenes que no estén en el original.")
 REGLAS_SECUNDARIAS = ("Keywords secundarias: variantes por material, estilo, uso o "

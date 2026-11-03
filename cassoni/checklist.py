@@ -176,6 +176,12 @@ def palabra_dominante(html: str, max_apariciones: int | None = None) -> str:
     return top if n > limite else ""
 
 
+# medidas: 62"3/8, 28"H, 96 x 43, 74 5/8 inches, 120 cm…
+_MEDIDA_RX = re.compile(
+    r'\d+\s*(?:["”″]|\b(?:in|inch|inches|cm|mm|m|ft|feet|kg|lbs?)\b)'
+    r'|\d+\s*[x×]\s*\d+|\b(?:measures?|dimensions?)\b', re.I)
+
+
 # --- HTML seguro ---
 _TAGS_PROHIBIDOS = {"script", "iframe", "object", "embed", "style", "form", "input",
                     "button", "link", "meta", "base", "frame", "frameset", "svg", "math"}
@@ -245,13 +251,32 @@ def check_reglas(editado: dict, original_description: str = "",
     desc = editado.get("description") or ""
     plain_desc = strip_html(desc)
 
+    # largo: el mínimo de 150 ya no bloquea (prueba real 3-nov: con originales de
+    # 10-73 palabras obligaba a rellenar). El máximo se mide contra el original:
+    # si ya era largo, solo se controla lo que agrega la edición.
     wc = word_count(desc)
-    if wc < reglas.LARGA_MIN_WORDS:
-        issues.append(f"La descripción larga no llega a las {reglas.LARGA_MIN_WORDS} "
-                      f"palabras (tiene {wc})")
-    if wc > reglas.LARGA_MAX_WORDS:
-        issues.append(f"La descripción larga supera las {reglas.LARGA_MAX_WORDS} "
-                      f"palabras (tiene {wc})")
+    kws = [k for k in (k.strip() for k in keywords) if k]
+    tope = max(reglas.LARGA_MAX_WORDS,
+               word_count(original_description) + reglas.PALABRAS_POR_KEYWORD * max(1, len(kws)))
+    if wc > tope:
+        issues.append(f"La descripción larga supera las {tope} palabras (tiene {wc})")
+
+    # lo AGREGADO: una oración por keyword, cada una con su keyword, sin medidas
+    if original_description and kws:
+        previas = set(oraciones(original_description))
+        agregadas = [o for o in oraciones(desc) if o not in previas]
+        if len(agregadas) > len(kws):
+            issues.append(f"Se agregaron {len(agregadas)} oraciones para {len(kws)} "
+                          f"keyword(s): solo una oración nueva por keyword, sin relleno")
+        sueltas = [o for o in agregadas if not any(kw_exacta_en(o, k) for k in kws)]
+        if sueltas:
+            issues.append(f"Hay {len(sueltas)} oración(es) agregada(s) sin ninguna keyword "
+                          f"(relleno): «{sueltas[0][:80]}»")
+        if not any(_MEDIDA_RX.search(k) for k in kws):
+            con_medidas = [o for o in agregadas if _MEDIDA_RX.search(o)]
+            if con_medidas:
+                issues.append("La edición agrega medidas, que ya están en los atributos de "
+                              f"la ficha: «{con_medidas[0][:80]}»")
 
     if original_description:
         ratio = conservacion(original_description, desc)

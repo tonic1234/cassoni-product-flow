@@ -83,3 +83,11 @@ def test_sin_keywords_no_llama_al_llm():
         _editor(None, llm).edit(url="u", h1="H1", current_description="<p>x</p>",
                                 keywords=[])
     assert llm.llamadas == []
+
+
+
+def test_prompt_prohibe_medidas_y_relleno():
+    """Prueba real 3-nov: el prompt pedía 'completar con medidas' hasta 150 palabras."""
+    assert "No agregues medidas" in SYSTEM_PROMPT
+    assert "no completes hasta" in SYSTEM_PROMPT
+    assert "completá SOLO con datos de los atributos" not in SYSTEM_PROMPT
