@@ -80,3 +80,25 @@ def test_buscar_respeta_robots_y_tolera_paginas_caidas():
                         robots=lambda url: "tienda-a" not in url)
     out = comp.buscar("Pedro Sofa Cassoni")
     assert out == []        # a: robots lo prohíbe, b: caída; c está debajo nuestro
+
+
+def test_agrupa_lo_que_rankean_varios_competidores():
+    from cassoni.competidores import agrupar_rankeadas
+    out = agrupar_rankeadas({
+        "https://a.com/p": [{"keyword": "Teak Outdoor Sofa", "volume": 1600, "posicion_competidor": 7}],
+        "https://b.com/p": [{"keyword": "teak outdoor sofa", "volume": 1600, "posicion_competidor": 3},
+                            {"keyword": "rope armchair", "volume": 90, "posicion_competidor": 12}]})
+    assert out[0]["keyword"] == "teak outdoor sofa"
+    assert out[0]["competidores"] == 2 and out[0]["mejor_posicion"] == 3
+    assert out[1]["competidores"] == 1
+
+
+def test_rankeadas_usa_la_serp_y_ranked_keywords():
+    class F:
+        def serp_organico(self, consulta):
+            return SERP
+        def ranked_keywords(self, url):
+            return [{"keyword": "pebble sofa moroso", "volume": 320, "posicion_competidor": 5}]
+    resumen, cands = Competidores(F(), propios=["cassoni.com"]).rankeadas("Pebble Sofa Moroso")
+    assert [r["domain"] for r in resumen] == ["tienda-a.com", "tienda-b.com"]
+    assert cands[0]["competidores"] == 2

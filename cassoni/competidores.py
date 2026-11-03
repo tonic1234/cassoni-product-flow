@@ -167,6 +167,30 @@ def candidatas_de_competidores(paginas: list[dict], *, descripcion_propia: str,
     return out
 
 
+def agrupar_rankeadas(por_pagina: dict[str, list[dict]]) -> list[dict]:
+    """Une las keywords que rankean los competidores: cuántos la rankean, la mejor
+    posición que tienen y el volumen. Más competidores = keyword más probada."""
+    junt: dict[str, dict] = {}
+    for url, filas in por_pagina.items():
+        for f in filas:
+            k = " ".join((f.get("keyword") or "").lower().split())
+            if not k:
+                continue
+            j = junt.setdefault(k, {"keyword": k, "volume": f.get("volume"),
+                                    "difficulty": f.get("difficulty"),
+                                    "intent": f.get("intent"), "competidores": 0,
+                                    "mejor_posicion": None, "urls": [],
+                                    "origen": "competidor"})
+            if url not in j["urls"]:
+                j["urls"].append(url)
+                j["competidores"] += 1
+            pos = f.get("posicion_competidor")
+            if pos and (j["mejor_posicion"] is None or pos < j["mejor_posicion"]):
+                j["mejor_posicion"] = pos
+    return sorted(junt.values(), key=lambda j: (j["competidores"], j["volume"] or 0),
+                  reverse=True)
+
+
 class Competidores:
     """Orquesta SERP + lectura de páginas. `http_get(url) -> str` es inyectable."""
 
@@ -177,6 +201,19 @@ class Competidores:
         self.propios = list(propios)
         self.http_get = http_get or _http_get
         self.robots = robots or _permitido_por_robots
+
+    def rankeadas(self, consulta: str, n: int = 3) -> tuple[list[dict], list[dict]]:
+        """(competidores, keywords que ellos rankean) para el mismo producto: lo
+        que a la competencia SÍ le funciona aunque nosotros no tengamos datos en
+        GSC. No lee páginas: es dato de DataForSEO."""
+        if not hasattr(self.fetcher, "ranked_keywords"):
+            return [], []
+        serp = self.fetcher.serp_organico(consulta) if self.fetcher else []
+        elegidos = elegir_competidores(serp, self.propios, n=n)
+        por_pagina = {r["url"]: self.fetcher.ranked_keywords(r["url"]) for r in elegidos}
+        resumen = [{"url": r["url"], "rank": r.get("rank"), "domain": r.get("domain"),
+                    "keywords": len(por_pagina.get(r["url"]) or [])} for r in elegidos]
+        return resumen, agrupar_rankeadas(por_pagina)
 
     def buscar(self, consulta: str, n: int = 3) -> list[dict]:
         """[{url, domain, rank, title, h1, h2, texto}] de hasta `n` competidores."""

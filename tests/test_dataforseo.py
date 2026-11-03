@@ -214,3 +214,18 @@ def test_cuenta_pausada_dentro_de_la_respuesta(cfg):
     assert "40201" in f.sin_saldo and "paused" in f.sin_saldo
     assert f.search_volume(["sofa"]) == [None]
     assert len(llamadas) == 2                     # sin reintentos
+
+
+def test_lee_ranked_keywords(cfg):
+    def fake_post(payload):
+        assert payload[0]["target"] == "https://a.com/p"
+        return {"status_code": 20000, "cost": 0.011, "tasks": [{"status_code": 20000, "result": [{
+            "items": [{"keyword_data": {"keyword": "teak outdoor sofa",
+                                        "keyword_info": {"search_volume": 1600},
+                                        "keyword_properties": {"keyword_difficulty": 28},
+                                        "search_intent_info": {"main_intent": "commercial"}},
+                       "ranked_serp_element": {"serp_item": {"rank_group": 6}}}]}]}]}
+    cfg.dfs_max_requests_min = 0
+    out = DataForSEOFetcher(cfg, _post=fake_post).ranked_keywords("https://a.com/p")
+    assert out == [{"keyword": "teak outdoor sofa", "volume": 1600, "difficulty": 28,
+                    "intent": "commercial", "posicion_competidor": 6}]

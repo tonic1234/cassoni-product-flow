@@ -33,6 +33,7 @@ _SIMBOLOS_PROHIBIDOS = set(",!@%^()={};~`<>?\\|*")
 # costo por pedido medido el 3-nov-2026 (respuesta 'cost' de la API)
 COSTO_VOLUMEN_USD = 0.09        # hasta 1.000 keywords por pedido
 COSTO_SERP_USD = 0.002          # una búsqueda orgánica
+COSTO_RANKED_USD = 0.03         # estimado, por página de competidor
 COSTO_IDEAS_USD = 0.03          # estimado (Labs cobra por pedido + por resultado):
                                 # se reemplaza por el real con la primera corrida
 
@@ -71,6 +72,7 @@ class DataForSEOFetcher:
     SEARCH_VOLUME_URL = "https://api.dataforseo.com/v3/keywords_data/google_ads/search_volume/live"
     SERP_URL = "https://api.dataforseo.com/v3/serp/google/organic/live/advanced"
     IDEAS_URL = "https://api.dataforseo.com/v3/dataforseo_labs/google/keyword_ideas/live"
+    RANKED_URL = "https://api.dataforseo.com/v3/dataforseo_labs/google/ranked_keywords/live"
 
     def __init__(self, config: Config, session: Optional[requests.Session] = None,
                  _post: Optional[Callable] = None):
@@ -254,6 +256,30 @@ class DataForSEOFetcher:
                  "url": it.get("url", ""), "domain": it.get("domain", ""),
                  "title": it.get("title", ""), "description": it.get("description", "")}
                 for it in items if it.get("type") == "organic"]
+
+    def ranked_keywords(self, url: str, limite: int = 100, max_posicion: int = 20) -> list[dict]:
+        """Búsquedas por las que RANKEA una página (DataForSEO Labs, ranked_keywords):
+        lo que a un competidor con el mismo producto le funciona. Solo las que
+        tiene en el top `max_posicion`. [{keyword, volume, difficulty, intent,
+        posicion_competidor}]."""
+        payload = [{"target": url, "location_code": self.cfg.dfs_location_code,
+                    "language_code": self.cfg.dfs_language_code, "limit": limite,
+                    "filters": ["ranked_serp_element.serp_item.rank_group", "<=", max_posicion],
+                    "order_by": ["keyword_data.keyword_info.search_volume,desc"]}]
+        res = self._tarea(payload, self.RANKED_URL, COSTO_RANKED_USD, "keywords de competidores")
+        out = []
+        for it in (res or {}).get("items") or []:
+            kd = it.get("keyword_data") or {}
+            info = kd.get("keyword_info") or {}
+            props = kd.get("keyword_properties") or {}
+            serp = (it.get("ranked_serp_element") or {}).get("serp_item") or {}
+            if not kd.get("keyword"):
+                continue
+            out.append({"keyword": kd["keyword"], "volume": info.get("search_volume"),
+                        "difficulty": props.get("keyword_difficulty"),
+                        "intent": (kd.get("search_intent_info") or {}).get("main_intent"),
+                        "posicion_competidor": serp.get("rank_group")})
+        return out
 
     def ideas_de_keywords(self, semillas: list[str], limite: int = 200) -> list[dict]:
         """Investigación de keywords (DataForSEO Labs, keyword_ideas): búsquedas

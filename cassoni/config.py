@@ -55,6 +55,7 @@ class Config:
     dfs_min_volume: int = 50                   # piso de volumen mensual (SEO, 3-nov)
     dfs_cache_dias: int = 30                   # el volumen es mensual
     dfs_presupuesto_usd: float = 0.0          # tope de gasto por corrida (0 = sin tope)
+    dfs_competidores: str = "siempre"          # siempre | si_faltan (keywords de competidores)
     # --- LLM ---
     llm_base_url: str = ""                     # OpenAI-compatible endpoint
     llm_api_key: str = ""
@@ -117,6 +118,7 @@ class Config:
             except ValueError:
                 pass
         c.dfs_language_code = g("CASSONI_DFS_LANGUAGE", c.dfs_language_code)
+        c.dfs_competidores = g("CASSONI_DFS_COMPETIDORES", c.dfs_competidores)
         try:
             c.dfs_presupuesto_usd = float(g("CASSONI_DFS_PRESUPUESTO_USD") or 0)
         except ValueError:

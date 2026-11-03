@@ -106,14 +106,23 @@ class FakeVolumenes:
         self.costo_usd += 0.075
         return {k: {"volume": self.vol.get(k)} for k in kws}
 
-    def anotar(self, filas):
-        return [{**f, "volume": self.vol.get(f["keyword"])} for f in filas]
+    def anotar(self, filas):          # igual que el real: respeta el volumen que ya trae
+        return [{**f, "volume": f["volume"] if f.get("volume") is not None
+                 else self.vol.get(f["keyword"])} for f in filas]
 
 
 class FakeCompetidores:
-    def __init__(self, paginas):
+    def __init__(self, paginas, rankeadas=None):
         self.paginas = paginas
         self.consultas = []
+        self._rankeadas = rankeadas or []
+
+    def rankeadas(self, consulta, n=3):
+        if self._rankeadas:
+            self.consultas.append(consulta)
+            return [{"url": "https://tienda1.com/p", "domain": "tienda1.com", "rank": 1}], \
+                list(self._rankeadas)
+        return [], []
 
     def buscar(self, consulta, n=3):
         self.consultas.append(consulta)
@@ -252,11 +261,17 @@ def test_sin_gsc_busca_el_mismo_producto_en_competidores(tmp_path):
     assert any(k.get("origen") == "competidor" for k in res.selected)
 
 
-def test_competidores_solo_si_faltan_keywords(tmp_path):
+def test_competidores_siempre_por_defecto_o_solo_si_faltan(tmp_path):
     comp = FakeCompetidores(PAGINAS)
     pipe = _pipeline(tmp_path, competidores=comp)
     pipe.process(URL)
-    assert comp.consultas == []                      # GSC ya dio 3
+    assert comp.consultas == ["Pedro Sofá Cassoni"]  # lo que le funciona a la competencia
+    comp2 = FakeCompetidores(PAGINAS)
+    (tmp_path / "b").mkdir()
+    pipe2 = _pipeline(tmp_path / "b", competidores=comp2)
+    pipe2.cfg.dfs_competidores = "si_faltan"
+    pipe2.process(URL)
+    assert comp2.consultas == []                     # GSC ya dio 3
 
 
 # --- sin keywords: solo H1 ----------------------------------------------------
@@ -439,3 +454,20 @@ def test_la_investigacion_trae_keywords_nuevas_con_volumen(tmp_path):
     assert inv.semillas and any("sofa" in s for s in inv.semillas[0])
     assert "velvet sofa" not in kws                  # la ficha no es de terciopelo
     assert kws["leather chesterfield sofa"]["origen"] == "investigacion"
+
+
+
+def test_keywords_que_rankea_la_competencia_con_el_mismo_producto(tmp_path):
+    """Nosotros sin datos en GSC; un competidor con el mismo producto rankea."""
+    rank = [{"keyword": "leather chesterfield sofa", "volume": 2900, "difficulty": 35,
+             "intent": "commercial", "competidores": 2, "mejor_posicion": 4,
+             "origen": "competidor"},
+            {"keyword": "tienda1 chesterfield", "volume": 500, "difficulty": 5,
+             "intent": "navigational", "competidores": 1, "origen": "competidor"}]
+    comp = FakeCompetidores(PAGINAS, rankeadas=rank)
+    pipe = _pipeline(tmp_path, gsc=FakeGSC([]), competidores=comp, vol={})
+    res = pipe.process(URL)
+    kws = {k["keyword"]: k for k in res.selected}
+    assert "leather chesterfield sofa" in kws
+    assert kws["leather chesterfield sofa"]["volume"] == 2900     # no lo pisa la caché
+    assert "tienda1 chesterfield" not in kws                      # la marca del competidor

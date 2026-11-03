@@ -203,7 +203,9 @@ def potencial(fila: dict) -> float:
     pos = fila.get("position")
     if not pos:                       # investigación o competidores: la ficha todavía no
         kd = fila.get("difficulty") or 0       # aparece; pesa lo que cuesta entrar
-        return demanda * 0.02 * max(0.0, 1 - kd / 100)
+        probada = 1 + 0.5 * max(0, (fila.get("competidores") or 0) - 1) + \
+            (0.5 if fila.get("competidores") else 0)   # la rankea la competencia
+        return demanda * 0.02 * max(0.0, 1 - kd / 100) * probada
     return demanda * max(0.0, _CTR[3] - _ctr(pos))
 
 

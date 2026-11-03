@@ -61,5 +61,7 @@ class Volumenes:
         out = []
         for f in filas:
             d = vol.get(_norm(f.get("keyword", ""))) or {}
-            out.append({**f, "volume": d.get("volume"), "spell": d.get("spell")})
+            # si la fila ya trae volumen (investigación, competidores) se respeta
+            volumen = f["volume"] if f.get("volume") is not None else d.get("volume")
+            out.append({**f, "volume": volumen, "spell": d.get("spell")})
         return out

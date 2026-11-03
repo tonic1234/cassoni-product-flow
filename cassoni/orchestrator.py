@@ -221,9 +221,9 @@ class Pipeline:
             except Exception as exc:
                 log.warning("Precarga de competidores salteada en %s (%s)", u, exc)
                 continue
-            if ctx["sel"]["faltan"]:
+            if ctx["sel"]["faltan"] or self.cfg.dfs_competidores == "siempre":
                 _, cands = self._paginas_competidores(ctx)
-                de_competidores.extend(c["keyword"] for c in cands)
+                de_competidores.extend(c["keyword"] for c in cands if c.get("volume") is None)
         if de_competidores:
             self.volumenes.obtener(de_competidores)
 
@@ -343,7 +343,7 @@ class Pipeline:
 
         # 4) si faltan: el mismo producto en competidores mejor posicionados
         competidores: list[dict] = []
-        if sel["faltan"] and self.competidores is not None:
+        if (sel["faltan"] or self.cfg.dfs_competidores == "siempre") and self.competidores is not None:
             competidores, cands = self._paginas_competidores(ctx)
             extra = self._con_volumen(cands)
             if extra:
@@ -430,6 +430,19 @@ class Pipeline:
         consulta = ctx["h1"].replace(" by ", " ") if ctx["marca"] else ctx["h1"]
         if consulta in self._comp_cache:
             return self._comp_cache[consulta]
+        # 1) lo que los competidores RANKEAN (DataForSEO): el dato más fuerte
+        try:
+            resumen, rankeadas = self.competidores.rankeadas(consulta)
+        except Exception as exc:
+            log.warning("Keywords de competidores no disponibles (%s)", exc)
+            resumen, rankeadas = [], []
+        if rankeadas:
+            ajenas = {w for r in resumen for w in (r.get("domain") or "").split(".")[:1]}
+            cands = [c for c in rankeadas
+                     if not any(a and a in c["keyword"].replace(" ", "") for a in ajenas)]
+            self._comp_cache[consulta] = (resumen, cands[:60])
+            return resumen, cands[:60]
+        # 2) respaldo: leer sus páginas y tomar frases que se repiten
         try:
             paginas = self.competidores.buscar(consulta)
         except Exception as exc:
