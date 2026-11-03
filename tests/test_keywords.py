@@ -74,3 +74,13 @@ def test_ya_escrita_no_entra_si_sobran_alternativas():
                    _kw("leather recliner", 40), _kw("cassoni lounge", 30)],
                   asignadas=asignadas)
     assert "sofa chesterfield" not in [e["keyword"] for e in out["elegidas"]]
+
+
+def test_descarta_errores_de_tipeo():
+    """Prueba real 3-nov: 'rock coffe table' terminó escrito en la ficha."""
+    from cassoni.keywords import parece_typo
+    assert parece_typo("rock coffe table", "Rock Coffee Table Rugiano")
+    assert not parece_typo("rock coffee table", "Rock Coffee Table Rugiano")
+    assert not parece_typo("marble coffee table", "Rock Coffee Table Rugiano")
+    out = _elegir([_kw("pedro leathr", 900)])
+    assert out["descartadas"][0]["motivo"] == "parece un error de tipeo"

@@ -100,3 +100,47 @@ def test_mercado_desde_la_config(cfg):
     cfg.dfs_max_requests_min = 0
     DataForSEOFetcher(cfg, _post=fake_post).search_volume(["sofa"])
     assert vistos[0]["location_code"] == 2724 and vistos[0]["language_code"] == "es"
+
+
+# respuesta REAL de keywords_data/google_ads/search_volume/live (3-nov-2026):
+# los campos van en la raíz de cada fila, no en keyword_data.google_ads
+def test_formato_real_de_la_api_y_cruce_por_keyword(cfg):
+    def fake_post(payload):
+        kws = payload[0]["keywords"]
+        filas = [{"keyword": k, "search_volume": {"club sofa": 1000, "steinway piano": 590}.get(k),
+                  "competition": "MEDIUM", "competition_index": 65, "cpc": 2.27}
+                 for k in reversed(kws)]          # la API no garantiza el orden
+        return {"status_code": 20000, "cost": 0.09,
+                "tasks": [{"status_code": 20000, "result": filas}]}
+    cfg.dfs_max_requests_min = 0
+    out = DataForSEOFetcher(cfg, _post=fake_post).search_volume(
+        ["club sofa", "steinway piano", "rare thing"])
+    assert out[0]["volume"] == 1000 and out[1]["volume"] == 590
+    assert out[2]["volume"] is None
+    assert out[0]["competition"] == 0.65        # numérico, no "MEDIUM"
+
+
+def test_una_keyword_invalida_no_tumba_el_lote(cfg):
+    enviadas = []
+
+    def fake_post(payload):
+        enviadas.extend(payload[0]["keywords"])
+        return {"status_code": 20000, "tasks": [{"status_code": 20000, "result": [
+            {"keyword": k, "search_volume": 10} for k in payload[0]["keywords"]]}]}
+    cfg.dfs_max_requests_min = 0
+    out = DataForSEOFetcher(cfg, _post=fake_post).search_volume(
+        ["sofa", "sofa (white)", "x" * 81, "one two three four five six seven eight nine ten eleven"])
+    assert enviadas == ["sofa"]
+    assert out[0]["volume"] == 10 and out[1:] == [None, None, None]
+
+
+def test_tarea_rechazada_no_se_reintenta_en_loop(cfg):
+    llamadas = []
+
+    def fake_post(payload):
+        llamadas.append(1)
+        return {"status_code": 20000, "tasks": [{"status_code": 40501,
+                                                 "status_message": "Invalid Field"}]}
+    cfg.dfs_max_requests_min = 0
+    assert DataForSEOFetcher(cfg, _post=fake_post).search_volume(["sofa"]) == [None]
+    assert len(llamadas) == 1

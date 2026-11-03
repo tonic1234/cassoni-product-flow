@@ -14,6 +14,8 @@ Puro, sin I/O: todo llega por parámetro y es testeable sin red.
 """
 from __future__ import annotations
 
+import re
+import unicodedata
 from typing import Iterable, Optional
 
 from .checklist import (filtrar_canibalizacion, kw_exacta_en, seleccionar_diversas,
@@ -26,6 +28,36 @@ MIN_IMPRESIONES_SIN_VOLUMEN = 30   # DFS no informa: alcanza con demanda real en
 
 def _norm(s: str) -> str:
     return " ".join((s or "").lower().split())
+
+
+def _palabras(texto: str) -> set[str]:
+    plano = unicodedata.normalize("NFKD", (texto or "").lower()).encode("ascii", "ignore").decode()
+    return set(re.findall(r"[a-z]+", plano))
+
+
+def _distancia(a: str, b: str) -> int:
+    """Levenshtein (las palabras son cortas: alcanza la versión simple)."""
+    prev = list(range(len(b) + 1))
+    for i, ca in enumerate(a, 1):
+        cur = [i]
+        for j, cb in enumerate(b, 1):
+            cur.append(min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (ca != cb)))
+        prev = cur
+    return prev[-1]
+
+
+def parece_typo(keyword: str, texto_producto: str) -> bool:
+    """'rock coffe table' en la ficha de la Rock Coffee Table: una palabra que no
+    está en el producto pero está a UNA letra de una que sí. Se descarta para no
+    escribir el error en la ficha (prueba real del 3-nov-2026)."""
+    producto = _palabras(texto_producto)
+    for w in _palabras(keyword):
+        if len(w) < 4 or w in producto:
+            continue
+        if any(abs(len(w) - len(p)) <= 1 and _distancia(w, p) == 1
+               for p in producto if len(p) >= 4):
+            return True
+    return False
 
 
 def _con_demanda(fila: dict, min_volume: int) -> bool:
@@ -65,6 +97,8 @@ def elegir_keywords(candidatas: Iterable[dict], *, descripcion: str,
         vistas.add(nk)
         if not relevante(kw, texto_producto):
             descartadas.append({"keyword": kw, "motivo": "no es de este producto"})
+        elif parece_typo(kw, texto_producto + " " + descripcion):
+            descartadas.append({"keyword": kw, "motivo": "parece un error de tipeo"})
         elif kw_exacta_en(plano, kw):
             descartadas.append({"keyword": kw, "motivo": "ya está en la descripción"})
         elif not _con_demanda(c, min_volume):

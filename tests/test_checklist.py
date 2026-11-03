@@ -393,3 +393,14 @@ class TestConservacionYPuntuacionDelScraping:
         orig = "<p>Una oración original. Otra oración original.</p>"
         edit = "<p>Texto completamente distinto que no conserva nada.</p>"
         assert conservacion(orig, edit) == 0.0
+
+
+def test_la_repeticion_que_ya_tenia_el_original_no_rechaza():
+    """Prueba real 3-nov (Shibari): el original ya decía 'knot' más de 8 veces."""
+    orig = "<p>" + " ".join(["The knot holds."] * 10) + "</p>"
+    issues = checklist.check_reglas({"description": orig + "<p>A shibari chair.</p>"},
+                                    original_description=orig)
+    assert not any("knot" in i for i in issues)
+    peor = orig + "<p>" + "knot " * 3 + "</p>"
+    assert any("knot" in i for i in checklist.check_reglas({"description": peor},
+                                                          original_description=orig))

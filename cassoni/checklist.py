@@ -155,6 +155,11 @@ def seleccionar_diversas(candidatas: list[dict], max_sec: int = 3) -> dict:
             "faltantes": max(0, max_sec - len(elegidas))}
 
 
+def _frecuencia(palabra: str, html: str) -> int:
+    return sum(1 for w in strip_html(html).lower().split()
+               if w.strip(".,;:()[]¡!¿?\"'") == palabra)
+
+
 def palabra_dominante(html: str, max_apariciones: int | None = None) -> str:
     """Devuelve la palabra no funcional más repetida del texto, o '' si ninguna
     pasa el límite. Regla anti 'sofa sofa sofa' (Antonio 18-sep)."""
@@ -256,7 +261,11 @@ def check_reglas(editado: dict, original_description: str = "",
                 f"{ratio:.0%} de las oraciones del original "
                 f"(mínimo {reglas.CONSERVACION_MIN:.0%})")
 
+    # se mide lo que AGREGA la edición: si el original ya repetía una palabra
+    # (Shibari: 'knot' más de 8 veces), conservarlo no puede ser motivo de rechazo
     dominante = palabra_dominante(desc)
+    if dominante and _frecuencia(dominante, desc) <= _frecuencia(dominante, original_description):
+        dominante = ""
     if dominante:
         issues.append(
             f"La palabra '{dominante}' se repite demasiado en la descripción larga "

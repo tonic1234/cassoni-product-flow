@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import base64
 import json
+import logging
 import threading
 import time
 from typing import Any, Callable, Optional
@@ -23,6 +24,10 @@ from typing import Any, Callable, Optional
 import requests
 
 from .config import Config
+
+log = logging.getLogger("cassoni.dataforseo")
+# símbolos que Google Ads no acepta en una keyword (documentación de DataForSEO)
+_SIMBOLOS_PROHIBIDOS = set(",!@%^()={};~`<>?\\|*")
 
 
 class DataForSEOFetcher:
@@ -51,14 +56,49 @@ class DataForSEOFetcher:
         if wait > 0:
             time.sleep(wait)
 
+    @staticmethod
+    def keyword_valida(kw: str) -> bool:
+        """Límites de Google Ads: ≤ 80 caracteres, ≤ 10 palabras y sin ciertos
+        símbolos. Una sola keyword inválida hace fallar la TAREA entera (todo el
+        lote de 1.000), así que las inválidas no se mandan."""
+        kw = (kw or "").strip()
+        return (0 < len(kw) <= 80 and len(kw.split()) <= 10
+                and not any(c in _SIMBOLOS_PROHIBIDOS for c in kw))
+
+    @staticmethod
+    def _fila(row: dict) -> dict:
+        """Una fila de la respuesta. Formato real de keywords_data/google_ads
+        (medido el 3-nov-2026): campos en la raíz. Se acepta también el anidado
+        `keyword_data.google_ads` de los endpoints de Labs."""
+        g = row
+        if "search_volume" not in row:
+            g = ((row.get("keyword_data") or {}).get("google_ads") or {})
+        idx = g.get("competition_index")
+        comp = g.get("competition")
+        if not isinstance(comp, (int, float)):
+            comp = idx / 100 if isinstance(idx, (int, float)) else None
+        return {"volume": g.get("search_volume"), "competition": comp,
+                "cpc": g.get("cpc"), "competition_index": idx,
+                "monthly": g.get("monthly_searches")}
+
     def search_volume(self, keywords: list[str],
                       location_code: Optional[int] = None) -> list[Optional[dict]]:
         """Volumen para una tanda de keywords. Devuelve, en el MISMO orden,
-        el resultado de cada keyword (dict) o None si falló tras retries."""
+        el resultado de cada keyword (dict) o None si no se pudo. El cruce es
+        por keyword, no por posición: la API no garantiza el orden."""
         location_code = location_code or self.cfg.dfs_location_code
         results: list[Optional[dict]] = [None] * len(keywords)
-        for chunk_start in range(0, len(keywords), self.cfg.dfs_bulk_size):
-            chunk = keywords[chunk_start: chunk_start + self.cfg.dfs_bulk_size]
+        posiciones: dict[str, list[int]] = {}
+        validas: list[str] = []
+        for i, kw in enumerate(keywords):
+            if not self.keyword_valida(kw):
+                continue
+            clave = " ".join(kw.lower().split())
+            if clave not in posiciones:
+                validas.append(kw)
+            posiciones.setdefault(clave, []).append(i)
+        for chunk_start in range(0, len(validas), self.cfg.dfs_bulk_size):
+            chunk = validas[chunk_start: chunk_start + self.cfg.dfs_bulk_size]
             for attempt in range(self.cfg.dfs_retries + 1):
                 self._throttle()
                 try:
@@ -80,19 +120,20 @@ class DataForSEOFetcher:
                     time.sleep(2 ** attempt)
                     continue
                 self.costo_usd += float(data.get("cost") or 0)
-                rows = data.get("tasks", [{}])[0].get("result", []) or []
+                tarea = (data.get("tasks") or [{}])[0]
+                if tarea.get("status_code") not in (None, 20000):
+                    log.warning("DataForSEO rechazó la tarea: %s %s",
+                                tarea.get("status_code"), tarea.get("status_message"))
+                    break
+                rows = tarea.get("result", []) or []
+                sin_clave = all(not (r or {}).get("keyword") for r in rows)
                 for i, row in enumerate(rows):
-                    pos = i
-                    if pos < len(chunk):
-                        cd = (row or {}).get("keyword_data", {}) or {}
-                        g = cd.get("google_ads", {}) or {}
-                        results[chunk_start + pos] = {
-                            "volume": g.get("search_volume"),
-                            "competition": g.get("competition"),
-                            "cpc": g.get("cpc"),
-                            "competition_index": g.get("competition_index"),
-                            "monthly": g.get("monthly_searches"),
-                        }
+                    row = row or {}
+                    # formato viejo sin keyword en la fila: se cae al orden
+                    kw = row.get("keyword") if not sin_clave else (
+                        chunk[i] if i < len(chunk) else None)
+                    for pos in posiciones.get(" ".join((kw or "").lower().split()), []):
+                        results[pos] = self._fila(row)
                 break
         return results
 
