@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>cassoni · seo — tarjeta para compartir</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  /* Tarjeta 1200x630 para og:image. Se renderiza en un navegador real (no PIL) porque la
+     identidad usa Space Grotesk / Manrope / JetBrains Mono de Google Fonts. */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1200px; height: 630px; }
+  body {
+    background: #111014;
+    color: #F0EDF4;
+    font-family: "Manrope", sans-serif;
+    position: relative;
+    overflow: hidden;
+  }
+  .glow {
+    position: absolute; width: 900px; height: 900px; right: -300px; top: -420px;
+    background: radial-gradient(circle, rgba(174,98,255,.34), rgba(120,42,194,.12) 45%, transparent 68%);
+  }
+  .glow2 {
+    position: absolute; width: 700px; height: 700px; left: -260px; bottom: -380px;
+    background: radial-gradient(circle, rgba(240,139,180,.20), transparent 66%);
+  }
+  .grid {
+    position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(240,237,244,.055) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(240,237,244,.055) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: linear-gradient(180deg, rgba(0,0,0,.85), transparent 78%);
+  }
+  .card { position: relative; height: 100%; padding: 62px 72px 56px; display: flex; flex-direction: column; }
+  .top { display: flex; align-items: center; gap: 14px; }
+  .brand {
+    font-family: "Space Grotesk", sans-serif; font-size: 30px; letter-spacing: -.02em;
+  }
+  .brand b { color: #AE62FF; font-weight: 500; }
+  .rule { flex: 1; height: 1px; background: rgba(240,237,244,.16); }
+  .eyebrow {
+    font-family: "JetBrains Mono", monospace; font-size: 15px; letter-spacing: .18em;
+    text-transform: uppercase; color: #E0CFF6;
+  }
+  h1 {
+    font-family: "Space Grotesk", sans-serif; font-weight: 400;
+    font-size: 72px; line-height: 1.06; letter-spacing: -.03em;
+    margin-top: 44px; max-width: none;
+  }
+  h1 .v { color: #AE62FF; }
+  .lead {
+    margin-top: 26px; font-size: 26px; line-height: 1.45; color: #C9C3D2; max-width: 900px;
+  }
+  .stats {
+    margin-top: auto; display: flex; gap: 46px; align-items: flex-end;
+    border-top: 1px solid rgba(240,237,244,.14); padding-top: 26px;
+  }
+  .stat b {
+    font-family: "Space Grotesk", sans-serif; font-weight: 500; font-size: 40px;
+    letter-spacing: -.02em; display: block;
+  }
+  .stat small { font-size: 17px; color: #9B92A5; letter-spacing: .01em; }
+  .stat:last-child { margin-left: auto; text-align: right; }
+  .stat:last-child b { font-family: "JetBrains Mono", monospace; font-size: 26px; color: #6FD8A4; }
+</style>
+</head>
+<body>
+  <div class="glow"></div>
+  <div class="glow2"></div>
+  <div class="card">
+    <div class="top">
+      <div class="brand">cassoni<b>·</b>seo</div>
+      <div class="rule"></div>
+      <div class="eyebrow">Agente SEO · fichas de producto</div>
+    </div>
+    <h1>Cada ficha, con las palabras<br><span class="v">que la gente busca.</span></h1>
+    <p class="lead">Nombre y marca en el H1 · una oración por keyword en la descripción, sin reescribirla · medición a 14 y 28 días.</p>
+    <div class="stats">
+      <div class="stat"><b>13.079</b><small>fichas publicadas</small></div>
+      <div class="stat"><b>3</b><small>fuentes de keywords</small></div>
+      <div class="stat"><b>10</b><small>fichas por día, máximo</small></div>
+      <div class="stat"><b>corrida en seco</b><small>sin tocar WooCommerce</small></div>
+    </div>
+  </div>
+</body>
+</html>

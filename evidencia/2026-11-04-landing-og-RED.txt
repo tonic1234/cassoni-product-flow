@@ -1,0 +1,6 @@
+== RED: el candado contra el HTML ORIGINAL del zip (tal como llegó) ==
+  «sin saldo» presente en el HTML original: True
+  «redactó Claude» presente en el HTML original: True
+  «en lugar de DeepSeek» presente en el HTML original: True
+  meta og:image declarada: False
+  test_no_publica_notas_internas: ROJO -> la landing publicada filtra una nota interna: «sin saldo»
