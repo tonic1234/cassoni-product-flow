@@ -90,6 +90,9 @@ def tipo_de_producto(nombre: str, categorias: Iterable[str] = ()) -> set[str]:
     ('Club Sofa' → sofa, 'Cleopatra Chair (SC1019)' → chair) más las de la
     categoría, con sus sinónimos."""
     limpio = re.sub(r"\(.*?\)", " ", nombre or "")
+    # 'Nivola Driving Simulator - Heritage Edition': lo de después del guion es la
+    # variante, no el tipo (prueba ciega 11-nov: el tipo salía 'edition')
+    limpio = re.split(r"\s[-–—]\s", limpio)[0]
     palabras = [w for w in re.findall(r"[a-z]+", _plano(limpio)) if len(w) >= 3]
     tipos = {_singular(palabras[-1])} if palabras else set()
     for c in categorias:
@@ -106,9 +109,29 @@ def nombra_el_tipo(keyword: str, tipos: set[str]) -> bool:
 def es_marca_y_modelo(keyword: str, nombre: str, marca: str) -> bool:
     """'luceplan illan', 'illan luceplan': búsqueda de ESE producto aunque no
     nombre el tipo (prueba real: se descartaban siendo las más valiosas)."""
+    from .h1 import modelo_de
     kw = {_singular(w) for w in _palabras(keyword)}
-    modelo = {_singular(w) for w in _palabras(nombre) if len(w) >= 3}
-    return bool(kw & modelo) and bool(kw & {_singular(w) for w in _palabras(marca)})
+    # el MODELO, sin la palabra de tipo ('Tiffany', no 'mirror'), y la marca sin
+    # sus palabras genéricas ('DV Home Collection' → 'dv'): 'mirror home' no es
+    # una búsqueda de marca + modelo (prueba ciega 11-nov)
+    modelo = {_singular(w) for w in _palabras(modelo_de(nombre, marca)) if len(w) >= 3}
+    propias = {_singular(w) for w in _palabras(marca)} - _GENERICAS_DE_MARCA
+    return bool(kw & modelo) and bool(kw & propias)
+
+
+def nombra_el_modelo(keyword: str, nombre: str, marca: str) -> bool:
+    """'white balloon dog' en 'Balloon Dog - White Diamond': la búsqueda nombra el
+    modelo entero (2+ palabras propias) aunque no diga el tipo ni la marca."""
+    from .h1 import modelo_de
+    base = re.split(r"\s[-–—]\s", nombre or "")[0]
+    modelo = {_singular(w) for w in _palabras(modelo_de(base, marca)) if len(w) >= 3}
+    kw = {_singular(w) for w in _palabras(keyword)}
+    return len(modelo) >= 2 and modelo <= kw
+
+
+_GENERICAS_DE_MARCA = {"home", "collection", "design", "designs", "furniture", "living",
+                       "casa", "studio", "italia", "italy", "group", "interiors", "lighting",
+                       "light", "arte", "art", "mobili", "the", "and", "di", "de", "by"}
 
 
 def cubierta_por_el_h1(keyword: str, nombre: str, marca: str) -> bool:
@@ -298,7 +321,9 @@ def contradice_la_ficha(keyword: str, texto_ficha: str) -> str:
 
 def _singular(w: str) -> str:
     # 'beds' → 'bed' (con > 4 letras se escapaba: 'hermes beds' no se veía cubierta)
-    return w[:-1] if len(w) >= 4 and w.endswith("s") and not w.endswith("ss") else w
+    # 'tennis', 'cactus' no son plurales
+    return (w[:-1] if len(w) >= 4 and w.endswith("s")
+            and not w.endswith(("ss", "is", "us")) else w)
 
 
 def _con_demanda(fila: dict, min_volume: int) -> bool:
@@ -466,7 +491,8 @@ def elegir_keywords(candidatas: Iterable[dict], *, descripcion: str,
             descartadas.append({"keyword": kw, "motivo": f"la ficha no compite "
                                                          f"(posición {c['position']:.0f})"})
         elif (nombre is not None and not nombra_el_tipo(kw, tipos)
-              and not es_marca_y_modelo(kw, nombre, marca)):
+              and not es_marca_y_modelo(kw, nombre, marca)
+              and not (reescritura and nombra_el_modelo(kw, nombre, marca))):
             descartadas.append({"keyword": kw,
                                 "motivo": "no nombra el producto ni un atributo real"})
         elif texto_especifico is not None and not es_especifica(kw, texto_especifico,

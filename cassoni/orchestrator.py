@@ -313,8 +313,12 @@ class Pipeline:
         from .intencion import veredicto
         from .keywords import tipo_de_producto
         tipos = tipo_de_producto(ctx["nombre"], ctx["categorias"]) | set(ctx["tipo"].split())
-        texto = elegir.get("texto_ficha") or ctx["texto_producto"]
+        # la ruta de categorías también es de la ficha: 'game' en una mesa de
+        # ping-pong que cuelga de 'Game Tables' (prueba ciega 11-nov)
+        texto = " ".join([elegir.get("texto_ficha") or ctx["texto_producto"],
+                          *(r.get("name", "") for r in ctx.get("ruta") or [])])
         fuera: dict[str, str] = {}
+        originales: dict[str, str] = {}
         for _ in range(rondas):
             nuevas = {}
             for e in sel["elegidas"]:
@@ -325,6 +329,7 @@ class Pipeline:
                      {"ok": False, "motivo": "sin datos de Google para comprobarla"})
                 if not v["ok"]:
                     nuevas[clave_variante(e["keyword"])] = v["motivo"]
+                    originales.setdefault(clave_variante(e["keyword"]), e["keyword"])
             if not nuevas:
                 break
             fuera.update(nuevas)
@@ -339,8 +344,10 @@ class Pipeline:
                      {"ok": False, "motivo": "sin datos de Google para comprobarla"})
                 if not v["ok"]:
                     fuera[clave_variante(e["keyword"])] = v["motivo"]
+                    originales.setdefault(clave_variante(e["keyword"]), e["keyword"])
                     sel["elegidas"].remove(e)
-        sel["descartadas"] = [{"keyword": k, "motivo": f"{m} (intención en Google)"}
+        sel["descartadas"] = [{"keyword": originales.get(k, k),
+                               "motivo": f"{m} (intención en Google)"}
                               for k, m in fuera.items()] + list(sel["descartadas"])
         return sel
 

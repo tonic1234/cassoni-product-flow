@@ -98,7 +98,7 @@ _TIPOS = ("sofa", "couch", "sectional", "loveseat", "chair", "armchair", "stool"
           "candleholder", "sculpture")
 _PREFIJOS = {"coffee", "side", "dining", "console", "wall", "floor", "lounge", "bar",
              "accent", "bedside", "writing", "ceiling", "pendant", "desk", "office",
-             "sun", "chaise", "counter", "end", "night", "table"}
+             "sun", "chaise", "counter", "end", "night", "table", "suspension"}
 # ('club' no: en 'Club Sofa' es el nombre del modelo, no un tipo)
 # hoja de categoría (slug) → tipo, para fichas cuyo nombre no lo dice ('Anamon')
 _TIPO_POR_CATEGORIA = {
@@ -201,17 +201,25 @@ def tipo_ee_uu(nombre: str, ruta_categorias: Iterable[str] = (),
 def modelo_de(nombre: str, marca: str) -> str:
     """Nombre sin códigos, sin marca y sin la palabra de tipo final:
     'Cleopatra Chair (SC1019)' → 'Cleopatra'; 'Hermes Maxi Bed' → 'Hermes Maxi';
-    'Rock Coffee Table' → 'Rock'. Si el nombre es solo el tipo, queda entero."""
+    'Rock Coffee Table' → 'Rock'. Si el nombre es solo el tipo, queda entero.
+    Si el código es el ÚNICO nombre ('W017 Sideboard'), el código es el modelo
+    (prueba ciega 11-nov: el H1 quedaba 'Sideboard … by Zanaboni')."""
+    def _parte_modelo(texto: str) -> str:
+        tipo, _ = _tipo_del_nombre(texto)
+        if not tipo:
+            return texto
+        primera, palabras = tipo.split()[0], texto.split()
+        for i in range(len(palabras) - 1, 0, -1):
+            if _singular("".join(re.findall(r"[a-z]+", _plano(palabras[i])))) == primera:
+                return " ".join(palabras[:i])
+        return ""
+
     limpio = sin_marca(sin_codigos(nombre), marca)
-    tipo, _ = _tipo_del_nombre(limpio)
-    if not tipo:
-        return limpio
-    primera = tipo.split()[0]
-    palabras = limpio.split()
-    for i in range(len(palabras) - 1, 0, -1):
-        if _singular("".join(re.findall(r"[a-z]+", _plano(palabras[i])))) == primera:
-            return " ".join(palabras[:i])
-    return limpio
+    modelo = _parte_modelo(limpio)
+    if modelo:
+        return modelo
+    con_codigo = sin_marca(re.sub(r"\([^)]*\)", " ", _limpio(nombre)), marca)
+    return _parte_modelo(_WS.sub(" ", con_codigo).strip()) or limpio
 
 
 def _titulo(s: str) -> str:
@@ -258,7 +266,8 @@ def verificar_h1(h1: str, *, nombre: str, marca: str, tipo: str,
             cuerpo = h1[: -len(sufijo)]
         if marca.lower() in cuerpo.lower():
             issues.append("la marca aparece dos veces en el H1")
-    codigos = [t for t in cuerpo.split() if es_codigo(t)]
+    del_modelo = set(modelo_de(nombre, marca).split())
+    codigos = [t for t in cuerpo.split() if es_codigo(t) and t not in del_modelo]
     if codigos:
         issues.append(f"el H1 tiene códigos de catálogo: {', '.join(codigos)}")
     palabras_cuerpo = re.findall(r"[a-z]+", _plano(cuerpo))

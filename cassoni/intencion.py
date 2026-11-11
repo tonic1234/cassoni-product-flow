@@ -72,7 +72,8 @@ def _singular(w: str) -> str:
         return w[:-3] + "y"
     if w.endswith("es") and len(w) > 4 and w[-3] in "sxh":
         return w[:-2]
-    return w[:-1] if len(w) > 3 and w.endswith("s") and not w.endswith("ss") else w
+    return (w[:-1] if len(w) > 3 and w.endswith("s")
+            and not w.endswith(("ss", "is", "us")) else w)
 
 
 def veredicto(keyword: str, serp: list[dict], tipos: Iterable[str],

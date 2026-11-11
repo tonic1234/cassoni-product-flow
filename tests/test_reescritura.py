@@ -242,3 +242,33 @@ def test_variantes_y_sinonimos_en_reescritura():
                           nombre="Club Sofa", marca="Rugiano", reescritura=True,
                           texto_ficha="Club Sofa Rugiano brass")
     assert [e["keyword"] for e in sel["elegidas"]] == ["club sofa"]
+
+
+# --- errores de la prueba ciega del 11-nov --------------------------------------
+def test_codigo_que_es_el_unico_nombre_queda_como_modelo():
+    assert modelo_de("W017 Sideboard", "Zanaboni") == "W017"
+    assert h1_respaldo("W017 Sideboard", "Zanaboni", "sideboard") == "W017 Sideboard by Zanaboni"
+    assert verificar_h1("W017 Inlaid Sideboard by Zanaboni", nombre="W017 Sideboard",
+                        marca="Zanaboni", tipo="sideboard", texto_ficha="inlaid") == []
+    assert modelo_de("19800 Steinway Piano", "Riva") == "Steinway"     # sigue igual
+
+
+def test_suspension_lamp_es_pendant_light():
+    assert tipo_ee_uu("Kin Suspension Lamp",
+                      ["luxury-lighting", "chandeliers-suspension-lamps"]) == "pendant light"
+
+
+def test_palabra_generica_de_la_marca_no_hace_marca_mas_modelo():
+    from cassoni.keywords import es_marca_y_modelo, nucleo_al_final
+    assert not es_marca_y_modelo("mirror home", "Tiffany Mirror", "DV Home Collection")
+    assert not nucleo_al_final("mirror home", {"mirror"}, "Tiffany Mirror", "DV Home Collection")
+    assert es_marca_y_modelo("luceplan illan", "Illan Wall Lamp", "Luceplan")
+
+
+def test_variante_despues_del_guion_y_busqueda_por_modelo():
+    from cassoni.keywords import nombra_el_modelo, _singular
+    assert "simulator" in tipo_de_producto("Nivola Driving Simulator - Heritage Edition")
+    assert "edition" not in tipo_de_producto("Nivola Driving Simulator - Heritage Edition")
+    assert nombra_el_modelo("white balloon dog", "Balloon Dog - White Diamond", "Juliarte")
+    assert not nombra_el_modelo("balloon art", "Balloon Dog - White Diamond", "Juliarte")
+    assert _singular("tennis") == "tennis" and _singular("tables") == "table"
