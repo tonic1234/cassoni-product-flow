@@ -229,3 +229,64 @@ def test_lee_ranked_keywords(cfg):
     out = DataForSEOFetcher(cfg, _post=fake_post).ranked_keywords("https://a.com/p")
     assert out == [{"keyword": "teak outdoor sofa", "volume": 1600, "difficulty": 28,
                     "intent": "commercial", "posicion_competidor": 6}]
+
+
+GOTO = "https://google.com/goto?url=CAESeAHrOzAV"
+
+
+def test_serp_con_enlace_de_google_se_reconstruye_desde_el_breadcrumb(cfg):
+    """Prueba real 4-nov: Google devuelve google.com/goto?url=... (cifrado) y se le
+    pedían a DataForSEO las keywords de 'google.com'."""
+    def fake_post(payload):
+        return {"status_code": 20000, "cost": 0.002, "tasks": [{"result": [{"items": [
+            {"type": "organic", "rank_absolute": 1, "url": GOTO, "domain": "google.com",
+             "breadcrumb": "https://en.talentispa.com › prodotti › cruise-alu-modular-..."},
+            {"type": "organic", "rank_absolute": 2, "url": GOTO, "domain": "google.com",
+             "breadcrumb": "https://www.roomservice360.com › ... › outdoor sofas"},
+            {"type": "organic", "rank_absolute": 3, "url": "https://b.com/p", "domain": "b.com"}]}]}]}
+    f = DataForSEOFetcher(cfg, _post=fake_post)
+    f.cfg.dfs_max_requests_min = 0
+    a, b, c = f.serp_organico("cruise sofa talenti")
+    assert (a["url"], a["domain"], a["patron"]) == (
+        "https://en.talentispa.com/cruise-alu-modular", "en.talentispa.com", "%cruise-alu-modular%")
+    assert b["url"] == "" and b["domain"] == "www.roomservice360.com"   # categoría: no usable
+    assert c["url"] == "https://b.com/p" and "patron" not in c
+
+
+def test_ranked_keywords_por_dominio_y_tramo(cfg):
+    def fake_post(payload):
+        assert payload[0]["target"] == "en.talentispa.com"
+        assert payload[0]["filters"][0] == ["ranked_serp_element.serp_item.relative_url",
+                                            "like", "%cruise-alu-modular%"]
+        return {"status_code": 20000, "cost": 0.012, "tasks": [{"status_code": 20000,
+                                                                "result": [{"items": []}]}]}
+    cfg.dfs_max_requests_min = 0
+    out = DataForSEOFetcher(cfg, _post=fake_post).ranked_keywords(
+        "https://en.talentispa.com/cruise-alu-modular", patron="%cruise-alu-modular%")
+    assert out == []
+
+
+def test_se_saca_el_srsltid_de_google():
+    from cassoni.dataforseo import _sin_seguimiento
+    assert _sin_seguimiento("https://a.com/p.html?srsltid=AYCX9") == "https://a.com/p.html"
+    assert _sin_seguimiento("https://a.com/p?v=2&srsltid=AY") == "https://a.com/p?v=2"
+
+
+def test_error_interno_de_dataforseo_se_reintenta(cfg):
+    """Prueba real 4-nov: 40101 'Internal SE Server Error' se informaba como cuenta bloqueada."""
+    llamadas = []
+    def fake_post(payload):
+        llamadas.append(1)
+        if len(llamadas) == 1:
+            return {"status_code": 20000, "tasks": [{"status_code": 40101,
+                                                     "status_message": "Internal SE Server Error."}]}
+        return {"status_code": 20000, "cost": 0.002, "tasks": [{"status_code": 20000,
+                "result": [{"items": [{"type": "organic", "rank_absolute": 1,
+                                       "url": "https://a.com/p", "domain": "a.com"}]}]}]}
+    cfg.dfs_max_requests_min = 0
+    cfg.dfs_retries = 2
+    f = DataForSEOFetcher(cfg, _post=fake_post)
+    import cassoni.dataforseo as m
+    m.time.sleep = lambda s: None
+    out = f.serp_organico("x")
+    assert len(llamadas) == 2 and out[0]["domain"] == "a.com" and f.sin_saldo == ""

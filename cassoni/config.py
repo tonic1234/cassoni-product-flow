@@ -60,6 +60,10 @@ class Config:
     dfs_cache_dias: int = 30                   # el volumen es mensual
     dfs_presupuesto_usd: float = 0.0          # tope de gasto por corrida (0 = sin tope)
     dfs_competidores: str = "siempre"          # siempre | si_faltan (keywords de competidores)
+    # reescritura (plantilla del SEO, 6-nov-2026) | quirurgica (flujo v2: H1
+    # '{Nombre} by {Marca}' + una oración por keyword, 80% del original intacto)
+    modo_descripcion: str = "reescritura"
+    dfs_intencion: bool = True                 # mirar qué muestra Google antes de elegir
     # --- LLM ---
     llm_base_url: str = ""                     # OpenAI-compatible endpoint
     llm_api_key: str = ""
@@ -123,6 +127,11 @@ class Config:
                 pass
         c.dfs_language_code = g("CASSONI_DFS_LANGUAGE", c.dfs_language_code)
         c.dfs_competidores = g("CASSONI_DFS_COMPETIDORES", c.dfs_competidores)
+        c.modo_descripcion = g("CASSONI_MODO_DESCRIPCION", c.modo_descripcion)
+        if c.modo_descripcion not in ("reescritura", "quirurgica"):
+            raise ValueError(f"CASSONI_MODO_DESCRIPCION inválido: {c.modo_descripcion!r} "
+                             f"(use reescritura o quirurgica)")
+        c.dfs_intencion = g("CASSONI_DFS_INTENCION", "1") not in ("0", "no", "false")
         try:
             c.dfs_presupuesto_usd = float(g("CASSONI_DFS_PRESUPUESTO_USD") or 0)
         except ValueError:

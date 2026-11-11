@@ -22,6 +22,7 @@ import time
 from typing import Any, Callable, Optional
 
 import requests
+from urllib.parse import urlsplit
 
 from .config import Config
 
@@ -61,9 +62,46 @@ def _tarea_bloqueada(tarea: dict) -> str:
     Prueba real 3-nov: 40201 'temporarily paused access' devolvía 0 resultados
     sin ningún aviso."""
     codigo = tarea.get("status_code")
+    if "internal" in str(tarea.get("status_message") or "").lower():
+        return ""      # prueba real 4-nov: 40101 'Internal SE Server Error' es pasajero
     if isinstance(codigo, int) and 40100 <= codigo < 40400:
         return f"cuenta bloqueada ({codigo}) {tarea.get('status_message') or ''}".strip()
     return ""
+
+
+def _sin_seguimiento(url: str) -> str:
+    """Saca el `srsltid` que Google agrega a los resultados de tiendas: con él,
+    DataForSEO Labs no reconoce la página."""
+    if "srsltid=" not in url:
+        return url
+    base, _, query = url.partition("?")
+    resto = [q for q in query.split("&") if q and not q.startswith("srsltid=")]
+    return base + ("?" + "&".join(resto) if resto else "")
+
+
+def _desde_breadcrumb(url: str, breadcrumb) -> dict:
+    """Google (nov-2026) devuelve muchos resultados como `google.com/goto?url=...`:
+    la URL real va cifrada y no se puede seguir. El breadcrumb sí trae el dominio
+    real y un tramo de la dirección ("https://x.com › prodotti › cruise-alu-..."),
+    con eso se reconstruye {url, domain, patron}. Si el tramo no es la ficha
+    (una categoría con espacios, o nada), se marca como no usable."""
+    host = (urlsplit(url).hostname or "").lower()
+    if not (host == "google.com" or host.endswith(".google.com")) or "/goto" not in url:
+        return {}
+    partes = [p.strip() for p in str(breadcrumb or "").split("\u203a")]
+    dominio = (urlsplit(partes[0]).hostname or "").lower() if partes else ""
+    if not dominio:
+        return {"url": "", "domain": "", "patron": ""}
+    tramo = ""
+    for seg in reversed(partes[1:]):
+        seg = seg.rstrip(".\u2026").rstrip("-").strip()
+        if seg and seg not in ("...", "\u2026") and " " not in seg and "-" in seg:
+            tramo = seg
+            break
+    if not tramo:
+        return {"url": "", "domain": dominio, "patron": ""}
+    return {"url": f"https://{dominio}/{tramo}", "domain": dominio,
+            "patron": f"%{tramo}%"}
 
 
 class DataForSEOFetcher:
@@ -237,7 +275,9 @@ class DataForSEOFetcher:
             if data and data.get("status_code") == 20000 and tarea.get("status_code") in (None, 20000):
                 self.costo_usd += float(data.get("cost") or 0)
                 return (tarea.get("result") or [{}])[0] or {}
-            if tarea.get("status_code") not in (None, 20000):
+            if "internal" in str(tarea.get("status_message") or "").lower():
+                data = None                  # error pasajero de DataForSEO: se reintenta
+            elif tarea.get("status_code") not in (None, 20000):
                 log.warning("DataForSEO rechazó el pedido de %s: %s %s", para,
                             tarea.get("status_code"), tarea.get("status_message"))
                 return None
@@ -252,19 +292,37 @@ class DataForSEOFetcher:
                     "language_code": self.cfg.dfs_language_code, "depth": depth}]
         res = self._tarea(payload, self.SERP_URL, COSTO_SERP_USD, "competidores")
         items = (res or {}).get("items") or []
-        return [{"rank": it.get("rank_absolute") or it.get("rank_group"),
-                 "url": it.get("url", ""), "domain": it.get("domain", ""),
-                 "title": it.get("title", ""), "description": it.get("description", "")}
-                for it in items if it.get("type") == "organic"]
+        out = []
+        for it in items:
+            if it.get("type") != "organic":
+                continue
+            fila = {"rank": it.get("rank_absolute") or it.get("rank_group"),
+                    "url": it.get("url", ""), "domain": it.get("domain", ""),
+                    "title": it.get("title", ""), "description": it.get("description", "")}
+            fila["url"] = _sin_seguimiento(fila["url"])
+            real = _desde_breadcrumb(fila["url"], it.get("breadcrumb"))
+            if real:
+                fila.update(real)
+            out.append(fila)
+        return out
 
-    def ranked_keywords(self, url: str, limite: int = 100, max_posicion: int = 20) -> list[dict]:
+    def ranked_keywords(self, url: str, limite: int = 100, max_posicion: int = 20,
+                        patron: str = "") -> list[dict]:
         """Búsquedas por las que RANKEA una página (DataForSEO Labs, ranked_keywords):
         lo que a un competidor con el mismo producto le funciona. Solo las que
         tiene en el top `max_posicion`. [{keyword, volume, difficulty, intent,
         posicion_competidor}]."""
-        payload = [{"target": url, "location_code": self.cfg.dfs_location_code,
+        filtro_pos = ["ranked_serp_element.serp_item.rank_group", "<=", max_posicion]
+        target, filtros = url, filtro_pos
+        if patron:
+            # la SERP dio un enlace de Google: se pide por dominio y se filtra por
+            # el tramo de la dirección de la página del producto
+            target = urlsplit(url).hostname or url
+            filtros = [["ranked_serp_element.serp_item.relative_url", "like", patron],
+                       "and", filtro_pos]
+        payload = [{"target": target, "location_code": self.cfg.dfs_location_code,
                     "language_code": self.cfg.dfs_language_code, "limit": limite,
-                    "filters": ["ranked_serp_element.serp_item.rank_group", "<=", max_posicion],
+                    "filters": filtros,
                     "order_by": ["keyword_data.keyword_info.search_volume,desc"]}]
         res = self._tarea(payload, self.RANKED_URL, COSTO_RANKED_USD, "keywords de competidores")
         out = []

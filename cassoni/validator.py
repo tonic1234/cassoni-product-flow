@@ -32,10 +32,91 @@ Decidí si la edición APRUEBA o necesita re-trabajo.
 """
 
 
+VALIDATOR_REESCRITURA = """Sos el control de calidad de cassoni.com (muebles de
+lujo, EE. UU.). Revisás un H1 y una descripción REESCRITOS por un redactor contra
+los datos reales de la ficha. Los números, el HTML, el enlace y las keywords exactas
+YA se controlaron en código: vos juzgás lo que el código no ve.
+
+Rechazá (aprobado=false) si encontrás CUALQUIERA de estas cosas, y decí cuál:
+1. DATO INVENTADO: una afirmación que no sale de la descripción original, la corta
+   ni los atributos (un material, un acabado, un uso, una certificación, "Made in
+   Italy" sin que la ficha diga Italy/Italian, una cantidad de opciones mal
+   contada). Es lo más grave.
+2. CONTRADICCIÓN con la ficha (la descripción afirma algo que un atributo niega).
+3. KEYWORD FORZADA: la keyword está pero la oración existe solo para meterla, o la
+   usa con otro sentido.
+4. H1 que no dice qué es el producto, o que elige un rasgo menor (el color de una
+   costura) en vez del que distingue al producto (material, forma, técnica).
+5. TONO: frases de catálogo genérico, relleno, la misma idea repetida.
+
+No rechaces por estilo o por gustos si los datos son correctos y se lee bien.
+"""
+
+
 class Validator:
     def __init__(self, config: Config, llm: LLMClient):
         self.cfg = config
         self.llm = llm
+
+    def validate_reescritura(self, *, ficha: dict, redactado: dict,
+                             keywords: list[str]) -> dict:
+        from .redactor import fuentes_de
+        user = f"""Ficha: {ficha['url']}
+Marca: {ficha['marca'] or '(sin dato)'}   Tipo: {ficha['tipo']}
+
+---- DATOS REALES DE LA FICHA (lo único que se puede afirmar) ----
+{fuentes_de(ficha)[:MAX_CHARS_TEXTO]}
+
+---- H1 PROPUESTO ----
+{redactado.get('h1', '')}
+
+---- DESCRIPCIÓN PROPUESTA ----
+{redactado.get('description', '')[:MAX_CHARS_TEXTO]}
+
+Keywords objetivo: {', '.join(keywords) or '(ninguna)'}
+
+Responde SOLO con JSON:
+{json.dumps({"aprobado": True, "issues": ["<problema concreto, con la frase>"],
+             "razon": "<breve>"}, ensure_ascii=False)}"""
+        out = self.llm.complete_json(VALIDATOR_REESCRITURA, user,
+                                     model=self.cfg.llm_validator_model)
+        if not isinstance(out, dict):
+            raise LLMError("El validador no devolvió un objeto JSON")
+        out["aprobado"] = bool(out.get("aprobado"))
+        return out
+
+    def redactar_y_validar(self, *, ficha: dict, keywords: list[dict], redactor,
+                           max_passes: int = 3) -> dict:
+        """Redacta, controla (código + LLM) y rebota con los motivos hasta
+        `max_passes`. Si el H1 nunca pasa los controles, se usa el de respaldo
+        (sin LLM) y se valida la descripción igual. Devuelve
+        {aprobado, intentos, validacion, edited, h1_respaldo_usado}."""
+        from .redactor import controles
+        objetivo = [k["keyword"] for k in keywords if k.get("keyword")]
+        feedback: list[str] | None = None
+        redactado, val, mecanicas = {}, None, []
+        for intento in range(1, max_passes + 1):
+            redactado = redactor.redactar(ficha=ficha, keywords=keywords, feedback=feedback)
+            mecanicas = controles(ficha, redactado, objetivo)
+            if intento == max_passes and all(m.startswith("H1:") for m in mecanicas) \
+                    and mecanicas:
+                redactado["h1"] = ficha["h1_respaldo"]
+                redactado["h1_respaldo_usado"] = True
+                mecanicas = controles(ficha, redactado, objetivo)
+            if mecanicas:
+                feedback = mecanicas
+                val = {"aprobado": False, "issues": mecanicas, "razon": "reglas en código"}
+                continue
+            val = self.validate_reescritura(ficha=ficha, redactado=redactado,
+                                            keywords=objetivo)
+            if val["aprobado"]:
+                return {"aprobado": True, "intentos": intento, "validacion": val,
+                        "edited": redactado}
+            feedback = list(val.get("issues") or []) or [val.get("razon") or "rechazada"]
+        val = val or {"issues": mecanicas}
+        val["aprobado"] = False
+        return {"aprobado": False, "intentos": max_passes, "validacion": val,
+                "edited": redactado}
 
     def validate(self, *, url: str, h1: str, original_desc: str, edited_desc: str,
                  target_keywords: list[str],

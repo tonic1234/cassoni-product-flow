@@ -70,6 +70,43 @@ class WooCommerce:
             page += 1
         return items
 
+    def ruta_categoria(self, category_id: int) -> list[dict]:
+        """Ruta de la categoría desde la raíz: [{id, name, slug}, ...]. Dice si la
+        ficha es de comedor o de exterior ('Fixed Tables' cuelga de 'Dining Room').
+        Con caché: las categorías casi no cambian. Solo lectura."""
+        cache = self.__dict__.setdefault("_cat_cache", {})
+        ruta: list[dict] = []
+        cid, vistos = category_id, set()
+        while cid and cid not in vistos:
+            vistos.add(cid)
+            if cid not in cache:
+                c = self._get(f"products/categories/{cid}")
+                cache[cid] = {"id": c.get("id"), "name": c.get("name", ""),
+                              "slug": c.get("slug", ""), "parent": c.get("parent") or 0}
+            c = cache[cid]
+            ruta.insert(0, {k: c[k] for k in ("id", "name", "slug")})
+            cid = c["parent"]
+        return ruta
+
+    def mismo_nombre(self, nombre: str, excluir_id: int = 0) -> list[dict]:
+        """Otras fichas publicadas que se llaman igual ('Rock Coffee Table' de
+        Rugiano y de VENICEM): el H1 tiene que distinguirlas. Solo lectura."""
+        got = self._get("products", {"search": nombre, "status": "publish",
+                                     "per_page": 20})
+        objetivo = " ".join(nombre.lower().split())
+        out = []
+        for p in got or []:
+            if p.get("id") == excluir_id:
+                continue
+            if " ".join((p.get("name") or "").lower().split()) != objetivo:
+                continue
+            marca = next((b.get("name", "") for b in (p.get("brands") or []) if b), "")
+            medida = next((", ".join(a.get("options") or []) for a in
+                           (p.get("attributes") or []) if (a.get("name") or "") == "Size"), "")
+            out.append({"id": p.get("id"), "name": p.get("name", ""), "marca": marca,
+                        "url": p.get("permalink", ""), "medida": medida})
+        return out
+
     def get_product_by_url(self, url: str) -> dict:
         slug, _ = extract_slug(url)
         return self.get_product_by_slug(slug)

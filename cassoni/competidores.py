@@ -113,7 +113,9 @@ def elegir_competidores(serp: list[dict], propios: Iterable[str], n: int = 3) ->
     """Las primeras `n` páginas de otros sitios que rankean POR ENCIMA nuestro
     (o las primeras `n`, si no aparecemos en el top)."""
     propios = [d.lower() for d in propios]
-    nuestro = next((r.get("rank") for r in serp if _dominio_propio(r.get("url", ""), propios)),
+    nuestro = next((r.get("rank") for r in serp
+                    if _dominio_propio(r.get("url", ""), propios)
+                    or _dominio_propio("https://" + (r.get("domain") or "x.invalid"), propios)),
                    None)
     out = []
     for r in serp:
@@ -210,7 +212,9 @@ class Competidores:
             return [], []
         serp = self.fetcher.serp_organico(consulta) if self.fetcher else []
         elegidos = elegir_competidores(serp, self.propios, n=n)
-        por_pagina = {r["url"]: self.fetcher.ranked_keywords(r["url"]) for r in elegidos}
+        por_pagina = {r["url"]: (self.fetcher.ranked_keywords(r["url"], patron=r["patron"])
+                                 if r.get("patron") else self.fetcher.ranked_keywords(r["url"]))
+                      for r in elegidos}
         resumen = [{"url": r["url"], "rank": r.get("rank"), "domain": r.get("domain"),
                     "keywords": len(por_pagina.get(r["url"]) or [])} for r in elegidos]
         return resumen, agrupar_rankeadas(por_pagina)
@@ -223,6 +227,8 @@ class Competidores:
             if len(paginas) >= n:
                 break
             url = r["url"]
+            if r.get("patron"):
+                continue           # dirección reconstruida, no se puede leer
             try:
                 if not self.robots(url):
                     log.info("robots.txt no permite %s", url)

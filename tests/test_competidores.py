@@ -102,3 +102,10 @@ def test_rankeadas_usa_la_serp_y_ranked_keywords():
     resumen, cands = Competidores(F(), propios=["cassoni.com"]).rankeadas("Pebble Sofa Moroso")
     assert [r["domain"] for r in resumen] == ["tienda-a.com", "tienda-b.com"]
     assert cands[0]["competidores"] == 2
+
+
+def test_nuestra_posicion_aunque_venga_como_enlace_de_google():
+    serp = [{"rank": 1, "url": "https://a.com/p", "domain": "a.com"},
+            {"rank": 2, "url": "", "domain": "cassoni.com"},
+            {"rank": 3, "url": "https://b.com/p", "domain": "b.com"}]
+    assert [r["url"] for r in elegir_competidores(serp, ["cassoni.com"])] == ["https://a.com/p"]

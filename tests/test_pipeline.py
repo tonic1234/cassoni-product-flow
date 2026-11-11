@@ -48,9 +48,10 @@ class FakeWoo:
             "description": DESC_ORIG,
             "categories": [{"id": 5, "name": "Sofas"}],
             "brands": [{"id": 1, "name": "Cassoni"}],
-            "attributes": [{"name": "Material", "options": ["Cuero"]},
+            "attributes": [{"name": "Material", "options": ["Cuero", "Leather"]},
                            {"name": "Estilo", "options": ["Chesterfield"]},
-                           {"name": "Acabado", "options": ["Tapizado"]},
+                           {"name": "Acabado", "options": ["Tapizado", "Tufting",
+                                                           "Capitoné"]},
                            {"name": "Configuración", "options": ["Modular"]}],
         }
         self.writes = []
@@ -162,6 +163,7 @@ class FakeLLM:
 
 def _cfg(tmp_path, dry_run=True):
     c = Config(env="staging", dry_run=dry_run)
+    c.modo_descripcion = "quirurgica"     # estos tests cubren el flujo v2
     c.db_url = f"sqlite:///{tmp_path}/e2e.db"
     c.llm_editor_model = "editor"
     c.llm_validator_model = "validator"
@@ -246,7 +248,8 @@ def test_un_solo_pedido_de_volumen_para_todo_el_lote(tmp_path):
 PAGINAS = [
     {"url": f"https://tienda{i}.com/p", "domain": f"tienda{i}.com", "rank": i,
      "title": "Pedro Sofa", "h1": ["Pedro Sofá Chesterfield Tufting"],
-     "h2": ["Chesterfield tufting"], "texto": "A pedro sofá with chesterfield tufting."}
+     "h2": ["Chesterfield tufting", "Tufted leather sofa"],
+     "texto": "A pedro sofá with chesterfield tufting. A tufted leather sofa."}
     for i in (1, 2, 3)
 ]
 
@@ -254,7 +257,7 @@ PAGINAS = [
 def test_sin_gsc_busca_el_mismo_producto_en_competidores(tmp_path):
     comp = FakeCompetidores(PAGINAS)
     pipe = _pipeline(tmp_path, gsc=FakeGSC([]), competidores=comp,
-                     vol={"chesterfield tufting": 50})
+                     vol={"chesterfield tufting": 50, "leather sofa": 50})
     res = pipe.process(URL)
     assert comp.consultas == ["Pedro Sofá Cassoni"]
     assert res.competidores
@@ -471,3 +474,30 @@ def test_keywords_que_rankea_la_competencia_con_el_mismo_producto(tmp_path):
     assert "leather chesterfield sofa" in kws
     assert kws["leather chesterfield sofa"]["volume"] == 2900     # no lo pisa la caché
     assert "tienda1 chesterfield" not in kws                      # la marca del competidor
+
+
+# --- intención en Google (devolución SEO 6-nov) --------------------------------
+class _SerpFijo:
+    def __init__(self, filas):
+        self.filas, self.pedidas = filas, []
+
+    def serp_organico(self, kw):
+        self.pedidas.append(kw)
+        return self.filas
+
+
+def test_sin_datos_de_google_no_se_elige_a_ciegas(tmp_path):
+    pipe = _pipeline(tmp_path)
+    pipe.intencion = _SerpFijo([])
+    res = pipe.process(URL)
+    assert res.selected == []
+    assert "sin datos de Google" in pipe.db.get_state(URL).selection_reason
+
+
+def test_keyword_de_categoria_se_reemplaza(tmp_path):
+    coleccion = [{"title": f"Chesterfield Sofas {i}", "domain": "x.com"} for i in range(8)]
+    pipe = _pipeline(tmp_path)
+    pipe.intencion = _SerpFijo(coleccion)
+    res = pipe.process(URL)
+    assert res.selected == []
+    assert "búsqueda de categoría" in pipe.db.get_state(URL).selection_reason

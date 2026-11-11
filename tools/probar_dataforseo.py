@@ -59,8 +59,8 @@ def main(argv=None) -> int:
 
     if comp:
         antes = f.costo_usd
-        rk = f.ranked_keywords(comp[0]["url"])
-        print(f"\n2) Keywords que rankea {comp[0]['domain']}: {len(rk)} · {costo(antes)}")
+        rk = f.ranked_keywords(comp[0]["url"], patron=comp[0].get("patron", ""))
+        print(f"\n2) Keywords que rankea {comp[0]['url']}: {len(rk)} · {costo(antes)}")
         for r in rk[:8]:
             print(f"   {r['keyword']} · vol {r['volume']} · dif {r['difficulty']} · "
                   f"{r['intent']} · pos {r['posicion_competidor']}")

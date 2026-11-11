@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import pytest
 """Selección de las 3 keywords objetivo (regla SEO 3-nov-2026)."""
 from cassoni.keywords import elegir_keywords
 
@@ -204,3 +205,56 @@ def test_filtros_de_intencion_y_de_otro_producto():
     assert "otro producto" in motivo("cleopatra chair sofa", "Cleopatra Chair", "OAK", cats=["Chairs"])
     assert "compra" in motivo("cleopatra chair wood for sale", "Cleopatra Chair", "OAK", "Wood: Rosewood")
     assert "H1" in motivo("hermes beds", "Hermes Maxi Bed", "DV Home", cats=["Double Beds"])
+
+
+def test_investigacion_toda_palabra_respaldada_por_la_ficha():
+    """Prueba real 4-nov: pasaban 'metal folding chairs' en la silla Shibari y
+    'lamp led for nails' en la aplique Illan por compartir UNA palabra."""
+    from cassoni.keywords import elegir_keywords
+    cands = [{"keyword": "metal folding chairs", "volume": 9900, "difficulty": 5,
+              "origen": "investigacion"},
+             {"keyword": "metal designer chair", "volume": 300, "difficulty": 5,
+              "origen": "investigacion"},
+             {"keyword": "rope chair", "volume": 200, "difficulty": 5,
+              "origen": "competidor"}]
+    out = elegir_keywords(cands, descripcion="<p>A chair in black metal wrapped in rope.</p>",
+                          texto_producto="Shibari Chair Visionnaire Chairs Material: Metal, Rope",
+                          texto_especifico="Shibari Chair Visionnaire Material: Metal, Rope",
+                          nombre="Shibari Chair", marca="Visionnaire", categorias=["Chairs"],
+                          texto_ficha="Shibari Chair Visionnaire Chairs Material: Metal, Rope "
+                                      "A chair in black metal wrapped in rope.")
+    elegidas = [e["keyword"] for e in out["elegidas"]]
+    assert "metal folding chairs" not in elegidas
+    assert any(d["keyword"] == "metal folding chairs" and "folding" in d["motivo"]
+               for d in out["descartadas"])
+    assert "metal designer chair" in elegidas
+
+
+@pytest.mark.parametrize("kw,nombre,motivo", [
+    ("chair legs", "Cleopatra Chair", "pieza"),
+    ("table top", "Rock Coffee Table", "pieza"),
+    ("marble side table", "Rock Coffee Table", "otro tipo"),
+    ("collection of furniture", "Bakkarat Table", "no nombra el tipo"),
+])
+def test_problema_de_tipo(kw, nombre, motivo):
+    from cassoni.keywords import problema_de_tipo, tipo_de_producto
+    assert motivo in problema_de_tipo(kw, nombre, tipo_de_producto(nombre))
+
+
+def test_tipo_correcto_pasa():
+    from cassoni.keywords import problema_de_tipo, tipo_de_producto
+    assert problema_de_tipo("marble coffee table", "Rock Coffee Table",
+                            tipo_de_producto("Rock Coffee Table")) == ""
+    assert problema_de_tipo("teak outdoor sofa", "Cruise Sofa", tipo_de_producto("Cruise Sofa")) == ""
+
+
+@pytest.mark.parametrize("kw,ficha,sale", [
+    ("leather armchair", "Cleopatra Chair Armrest: Armless Cover: Leather", True),
+    ("outdoor sectional sofa", "Cruise Sofa Shape: Straight. The three seater sofa", True),
+    ("large antique mirror", "Tiffany Mirror frame in antique bronze satin", True),
+    ("antique mirror", "An antique mirror from 1890 with gilded frame", False),
+    ("leather armchair", "Club Armchair Armrest: With Armrests", False),
+])
+def test_contradice_la_ficha(kw, ficha, sale):
+    from cassoni.keywords import contradice_la_ficha
+    assert bool(contradice_la_ficha(kw, ficha)) is sale

@@ -246,6 +246,80 @@ def html_inseguro(original: str, editado: str) -> list[str]:
     return issues
 
 
+# --- modo reescritura (devolución SEO 6-nov-2026) ---
+_NUMERO_RX = re.compile(r"\d+(?:[.,]\d+)?(?:/\d+)?")
+_TAGS_REESCRITURA = {"p", "h2", "ul", "li", "strong", "em", "a", "br"}
+REESCRITURA_MIN_PALABRAS = 70
+REESCRITURA_MAX_PALABRAS = 200
+
+
+def numeros(texto: str) -> set[str]:
+    """'33 1/2" … 2700K … 1,265' → {'33', '1/2', '2700', '1265'}."""
+    out = set()
+    for n in _NUMERO_RX.findall(strip_html(texto or "")):
+        n = n.replace(",", "") if re.fullmatch(r"\d{1,3},\d{3}", n) else n
+        out.add(n)
+    return out
+
+
+def numeros_sin_respaldo(descripcion: str, fuentes: str) -> list[str]:
+    """Números de la descripción que no están en la ficha (descripción original,
+    atributos, medidas). Una medida o un dato técnico inventado es lo más grave
+    que puede escribir el redactor: se controla en código, no con el LLM."""
+    permitidos = numeros(fuentes)
+    return sorted(n for n in numeros(descripcion) if n not in permitidos)
+
+
+def check_reescritura(editado: dict, *, keywords: Iterable[str] = (), fuentes: str = "",
+                      url_categoria: str = "") -> list[str]:
+    """Issues de una descripción REESCRITA con la plantilla del SEO (vacía = cumple).
+    No se mide la conservación del original: la plantilla lo reemplaza."""
+    issues: list[str] = []
+    desc = editado.get("description") or ""
+    plano = strip_html(desc)
+    wc = word_count(desc)
+    if wc < REESCRITURA_MIN_PALABRAS:
+        issues.append(f"La descripción es corta: {wc} palabras (mínimo "
+                      f"{REESCRITURA_MIN_PALABRAS})")
+    if wc > REESCRITURA_MAX_PALABRAS:
+        issues.append(f"La descripción es larga: {wc} palabras (máximo "
+                      f"{REESCRITURA_MAX_PALABRAS})")
+    h2c = h2_count(desc)
+    if not 1 <= h2c <= reglas.MAX_H2:
+        issues.append(f"La descripción tiene que tener 1 o 2 secciones con título <h2> "
+                      f"(tiene {h2c})")
+    t = _tags(desc)
+    extras = sorted(set(t.tags) - _TAGS_REESCRITURA)
+    if extras:
+        issues.append(f"Etiquetas HTML no permitidas: {', '.join(extras)}")
+    if t.eventos or t.urls_peligrosas:
+        issues.append("El HTML tiene atributos de evento o URLs javascript:/data:")
+    ajenos = sorted(link for link in t.links if link != url_categoria)
+    if ajenos:
+        issues.append(f"Solo se permite el enlace a la categoría ({url_categoria or 'ninguna'})"
+                      f"; sobra: {', '.join(ajenos[:2])}")
+    if t.tags.get("a", 0) > 1:
+        issues.append("Hay más de un enlace: va uno solo, a la categoría")
+    inventados = numeros_sin_respaldo(desc, fuentes)
+    if inventados:
+        issues.append(f"Números que la ficha no tiene (dato inventado): "
+                      f"{', '.join(inventados[:6])}")
+    vacia = _FRASE_VACIA_RX.search(plano)
+    if vacia:
+        issues.append(f"Frase genérica que no describe este producto («{vacia.group(0)}»)")
+    for kw in keywords:
+        kw = (kw or "").strip()
+        if not kw:
+            continue
+        usos = usos_de(kw, plano)
+        if usos == 0:
+            issues.append(f"La keyword '{kw}' no quedó EXACTA en la descripción")
+        elif usos > reglas.SEC_MAX_USOS:
+            issues.append(f"La keyword '{kw}' aparece {usos} veces (máximo "
+                          f"{reglas.SEC_MAX_USOS})")
+    return issues
+
+
 # frases de interiorismo genérico: no dicen nada de ESTE producto (prueba real
 # 3-nov: "brings a tailored, architectural presence to the room")
 _FRASE_VACIA_RX = re.compile(
