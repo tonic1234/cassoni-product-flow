@@ -1,0 +1,21 @@
+# semilla 20261111, 3666 fichas con >= 50 impresiones en GSC, estratificadas por familia
+# accessories: Balloon Dog - White Diamond
+# entertainment: Nivola Driving Simulator - Heritage Edition
+# furniture: W017 Sideboard
+# lighting: Kin Suspension Lamp
+# outdoor: Ludo Swing
+# accessories: Manta Ray Decorative Sculpture
+# entertainment: Arena Table Tennis Table
+# furniture: Domino Lounge Chair
+# lighting: Spider Floor Lamp
+# outdoor: Apsara Sectional
+https://cassoni.com/product/cas-jul-balloon-dog-sculpture-style-white-diamond-01/
+https://cassoni.com/product/nivola-heritage-modern-exclusive-driving-simulator-teckell/
+https://cassoni.com/product/w017-classic-inlaid-mother-of-pearl-unique-sideboard-zanaboni/
+https://cassoni.com/product/kin-high-end-suspension-lamp-oluce/
+https://cassoni.com/product/ludo-swing-luxury-outdoor-sculptural-organic-shape-rope-weave-atmosphera/
+https://cassoni.com/product/cas-dds-manta-ray-sculpture-01/
+https://cassoni.com/product/cas-vmr-new-desire-table-tennis-table-01/
+https://cassoni.com/product/domino-elegant-premium-lounge-chair/
+https://cassoni.com/product/spider-prestigious-floor-lamp-oluce/
+https://cassoni.com/product/apsara-refined-outdoor-sectional-by-giorgetti/

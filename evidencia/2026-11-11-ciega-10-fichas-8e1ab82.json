@@ -1,0 +1,311 @@
+{
+ "meta": {
+  "modo": "reescritura",
+  "llm": "deepseek-flash",
+  "commit": "8e1ab82bebf5776d75e91d4f66107255fd258455",
+  "codigo_con_cambios_sin_commit": false,
+  "dry_run": true,
+  "costos": {
+   "tokens_in": 42120,
+   "tokens_out": 55965,
+   "cache_hit": 19712,
+   "cache_miss": 22408,
+   "usd": 0.07399872,
+   "llamadas": 27,
+   "dfs_usd": 0.7142400000000001
+  }
+ },
+ "fichas": [
+  {
+   "url": "https://cassoni.com/product/cas-jul-balloon-dog-sculpture-style-white-diamond-01/",
+   "status": "processed",
+   "reason": "dry_run (sin tocar WooCommerce) · sin keywords objetivo que una ficha pueda ganar",
+   "h1_original": "Balloon Dog - White Diamond",
+   "h1": "Balloon Dog - White Diamond Hand-Painted Pop Art Sculpture by Juliarte",
+   "descripcion": "<p>The Balloon Dog - White Diamond is a hand-painted pop art sculpture by Juliarte, made of stone powder and fiber glass in a limited edition. Each piece is signed and numbered and arrives with its certificate.</p><h2>INDOOR AND OUTDOOR USE</h2><p>Stone powder and fiber glass allow the sculpture to sit on a terrace as well as in a living room. At 39 3/8\" H it reads close to eye level, while the 41 3/8\" W x 11 7/8\" D base asks for a wide console or a floor corner with clearance.</p><h2>EDITION AND CERTIFICATE</h2><ul><li>Hand-painted, limited edition</li><li>Signed and numbered</li><li>Certificate included</li><li>No two pieces are exactly alike</li></ul><p>Every piece is painted individually, so slight variations from one to the next are part of how it is made, not a defect. The certificate that ships with it documents the edition. If you are comparing formats, look at the <a href=\"https://cassoni.com/product-category/accessories/high-end-decor/pop-art-sculptures/\">pop art sculptures</a> in the category and match the height to the wall you have in mind.</p>",
+   "descripcion_original": "<p class=\"p1\">Limited edition hand-painted sculpture made of stone powder and fiber glass, suitable for indoor and outdoor use. All pieces in this collection are signed and numbered, and include their respective certificate.</p>\n<p>Each piece of art is unique and unrepeatable; therefore, no two pieces are exactly alike. Variations may occur within the chosen style, as part of the inherent uniqueness of handmade or individually created works. Made in the EU.</p>\n",
+   "keywords": [],
+   "keywords_detalle": [],
+   "seleccion": "elegidas: ninguna | descartadas: white balloon dog (no nombra el producto ni un atributo real); balloon dog white (no nombra el producto ni un atributo real); white woof balloon dog sculpture (la ficha no dice 'woof'); balloon dog diamond art (sin volumen de búsqueda); welcher künstler ist das? (no es de este producto)",
+   "validacion": {
+    "aprobado": true,
+    "issues": [],
+    "razon": "Todos los datos afirmados (stone powder y fiber glass, hand-painted, limited edition, signed and numbered, certificate, piezas únicas, uso indoor/outdoor, medidas 41 3/8\" W x 11 7/8\" D x 39 3/8\" H) provienen de la ficha; no hay contradicciones ni afirmaciones inventadas (no se declara Made in Italy). El H1 identifica producto, material/técnica y marca, y no hay keywords forzadas ni relleno de catálogo.",
+    "omitidas": [],
+    "mismo_nombre": [],
+    "tipo": "",
+    "url_categoria": "https://cassoni.com/product-category/accessories/high-end-decor/pop-art-sculptures/",
+    "h1_respaldo_usado": false
+   },
+   "intentos": 1,
+   "segundos": 13.4
+  },
+  {
+   "url": "https://cassoni.com/product/nivola-heritage-modern-exclusive-driving-simulator-teckell/",
+   "status": "processed",
+   "reason": "dry_run (sin tocar WooCommerce) · sin keywords objetivo que una ficha pueda ganar",
+   "h1_original": "Nivola Driving Simulator - Heritage Edition",
+   "h1": "Nivola Heritage Edition Canaletto Walnut Driving Simulator by Teckell",
+   "descripcion": "<p>The Nivola Driving Simulator – Heritage Edition is a Canaletto walnut driving simulator by Teckell, designed by Adriano Design and made in Italy. The cabinet body encloses a leather-lined cockpit. The display monitor and monitor support are not included.</p>\n<h2>DRIVING PLATFORM</h2>\n<p>Direct Drive steering with high-precision force feedback, adjustable racing pedals, an integrated performance computer, racing simulation software and a premium audio system are built into the cockpit.</p>\n<h2>FINISHES AND FOOTPRINT</h2>\n<ul>\n<li>Canaletto walnut body with a leather interior</li>\n<li>Leather upholstery finishes from a curated selection</li>\n<li>Professional-grade driving platform integrated into the cabinet</li>\n</ul>\n<p>At 75 1/8\" W x 47 1/4\" D x 32 1/2\" H it takes a dedicated wall in a residence, executive office or lounge. The configuration ships without the display, so plan that purchase separately, and choose the leather finish against the upholstery already in the space. See our <a href=\"https://cassoni.com/product-category/entertainment/see-more-entertainment/\">driving simulators</a> for the rest of the range.</p>",
+   "descripcion_original": "<p class=\"PDq2pG_selectionAnchorContainer\" data-start=\"373\" data-end=\"876\">The Nivola Heritage Edition Design Driving Simulator represents Teckell's most refined interpretation of professional driving simulation, where advanced technology meets the timeless elegance of Italian craftsmanship. Designed by Adriano Design and handcrafted in Italy, this exclusive simulator transcends the conventional concept of a driving simulator to become a sophisticated design piece, conceived to enrich luxury residences, private collections, executive offices, and hospitality environments. Please note: Monitor is not included.</p>\n<p class=\"PDq2pG_selectionAnchorContainer\" data-start=\"373\" data-end=\"876\">Inspired by the tradition of fine Italian cabinetmaking, the Heritage Edition is distinguished by its sculptural body crafted in exquisite Canaletto walnut and complemented by a refined leather interior. Every material has been carefully selected to achieve a harmonious balance between aesthetics, comfort, and functionality, resulting in an object that expresses the same level of excellence whether admired as a statement piece or experienced behind the wheel. Entirely made in Italy, each simulator reflects Teckell's commitment to exceptional craftsmanship, precision engineering, and timeless design.</p>\n<p data-start=\"1486\" data-end=\"2090\">Beyond its remarkable craftsmanship, the Nivola Heritage Edition incorporates a professional-grade driving platform engineered to deliver an exceptionally immersive and realistic driving experience. The simulator features a Direct Drive steering system with high-precision force feedback, adjustable racing pedals, an integrated performance computer, premium racing simulation software, and a premium audio system, all seamlessly integrated into the cockpit to preserve the purity of its architectural design while delivering outstanding responsiveness and precision.</p>\n<p data-start=\"1486\" data-end=\"2090\">Completing its exclusive character, the Heritage Edition offers a curated selection of premium leather upholstery finishes, allowing each simulator to complement a wide variety of interior projects while preserving the distinctive identity of the collection. The result is a collectible design object that seamlessly combines contemporary engineering, handcrafted Italian manufacturing, and immersive driving performance, redefining the experience of luxury simulation.</p>\n<p class=\"PDq2pG_selectionAnchorContainer\" data-start=\"1613\" data-end=\"1624\">Please Note: This configuration does not include the display monitor or monitor support. Images showing these elements are intended solely to illustrate a possible installation and overall setup.</p>\n<p data-start=\"2092\" data-end=\"2561\">Made in Italy.</p>\n",
+   "keywords": [],
+   "keywords_detalle": [],
+   "seleccion": "elegidas: ninguna | descartadas: driving simulator (no nombra el producto ni un atributo real); realistic driving simulators (no nombra el producto ni un atributo real); best driving simulator (la ficha no dice 'best'); most realistic driving simulator (no nombra el producto ni un atributo real); best car driving simulator (la ficha no dice 'best', 'car'); best driving sim (la ficha no dice 'best', 'sim'); wood sim racing cockpit (no es de este producto); teckell nivola (sin volumen de búsqueda)",
+   "validacion": {
+    "aprobado": true,
+    "issues": [],
+    "razon": "Todos los datos (Canaletto walnut, interior de cuero, selección de acabados en cuero, plataforma Direct Drive con pedales ajustables, computadora de rendimiento, software y audio premium, medidas, autoría de Adriano Design, fabricación en Italia y exclusión del monitor y su soporte) provienen de la ficha. El H1 identifica producto, edición, material y marca; no hay keywords forzadas ni contradicciones.",
+    "omitidas": [],
+    "mismo_nombre": [],
+    "tipo": "",
+    "url_categoria": "https://cassoni.com/product-category/entertainment/see-more-entertainment/",
+    "h1_respaldo_usado": false
+   },
+   "intentos": 2,
+   "segundos": 42.9
+  },
+  {
+   "url": "https://cassoni.com/product/w017-classic-inlaid-mother-of-pearl-unique-sideboard-zanaboni/",
+   "status": "processed",
+   "reason": "dry_run (sin tocar WooCommerce) · sin keywords objetivo que una ficha pueda ganar",
+   "h1_original": "W017 Sideboard",
+   "h1": "Sideboard with Mother-of-Pearl Inlay by Zanaboni",
+   "descripcion": "<p>This Zanaboni sideboard sets a wood body against a front of 16,000 Australian mother-of-pearl flakes. Aliothis mother-of-pearl, Avoriolina and French Thuya root frame the floral inlay in yew, cypress, bosso and pao marfin.</p>\n<h2>INLAY AND MATERIALS</h2>\n<p>Floral details draw on a palette of yew, cypress, bosso and pao marfin, set against French Thuya root. The mother-of-pearl comes in Australian and Aliothis types, with Avoriolina alongside.</p>\n<h2>DOORS AND DIMENSIONS</h2>\n<p>Three doors run across the front. At 74\" W x 22 7/8\" D x 39 3/4\" H the case runs long, so check the wall space before you order. Compare widths across our <a href=\"https://cassoni.com/product-category/furniture/living-room/sideboards-cupboards/\">sideboards</a> if you need a shorter span.</p>",
+   "descripcion_original": "<p>The creation of this classic sideboard is a profound tribute to the heritage of the great art masters, a piece where the echoes of ancient techniques resonate through every hand-carved curve and shimmering inlay. Unlike mass-produced furniture, this masterpiece is born from the memory of a tradition passed from generation to generation, ensuring that the soul of the craftsman is embedded within the wood itself. The construction process represents a patient, disciplined approach to luxury, where the skillful hands of master artisans transform raw, precious materials into a work of timeless beauty that remains classic forever.</p>\n<p>The absolute elegance of the sideboard is defined by its unparalleled marquetry, featuring a breathtaking mosaic of 16,000 individual flakes of Australian mother-of-pearl. This meticulous inlay work is further elevated by the iridescent glow of Aliothis mother-of-pearl and the smooth texture of Avoriolina, all set against the rare and swirling grain of French Thuya root. Each floral detail is a testament to the artisan's precision, using a natural palette of Yew, Cypress, Bosso, and Pao Marfin to \"paint\" with wood. This dedication to authentic, traditional craftsmanship ensures that the sideboard is not merely a functional object, but an exclusive artistic furniture item that serves as a permanent guardian of high-culture design.</p>\n",
+   "keywords": [],
+   "keywords_detalle": [],
+   "seleccion": "elegidas: ninguna | descartadas: natural wood sideboard (búsqueda de categoría: Google muestra colecciones (7 de 8 títulos en plural), no fichas (intención en Google)); contemporary wood sideboard (búsqueda de categoría: Google muestra colecciones (6 de 8 títulos en plural), no fichas (intención en Google)); furniture luxury (no es de este producto); high end furniture shop (no es de este producto); furniture high end (no es de este producto); high end furniture store (no es de este producto); patio doors (no nombra el tipo de producto); luxury furniture store (no es de este producto)",
+   "validacion": {
+    "aprobado": true,
+    "issues": [],
+    "razon": "Todos los datos (16.000 lamas de nácar australiano, Aliothis, Avoriolina, raíz de Thuya francés, flores en tejo, ciprés, bosso y pao marfin, tres puertas y medidas) provienen de la ficha; el H1 identifica el producto por su material distintivo y no hay contradicciones ni keywords forzadas. La segunda sección retoma la lista de materiales ya mencionada en la entradilla, pero sin afirmar nada nuevo ni falso y sin relleno genérico, por lo que no alcanza para rechazar.",
+    "omitidas": [],
+    "mismo_nombre": [],
+    "tipo": "sideboard",
+    "url_categoria": "https://cassoni.com/product-category/furniture/living-room/sideboards-cupboards/",
+    "h1_respaldo_usado": false
+   },
+   "intentos": 1,
+   "segundos": 40.2
+  },
+  {
+   "url": "https://cassoni.com/product/kin-high-end-suspension-lamp-oluce/",
+   "status": "processed",
+   "reason": "dry_run (sin tocar WooCommerce) · sin keywords objetivo que una ficha pueda ganar",
+   "h1_original": "Kin Suspension Lamp",
+   "h1": "Kin Suspension Flared Cast Aluminum Lamp by Oluce",
+   "descripcion": "<p>The Kin Suspension lamp by Oluce is a flared cast aluminum pendant designed by Francesco Rota, finished with a methacrylate disc that diffuses the LED light. Made in Italy.</p><h2>FLARED BODY AND DIFFUSER</h2><p>The cast aluminum body holds the LED core, and its slim thicknesses keep the flare light. The methacrylate disc diffuses that light with softness.</p><h2>SIZES AND LIGHT SOURCE</h2><ul><li>Size A: Ø11 7/8\" x 10 1/4\" H + 90 1/2\" of Cable (Adjustable)</li><li>Size B: Ø5 7/8\" x 5 1/8\" H + 94 1/2\" of Cable (Adjustable)</li><li>Light source: 1 x max 4W (500 lm) or 1 x max 9W (1210 lm)</li></ul><p>Both cables adjust, so you can set the drop for the ceiling you have. Size A spans Ø11 7/8\" across; Size B spans Ø5 7/8\", so choose by the width your room allows. If you are weighing other options, compare these <a href=\"https://cassoni.com/product-category/lighting/chandeliers-suspension-lamps/\">suspension lamps</a> by size first.</p>",
+   "descripcion_original": "<p>A cast aluminum body with a LED core are the distinctive structural elements that define Kin, masterfully designed by Francesco Rota as a suspension lamp of explicit yet refined beauty. Its flared form, with remarkably slim thicknesses, is completed by a methacrylate disc that diffuses the light with precision and softness.</p>\n<p>Available in two sizes and in elegant finishes, Kin embodies the perfect balance between functionality and sophistication. This piece of designer lighting stands out as both a decorative and functional presence, offering versatility that makes it suitable for a wide range of domestic interiors as well as an infinite variety of contract settings.</p>\n<p>With its luxury lighting design and contemporary light fixture character, Kin becomes not only a source of illumination but also a statement piece, seamlessly integrating into refined spaces while elevating their atmosphere.</p>\n<p>Made in Italy.</p>\n",
+   "keywords": [],
+   "keywords_detalle": [],
+   "seleccion": "elegidas: ninguna | descartadas: red lamp treatment (búsqueda informativa: es para un artículo, no para la ficha); rejuvenation lighting company (no es de este producto); lamp (no menciona ningún material, acabado o estilo de la ficha); floor lamps (no menciona ningún material, acabado o estilo de la ficha); warmer lamp candle (búsqueda informativa: es para un artículo, no para la ficha); lighting under kitchen cabinet (no es de este producto); pendant light hanging lamp (encadena sinónimos del tipo (light, lamp): no es una frase que se escriba); pendants for lighting (no es de este producto)",
+   "validacion": {
+    "aprobado": true,
+    "issues": [],
+    "razon": "Todos los datos (aluminio fundido, LED, disco de metacrilato, forma acampanada, Francesco Rota, Made in Italy, medidas, cable regulable y fuentes de luz) provienen de la ficha; el H1 identifica material y forma, y no hay keywords forzadas ni relleno relevante.",
+    "omitidas": [],
+    "mismo_nombre": [],
+    "tipo": "lamp",
+    "url_categoria": "https://cassoni.com/product-category/lighting/chandeliers-suspension-lamps/",
+    "h1_respaldo_usado": false
+   },
+   "intentos": 1,
+   "segundos": 18.5
+  },
+  {
+   "url": "https://cassoni.com/product/ludo-swing-luxury-outdoor-sculptural-organic-shape-rope-weave-atmosphera/",
+   "status": "processed",
+   "reason": "dry_run (sin tocar WooCommerce) · sin keywords objetivo que una ficha pueda ganar",
+   "h1_original": "Ludo Swing",
+   "h1": "Ludo Swing Rope Hanging Chair by Atmosphera",
+   "descripcion": "<p>The Ludo Swing by Atmosphera is an outdoor hanging chair with a soft rope backrest and a sculptural organic shape. Its hand-woven backrest forms a flexible cradle for relaxed seating.</p><h2>SUSPENSION AND PLACEMENT</h2><p>Use the dimensions to check your hanging space before ordering. At 35 3/8&quot; W x 32 5/8&quot; D x 19 1/4&quot; H, it fits a lounge corner or private terrace. The weather-resistant materials are intended for open-air use. Browse our <a href=\"https://cassoni.com/product-category/outdoor/living-area/hammocks/\">outdoor hanging chairs</a> to compare suspended seating.</p>",
+   "descripcion_original": "<p>The Ludo swing by Atmosphera is an iconic piece of suspended furniture that brings a sense of weightless luxury to the modern garden. Defined by its distinctive organic shape and a strong sculptural matrix, this premium outdoor swing serves as both a visual centerpiece and a private retreat. Its design provides a sign of warmth and artisanal character, making it an elegant addition to luxury outdoor porches, private terraces, or contemporary lounge areas.</p>\n<p>The Ludo swing masterfully balances aesthetics with emotion; on the one hand, a formal style allows it to integrate seamlessly into sophisticated architectural environments, while thanks to the soft rope backrest, it becomes an invitation to sit back in a more intimate and relaxed way. The tactile, hand-woven rope provides a flexible and supportive cradle, allowing the user to enjoy a gentle swaying motion in total comfort. Reflecting the pinnacle of Italian craftsmanship, the Ludo swing is a refined blend of weather-resistant materials and imaginative form, offering a durable sanctuary for high-end open-air living.</p>\n",
+   "keywords": [],
+   "keywords_detalle": [],
+   "seleccion": "elegidas: ninguna | descartadas: ludo swing (ya está en la descripción)",
+   "validacion": {
+    "aprobado": true,
+    "issues": [],
+    "razon": "La descripción se limita a los datos de la ficha (forma orgánica, respaldo de cuerda tejida a mano, materiales resistentes a la intemperie, dimensiones exactas y uso en exterior), sin inventar materiales, acabados ni certificaciones. El H1 identifica correctamente el producto (swing/silla colgante de cuerda de Atmosphera) y no hay keywords forzadas ni contradicciones.",
+    "omitidas": [],
+    "mismo_nombre": [],
+    "tipo": "",
+    "url_categoria": "https://cassoni.com/product-category/outdoor/living-area/hammocks/",
+    "h1_respaldo_usado": false
+   },
+   "intentos": 2,
+   "segundos": 42.1
+  },
+  {
+   "url": "https://cassoni.com/product/cas-dds-manta-ray-sculpture-01/",
+   "status": "processed",
+   "reason": "dry_run (sin tocar WooCommerce)",
+   "h1_original": "Manta Ray Decorative Sculpture",
+   "h1": "Manta Ray Decorative Crystal Sculpture by Duccio di Segna",
+   "descripcion": "<p>This manta ray sculpture by Duccio di Segna is a two-piece composition in Colle Val d'Elsa crystal, a material renowned for its exceptional clarity and radiant brilliance. Made in Italy.</p><h2>TWO RAYS, ONE MOVEMENT</h2><p>Each ray is sculpted with billowing wings and soft lines, so the pair suggests manta rays gliding and turning together in the water.</p><h2>SIZE AND DISPLAY</h2><ul><li>Two-piece composition: Ø17 3/4\" x 11\" H</li></ul><p>The composition stands 11\" high within a Ø17 3/4\" span, so check your surface before you place it. It is intended as a centerpiece. Explore more <a href=\"https://cassoni.com/product-category/accessories/high-end-decor/colle-crystal-murano-sculptures/\">crystal sculptures</a>.</p>",
+   "descripcion_original": "<p>Fluid, elegant and striking in form, this two-piece Manta Ray composition captures the majestic grace of one of the ocean's most iconic creatures. Sculpted from luminous Colle Val d'Elsa crystal, renowned for its exceptional clarity and radiant brilliance, each manta ray glides effortlessly through a moment of underwater serenity.</p>\n<p>This sculptural pair, with their billowing wings and soft lines, evokes the natural choreography of these gentle giants as they move harmoniously through the depths. A symbol of grace, freedom and serene strength, the Manta Ray Duo is perfect as a statement piece or a centerpiece. A refined composition that brings timeless elegance and the spirit of the sea to any refined interior. Made in Italy.</p>\n",
+   "keywords": [
+    "manta ray sculpture"
+   ],
+   "keywords_detalle": [
+    {
+     "keyword": "manta ray sculpture",
+     "clicks": 0,
+     "impressions": 4,
+     "position": 1,
+     "ctr": 0,
+     "volume": 140,
+     "spell": null
+    }
+   ],
+   "seleccion": "elegidas: manta ray sculpture (gsc, vol 140) | descartadas: table top (no es de este producto); manta ray decor (la ficha no dice 'decor')",
+   "validacion": {
+    "aprobado": true,
+    "issues": [],
+    "razon": "Todos los datos (composición de dos piezas, cristal de Colle Val d'Elsa, medidas, Made in Italy, alas onduladas, uso como centerpiece) provienen de la ficha; la keyword 'manta ray sculpture' aparece de forma natural en la primera frase y el H1 identifica material y tipo de producto.",
+    "omitidas": [],
+    "mismo_nombre": [],
+    "tipo": "sculpture",
+    "url_categoria": "https://cassoni.com/product-category/accessories/high-end-decor/colle-crystal-murano-sculptures/",
+    "h1_respaldo_usado": false
+   },
+   "intentos": 2,
+   "segundos": 46.9
+  },
+  {
+   "url": "https://cassoni.com/product/cas-vmr-new-desire-table-tennis-table-01/",
+   "status": "processed",
+   "reason": "dry_run (sin tocar WooCommerce) · sin keywords objetivo que una ficha pueda ganar",
+   "h1_original": "Arena Table Tennis Table",
+   "h1": "Arena Table Tennis Table with V-Shaped Base by Vismara",
+   "descripcion": "<p>Arena Table Tennis is a multifunctional table designed by Pino Vismara for Vismara, with an extra matt lacquered top printed with a table tennis layout. Made in Italy.</p>\n<h2>TOP AND BASE FINISHES</h2>\n<p>The lacquered wooden V-shaped base comes in matt, Soft Touch or glossy finish, with steel details in polished chrome or polished gold plated metal.</p>\n<h2>DRAWERS AND NET</h2>\n<ul>\n<li>Two hidden drawers under the top, supplied with 4 paddles and 8 balls</li>\n<li>Removable net with steel tensioners</li>\n<li>Works as a conference table, a dining table or a playing field</li>\n</ul>\n<p>Choose it when one surface has to host meetings, meals and matches in the same room. It measures 107 7/8\" W x 72 5/8\" D x 36 1/4\" H, so check the floor space before ordering. See our <a href=\"https://cassoni.com/product-category/entertainment/game-tables/table-tennis-tables/\">table tennis tables</a> for other sizes and versions.</p>",
+   "descripcion_original": "<p>After an intense business meeting, what is better than a table tennis match with your colleagues to relax and clear your mind? This scenery, nowadays a common reality in many working places, leads to this luxury professional table tennis table that combines a meeting and a tennis table at the same time. A piece of high-end design with a strong personality, characterized by an eccentric look and a manic attention to details. Elegant drawers hide table tennis equipment and, just by setting up a professional net, the table becomes a perfect playing field.</p>\n<p>Multifunctional designer conference/dining/table tennis table. Top in extra matt lacquered finish with printed table tennis layout. Lacquered wooden V-shaped base in matt, Soft Touch or glossy finish with steel details in polished chrome or polished gold plated metal. This Italian designer ping pong table has two under top hidden drawers complete of 4 paddles and 8 balls. Removable net complete of steel tensioners. </p>\n<p>An exclusive Italian Table Tennis Table, perfect for high-end offices to work and enjoy to the fullest. Made in Italy.</p>\n",
+   "keywords": [],
+   "keywords_detalle": [],
+   "seleccion": "elegidas: ninguna | competidores: https://www.salonemilano.it/vismara-design, https://www.vismara.it/air-hockey-table-blow | descartadas: arena table (Google la asocia a 'game' (4 de 7 títulos) y la ficha no lo dice: es otro producto (intención en Google)); designer table tenni (búsqueda de categoría: Google muestra colecciones (8 de 9 títulos en plural), no fichas (intención en Google)); designer table tenni table (búsqueda de categoría: Google muestra colecciones (6 de 8 títulos en plural), no fichas (intención en Google)); ping pong table (genérica de la categoría, no de este producto); billiards table pool table (no menciona ningún material, acabado o estilo de la ficha); pool table (no menciona ningún material, acabado o estilo de la ficha); foosball table (no menciona ningún material, acabado o estilo de la ficha); air hockey table (no menciona ningún material, acabado o estilo de la ficha)",
+   "validacion": {
+    "aprobado": true,
+    "issues": [],
+    "razon": "Todos los datos (diseñador, medidas, acabados del tablero y de la base V, cajones con 4 palas y 8 bolas, red desmontable con tensores de acero, usos conferencia/comedor/ping pong, Made in Italy) figuran en la ficha. El H1 identifica el producto por su forma y marca, no hay contradicciones ni keywords forzadas y el tono es descriptivo.",
+    "omitidas": [],
+    "mismo_nombre": [],
+    "tipo": "table",
+    "url_categoria": "https://cassoni.com/product-category/entertainment/game-tables/table-tennis-tables/",
+    "h1_respaldo_usado": false
+   },
+   "intentos": 1,
+   "segundos": 32.0
+  },
+  {
+   "url": "https://cassoni.com/product/domino-elegant-premium-lounge-chair/",
+   "status": "processed",
+   "reason": "dry_run (sin tocar WooCommerce) · sin keywords objetivo que una ficha pueda ganar",
+   "h1_original": "Domino Lounge Chair",
+   "h1": "Domino Leather Lounge Chair by Modesign",
+   "descripcion": "<p>The Domino lounge chair by Modesign pairs a leather cover with a wood frame, made in Italy. The seat is generous and the backrest enveloping, and the chair is armless.</p>\n<h2>COVER, FRAME, AND LEGS</h2>\n<ul>\n<li><strong>Cover:</strong> leather</li>\n<li><strong>Frame:</strong> wood, on legs</li>\n<li><strong>Armrests:</strong> none</li>\n<li><strong>Backrest height:</strong> regular</li>\n<li><strong>Type:</strong> fixed</li>\n</ul>\n<h2>SIZE AND PLACEMENT</h2>\n<p>The chair measures 30 5/8\" W x 36 1/4\" D x 30 5/8\" H. Check the 36 1/4-inch depth against your floor plan before ordering: the footprint is deeper than it is wide. Living areas, lounge spaces, bedrooms, and hospitality settings all work. Browse all <a href=\"https://cassoni.com/product-category/furniture/dining-room/chairs-armchairs/\">chairs and armchairs</a> to compare covers and frames.</p>",
+   "descripcion_original": "<p class=\"isSelectedEnd\">The Domino Lounge Chair embodies a sophisticated expression of contemporary design, combining generous proportions, refined lines, and an inviting sense of comfort. Its distinctive silhouette is characterized by a harmonious interplay of soft curves and structured geometry, creating a balanced and elegant presence. Every detail is thoughtfully considered to create a cohesive design that brings subtle character and timeless appeal to the interior.</p>\n<p class=\"isSelectedEnd\">Designed to combine visual refinement with everyday comfort, the Domino Lounge Chair features a generous seat and enveloping backrest that create a supportive and relaxing experience. Its carefully balanced proportions and fluid contours give the chair a welcoming profile, while its versatile character allows it to integrate effortlessly into living areas, lounge spaces, bedrooms, and sophisticated hospitality settings.</p>\n<p class=\"isSelectedEnd\">More than a functional seating piece, the Domino Lounge Chair introduces a distinctive sense of character to the space. Its sculptural silhouette and understated elegance create a refined focal point without overpowering the surrounding environment, making it a versatile addition to a variety of contemporary interiors. A harmonious combination of comfort, proportion, and sophisticated design gives Domino a timeless presence.</p>\n<p>Made in Italy.</p>\n",
+   "keywords": [],
+   "keywords_detalle": [],
+   "seleccion": "elegidas: ninguna | competidores: https://www.merryfair.com/wp-content | descartadas: domino chair (búsqueda de categoría: Google muestra colecciones (5 de 6 títulos en plural), no fichas (intención en Google)); adirondack chairs chairs (no menciona ningún material, acabado o estilo de la ficha); chairs with recliner (búsqueda informativa: es para un artículo, no para la ficha); chair adirondack (no menciona ningún material, acabado o estilo de la ficha); adirondack chairs (no menciona ningún material, acabado o estilo de la ficha); recliner chair (no menciona ningún material, acabado o estilo de la ficha); chaise lounge with chair (no menciona ningún material, acabado o estilo de la ficha); chaise lounge and chairs (búsqueda informativa: es para un artículo, no para la ficha)",
+   "validacion": {
+    "aprobado": true,
+    "issues": [],
+    "razon": "Todos los datos (cuero, estructura de madera, patas, sin brazos, respaldo regular, fijo, medidas y 'Made in Italy') coinciden con la ficha; el H1 identifica el producto por material y tipo, y no hay keywords forzadas ni relleno repetitivo.",
+    "omitidas": [],
+    "mismo_nombre": [],
+    "tipo": "lounge chair",
+    "url_categoria": "https://cassoni.com/product-category/furniture/dining-room/chairs-armchairs/",
+    "h1_respaldo_usado": false
+   },
+   "intentos": 1,
+   "segundos": 27.2
+  },
+  {
+   "url": "https://cassoni.com/product/spider-prestigious-floor-lamp-oluce/",
+   "status": "processed",
+   "reason": "dry_run (sin tocar WooCommerce)",
+   "h1_original": "Spider Floor Lamp",
+   "h1": "Spider Fire-Painted Metal Floor Lamp by Oluce",
+   "descripcion": "<p>The <strong>Spider floor lamp</strong> is a fire-painted metal spotlight on a chromed vertical rod, designed by Joe Colombo in 1965 for Oluce. Made in Italy.</p><h2>REFLECTOR AND JOINT</h2><p>A melamine joint lets you tilt and reposition the reflector, so the light can be angled for reading or toward a wall. The Oluce Spider lamp won the first Golden Compass Award in 1967.</p><h2>BULB AND HEIGHT</h2><ul><li>Light source: 1 x max 48W (G9), without bulb</li><li>15 3/4\" W x 55 1/8\" H</li></ul><p>Check the 55 1/8\" H against the spot where you plan to place the lamp, and note that the bulb is not included. Spider is also made as a table version. See all <a href=\"https://cassoni.com/product-category/lighting/floor-lamps/\">floor lamps</a>.</p>",
+   "descripcion_original": "<p>Spider was designed by Joe Colombo in 1965 and has since become an iconic piece of designer lighting. This lamp is composed of a single luminaire in fire-painted metal, created expressly for a special horizontal spotlight bulb, mounted on a chromed vertical rod and supported by a painted metal base. A refined melamine joint allows the inclination and repositioning of the reflector, ensuring both versatility and functional beauty. The Spider family includes table and floor versions, offered in a variety of colors to complement different interiors.</p>\n<p>In 1967, Spider was awarded the first Golden Compass Award for Oluce, affirming its place as a timeless masterpiece in the history of design. In 1972, it was exhibited in New York at the groundbreaking show Italy: The New Domestic Landscape at MoMA. Today, Spider belongs to the permanent collections of the Triennale International Exhibition in Milan, the Philadelphia Museum of Art, the Kunstmuseum in Düsseldorf, and the Neue Sammlung Museum in Munich.</p>\n<p>With its sleek silhouette, innovative design, and luxury lighting aesthetics, Spider remains a prestigious and exclusive designer light fixture that continues to captivate admirers worldwide.</p>\n<p class=\"p1\">Made in Italy.</p>\n",
+   "keywords": [
+    "spider floor lamp",
+    "oluce spider lamp"
+   ],
+   "keywords_detalle": [
+    {
+     "keyword": "spider floor lamp",
+     "clicks": 0,
+     "impressions": 2,
+     "position": 4.5,
+     "ctr": 0,
+     "volume": 320,
+     "spell": null
+    },
+    {
+     "keyword": "oluce spider lamp",
+     "clicks": 0,
+     "impressions": 9,
+     "position": 10.333333333333334,
+     "ctr": 0,
+     "volume": 90,
+     "spell": null
+    }
+   ],
+   "seleccion": "elegidas: spider floor lamp (gsc, vol 320), floor spider lamp (gsc, vol 320), oluce spider lamp (gsc, vol 90) | descartadas: 3 bulb floor lamp (búsqueda de categoría: Google muestra colecciones (6 de 9 títulos en plural), no fichas (intención en Google)); red lamp treatment (búsqueda informativa: es para un artículo, no para la ficha); floor lamps (no menciona ningún material, acabado o estilo de la ficha); table lamps table lamps (no menciona ningún material, acabado o estilo de la ficha); pendant light hanging lamp (encadena sinónimos del tipo (light, lamp): no es una frase que se escriba); vanity lamp bathroom (no menciona ningún material, acabado o estilo de la ficha); arc floor lamp (no menciona ningún material, acabado o estilo de la ficha); kitchen island pendant lamp (no menciona ningún material, acabado o estilo de la ficha)",
+   "validacion": {
+    "aprobado": true,
+    "issues": [],
+    "razon": "Cada dato de la descripción (metal pintado al fuego, varilla cromada, rótula de melamina, Joe Colombo 1965, 1 x 48W G9 sin bombilla, 15 3/4\" W x 55 1/8\" H, Golden Compass 1967, versión de mesa, Made in Italy) aparece textualmente en la ficha. El H1 identifica producto, material y diseñador/marca, las keywords están integradas en oraciones con contenido real y no hay contradicciones ni relleno repetido; la mención de orientar el reflector se deriva de la rótula regulable documentada.",
+    "omitidas": [
+     {
+      "keyword": "floor spider lamp",
+      "motivo": "El orden invertido solo entraba en una oración que repetía el rod cromado y la base ya descritos en la apertura; existe únicamente para colocar la keyword."
+     }
+    ],
+    "mismo_nombre": [],
+    "tipo": "floor lamp",
+    "url_categoria": "https://cassoni.com/product-category/lighting/floor-lamps/",
+    "h1_respaldo_usado": false
+   },
+   "intentos": 3,
+   "segundos": 100.1
+  },
+  {
+   "url": "https://cassoni.com/product/apsara-refined-outdoor-sectional-by-giorgetti/",
+   "status": "processed",
+   "reason": "dry_run (sin tocar WooCommerce)",
+   "h1_original": "Apsara Sectional",
+   "h1": "Apsara Modular Outdoor Sectional by Giorgetti",
+   "descripcion": "<p>The Apsara modular outdoor sectional by Giorgetti is a luxury outdoor couch designed by Ludovica + Roberto Palomba. The protected aluminum base is powder-coated in carob with Afrormosia wood slats; the removable upholstery is waterproof outdoor technical fabric with piping. Made in Italy.</p>\n<h2>BASE AND UPHOLSTERY</h2>\n<p>The frame is metal, protected aluminum finished in carob and enriched with Afrormosia wooden slats alternated with aluminum elements. Covers come off completely, and the waterproof technical fabric with piping is built for outdoor conditions.</p>\n<h2>COMPOSITIONS AND SIZES</h2>\n<p>Eight compositions (Comp. 1 to Comp. 8) sit on two base depths: a classic proportion and an extra-large one for a deeper, more relaxed seat. Seat and backrest cushions are included; armrests can take a cover, low table, pockets or storage box. Sizes run from 131 1/2\" W x 100” D x 27 1/2\" H to 200 3/4\" W x 96” D x 27 1/2\" H, so check your footprint before choosing. To compare layouts, see our <a href=\"https://cassoni.com/product-category/outdoor/living-area/sofas-sectionals-living-area/\">outdoor sofas and sectionals</a>.</p>",
+   "descripcion_original": "<p class=\"p1\">The Apsara Sectional is a sophisticated modular seating system designed to bring comfort, flexibility, and refined style to outdoor living. Its structure is built around two base depths — a classic proportion and an extra-large version for those who prefer a more generous, soft, and relaxed seating experience. The base is crafted from protected aluminum, powder-coated in an elegant carob color, and enriched with Afrormosia wooden slats alternated with aluminum elements, creating a harmonious rhythm of textures and materials. The upholstery is completely removable and finished with piping in waterproof outdoor technical fabric, ensuring both refined detail and resistance to outdoor conditions. The result is an innovative seating system that combines comfort, craftsmanship, and timeless outdoor elegance. Made in Italy.</p>\n",
+   "keywords": [
+    "luxury outdoor couch"
+   ],
+   "keywords_detalle": [
+    {
+     "keyword": "luxury outdoor couch",
+     "clicks": 0,
+     "impressions": 1,
+     "position": 1,
+     "ctr": 0,
+     "volume": 4400,
+     "spell": null
+    }
+   ],
+   "seleccion": "elegidas: luxury outdoor couch (gsc, vol 4400) | descartadas: luxury furniture outdoor (Google la asocia a 'patio' (4 de 9 títulos) y la ficha no lo dice: es otro producto (intención en Google)); sectional and couch (búsqueda informativa: es para un artículo, no para la ficha); sectional (búsqueda informativa: es para un artículo, no para la ficha); cozy corner (no es de este producto); couch sofa living room (encadena sinónimos del tipo (sofa, couch): no es una frase que se escriba); sofa living rooms (búsqueda informativa: es para un artículo, no para la ficha); small bathroom ideas (no es de este producto); television stand corner (no es de este producto)",
+   "validacion": {
+    "aprobado": true,
+    "issues": [],
+    "razon": "Todos los datos (diseñador Palomba, base de aluminio protegido barnizado en carob con lamas de Afrormosia, tapicería desmontable de tejido técnico impermeable con piping, marco metálico, ocho composiciones, cojines de asiento y respaldo incluidos, accesorios de reposabrazos, rango de medidas y Made in Italy) coinciden con la ficha. El H1 identifica el producto por su tipología y marca, y la keyword 'luxury outdoor couch' se integra de forma natural.",
+    "omitidas": [],
+    "mismo_nombre": [],
+    "tipo": "outdoor sectional",
+    "url_categoria": "https://cassoni.com/product-category/outdoor/living-area/sofas-sectionals-living-area/",
+    "h1_respaldo_usado": false
+   },
+   "intentos": 1,
+   "segundos": 30.4
+  }
+ ]
+}
