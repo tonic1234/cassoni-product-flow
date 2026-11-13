@@ -34,6 +34,11 @@ versión vieja, el link se comparte con `?v=<algo>` la primera vez.
 
 ## Antes de compartirla afuera
 
+- **La página nombra a Alex** (el SEO del equipo) en la primera mención, en el veredicto del 6-nov,
+  en el documento que sirve de ejemplo, en el próximo paso y en el cierre; en el recorrido y en los
+  comandos queda «el SEO» como rol. Esas 8 sustituciones están listadas en `SUSTITUCIONES`
+  (`tools/marca/armar_landing.py`) y tienen candado: si un HTML nuevo vuelve a decir «el equipo SEO
+  resolvió», el test falla.
 - **Todas las corridas son en seco**: no se escribió nada en WooCommerce. La página lo dice en
   «Nada escrito en la tienda» y en el pie; si algún día se corre con `--write`, esa frase deja de
   ser cierta.

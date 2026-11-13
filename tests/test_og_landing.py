@@ -84,3 +84,22 @@ def test_no_publica_notas_internas():
     texto = _html()
     for prohibido in ("sin saldo", "redactó Claude", "en lugar de DeepSeek"):
         assert prohibido not in texto, f"la landing publicada filtra una nota interna: «{prohibido}»"
+
+
+def test_nombra_a_alex_y_no_a_un_equipo_anonimo():
+    """La página la lee Alex: se lo nombra. El candado evita que un HTML nuevo vuelva a la
+    fórmula distante («el equipo SEO resolvió») sin que nadie lo note.
+
+    Se lo nombra donde importa —la primera mención, el veredicto del 6-nov, el documento de
+    ejemplo, el próximo paso y el cierre— y se deja «el SEO» como rol en el recorrido y en los
+    comandos, que es donde repetir el nombre cansa.
+    """
+    texto = _html()
+    assert texto.count("Alex") >= 8, f"la landing dejó de nombrar a Alex ({texto.count('Alex')} menciones)"
+    assert "El equipo SEO resolvió" not in texto, "volvió la fórmula distante «el equipo SEO»"
+    # El cierre es la frase exacta del bloque «Nada escrito en la tienda». El encabezado del
+    # comando «Escribir de verdad (lo aprueba el SEO)» dice lo mismo pero es el rol en la lista de
+    # comandos, y ahí el nombre sobra: se pide la frase entera, no el fragmento.
+    assert "El primer lote real lo aprueba el SEO." not in texto, "el cierre volvió a decir «el SEO» en vez de Alex"
+    assert "Que el SEO resuelva" not in texto, "el próximo paso volvió a decir «el SEO»"
+    assert "el SEO" in texto, "se perdió el rol en el recorrido y en los comandos"

@@ -1,0 +1,8 @@
+CONTROL NEGATIVO · el candado corrido contra la landing v2 (4-nov), que NO nombra a Alex
+archivo: index-v2-backup.html · 788869 chars · menciones a Alex: 0
+  ROJO  · nombra a Alex (>= 8)
+  VERDE · sin «El equipo SEO resolvió»
+  VERDE · sin «El primer lote real lo aprueba el SEO.»
+  VERDE · sin «Que el SEO resuelva»
+  ROJO  · el rol sigue en el recorrido
+resultado: 2 de 5 en rojo (el candado puede fallar: no es un test que siempre pasa)
