@@ -13,3 +13,10 @@ creds
 
 # Estado local del scheduler
 cassoni_sched.json
+.venv-win/
+logs/
+.DS_Store
+cassoni_sched_seco.json
+lista-propuestas.txt
+publico/
+entregas/

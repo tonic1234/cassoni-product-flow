@@ -1,0 +1,21 @@
+# semilla 20261112, 3656 fichas con >= 50 impresiones en GSC, estratificadas por familia
+# accessories: Salomé Valet Stand With Mirror
+# bathroom-fixtures: Poseidon Square Bathroom Set
+# entertainment: Arcadia Stool
+# furniture: Gulp Chair
+# lighting: Spear Chandelier
+# outdoor: Mediterraneo Sofa
+# accessories: Almeria Baskets
+# entertainment: Cristallino for Pirelli Foosball Table
+# furniture: Beetle Lounge Chair
+# lighting: Saba Ceiling Lamp
+https://cassoni.com/product/cas-bon-salome-valet-stand-01/
+https://cassoni.com/product/cas-pin-poseidon-square-bathroom-set-01/
+https://cassoni.com/product/cas-ci-arcadia-stool-01/
+https://cassoni.com/product/gulp-stylish-chair-dallagnese/
+https://cassoni.com/product/spear-refined-italian-chandelier-venicem/
+https://cassoni.com/product/mediterraneo-refined-sofa-gart/
+https://cassoni.com/product/cas-pin-almeria-baskets-03/
+https://cassoni.com/product/cas-tec-cristallino-pirelli-foosball-table-01/
+https://cassoni.com/product/cas-dit-beetle-lounge-chair/
+https://cassoni.com/product/contemporary-italian-saba-ceiling-lamp-vistosi/

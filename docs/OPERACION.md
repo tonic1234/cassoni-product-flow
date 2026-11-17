@@ -1,5 +1,10 @@
 # Operación
 
+> **Desde el 17-nov el worker es `tools/agente_diario.py`** (reglas del SEO, reporte
+> diario y panel). Instalación en servidor: [VPS.md](VPS.md). Cómo funciona:
+> [COMO-FUNCIONA.md](COMO-FUNCIONA.md). Lo de abajo sigue valiendo para correr el
+> agente a mano.
+
 ## Requisitos
 
 ```bash

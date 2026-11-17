@@ -1,0 +1,405 @@
+{
+ "meta": {
+  "modo": "reescritura",
+  "llm": "deepseek-flash",
+  "commit": "07373492da9c7780e09d7be5c2f866f6f08284d9",
+  "codigo_con_cambios_sin_commit": true,
+  "dry_run": true,
+  "costos": {
+   "tokens_in": 51162,
+   "tokens_out": 46213,
+   "cache_hit": 38400,
+   "cache_miss": 12762,
+   "usd": 0.05951461,
+   "llamadas": 21,
+   "dfs_usd": 0.5782400000000001
+  }
+ },
+ "fichas": [
+  {
+   "url": "https://cassoni.com/product/barcelona-premium-wall-clock-nomon/",
+   "status": "processed",
+   "reason": "dry_run (sin tocar WooCommerce)",
+   "h1_original": "Barcelona Premium Wall Clock",
+   "h1": "Barcelona Premium Walnut Wall Clock by Nomon",
+   "descripcion": "<p>The Nomon Barcelona Premium is a walnut wall clock with a walnut box, walnut and polished brass hands, and a double fiberglass bezel. The bezel rings are the choice between versions.</p><h2>RINGS AND HANDS</h2><ul><li>Black fiberglass rings or brass fiberglass rings.</li><li>Walnut box and walnut and polished brass hands in both versions.</li><li>Optional German UTS.</li></ul><p>At Ø35 3/8\" x 40 1/2\" H x 7” D, this Nomon wall clock needs a large wall; measure first. See more <a href=\"https://cassoni.com/product-category/accessories/clocks/\">wall clocks</a>.</p>",
+   "descripcion_original": "<p class=\"p1\">The Barcelona Premium elevates one of Nomon’s most celebrated models through a more luxurious and sophisticated material palette.<br />\nThe double fiberglass bezel shines in an elegant polished brass finish—an upgrade that introduces warmth, glamour, and a refined glow to the original minimalist silhouette.<br />\nThis Premium edition highlights Nomon’s commitment to craftsmanship, innovation, and enduring style.<br />\nAs part of the Premium Collection, the Barcelona Premium redefines the concept of a designer wall clock, transforming it into a decorative statement piece that seamlessly blends artistic presence with functional precision.</p>\n",
+   "keywords": [
+    "nomon barcelona",
+    "nomon wall clock"
+   ],
+   "keywords_detalle": [
+    {
+     "keyword": "nomon barcelona",
+     "origen": "gsc",
+     "impresiones": 50,
+     "posicion": 9.1,
+     "volumen": 10,
+     "por_que": "ya aparece en Google (50 impresiones)",
+     "volume": 10,
+     "impressions": 50
+    },
+    {
+     "keyword": "nomon wall clock",
+     "origen": "generica",
+     "volumen": 260,
+     "por_que": "marca + tipo (260/mes)",
+     "volume": 260,
+     "impressions": null
+    }
+   ],
+   "seleccion": "elegidas: nomon barcelona (gsc, vol 10), nomon wall clock (generica, vol 260) | descartadas: nomon (ya lo dice el H1 o es el nombre tal cual); high end wall clock (pocas impresiones); luxury clock (pocas impresiones); modern wall clocks manufacturer nj (pocas impresiones); wall clock designer (pocas impresiones); wall clock (no cumple las reglas del SEO); contemporary wall clock (no cumple las reglas del SEO); brass clock (no cumple las reglas del SEO)",
+   "validacion": {
+    "aprobado": true,
+    "issues": [],
+    "razon": "Los datos (caja de nogal, agujas de nogal y latón pulido, doble bisel de fibra aros negros o de latón, versión UTS opcional, medidas) coinciden con la ficha; el H1 identifica producto, material y marca; las keywords aparecen de forma natural y no hay afirmaciones inventadas ni contradicciones.",
+    "omitidas": [],
+    "mismo_nombre": [],
+    "tipo": "wall clock",
+    "url_categoria": "https://cassoni.com/product-category/accessories/clocks/",
+    "h1_respaldo_usado": false
+   },
+   "intentos": 1,
+   "segundos": 27.2
+  },
+  {
+   "url": "https://cassoni.com/product/cas-vmr-dandy-pool-table-01/",
+   "status": "processed",
+   "reason": "dry_run (sin tocar WooCommerce)",
+   "h1_original": "Dandy Pool Table (7, 8 or 9 feet)",
+   "h1": "Dandy Leather Pool Table by Vismara",
+   "descripcion": "<p>The Dandy is a leather pool table by Vismara, designed by Vismara e Bellavista &amp; Piccini. The slate top is covered in Simonis wool and cotton cloth. Made in Italy.</p>\n<h2>LEATHER AND VENEER</h2>\n<ul>\n<li>Structure and pockets covered in leather.</li>\n<li>Upper sides in Noce canaletto or Ebony Makassar veneer.</li>\n<li>Glossy, matt or Soft Touch; cloth in different colors.</li>\n</ul>\n<h2>SIZES AND VERSIONS</h2>\n<p>Three sizes, 7, 8 or 9 feet, all 31 5/8\" H, up to 115\" W x 66 1/2\" D. A poker table version comes in Classic or Glitch Color Special Edition. Choosing among <a href=\"https://cassoni.com/product-category/entertainment/game-tables/pool-tables/\">pool tables</a>? This Vismara pool table needs room: measure the wall first.</p>",
+   "descripcion_original": "<p>Dandy is the name of this exclusive Italian professional 7ft, 8ft or 9ft Pool Table whose top is in slate covered with cloth. The whole structure is entirely covered in leather, as are the pockets, and the upper part of the sides is in Noce canaletto or Ebony Makassar veneer. The pool table cloth is made of wool and cotton, available in different colors.</p>\n<p>This refined game table can be considered a professional table thanks to some specific features. As far as the surface is concerned, the use of slates is essential to grant perfect balance and maximum precision while playing pool. Slates come from Lavagna, a Ligurian city rich in this flat rock. After laying and flattening the slate, the surface is covered with a specific fabric produced by a Belgian company leader in the sector, Simonis.</p>\n<p>Its elegant beauty comes from its simplicity: clean lines, essential design and precious materials. Its greatest quality is the perfect balance between form and function. What makes this luxury pool table special, is that it is completely covered in leather, like a tailor made suit. The softness and texture of the leather give elegance and sophistication to this extremely contemporary product. Made in Italy</p>\n",
+   "keywords": [
+    "vismara pool table"
+   ],
+   "keywords_detalle": [
+    {
+     "keyword": "vismara pool table",
+     "origen": "generica",
+     "volumen": 10,
+     "por_que": "marca + tipo (10/mes)",
+     "volume": 10,
+     "impressions": null
+    }
+   ],
+   "seleccion": "elegidas: dandy - 7 1 9 (gsc, vol s/d), vismara pool table (generica, vol 10) | descartadas: dandy pool (es el nombre recortado); dandy pool table (ya lo dice el H1 o es el nombre tal cual); d a n d y - 6 9 7 (la ficha no dice 'n'); beige pool table (pocas impresiones); d a n d y - 7 1 9 (pocas impresiones); powder blue pool table (pocas impresiones); pool table (no cumple las reglas del SEO); italian table (no cumple las reglas del SEO)",
+   "validacion": {
+    "aprobado": true,
+    "issues": [],
+    "razon": "Todos los datos de la descripción salen de la ficha: cuero en estructura y troneras, chapa de Noce canaletto o Ebony Makassar en la parte superior de los laterales, paño Simonis de lana y algodón, acabados Glossy/Matt/Soft Touch, tres medidas 7/8/9 pies con alturas y anchos correctos, versión poker Classic o Glitch, diseñador Vismara e Bellavista & Piccini y Made in Italy. El H1 identifica el producto por su material distintivo (cuero) y su marca. La última frase es una recomendación práctica apoyada en las dimensiones reales, no un dato inventado; el uso de 'Vismara pool table' y del enlace es natural y no fuerza la keyword.",
+    "omitidas": [
+     {
+      "keyword": "dandy - 7 1 9",
+      "motivo": "Es una notación de catálogo con guion y números sueltos (tamaños 7, 8 y 9 pies); no forma una frase que pueda entrar en una oración sin escribir algo sin sentido para el lector. Los tamaños se dicen igual con palabras reales."
+     }
+    ],
+    "mismo_nombre": [],
+    "tipo": "pool table",
+    "url_categoria": "https://cassoni.com/product-category/entertainment/game-tables/pool-tables/",
+    "h1_respaldo_usado": false
+   },
+   "intentos": 1,
+   "segundos": 48.8
+  },
+  {
+   "url": "https://cassoni.com/product/palatial-elegance-refined-side-table-modenese/",
+   "status": "processed",
+   "reason": "dry_run (sin tocar WooCommerce)",
+   "h1_original": "Palatial Elegance Side Table",
+   "h1": "Palatial Elegance Carved Side Table by Modenese",
+   "descripcion": "<p>The Palatial Elegance is a carved side table by Modenese with gold leaf detailing and a wooden top. Made in Italy. At 23 5/8\" W x 23 5/8\" D, it gives a small room the look of palatial furniture.</p><h2>VERSION AND FIT</h2><p>This version comes without a marble top; the top matches the structure. Check the 22 1/4\" height against your sofa or armchair before you order. See more <a href=\"https://cassoni.com/product-category/furniture/living-room/coffee-side-tables/\">side tables</a>.</p>",
+   "descripcion_original": "<p class=\"p1\">Item: 17606<br />\nThe Palatial Elegance Side Table is a true statement of grandeur and refinement. Featuring a pristine Botticino Classic marble top, it is supported by gracefully curved legs adorned with intricate gold leaf detailing. The elaborate carvings on the frame exude a sense of royal sophistication, making it a perfect complement to luxurious interiors. Made in Italy.</p>\n",
+   "keywords": [
+    "palatial furniture"
+   ],
+   "keywords_detalle": [
+    {
+     "keyword": "palatial furniture",
+     "origen": "gsc",
+     "impresiones": 48,
+     "posicion": 2.9,
+     "volumen": 40,
+     "por_que": "ya aparece en Google (48 impresiones)",
+     "volume": 40,
+     "impressions": 48
+    }
+   ],
+   "seleccion": "elegidas: palatial furniture (gsc, vol 40) | descartadas: side table (no cumple las reglas del SEO); wood table (no cumple las reglas del SEO); marble table (no cumple las reglas del SEO); marble side table (no cumple las reglas del SEO); wood side table (no cumple las reglas del SEO); side table in wood (no cumple las reglas del SEO); italian table (no cumple las reglas del SEO); marble and wood table (no cumple las reglas del SEO)",
+   "validacion": {
+    "aprobado": true,
+    "issues": [],
+    "razon": "La descripción respeta la ficha: wooden top y 'without marble top' coinciden con los atributos Version/Top version, las medidas son las reales, el gold leaf y los tallados provienen de la descripción original y el 'Made in Italy' está respaldado. El H1 identifica el producto y elige un rasgo distintivo (carved). La keyword 'palatial furniture' se integra de forma natural a partir del nombre del producto y las medidas, sin contradecir ni inventar datos duros.",
+    "omitidas": [],
+    "mismo_nombre": [],
+    "tipo": "side table",
+    "url_categoria": "https://cassoni.com/product-category/furniture/living-room/coffee-side-tables/",
+    "h1_respaldo_usado": false
+   },
+   "intentos": 2,
+   "segundos": 59.3
+  },
+  {
+   "url": "https://cassoni.com/product/cas-tec-ciclotte-glossy-exercise-bike-01/",
+   "status": "processed",
+   "reason": "dry_run (sin tocar WooCommerce) · sin keywords objetivo que una ficha pueda ganar",
+   "h1_original": "Ciclotte Glossy Exercise Bike",
+   "h1": "Ciclotte Glossy Exercise Bike by Teckell",
+   "descripcion": "<p>The Ciclotte Glossy is an indoor exercise bike by Teckell with a 1 1/8\" multilayer glass disc frame and polished stainless steel base. Made in Italy.</p><h2>TRAINING AND FIT</h2><p>A 12-magnet flywheel with electronic resistance offers 10 levels. The 6 cm pedal gap protects joints. The carbon fiber or hand-painted handlebar and gel seat adjust for posture; Bluetooth connects to Android/iOS apps.</p><h2>SPACE AND INCLUDED</h2><p>The bike measures 43 3/4\" W x 19 5/8\" D x 43 3/4\" H and is for indoor use only. It includes the Teckell Tool Kit and Certificate of Authenticity; the device stand is optional. See more <a href=\"https://cassoni.com/product-category/high-end-home-gym-equipment-and-spa/luxury-gym-equipment/cardio-equipment/\">indoor exercise bikes</a> in our cardio equipment selection.</p>",
+   "descripcion_original": "<p>Teckell® Ciclotte® is a revolutionary indoor exercise bike that merges cutting-edge technology with contemporary Italian design. Its signature feature is a 1\"1/8 multi-layer circular glass disc—tempered on the outside and hardened within—replacing the traditional frame for a sleek, sculptural aesthetic. The frame and polished stainless steel base flex subtly during use, mimicking real cycling dynamics.</p>\n<p>The ergonomic handlebar—available in carbon fiber or hand-painted finish—is height and tilt adjustable, as is the racing-style gel seat, ensuring optimal posture. A compact gearbox and narrow 6 cm pedal distance promote joint-safe performance, while the 12-magnet flywheel system with electronic resistance control enables high-precision training. The system replicates real-road effort, offering 10 fine-tuned resistance levels.</p>\n<p>Bluetooth connectivity allows integration with Android/iOS fitness apps for virtual cycling, speed/distance tracking, and entertainment, via an optional black device stand.</p>\n<p>A symbol of innovation, the Teckell® Ciclotte® Chrome edition stands out with its transparent low iron glass and polished metal accents—part of Teckell’s Forma Collection. Made in Italy and covered by international patents, it includes the Teckell® Tool Kit, Certificate of Authenticity, and is certified for EU, US, and China markets.</p>\n<p>Designed for indoor use.</p>\n<p>Made in Italy.</p>\n",
+   "keywords": [],
+   "keywords_detalle": [],
+   "seleccion": "elegidas: ninguna | descartadas: professional exercise bike (la ficha no dice 'professional'); ciclotte (es el nombre recortado); expensive exercise bike (la ficha no dice 'expensive')",
+   "validacion": {
+    "aprobado": true,
+    "issues": [],
+    "razon": "Todos los datos de la descripción (disco de cristal multicapa 1 1/8\", base de acero inoxidable pulido, volante de 12 imanes con 10 niveles, distancia de pedales de 6 cm, manillar de fibra de carbono o pintado a mano, sillín de gel, Bluetooth Android/iOS, medidas, uso interior, Tool Kit y Certificado, soporte de dispositivo opcional, Made in Italy) figuran en la ficha; no hay contradicciones, keywords forzadas ni relleno, y el H1 identifica el producto por marca y tipo.",
+    "omitidas": [],
+    "mismo_nombre": [],
+    "tipo": "",
+    "url_categoria": "https://cassoni.com/product-category/high-end-home-gym-equipment-and-spa/luxury-gym-equipment/cardio-equipment/",
+    "h1_respaldo_usado": false
+   },
+   "intentos": 1,
+   "segundos": 22.4
+  },
+  {
+   "url": "https://cassoni.com/product/tratto-luxury-designer-sconce-wall-lamp-kundalni/",
+   "status": "processed",
+   "reason": "dry_run (sin tocar WooCommerce)",
+   "h1_original": "Tratto Wall Lamp",
+   "h1": "Tratto Opal Glass Wall Sconce by Kundalini",
+   "descripcion": "<p>The Tratto wall lamp is an opal glass wall sconce by Oliver Schick for Kundalini, with a metal structure and an opal glass diffuser. Made in Italy.</p><h2>RAISED GRAPHIC EFFECT</h2><p>The structure creates a raised graphic effect on the wall, with an interplay of light and shadow. It suits residential and contract interiors.</p><h2>ONE OR IN A COMPOSITION</h2><p>Hang one on its own, or repeat it along a wall as a composition. At Ø10 5/8\" x 11 3/8\" H, check the run of wall you want to cover before deciding how many wall lamps you need. See our <a href=\"https://cassoni.com/product-category/lighting/wall-lamps-sconces/\">wall sconces</a> for other options.</p>",
+   "descripcion_original": "<p>The Tratto wall lamp is a luxury lighting element crafted in premium metal and opal glass, designed to bring refined elegance and subtle sophistication to any interior. With its clean and linear profile, it integrates seamlessly into the environment while offering a high-end decorative presence.</p>\n<p>Its sleek structure creates a raised graphic effect on the wall, enriching the space with an interplay of light and shadow that feels both modern and timeless. Whether installed individually as a minimalist statement or arranged in a composition for a striking design feature, the Tratto wall lamp adapts with elegance and versatility to any setting.</p>\n<p>Perfect for residential and contract interiors, this designer wall sconce combines premium materials, contemporary aesthetics, and functionality in perfect balance. It offers a refined way to illuminate while enhancing the character of the space with discreet yet impactful style.</p>\n<p>Made in Italy, the Tratto wall lamp represents the excellence of Italian craftsmanship, uniting luxury, innovation, and timeless design in one sophisticated piece.</p>\n",
+   "keywords": [
+    "wall lamp"
+   ],
+   "keywords_detalle": [
+    {
+     "keyword": "wall lamp",
+     "origen": "gsc",
+     "impresiones": 42,
+     "posicion": 13.2,
+     "volumen": 12100,
+     "por_que": "ya aparece en Google (42 impresiones)",
+     "volume": 12100,
+     "impressions": 42
+    }
+   ],
+   "seleccion": "elegidas: wall lamp (gsc, vol 12100) | descartadas: tratto (es el nombre recortado); wall sconce (no cumple las reglas del SEO); wall light (no cumple las reglas del SEO); contemporary wall sconce (no cumple las reglas del SEO); contemporary sconce (no cumple las reglas del SEO); glass sconce (no cumple las reglas del SEO); glass wall sconce (no cumple las reglas del SEO); italian sconce (no cumple las reglas del SEO)",
+   "validacion": {
+    "aprobado": true,
+    "issues": [],
+    "razon": "El H1 identifica el producto (wall sconce de opal glass de Kundalini) y la descripción se ciñe a los datos de la ficha: metal y opal glass, diseñador Oliver Schick, efecto gráfico elevado, uso residencial y contract, medidas y Made in Italy, todos presentes en el original. La keyword 'wall lamp' aparece de forma natural, sin invención de materiales, acabados ni certificaciones.",
+    "omitidas": [],
+    "mismo_nombre": [],
+    "tipo": "wall sconce",
+    "url_categoria": "https://cassoni.com/product-category/lighting/wall-lamps-sconces/",
+    "h1_respaldo_usado": false
+   },
+   "intentos": 1,
+   "segundos": 16.9
+  },
+  {
+   "url": "https://cassoni.com/product/cas-tal-george-sofa-01/",
+   "status": "processed",
+   "reason": "dry_run (sin tocar WooCommerce)",
+   "h1_original": "George Sofa",
+   "h1": "George Rope Weave Outdoor Sofa by Talenti",
+   "descripcion": "<p>George is a two-seater outdoor sofa by Ludovica + Roberto Palomba for Talenti. The stainless steel frame is fully wrapped in a slightly padded rope weave, with generously padded seat and back cushions. Made in Italy.</p><h2>ROPE AND CUSHIONS</h2><ul><li>Stainless steel structure covered entirely in a padded rope weave.</li><li>Removable covers on this Talenti sofa are easy to wash and resist atmospheric agents.</li><li>The Talenti George sofa comes in three color combinations.</li></ul><h2>TERRACE AND DECK</h2><p>At 69 5/8\" W and 35 7/8\" D with a 15 5/8\" seat height, it pairs with the low tables and lounge chairs of the same collection. For larger groups, see our <a href=\"https://cassoni.com/product-category/outdoor/living-area/sofas-sectionals-living-area/\">outdoor sofas</a>.</p>",
+   "descripcion_original": "<p>George is a splendid two seater sofa with an enveloping design and a strong reminiscence of the nautical world. The stainless steel structure is totally covered with a slightly padded rope weave, counterpointed by generously padded seat and back cushions. Available in three elegant color combinations, this exclusive Italian designer sofa features removable covers, easy to wash and resistant to atmospheric agents. Completed by sectionals, low tables, dining tables, chairs and lounge chairs, this luxury Italian furniture collection was created with the aim of combining lightness and comfort in life in the open air, redesigning situations that convey feelings of intimacy and relaxation. Made in Italy.</p>\n",
+   "keywords": [
+    "talenti george",
+    "talenti sofa"
+   ],
+   "keywords_detalle": [
+    {
+     "keyword": "talenti george",
+     "origen": "gsc",
+     "impresiones": 11,
+     "posicion": 8,
+     "volumen": 10,
+     "por_que": "ya aparece en Google (11 impresiones)",
+     "volume": 10,
+     "impressions": 11
+    },
+    {
+     "keyword": "talenti sofa",
+     "origen": "generica",
+     "volumen": 10,
+     "por_que": "marca + tipo (10/mes)",
+     "volume": 10,
+     "impressions": null
+    }
+   ],
+   "seleccion": "elegidas: talenti george (gsc, vol 10), talenti sofa (generica, vol 10) | descartadas: couch (no cumple las reglas del SEO); outdoor couch (no cumple las reglas del SEO); outdoor sofa (no cumple las reglas del SEO); fabric sofa (no cumple las reglas del SEO); italian sofa (no cumple las reglas del SEO); stainless steel sofa (no cumple las reglas del SEO); rope sofa (no cumple las reglas del SEO)",
+   "validacion": {
+    "aprobado": true,
+    "issues": [],
+    "razon": "Todos los datos (dos plazas, estructura de acero inoxidable, trenza de cuerda, cojines, tres combinaciones de color, fundas desmontables, medidas 69 5/8 x 35 7/8 x 15 5/8 SH, Made in Italy, diseñador Palomba, colección con mesas y lounge chairs) provienen de la ficha; el H1 identifica producto, material y marca, y las keywords aparecen de forma natural.",
+    "omitidas": [],
+    "mismo_nombre": [],
+    "tipo": "outdoor sofa",
+    "url_categoria": "https://cassoni.com/product-category/outdoor/living-area/sofas-sectionals-living-area/",
+    "h1_respaldo_usado": false
+   },
+   "intentos": 1,
+   "segundos": 20.8
+  },
+  {
+   "url": "https://cassoni.com/product/paloma-speakers-luxury-freestanding-active-sound-system-cone-base-vismara/",
+   "status": "processed",
+   "reason": "dry_run (sin tocar WooCommerce)",
+   "h1_original": "Paloma Speakers",
+   "h1": "Paloma Speakers by Vismara",
+   "descripcion": "<p>Paloma Speakers are active freestanding luxury speakers by Vismara, designed by Studio Boccaccio 432 with a dual tweeter system and a subwoofer built into the cone base.</p><h2>DRIVERS AND AMPLIFIER</h2><p>A dome tweeter and a ribbon tweeter, two woofers, and a subwoofer in the base. An integrated amplifier is required to operate them.</p><h2>CONE BASE FINISH</h2><ul><li>Hand-painted gradient cone base.</li><li>Lacquered cone base.</li></ul><p>At 70 7/8\" H and 15 7/8\" W x 15 7/8\" D, each one stands on a small footprint. Choose the finish per room, and place them to suit the scale of the space. See all <a href=\"https://cassoni.com/product-category/accessories/miscellaneous-accessories/\">freestanding speakers</a>.</p>",
+   "descripcion_original": "<p>Paloma Speakers are designed as a natural extension of Paloma integrated and modular Sound System, conceived to enhance and expand the acoustic performance of the environment with both power and precision.</p>\n<p>Available as freestanding elements, Paloma Speakers can be placed according to the scale and requirements of the space, allowing for a fully customizable and high-performance audio environment.</p>\n<p>Paloma Speakers integrate a dual tweeter system, featuring both a dome tweeter and a ribbon tweeter, complemented by two woofers and a subwoofer housed in the base.</p>\n<p>An integrated amplifier enables the speakers to operate as an active system and is required for their operation.</p>\n<p>Paloma speakers are available in two aesthetic versions: one featuring a hand-painted gradient cone base, and one with a lacquered cone base, offering different interpretations of its iconic design.</p>\n",
+   "keywords": [
+    "luxury speakers"
+   ],
+   "keywords_detalle": [
+    {
+     "keyword": "luxury speakers",
+     "origen": "gsc",
+     "impresiones": 5,
+     "posicion": 9.4,
+     "volumen": 260,
+     "por_que": "ya aparece en Google (5 impresiones)",
+     "volume": 260,
+     "impressions": 5
+    }
+   ],
+   "seleccion": "elegidas: luxury speakers (gsc, vol 260)",
+   "validacion": {
+    "aprobado": true,
+    "issues": [],
+    "razon": "Todos los datos (diseñador, sistema de doble tweeter, woofers, subwoofer, amplificador integrado, las dos versiones de base cónica y las medidas) provienen de la ficha; la keyword 'luxury speakers' aparece de forma natural y el H1 identifica el producto y la marca.",
+    "omitidas": [],
+    "mismo_nombre": [],
+    "tipo": "",
+    "url_categoria": "https://cassoni.com/product-category/accessories/miscellaneous-accessories/",
+    "h1_respaldo_usado": false
+   },
+   "intentos": 1,
+   "segundos": 16.6
+  },
+  {
+   "url": "https://cassoni.com/product/cas-vmr-capsule-lounge-chair-01/",
+   "status": "processed",
+   "reason": "dry_run (sin tocar WooCommerce)",
+   "h1_original": "Capsule Lounge Chair",
+   "h1": "Capsule Swivel Lounge Chair by Vismara",
+   "descripcion": "<p>The Capsule is a swivel lounge chair designed by Pino Vismara for Vismara, with a rounded seat and a rotating steel base. The capsule chair is upholstered in polyurethane foam, with vertical tufting on the outside of the backrest. Made in Italy.</p><h2>COVERS AND TUFTING</h2><ul><li>Fabric, eco-leather or leather.</li><li>Vertical tufting on the outer backrest.</li><li>Rounded seat with armrests on a metal platform base.</li></ul><h2>SWIVEL AND SIZE</h2><p>At 30 5/8\" W x 31 1/2\" D x 33\" H, the capsule chair turns toward a game table without being moved. Check the 31 1/2\" depth against your space. Browse more <a href=\"https://cassoni.com/product-category/entertainment/game-tables/seating-for-game-tables/\">lounge chairs</a>.</p>",
+   "descripcion_original": "<p>Here is Capsule, an Italian elegant lounge chair of light and simple design, with a rotating steel base. This refined furniture is upholstered with polyurethane foam and comes with a refined rounded seat.</p>\n<p>Moreover, to add more sophistication,it has a stylish vertical tufting on the external part of the backrest. A refined and comfortable seat which shape and silhouettes offer moments of pure relaxation.Made in Italy.</p>\n",
+   "keywords": [
+    "capsule chair"
+   ],
+   "keywords_detalle": [
+    {
+     "keyword": "capsule chair",
+     "origen": "gsc",
+     "impresiones": 8,
+     "posicion": 6.2,
+     "volumen": 70,
+     "por_que": "ya aparece en Google (8 impresiones)",
+     "volume": 70,
+     "impressions": 8
+    }
+   ],
+   "seleccion": "elegidas: capsule chair (gsc, vol 70) | descartadas: capsule chairs (repite otra elegida); lounge chair (no cumple las reglas del SEO); leather chair (no cumple las reglas del SEO); leather lounge chair (no cumple las reglas del SEO); steel chair (no cumple las reglas del SEO); fabric chair (no cumple las reglas del SEO); fabric lounge chair (no cumple las reglas del SEO); glamour chair (no cumple las reglas del SEO)",
+   "validacion": {
+    "aprobado": true,
+    "issues": [],
+    "razon": "La descripción usa solo datos verificables de la ficha (diseñador, marca, giro, base de acero/metal, tapizado, capitoné, medidas, materiales y Made in Italy). El H1 identifica el producto y su rasgo distintivo, y la keyword «capsule chair» se integra de forma natural.",
+    "omitidas": [],
+    "mismo_nombre": [],
+    "tipo": "lounge chair",
+    "url_categoria": "https://cassoni.com/product-category/entertainment/game-tables/seating-for-game-tables/",
+    "h1_respaldo_usado": false
+   },
+   "intentos": 1,
+   "segundos": 19.8
+  },
+  {
+   "url": "https://cassoni.com/product/cas-si-frog-coffee-table-01/",
+   "status": "processed",
+   "reason": "dry_run (sin tocar WooCommerce) · sin keywords objetivo que una ficha pueda ganar",
+   "h1_original": "Frog Coffee Table",
+   "h1": "Frog Glass Coffee Table by Sovet Italia",
+   "descripcion": "<p>The Frog is a glass coffee table by Lievore Altherr Molina for Sovet Italia, with a bent glass structure in extra-light or lacquered glass. Made in Italy.</p><h2>LACQUERED OR EXTRA-LIGHT</h2><ul><li>Extra-light bent glass.</li><li>Lacquered bent glass, all in Cat. C (monotone) or mixing Cat. B and D (two tones).</li></ul><h2>FOUR SIZES</h2><p>Two squares, 43 1/4\" and 51 1/8\", and two rectangles, 43 1/4\" × 23 5/8\" and 55 1/8\" × 28 3/8\"; all are 13 3/8\" high. Choose a square between seats or a rectangle in front of a sofa. See all <a href=\"https://cassoni.com/product-category/furniture/living-room/coffee-side-tables/\">coffee tables</a>.</p>",
+   "descripcion_original": "<p>The high-end Frog coffee table has a structure in extralight or lacquered bent glass. The lacquered version can be all in Cat. C (monotone) or mixing Cat. B and D (two-tones).</p>\n<p>This designer Italian Furniture is an exclusive Modern piece, perfect for the most sophisticated Interior Design or Architectural projects.</p>\n<p>Made in Italy.</p>\n<p><b>QUICK SHIP: All options are available.</b></p>\n",
+   "keywords": [],
+   "keywords_detalle": [],
+   "seleccion": "elegidas: ninguna | descartadas: frog coffee table (ya lo dice el H1 o es el nombre tal cual); coffee table (no cumple las reglas del SEO); wood coffee table (no cumple las reglas del SEO); modern coffee table (no cumple las reglas del SEO); coffee table in wood (no cumple las reglas del SEO); glass coffee table (no cumple las reglas del SEO); wood table (no cumple las reglas del SEO); coffee table in glass (no cumple las reglas del SEO)",
+   "validacion": {
+    "aprobado": true,
+    "issues": [],
+    "razon": "El H1 identifica el producto por material y marca; la descripción respeta los datos de la ficha (bent glass extra-light o lacado, categorías Cat. B/C/D, Made in Italy, las cuatro medidas y la altura de 13 3/8\") sin inventar materiales, acabados ni certificaciones. La sugerencia de uso según la forma (cuadrada o rectangular) es una inferencia razonable de las dimensiones y no contradice ningún atributo.",
+    "omitidas": [],
+    "mismo_nombre": [],
+    "tipo": "coffee table",
+    "url_categoria": "https://cassoni.com/product-category/furniture/living-room/coffee-side-tables/",
+    "h1_respaldo_usado": false
+   },
+   "intentos": 1,
+   "segundos": 17.6
+  },
+  {
+   "url": "https://cassoni.com/product/mesh-elegant-ceiling-lamp-luceplan/",
+   "status": "processed",
+   "reason": "dry_run (sin tocar WooCommerce)",
+   "h1_original": "Mesh Ceiling Lamp",
+   "h1": "Mesh Ceiling Lamp by Luceplan",
+   "descripcion": "<p>The Luceplan Mesh ceiling lamp is a 96-LED ceiling light designed by Francisco Gomez Paz, built from a network of flexible cables. Made in Italy.</p><h2>96 LED POINTS</h2><ul><li>96 LEDs, each one at a precise intersection of the cables.</li><li>LED 53W, 2518 lumens, 2700K, CRI 90. Dimmable.</li></ul><h2>SIZE AND PLACEMENT</h2><p>At Ø28 3/8\" wide and 12 5/8\" high, it fits over a dining table or in a living room. The Luceplan lamp is UL approved. For other designs, browse all <a href=\"https://cassoni.com/product-category/lighting/ceiling-lamps/\">ceiling lamps</a>.</p>",
+   "descripcion_original": "<p>The Mesh ceiling lamp brings a striking new dimension to the iconic Mesh collection, now presented in a refined ceiling-mounted design featuring 96 LED light points. Its ultra-light, almost transparent structure is composed of a delicate network of flexible cables, where each LED is positioned at precise intersections. This innovative architecture hides the complexity of its technology, allowing the light itself to become the true protagonist. Thanks to advanced electronics, Mesh offers exceptional freedom in lighting control, enabling precise adjustment of light intensity to create the perfect atmosphere. The result is a highly customizable, theatrical illumination that enhances any contemporary interior with sophistication and visual drama. UL Approved (Product build according to the National Electrical Code’s requirements and tested by Underwriters Laboratories). Made in Italy.</p>\n<p><strong>Light source:</strong> LED 53W 2518lm 2700K CRI 90 Dimmable. UL Approved.</p>\n<p><img src=\"https://cassoni.com/wp-content/uploads/2025/11/c-UL-us.jpg\" alt=\"\" width=\"90\" height=\"14\" class=\"alignnone size-full wp-image-230107\" /></p>\n",
+   "keywords": [
+    "luceplan mesh",
+    "luceplan mesh ceiling",
+    "luceplan lamp"
+   ],
+   "keywords_detalle": [
+    {
+     "keyword": "luceplan mesh",
+     "origen": "gsc",
+     "impresiones": 2,
+     "posicion": 8,
+     "volumen": 20,
+     "por_que": "ya aparece en Google (2 impresiones)",
+     "volume": 20,
+     "impressions": 2
+    },
+    {
+     "keyword": "luceplan mesh ceiling",
+     "origen": "gsc",
+     "impresiones": 2,
+     "posicion": 7.5,
+     "volumen": 10,
+     "por_que": "ya aparece en Google (2 impresiones)",
+     "volume": 10,
+     "impressions": 2
+    },
+    {
+     "keyword": "luceplan lamp",
+     "origen": "generica",
+     "volumen": 30,
+     "por_que": "marca + tipo (30/mes)",
+     "volume": 30,
+     "impressions": null
+    }
+   ],
+   "seleccion": "elegidas: luceplan mesh (gsc, vol 20), luceplan mesh ceiling (gsc, vol 10), luceplan lamp (generica, vol 30) | descartadas: luceplan mesh ceiling light 1d860p000001 (la ficha no dice 'd', 'p'); ceiling light designer (pocas impresiones); designer luxury ceiling light (pocas impresiones); luxury lighting brands (pocas impresiones); ceiling light (no cumple las reglas del SEO); ceiling lamp (no cumple las reglas del SEO); contemporary ceiling lamp (no cumple las reglas del SEO); contemporary lamp (no cumple las reglas del SEO)",
+   "validacion": {
+    "aprobado": true,
+    "issues": [],
+    "razon": "Todos los datos (diseñador Francisco Gomez Paz, 96 LED, red de cables flexibles, LED 53W 2518lm 2700K CRI 90, dimmable, Ø28 3/8\" x 12 5/8\" H, UL Approved, Made in Italy) coinciden con la ficha. El H1 identifica producto y marca; las keywords (luceplan mesh, luceplan mesh ceiling, luceplan lamp) están integradas con sentido natural. La única mención fuera de ficha es la sugerencia de colocación sobre una mesa de comedor o en un living, que es una recomendación genérica de uso para una ceiling lamp, no una afirmación técnica inventada.",
+    "omitidas": [],
+    "mismo_nombre": [],
+    "tipo": "ceiling lamp",
+    "url_categoria": "https://cassoni.com/product-category/lighting/ceiling-lamps/",
+    "h1_respaldo_usado": false
+   },
+   "intentos": 1,
+   "segundos": 25.5
+  }
+ ]
+}

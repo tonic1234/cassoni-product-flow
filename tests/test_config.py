@@ -62,7 +62,7 @@ class TestRutasRelativasAlEnvFile:
         (tmp_path / ".env.staging").write_text(
             "CASSONI_DB_URL=sqlite:///./data/cassoni.db\n")
         cfg = Config.load(env="staging", env_file=tmp_path / ".env.staging")
-        assert cfg.db_url == f"sqlite:///{tmp_path}/data/cassoni.db"
+        assert cfg.db_url == f"sqlite:///{tmp_path.as_posix()}/data/cassoni.db"
 
     def test_ruta_absoluta_se_respeta(self, tmp_path):
         from cassoni.config import Config

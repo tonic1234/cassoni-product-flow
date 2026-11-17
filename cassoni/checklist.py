@@ -249,8 +249,8 @@ def html_inseguro(original: str, editado: str) -> list[str]:
 # --- modo reescritura (devolución SEO 6-nov-2026) ---
 _NUMERO_RX = re.compile(r"\d+(?:[.,]\d+)?(?:/\d+)?")
 _TAGS_REESCRITURA = {"p", "h2", "ul", "li", "strong", "em", "a", "br"}
-REESCRITURA_MIN_PALABRAS = 70
-REESCRITURA_MAX_PALABRAS = 200
+REESCRITURA_MIN_PALABRAS = 55     # el SEO escribe de 62 a 103 (documento 6-nov)
+REESCRITURA_MAX_PALABRAS = 140
 
 
 def numeros(texto: str) -> set[str]:

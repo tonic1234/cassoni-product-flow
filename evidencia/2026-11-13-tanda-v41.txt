@@ -1,0 +1,21 @@
+# semilla 20261113, 3584 fichas con >= 50 impresiones en GSC, estratificadas por familia
+# accessories: Barcelona Premium Wall Clock
+# entertainment: Dandy Pool Table (7, 8 or 9 feet)
+# furniture: Palatial Elegance Side Table
+# high-end-home-gym-equipment-and-spa: Ciclotte Glossy Exercise Bike
+# lighting: Tratto Wall Lamp
+# outdoor: George Sofa
+# accessories: Paloma Speakers
+# entertainment: Capsule Lounge Chair
+# furniture: Frog Coffee Table
+# lighting: Mesh Ceiling Lamp
+https://cassoni.com/product/barcelona-premium-wall-clock-nomon/
+https://cassoni.com/product/cas-vmr-dandy-pool-table-01/
+https://cassoni.com/product/palatial-elegance-refined-side-table-modenese/
+https://cassoni.com/product/cas-tec-ciclotte-glossy-exercise-bike-01/
+https://cassoni.com/product/tratto-luxury-designer-sconce-wall-lamp-kundalni/
+https://cassoni.com/product/cas-tal-george-sofa-01/
+https://cassoni.com/product/paloma-speakers-luxury-freestanding-active-sound-system-cone-base-vismara/
+https://cassoni.com/product/cas-vmr-capsule-lounge-chair-01/
+https://cassoni.com/product/cas-si-frog-coffee-table-01/
+https://cassoni.com/product/mesh-elegant-ceiling-lamp-luceplan/

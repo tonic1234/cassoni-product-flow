@@ -164,6 +164,7 @@ class FakeLLM:
 def _cfg(tmp_path, dry_run=True):
     c = Config(env="staging", dry_run=dry_run)
     c.modo_descripcion = "quirurgica"     # estos tests cubren el flujo v2
+    c.modo_keywords = "filtros"           # y la selección por reglas (v3.2)
     c.db_url = f"sqlite:///{tmp_path}/e2e.db"
     c.llm_editor_model = "editor"
     c.llm_validator_model = "validator"
@@ -191,7 +192,8 @@ def test_h1_es_nombre_by_marca(tmp_path):
     res = pipe.process(URL)
     assert res.status == "processed"
     assert res.edited_h1 == "Pedro Sofá by Cassoni"
-    assert pipe.woo.writes[0][0] == "Pedro Sofá by Cassoni"     # va al campo name
+    # la tienda agrega "by {Marca}" con el logo: al campo name va sin la marca
+    assert pipe.woo.writes[0][0] == "Pedro Sofá"
 
 
 def test_el_llm_no_decide_el_h1(tmp_path):
@@ -282,7 +284,7 @@ def test_sin_keywords_aplica_solo_el_h1(tmp_path):
     pipe = _pipeline(tmp_path, dry_run=False, gsc=FakeGSC([]), vol={})
     res = pipe.process(URL)
     assert res.status == "processed"
-    assert pipe.woo.writes == [("Pedro Sofá by Cassoni", DESC_ORIG)]
+    assert pipe.woo.writes == [("Pedro Sofá", DESC_ORIG)]
     assert pipe.llm.calls == 0
 
 
@@ -435,7 +437,8 @@ class FakeInvestigacion:
         self.ideas = ideas
         self.semillas = []
 
-    def ideas_de_keywords(self, semillas, limite=200):
+    def ideas_de_keywords(self, semillas, limite=200, contiene=None):
+        self.contiene = contiene
         self.semillas.append(list(semillas))
         return list(self.ideas)
 

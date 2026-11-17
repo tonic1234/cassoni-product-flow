@@ -58,13 +58,16 @@ con lo que sabés de la marca o del modelo. Los números van EXACTOS como en la 
 
 H1 — fórmula: {Modelo} + {rasgo} + {Tipo} + by {Marca}
 - {Modelo} y {Tipo} vienen dados: usalos tal cual.
-- {rasgo}: 1 a 3 palabras de la ficha que más distinguen al producto para quien
+- {rasgo}: 1 o 2 palabras (3 solo si es una técnica compuesta como "Hand-Knotted Wool") de la ficha que más distinguen al producto para quien
   busca en Google: material, forma o tamaño, técnica de fabricación, construcción
   o tecnología. Si es un material, el de la parte que se ve y se elige (la tapa,
   el tapizado, la pantalla, el cuerpo), no el de una pieza menor. Ejemplos inventados: "Aria Walnut Sideboard", "Nube Oval Pendant
   Light", "Delta Hand-Knotted Wool Rug".
-- Si lo que distingue es una pieza del producto (patas, base, pantalla, estructura),
-  puede ir con "with" después del tipo: "Mira Lounge Chair with Oak Legs".
+- Si lo que distingue es una pieza del producto (patas, base, pantalla, estructura)
+  y no hay un material principal, puede ir con "with" después del tipo: "Mira
+  Lounge Chair with Oak Legs". Nunca las dos cosas a la vez (rasgo + "with ...").
+- Corto: el H1 dice qué es, no lista todo lo que tiene. Un acabado entre varios
+  opcionales ("24K Gold", "Extra Clear") no va: va lo que tienen todas las versiones.
 - Nunca un rasgo vago ("Shaped", "Stylish", "Elegant", "Refined", "Exclusive",
   "Designer") ni el estilo de catálogo ("Glamour", "Contemporary").
 - Sin códigos de catálogo, sin la marca repetida, máximo 9 palabras antes de "by".
@@ -92,7 +95,7 @@ DESCRIPCIÓN — HTML con solo <p>, <h2>, <ul>, <li>, <strong>, <a>:
    sintaxis rara o a una oración que solo existe para ella), NO la fuerces: dejala
    afuera y ponela en "omitidas" con el motivo. Una keyword forzada es peor que
    ninguna.
-7. Entre 80 y 170 palabras en total.
+7. Entre 60 y 110 palabras en total, como las fichas del equipo SEO: corto y concreto.
 
 TONO: sobrio, concreto, oraciones cortas. Prohibido: "presence", "focal point",
 "statement piece", "elevate", "to the room", "any interior", "brings a", "adds a
@@ -110,9 +113,10 @@ def _json_schema() -> str:
 
 
 class Redactor:
-    def __init__(self, config: Config, llm: LLMClient):
+    def __init__(self, config: Config, llm: LLMClient, referencia=None):
         self.cfg = config
         self.llm = llm
+        self.referencia = referencia
 
     def redactar(self, *, ficha: dict, keywords: list[dict],
                  feedback: list[str] | None = None) -> dict:
@@ -128,9 +132,17 @@ class Redactor:
         if feedback:
             bloque_feedback = ("\n\nTU VERSIÓN ANTERIOR FUE RECHAZADA. Corregí TODO esto:\n"
                                + "\n".join(f"- {i}" for i in feedback))
-        user = f"""Ficha: {ficha['url']}
+        from .criterio_seo import ejemplos_de_redaccion
+        ejemplos = ejemplos_de_redaccion(self.referencia, ficha.get("url", ""))
+        bloque_ejemplos = (
+            "FICHAS ESCRITAS POR EL EQUIPO SEO (de OTROS productos). Imitá su estructura, "
+            "su largo, su tono y cómo meten las keywords; no copies sus datos: los de "
+            "esta ficha salen solo de esta ficha. Los títulos de sección van en <h2>." + chr(10) * 2
+            + ejemplos + chr(10) * 2 + "=====" + chr(10) * 2) if ejemplos else ""
+        user = bloque_ejemplos + f"""Ficha: {ficha['url']}
 Nombre actual: {ficha['nombre']}
 Marca: {ficha['marca'] or '(sin marca)'}
+{('H1 (DADO POR EL EQUIPO SEO: devolvelo tal cual, no lo cambies): ' + ficha['h1_fijo']) if ficha.get('h1_fijo') else ''}
 Modelo (para el H1): {ficha['modelo']}
 Tipo en inglés de EE. UU. (para el H1): {ficha['tipo'] or '(decidilo de la categoría)'}
 Categoría: {' > '.join(ficha.get('categorias') or []) or '(sin dato)'}
@@ -150,7 +162,7 @@ DESCRIPCIÓN CORTA ACTUAL:
 DESCRIPCIÓN LARGA ACTUAL (fuente de datos; se reescribe):
 {strip_html(ficha.get('descripcion') or '')}
 
-KEYWORDS OBJETIVO (exactas, 1 o 2 veces cada una):
+{_bloque_rasgos(ficha)}{_bloque_genericas(ficha)}KEYWORDS OBJETIVO (exactas, 1 o 2 veces cada una){' — las eligió el equipo SEO con datos: usalas TODAS; omití una solo si contradice la ficha' if ficha.get('keywords_obligatorias') else ''}:
 {chr(10).join(f'- {k}' for k in objetivo) or '(ninguna: escribí la ficha igual)'}
 
 Responde SOLO con JSON:
@@ -159,12 +171,34 @@ Responde SOLO con JSON:
                                      temperature=0.4, max_tokens=12000)
         if not isinstance(res, dict) or not (res.get("description") or "").strip():
             raise LLMError("El redactor no devolvió una descripción")
-        return {"h1": marca_exacta(" ".join(str(res.get("h1") or "").split()),
-                                   ficha.get("marca") or ""),
+        h1 = ficha.get("h1_fijo") or marca_exacta(" ".join(str(res.get("h1") or "").split()),
+                                                  ficha.get("marca") or "")
+        return {"h1": h1,
                 "description": res.get("description", ""),
                 "keywords": [k for k in (res.get("keywords") or []) if isinstance(k, dict)],
                 "omitidas": [k for k in (res.get("omitidas") or []) if isinstance(k, dict)
                              and k.get("keyword") in objetivo]}
+
+
+def _bloque_rasgos(ficha: dict) -> str:
+    """Rasgos candidatos para el H1 con su volumen (reglas del SEO, 17-nov)."""
+    rasgos = ficha.get("h1_rasgos") or []
+    if ficha.get("h1_fijo") or not rasgos:
+        return ""
+    lista = ", ".join(f"{m} ({v}/mes como '{m} {ficha.get('tipo', '')}')" for m, v in rasgos)
+    return ("RASGO DEL H1 — candidatos con su volumen de búsqueda: " + lista + ".\n"
+            "Elegí el que tienen TODAS las versiones del producto (no una opción de "
+            "tapizado, acabado o tapa); entre los que cumplen, el más buscado. Si ninguno "
+            "cumple, usá otro rasgo real de la ficha (forma, técnica, estructura).\n\n")
+
+
+def _bloque_genericas(ficha: dict) -> str:
+    gen = ficha.get("genericas_opcionales") or []
+    if not gen:
+        return ""
+    lista = ", ".join(f"'{k}' ({v}/mes)" for k, v, _ in gen)
+    return ("GENÉRICA OPCIONAL — podés sumar UNA de estas, exacta y una sola vez, SOLO si "
+            "su material es el rasgo que pusiste en el H1: " + lista + ".\n\n")
 
 
 def fuentes_de(ficha: dict) -> str:
@@ -190,9 +224,18 @@ def controles(ficha: dict, redactado: dict, keywords: list[str]) -> list[str]:
     omitidas = {(o.get("keyword") or "").lower() for o in redactado.get("omitidas") or []}
     keywords = [k for k in keywords if k.lower() not in omitidas]
     fuentes = fuentes_de(ficha)
-    issues = [f"H1: {i}" for i in verificar_h1(
+    # un H1 dado por las reglas del SEO no lo puede cambiar el redactor: no se le
+    # piden correcciones que no puede hacer
+    issues = [] if ficha.get("h1_fijo") else [f"H1: {i}" for i in verificar_h1(
         redactado.get("h1") or "", nombre=ficha["nombre"], marca=ficha["marca"],
         tipo=ficha["tipo"], texto_ficha=fuentes)]
     issues += check_reescritura(redactado, keywords=keywords, fuentes=fuentes,
                                 url_categoria=ficha.get("url_categoria") or "")
+    if ficha.get("genericas_opcionales"):
+        from .reglas_seo import generica_usada
+        g = generica_usada(strip_html(redactado.get("description") or ""),
+                           redactado.get("h1") or "", ficha["genericas_opcionales"])
+        if g and not g[2]:
+            issues.append(f"La genérica '{g[0]}' no es del material del H1: sacala o usá "
+                          "la del material que dice el H1")
     return issues

@@ -10,6 +10,7 @@ from cassoni.config import Config
 def make_config(tmp_path: Path, *, env="staging", dry_run=True, db_url=None) -> Config:
     c = Config(env=env, dry_run=dry_run)
     c.db_url = db_url or f"sqlite:///{tmp_path}/test.db"
+    c.modo_keywords = "filtros"
     c.wc_base = "https://staging.cassoni.test"
     c.wc_key = "ck_test"
     c.wc_secret = "cs_test"

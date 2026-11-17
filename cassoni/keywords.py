@@ -436,6 +436,8 @@ def elegir_keywords(candidatas: Iterable[dict], *, descripcion: str,
                                                          "una frase que se escriba"})
         elif _palabras(kw) & PALABRAS_SENSIBLES:
             descartadas.append({"keyword": kw, "motivo": "contenido sensible"})
+        elif c.get("descartar"):
+            descartadas.append({"keyword": kw, "motivo": c["descartar"]})
         elif not relevante(kw, texto_producto):
             descartadas.append({"keyword": kw, "motivo": "no es de este producto"})
         elif c.get("spell") or parece_typo(kw, f"{nombre} {marca}" if nombre is not None

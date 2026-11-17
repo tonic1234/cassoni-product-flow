@@ -32,8 +32,9 @@ def _sin_fence(raw: str) -> str:
 class LLMClient:
     def __init__(self, config: Config, client: Optional[httpx.Client] = None):
         self.cfg = config
-        self._http = client or httpx.Client(timeout=90)
+        self._http = client or httpx.Client(timeout=180)
         self.usage: list[dict] = []      # una entrada por llamada (usage crudo)
+        self._anthropic = None           # cliente del SDK, solo si se usa un modelo claude-*
 
     def consumo(self) -> dict:
         """Tokens y USD acumulados en este cliente (todas sus llamadas)."""
@@ -57,7 +58,12 @@ class LLMClient:
                 "temperature": temperature, "max_tokens": max_tokens}
         url = self.cfg.llm_base_url.rstrip("/") + "/chat/completions"
         try:
-            r = self._http.post(url, json=body, headers=headers)
+            try:
+                r = self._http.post(url, json=body, headers=headers)
+            except httpx.TimeoutException:
+                # una corrida autónoma no puede caerse por una respuesta lenta
+                log.warning("LLM %s tardó demasiado: reintento una vez", model)
+                r = self._http.post(url, json=body, headers=headers)
             r.raise_for_status()
             data = r.json()
             if isinstance(data.get("usage"), dict):
@@ -66,8 +72,39 @@ class LLMClient:
         except (httpx.HTTPError, KeyError, IndexError) as exc:
             raise LLMError(f"Fallo LLM ({model}): {exc}") from exc
 
+    def _post_anthropic(self, model: str, system: str, user: str, max_tokens: int) -> str:
+        """Claude por el SDK oficial. Thinking adaptativo (siempre activo en Sonnet
+        5.5), esfuerzo configurable, caché del prompt de sistema y respaldo del
+        servidor si un clasificador de seguridad rechaza el pedido."""
+        import anthropic
+        if self._anthropic is None:
+            self._anthropic = (anthropic.Anthropic(api_key=self.cfg.anthropic_api_key)
+                               if self.cfg.anthropic_api_key else anthropic.Anthropic())
+        try:
+            resp = self._anthropic.beta.messages.create(
+                model=model,
+                max_tokens=max(max_tokens, 16000),     # el razonamiento cuenta acá
+                system=[{"type": "text", "text": system,
+                         "cache_control": {"type": "ephemeral"}}],
+                messages=[{"role": "user", "content": user}],
+                output_config={"effort": self.cfg.anthropic_effort},
+                betas=["server-side-fallback-2026-07-01"],
+                fallbacks="default",
+            )
+        except anthropic.APIStatusError as exc:
+            raise LLMError(f"Fallo LLM ({model}): HTTP {exc.status_code} {exc.message}") from exc
+        except anthropic.APIConnectionError as exc:
+            raise LLMError(f"Fallo LLM ({model}): sin conexión ({exc})") from exc
+        self.usage.append(costos.usage_de_anthropic(resp.usage))
+        if resp.stop_reason == "refusal":
+            raise LLMError(f"{model} rechazó el pedido ({getattr(resp.stop_details, 'category', None)})")
+        return "".join(b.text for b in resp.content if b.type == "text").strip()
+
     def complete(self, system: str, user: str, *, model: str | None = None,
                  temperature: float = 0.3, max_tokens: int = 1200) -> str:
+        modelo = model or self.cfg.llm_editor_model
+        if modelo.startswith("claude-"):
+            return self._post_anthropic(modelo, system, user, max_tokens)
         return self._post(model or self.cfg.llm_editor_model,
                           [{"role": "system", "content": system},
                            {"role": "user", "content": user}],

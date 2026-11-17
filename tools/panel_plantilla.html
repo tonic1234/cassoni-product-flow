@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Panel Agente SEO Cassoni</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: barra de estado arriba, fila de KPIs, gráfico de 30 días a todo el ancho, cola + alertas en dos columnas, últimas fichas, medición y reportes. Estilo Dendra, una sola apariencia oscura. */
+:root{
+  --night:#2B2B28; --carbon:#363633; --ink:#1A1A18; --lime:#CCE535; --cream:#E3E1CD;
+  --white:#FFFFFF; --muted:rgba(255,255,255,.58); --dim:rgba(255,255,255,.38);
+  --border:rgba(255,255,255,.08); --lime-soft:rgba(204,229,53,.12);
+  --bad:#E8683F; --bad-soft:rgba(232,104,63,.14); --warn:#E8C547; --warn-soft:rgba(232,197,71,.13);
+  --f:"Plus Jakarta Sans","Barlow",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--night);color:var(--white);font-family:var(--f);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 64px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--ink)}
+.wrap{max-width:1240px;margin:0 auto;display:grid;gap:22px}
+a{color:var(--lime);text-decoration:none}
+a:hover{text-decoration:underline}
+a:focus-visible{outline:2px solid var(--lime);outline-offset:2px;border-radius:4px}
+h1,h2,h3{margin:0;line-height:1.15;text-wrap:balance}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+
+/* barra superior */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--ink);margin:0 calc(-1 * max(16px,env(safe-area-inset-left,0px)));
+  padding:14px max(16px,env(safe-area-inset-left,0px));border-bottom:1px solid var(--border)}
+.top .wrap{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 20px}
+.marca{display:flex;align-items:baseline;gap:10px;font-weight:800;font-size:18px;letter-spacing:-.01em}
+.marca b{color:var(--lime)}
+.marca span{font-family:var(--mono);font-weight:400;font-size:11px;letter-spacing:.12em;color:var(--dim);text-transform:uppercase}
+.estado{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.pill{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:600;border-radius:999px;padding:5px 11px;border:1px solid var(--border);color:var(--muted);white-space:nowrap}
+.pill i{width:7px;height:7px;border-radius:50%;background:var(--dim)}
+.pill.ok{color:var(--lime);border-color:rgba(204,229,53,.35);background:var(--lime-soft)} .pill.ok i{background:var(--lime)}
+.pill.bad{color:var(--bad);border-color:rgba(232,104,63,.4);background:var(--bad-soft)} .pill.bad i{background:var(--bad)}
+.pill.warn{color:var(--warn);border-color:rgba(232,197,71,.4);background:var(--warn-soft)} .pill.warn i{background:var(--warn)}
+
+/* encabezado */
+.hero{padding-top:28px;display:grid;gap:8px}
+.hero h1{font-size:clamp(26px,4vw,40px);font-weight:800;letter-spacing:-.02em}
+.hero h1 em{font-style:normal;color:var(--lime)}
+.hero p{margin:0;color:var(--muted);max-width:70ch}
+
+/* KPIs */
+.kpis{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:1px;background:var(--border);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.kpi{background:var(--carbon);padding:18px 18px 16px;display:grid;gap:4px;align-content:start}
+.kpi b{font-family:var(--mono);font-size:clamp(20px,2.3vw,28px);white-space:nowrap;font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.kpi b small{font-size:.5em;color:var(--dim);font-weight:400;margin-left:4px}
+.kpi span{font-size:12.5px;color:var(--muted)}
+.kpi.acento b{color:var(--lime)}
+@media (max-width:1000px){.kpis{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:560px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* tarjetas */
+.card{background:var(--carbon);border:1px solid var(--border);border-radius:16px;padding:20px;display:grid;gap:14px;min-width:0;align-content:start}
+.card-h{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:6px 14px}
+.card-h h2{font-size:17px;font-weight:700}
+.card-h span{font-size:12.5px;color:var(--dim)}
+.dos{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px}
+@media (max-width:860px){.dos{grid-template-columns:1fr}}
+
+/* gráfico */
+.chart{overflow-x:auto}
+.chart svg{display:block;width:100%;min-width:620px;height:auto}
+.leyenda{display:flex;flex-wrap:wrap;gap:16px;font-size:12.5px;color:var(--muted)}
+.leyenda i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:7px;vertical-align:-1px}
+
+/* listas */
+.lista{display:grid;gap:0;margin:0;padding:0;list-style:none}
+.lista li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;padding:10px 0;border-top:1px solid var(--border);font-size:13.5px}
+.lista li:first-child{border-top:0}
+.lista .u{font-family:var(--mono);font-size:12.5px;overflow-wrap:anywhere;color:var(--cream)}
+.lista .m{color:var(--dim);font-size:12px}
+.vacio{color:var(--dim);font-size:13.5px;padding:6px 0}
+.alerta{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 10px;align-items:start}
+.alerta .t{color:var(--muted);font-size:13px;overflow-wrap:anywhere}
+
+/* tabla */
+.tabla{overflow-x:auto;margin:0 -20px;padding:0 20px}
+table{width:100%;border-collapse:collapse;min-width:860px;font-size:13.5px}
+th{text-align:left;font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);font-weight:500;padding:10px 10px;border-bottom:1px solid var(--border)}
+td{padding:11px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+tr:last-child td{border-bottom:0}
+td.h1{font-weight:600}
+td.h1 small{display:block;font-weight:400;color:var(--dim);text-decoration:line-through;text-decoration-color:rgba(255,255,255,.25);font-size:12px;margin-bottom:2px}
+.kw{display:inline-block;font-family:var(--mono);font-size:11.5px;padding:2px 7px;border-radius:5px;background:var(--lime-soft);color:var(--lime);margin:0 4px 4px 0;white-space:nowrap}
+.motivo{color:var(--dim);font-size:12px;margin-top:4px;max-width:46ch}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+
+/* medición */
+.veredictos{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.ver{border:1px solid var(--border);border-radius:12px;padding:14px;display:grid;gap:2px}
+.ver b{font-family:var(--mono);font-size:24px;font-weight:600}
+.ver span{font-size:12px;color:var(--muted)}
+@media (max-width:560px){.veredictos{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+.pie{color:var(--dim);font-size:12px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;padding-top:6px}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <div class="marca">cassoni<b>·</b>seo <span>panel del agente</span></div>
+  <div class="estado" id="estado"></div>
+</div></header>
+
+<main class="wrap">
+  <section class="hero">
+    <span class="eyebrow">Dendra · Agente SEO de fichas de producto</span>
+    <h1 id="titulo">El agente, <em>en tiempo real.</em></h1>
+    <p id="bajada"></p>
+  </section>
+
+  <section class="kpis" id="kpis" aria-label="Resumen"></section>
+
+  <section class="card">
+    <div class="card-h"><h2>Últimos 30 días</h2><span id="serie-total"></span></div>
+    <div class="chart" id="chart"></div>
+    <div class="leyenda">
+      <span><i style="background:var(--lime)"></i>Aprobadas</span>
+      <span><i style="background:var(--warn)"></i>Rechazadas por el validador</span>
+      <span><i style="background:var(--bad)"></i>Fallidas</span>
+      <span><i style="background:var(--cream);height:2px;border-radius:0"></i>Costo del día (US$)</span>
+    </div>
+  </section>
+
+  <section class="dos">
+    <div class="card">
+      <div class="card-h"><h2>Cola</h2><span id="cola-n"></span></div>
+      <ul class="lista" id="cola"></ul>
+    </div>
+    <div class="card">
+      <div class="card-h"><h2>Alertas</h2><span>últimos 7 días de logs</span></div>
+      <ul class="lista" id="alertas"></ul>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-h"><h2>Últimas fichas</h2><span id="fichas-n"></span></div>
+    <div class="tabla"><table>
+      <thead><tr><th>Fecha</th><th>H1</th><th>Keywords</th><th>Estado</th><th class="num">Costo</th></tr></thead>
+      <tbody id="fichas"></tbody>
+    </table></div>
+  </section>
+
+  <section class="dos">
+    <div class="card">
+      <div class="card-h"><h2>Medición</h2><span>14 y 28 días después de escribir</span></div>
+      <div class="veredictos" id="veredictos"></div>
+      <ul class="lista" id="medicion"></ul>
+    </div>
+    <div class="card">
+      <div class="card-h"><h2>Reportes diarios</h2><span>para revisar con el SEO</span></div>
+      <ul class="lista" id="reportes"></ul>
+    </div>
+  </section>
+
+  <footer class="pie"><span id="generado"></span><span>Dendra Creative Agency · cassoni.com</span></footer>
+</main>
+
+<script type="application/json" id="datos">__DATOS__</script>
+<script>
+(function(){
+  const D = JSON.parse(document.getElementById("datos").textContent);
+  const $ = s => document.querySelector(s);
+  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const usd = x => "US$ " + (x || 0).toFixed((x || 0) < 0.1 ? 3 : 2);
+  const n = x => Number(x || 0).toLocaleString("es-AR");
+  const slug = u => (u || "").replace(/^https?:\/\/(www\.)?cassoni\.com\/product\//, "").replace(/\/$/, "");
+  const R = D.resumen, W = D.worker, S = D.salud;
+
+  // estado
+  const horas = W.ultima ? (Date.now() - new Date(W.ultima).getTime()) / 36e5 : null;
+  const vivo = horas !== null && horas < 26;
+  const pills = [];
+  pills.push(`<span class="pill ${vivo ? "ok" : (horas === null ? "" : "warn")}"><i></i>${horas === null ? "Sin corridas todavía" : vivo ? "Worker activo" : "Sin correr hace " + Math.round(horas) + " h"}</span>`);
+  pills.push(`<span class="pill ${W.modo === "escritura" ? "ok" : ""}"><i></i>${W.modo === "escritura" ? "Escribiendo en la tienda" : "En seco"}</span>`);
+  if (S && !S.error) {
+    [["gsc","Search Console"],["woo","WooCommerce"],["llm","LLM"],["dataforseo","DataForSEO"]].forEach(([k, t]) =>
+      pills.push(`<span class="pill ${S[k] ? "ok" : "bad"}"><i></i>${t}</span>`));
+    if (S.saldo_dfs != null) pills.push(`<span class="pill ${S.saldo_dfs < 5 ? "warn" : ""}"><i></i>Saldo DataForSEO US$ ${Number(S.saldo_dfs).toFixed(2)}</span>`);
+  } else if (S && S.error) pills.push(`<span class="pill bad"><i></i>Conexiones: ${esc(S.error).slice(0,60)}</span>`);
+  $("#estado").innerHTML = pills.join("");
+
+  const hoy = new Date().toISOString().slice(0, 10);
+  const hechasHoy = (W.por_dia || {})[hoy] || 0;
+  $("#bajada").textContent = `Cupo de ${D.config.cupo} fichas por día · hoy van ${hechasHoy} · keywords por ${D.config.modo_keywords === "reglas" ? "reglas del SEO" : D.config.modo_keywords} · redacta ${D.config.modelo}` + (W.ultima ? ` · última corrida ${W.ultima.slice(0,16).replace("T"," ")}` : "");
+
+  // KPIs
+  const costo = R.costo_llm + R.costo_dfs;
+  const pct = R.procesadas ? Math.round(R.aprobadas / R.procesadas * 100) : 0;
+  const kpis = [
+    [n(R.procesadas), "fichas procesadas", `${n(R.semana)} esta semana`],
+    [pct + "%", "aprobadas por el validador", `${n(R.rechazadas)} rechazadas · ${n(R.fallidas)} fallidas`, true],
+    [n(R.escritas), "escritas en la tienda", W.modo === "escritura" ? "" : "corre en seco"],
+    [n(R.keywords), "keywords agregadas", `en ${n(R.con_keywords)} fichas`],
+    [usd(costo), "costo acumulado", R.procesadas ? usd(costo / R.procesadas) + " por ficha" : ""],
+    [n(W.pendientes.length), "en la cola", `${n(W.abandonadas.length)} abandonadas`],
+  ];
+  $("#kpis").innerHTML = kpis.map(k => `<div class="kpi ${k[3] ? "acento" : ""}"><b>${k[0]}</b><span>${esc(k[1])}</span>${k[2] ? `<span style="color:var(--dim)">${esc(k[2])}</span>` : ""}</div>`).join("");
+
+  // gráfico 30 días (barras apiladas + línea de costo)
+  (function(){
+    const s = R.serie, W_ = 960, H = 240, L = 40, Rr = 52, T = 14, B = 30;
+    const iw = W_ - L - Rr, ih = H - T - B, bw = iw / s.length;
+    const maxN = Math.max(4, ...s.map(d => d.aprobadas + d.rechazadas + d.fallidas));
+    const maxC = Math.max(0.05, ...s.map(d => d.costo));
+    const tope = Math.ceil(maxN / 2) * 2;
+    const y = v => T + ih - v / tope * ih, yc = v => T + ih - v / maxC * ih;
+    let g = "";
+    for (let i = 0; i <= 4; i++) {
+      const v = tope / 4 * i, yy = y(v);
+      g += `<line x1="${L}" x2="${W_ - Rr}" y1="${yy}" y2="${yy}" stroke="rgba(255,255,255,.07)"/>`;
+      g += `<text x="${L - 8}" y="${yy + 4}" text-anchor="end" font-size="11" fill="rgba(255,255,255,.4)" font-family="JetBrains Mono">${Math.round(v)}</text>`;
+      g += `<text x="${W_ - Rr + 8}" y="${T + ih - ih / 4 * i + 4}" font-size="11" fill="rgba(227,225,205,.55)" font-family="JetBrains Mono">${(maxC / 4 * i).toFixed(2)}</text>`;
+    }
+    s.forEach((d, i) => {
+      const x = L + i * bw + bw * 0.18, w = bw * 0.64;
+      let base = T + ih;
+      [["aprobadas","#CCE535"],["rechazadas","#E8C547"],["fallidas","#E8683F"]].forEach(([k, c]) => {
+        if (!d[k]) return;
+        const h = d[k] / tope * ih; base -= h;
+        g += `<rect x="${x}" y="${base}" width="${w}" height="${h}" rx="2" fill="${c}"><title>${d.dia}: ${d[k]} ${k}</title></rect>`;
+      });
+      if (i % 5 === 4 || i === s.length - 1) g += `<text x="${x + w / 2}" y="${H - 10}" text-anchor="middle" font-size="11" fill="rgba(255,255,255,.4)" font-family="JetBrains Mono">${d.dia.slice(5)}</text>`;
+    });
+    const pts = s.map((d, i) => `${L + i * bw + bw / 2},${yc(d.costo)}`).join(" ");
+    g += `<polyline points="${pts}" fill="none" stroke="#E3E1CD" stroke-width="1.6" stroke-opacity=".75"/>`;
+    const ult = s[s.length - 1];
+    g += `<circle cx="${L + (s.length - 1) * bw + bw / 2}" cy="${yc(ult.costo)}" r="3.5" fill="#E3E1CD"/>`;
+    $("#chart").innerHTML = `<svg viewBox="0 0 ${W_} ${H}" role="img" aria-label="Fichas por día y costo, últimos 30 días">${g}</svg>`;
+    const tot = s.reduce((a, d) => a + d.aprobadas + d.rechazadas + d.fallidas, 0);
+    $("#serie-total").textContent = `${n(tot)} fichas · ${usd(s.reduce((a, d) => a + d.costo, 0))}`;
+  })();
+
+  // cola
+  const cola = W.pendientes.slice(0, 10).map(p => `<li><span class="u">${esc(slug(p.url))}</span><span class="m">${p.origen === "SEO" ? "lista del SEO" : "propuesta del agente"}</span></li>`);
+  const aband = W.abandonadas.map(p => `<li><span class="u">${esc(slug(p.url))}</span><span class="pill bad"><i></i>abandonada · ${p.intentos} intentos</span></li>`);
+  $("#cola").innerHTML = cola.concat(aband).join("") || `<li class="vacio">La cola está vacía. El agente propone fichas desde Search Console en la próxima corrida.</li>`;
+  $("#cola-n").textContent = `${n(W.pendientes.length)} pendientes`;
+
+  // alertas
+  $("#alertas").innerHTML = D.logs.map(l => `<li class="alerta"><span class="pill ${l.nivel === "ERROR" ? "bad" : "warn"}"><i></i>${l.nivel === "ERROR" ? "Error" : "Aviso"}</span><span class="t"><span class="mono" style="color:var(--dim)">${esc(l.fecha)}</span> · ${esc(l.texto)}</span></li>`).join("")
+    || `<li class="vacio">Sin errores ni avisos en los últimos 7 días.</li>`;
+
+  // fichas
+  const ESTADO = {processed: ["ok", "Aprobada"], rejected: ["warn", "Rechazada"], failed: ["bad", "Falló"], skipped: ["", "Salteada"], in_queue: ["", "En cola"]};
+  $("#fichas").innerHTML = D.fichas.map(f => {
+    const e = ESTADO[f.estado] || ["", f.estado];
+    const escrita = f.escrita ? `<span class="pill ok"><i></i>escrita</span>` : (f.seco ? `<span class="m" style="font-size:11px;color:var(--dim)">en seco</span>` : "");
+    return `<tr>
+      <td class="mono" style="color:var(--dim);white-space:nowrap">${esc(f.fecha.slice(5,16))}</td>
+      <td class="h1"><small>${esc(f.h1_antes)}</small><a href="${esc(f.url)}" target="_blank" rel="noopener">${esc(f.h1 || f.h1_antes || slug(f.url))}</a></td>
+      <td>${f.keywords.map(k => `<span class="kw">${esc(k)}</span>`).join("") || `<span style="color:var(--dim)">—</span>`}</td>
+      <td><span class="pill ${e[0]}"><i></i>${e[1]}</span> ${escrita}${f.estado !== "processed" && f.motivo ? `<div class="motivo">${esc(f.motivo.slice(0, 180))}</div>` : ""}${f.intentos > 1 ? `<div class="motivo">${f.intentos} intentos</div>` : ""}</td>
+      <td class="num" style="color:var(--muted)">${usd(f.llm_usd)}</td></tr>`;
+  }).join("") || `<tr><td colspan="5" class="vacio">Todavía no hay fichas procesadas.</td></tr>`;
+  $("#fichas-n").textContent = `${n(D.fichas.length)} más recientes`;
+
+  // medición
+  const v = {subio: 0, igual: 0, bajo: 0, sin_datos: 0};
+  D.medicion.forEach(m => { v[m.verdict] = (v[m.verdict] || 0) + 1; });
+  $("#veredictos").innerHTML = [["subio","subió","var(--lime)"],["igual","igual","var(--cream)"],["bajo","bajó","var(--bad)"],["sin_datos","sin datos","var(--dim)"]]
+    .map(([k, t, c]) => `<div class="ver"><b style="color:${c}">${v[k] || 0}</b><span>${t}</span></div>`).join("");
+  $("#medicion").innerHTML = D.medicion.slice(0, 8).map(m => `<li><span class="u">${esc(m.keyword)} <span class="m">· ${m.days} días · ${esc(slug(m.url))}</span></span><span class="mono" style="color:${m.verdict === "subio" ? "var(--lime)" : m.verdict === "bajo" ? "var(--bad)" : "var(--muted)"}">${m.delta_position != null ? (m.delta_position > 0 ? "+" : "") + Number(m.delta_position).toFixed(1) + " pos" : "—"}</span></li>`).join("")
+    || `<li class="vacio">Se mide cada keyword 14 y 28 días después de escribir la ficha en la tienda. Va a aparecer acá cuando haya fichas escritas.</li>`;
+
+  // reportes
+  $("#reportes").innerHTML = D.reportes.slice(0, 12).map(r => `<li><span>${r.pagina ? `<a href="${esc(r.pagina)}">${esc(r.fecha)}</a>` : esc(r.fecha)} <span class="m">· ${r.fichas} fichas, ${r.aprobadas} aprobadas${r.seco ? " · en seco" : ""}</span></span><span class="mono" style="color:var(--muted)">${usd(r.llm_usd + r.dfs_usd)}</span></li>`).join("")
+    || `<li class="vacio">El worker deja un reporte por día en evidencia/diario.</li>`;
+
+  $("#generado").textContent = `Generado ${D.generado}` + (S ? "" : " · sin prueba de conexiones (usar --salud)");
+})();
+</script>
+</body>
+</html>

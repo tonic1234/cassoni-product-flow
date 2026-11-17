@@ -1,117 +1,113 @@
 # Agente SEO — Cassoni
 
-Optimiza fichas de producto de **cassoni.com** (13.079 publicadas). Cada día toma
-hasta 10 fichas de la lista que arma el equipo SEO, pone el H1 en el formato
-**`{Nombre} by {Marca}`** e incorpora en la **descripción larga** las 3 keywords con
-volumen de búsqueda que todavía no tiene. Mide el efecto de cada keyword a 14/28 días.
+Optimiza fichas de producto de **cassoni.com** (13.079 publicadas) como lo haría el
+equipo SEO: por cada ficha escribe un **H1** pensado en lo que la gente busca, elige
+**1 a 3 keywords** que la ficha ya atrae o que nombran marca y tipo, y **reescribe la
+descripción larga** con la estructura del SEO. Corre solo, como worker con cron: hasta
+10 fichas por día, en horario hábil, con un panel de observabilidad y un reporte
+diario. Mide el efecto de cada keyword a 14 y 28 días.
 
-**Landing explicativa:** [`docs/landing/index.html`](docs/landing/index.html).
+> **Para instalarlo en el VPS:** [docs/VPS.md](docs/VPS.md).
+> **Cómo funciona por dentro:** [docs/COMO-FUNCIONA.md](docs/COMO-FUNCIONA.md).
+> **Qué pidió el SEO y cómo se resolvió:** [docs/SEO-DEVOLUCIONES.md](docs/SEO-DEVOLUCIONES.md).
 
-Este repo está pensado para ser **auditado desde afuera**: cada afirmación tiene un
-comando que la reproduce y una salida guardada en `evidencia/`.
+## Estado (17-nov-2026)
 
-## Auditar en cinco comandos
+| Pieza | Estado |
+|---|---|
+| H1 por lo que la gente busca (regla del SEO, 17-nov) | ✅ en código; umbral pendiente de confirmar con el SEO |
+| Keywords: Search Console + marca y tipo + genérica del material del H1 | ✅ en código, sin LLM |
+| Descripción con la estructura del SEO (DeepSeek, con sus fichas como ejemplo) | ✅ 19 de 20 aprobadas en la última prueba |
+| Validación: reglas en código + un segundo modelo como juez | ✅ frena datos inventados y keywords forzadas |
+| Worker diario autónomo (`tools/agente_diario.py`) | ✅ probado de punta a punta en seco |
+| Panel de observabilidad (`tools/panel.py`) | ✅ estático, se regenera después de cada corrida |
+| Cron en el VPS | ⏳ por instalar ([docs/VPS.md](docs/VPS.md)) |
+| Escritura en la tienda (`--write`) | ⛔ no ejecutada: el primer lote lo aprueba el SEO |
+| Suite de tests | ✅ 429 verdes |
+
+**Medido en las 10 fichas que resolvió el SEO** (`tools/evaluar_vs_seo.py`):
+keywords del SEO que elige el agente 2 → 9 de 22; 2,1 keywords por ficha (SEO 2,2);
+largo 118 → 96 palabras (SEO 86). Costo por ficha: ~US$ 0,005 de LLM y ~US$ 0,05 de
+DataForSEO.
+
+## En una ficha, paso a paso
+
+1. **Lee** la ficha de WooCommerce: nombre, marca, ruta de categorías, atributos y
+   descripción. Si ya fue escrita, la saltea.
+2. **Tipo de producto** en inglés de EE. UU., por código (`wall sconce`, `bar stool`).
+3. **H1**:
+   - si el nombre ya se busca (≥ 1.000/mes, como «club sofa»), nombre + marca;
+   - si no, nombre + **rasgo** + tipo + marca. El rasgo es el material que tienen
+     todas las versiones y, entre esos, el más buscado («Cruise Teak Outdoor Sofa»).
+   - En WooCommerce se escribe **sin la marca**: la tienda agrega «by {Marca}» con el
+     logo del fabricante.
+4. **Keywords**, decididas en código:
+   - búsquedas de Search Console con impresiones (primero las variantes del nombre:
+     «cruise couch», «shibari chairs»);
+   - marca + tipo con volumen («nomon wall clock»);
+   - una genérica solo si es del material que dice el H1 («glass dining table»).
+5. **Redacta** DeepSeek con las fichas del SEO como ejemplo: apertura, 2 secciones,
+   un dato para decidir la compra, medidas en pulgadas, un enlace a la categoría, 60 a
+   110 palabras. Nada inventado: los números se controlan en código.
+6. **Valida**: reglas en código y un segundo modelo; hasta 3 intentos con los motivos.
+7. **Escribe** `name` y `description` solo con `--write` y aprobada.
+8. **Mide** cada keyword a 14 y 28 días.
+
+## Probarlo en cinco comandos
 
 ```bash
 git clone https://github.com/tonic1234/cassoni-product-flow && cd cassoni-product-flow
 python3 -m venv venv && ./venv/bin/pip install -r requirements.txt
-bash scripts/verify.sh                                    # tests + secretos + doc
-./venv/bin/python -m cassoni.cli --env prod --preflight   # GSC / Woo / LLM
-./venv/bin/python -m cassoni.cli --env prod --urls lista.txt --batch 10   # en seco
+./venv/bin/python -m pytest -q                                   # tests, sin red
+./venv/bin/python -m cassoni.cli --env prod --preflight          # conexiones, sin gastar LLM
+./venv/bin/python tools/agente_diario.py --sin-horario           # una corrida en seco
 ```
 
-`--preflight` no escribe ni gasta LLM. `--urls` sin `--write` corre en seco. Para las
-credenciales ver [docs/OPERACION.md](docs/OPERACION.md).
+Las credenciales van en `.env.prod` y `creds/` (nunca en git): ver
+[docs/OPERACION.md](docs/OPERACION.md). En Windows: `PYTHONUTF8=1`.
 
-## Qué hace, en orden
+## Lo que se mostró al SEO
 
-1. **Toma la lista del día**: las URLs que SEO va sumando a `lista.txt`, hasta 10
-   por día, en horario hábil y con pausas aleatorias (para no editar en masa).
-2. **Lee** la ficha real de WooCommerce (nombre, marca, categorías, atributos,
-   descripción). Si ya fue escrita, la saltea.
-3. **H1 por plantilla**: `{Nombre} by {Marca}`, siempre igual, sin LLM. Cubre las
-   búsquedas de marca + modelo ("rugiano club sofa", "luceplan illan").
-4. **Keywords nuevas, de tres fuentes** (todas con volumen de DataForSEO):
-   - **GSC**: búsquedas por las que la ficha ya aparece en posición 4-30;
-   - **competencia**: las búsquedas que **rankean en el top 20** las 3 páginas que
-     venden el mismo producto y están por encima de cassoni (DataForSEO
-     `ranked_keywords`); puntúan más las que rankean varios competidores;
-   - **investigación**: tipo de producto × material/acabado/estilo de la ficha
-     ("marble coffee table", "outdoor teak sofa") en DataForSEO `keyword_ideas`.
-5. **Filtra y ordena**: fuera lo que ya cubre el H1, lo que no es de este producto
-   (otro tipo de mueble, otra marca, un material que la ficha no tiene), lo
-   informativo, lo de dificultad > 60 y lo de menos de **50 búsquedas por mes**.
-   Gana el potencial de clics para esta ficha. Hasta 3. Si no queda ninguna, la
-   descripción no se toca: la ficha queda solo con el H1.
-6. **Edita** con un LLM: **una oración por keyword**, junto a la oración del
-   original con la que tiene relación y armada con lo que la ficha ya dice. Sin
-   medidas, sin relleno, conservando el 80% de las oraciones originales.
-7. **Valida** en dos capas: reglas en código (keyword exacta, una oración por
-   keyword, máximo 4 palabras que la ficha no dice, sin frases vacías ni medidas,
-   HTML seguro) y LLM (tono, datos inventados). Hasta 2 pases.
-8. **Escribe** `name` + `description` solo con `--write` y aprobada.
-9. **Mide** cada keyword: N días antes vs N días después de la edición.
-
-## Estado real (3-nov-2026)
-
-| Pieza | Estado |
+| Página | Qué es |
 |---|---|
-| H1 por plantilla `{Nombre} by {Marca}` | ✅ con tests y probado en seco contra la tienda |
-| Keywords de GSC por oportunidad | ✅ probado en seco: aportan poco (casi siempre el nombre, que cubre el H1) |
-| Keywords que rankea la competencia (`ranked_keywords`) | ⚠️ con tests, **sin probar contra la API** (cuenta sin saldo) |
-| Investigación por atributos (`keyword_ideas`) | ⚠️ con tests, **sin probar contra la API** (cuenta sin saldo) |
-| Una oración por keyword, anclada en la ficha, sin medidas | ✅ probado en seco: 12 oraciones, 11 con keyword, 0 medidas |
-| DataForSEO: lotes, caché, tope de gasto, errores de cuenta visibles | ✅ con tests y probado contra la API |
-| Idempotencia, HTML seguro, staging ≠ producción | ✅ con tests |
-| Suite de tests | ✅ 336 verdes |
-| Escritura en producción | ⛔ **no ejecutada**: el primer lote lo aprueba el equipo SEO |
-| Cron | ⛔ **no instalado** (ejemplo en `docs/OPERACION.md`) |
-
-**Antes de la próxima corrida** (con saldo en DataForSEO):
-`./venv/bin/python tools/probar_dataforseo.py --env prod --url <una ficha>` hace una
-consulta de cada tipo, muestra el costo real y confirma el formato de las respuestas.
-
-## Muestra para validar con el cliente
-
-Diez fichas reales elegidas por insumo (las que tienen material para escribir sin
-inventar), procesadas en seco y publicadas para revisión:
-
-**https://tarsterminal.duckdns.org/muestra-cassoni/**
-
-```bash
-./venv/bin/python -m cassoni.cli --env prod --urls muestra.txt --batch 10 --db sqlite:///muestra.db
-./venv/bin/python tools/exportar_muestra.py --db sqlite:///muestra.db --out muestra.json
-./venv/bin/python tools/generar_muestra.py --json muestra.json --out index.html
-```
-
-Medido en esa corrida: **8 de 10** aprobadas por el validador, **US$ 0,0196 por ficha**
-(tokens reales), 1.255 → 2.024 palabras. Las dos rechazadas quedan en la página con el
-motivo: un rechazo honesto vale más que una muestra toda verde.
+| [docs/landing-v3/index.html](docs/landing-v3/index.html) | **Landing v3** que se intercambió con Alex (SEO): qué cambió, agente vs SEO en sus 10 fichas, 10 fichas nuevas y DeepSeek vs Claude. Se regenera con `tools/landing_v3.py`. |
+| [docs/agente-vs-seo/index.html](docs/agente-vs-seo/index.html) | Las 10 fichas del SEO, lado a lado con el agente. |
+| [docs/revision-seo/index.html](docs/revision-seo/index.html) | Página para calificar fichas (v3.2). |
+| [docs/landing/index.html](docs/landing/index.html) | Landing v2 (4-nov), con los primeros resultados. |
+| [docs/landing-cliente/](docs/landing-cliente/) | Informe que se mandó al cliente (julio). |
 
 ## Mapa del repo
 
 ```
-cassoni/            el agente (selector, gsc, editor, validador, woo, db, revisar)
-tests/              suite completa (sin red, con fakes)
-docs/
-  ARQUITECTURA.md   la cadena y los contratos
-  DECISIONES.md     ADR: qué se decidió, por qué, qué se descartó
-  OPERACION.md      comandos, credenciales, qué hacer si falla
-  AUDITORIA.md      cada número con el comando que lo reproduce
-  REGLA-SEO-FICHAS.md   spec del cliente (fuente)
-  landing-cliente/  el informe que se le mandó al cliente: objetivo y flujo (index.html + PDF)
-PLAN.md             puesta en marcha y unidades de trabajo
-evidencia/          salidas crudas: RED/GREEN de cada unidad, lote real, pilotos
-scripts/verify.sh   la puerta (VERDE = terminado)
+cassoni/                el agente
+  orchestrator.py         el recorrido de una ficha (precarga, selección, redacción, escritura)
+  reglas_seo.py           reglas del SEO en código: H1 por volumen, keywords, genérica del H1
+  criterio_seo.py         candidatas (Search Console + genéricas) y ejemplos del SEO
+  redactor.py             prompt de redacción y controles en código
+  validator.py            segundo modelo como juez
+  h1.py                   tipo de EE. UU., modelo, nombre para WooCommerce
+  scheduler.py            cupo diario, horario, reintentos, estado
+  llm.py / costos.py      DeepSeek (o Claude por SDK de Anthropic) y costo por llamada
+  dataforseo.py, gsc.py, woo.py, db.py
+tools/
+  agente_diario.py        EL WORKER: una corrida diaria + reporte + panel
+  panel.py (+ plantilla)  panel de observabilidad estilo Dendra
+  correr_lote.py          un lote en seco con su JSON de evidencia
+  evaluar_vs_seo.py       parecido con las fichas del SEO
+  armar_referencia_seo.py ejemplos del SEO a partir de su documento
+  landing_v3.py, pagina_*.py, fotos_fichas.py   páginas para el SEO
+  simulacion_*.py         probar otro modelo (o una persona) con las mismas entradas
+docs/                   documentación (ver arriba) y páginas para el SEO
+evidencia/              corridas, documento del SEO y referencia (referencia-seo.json la usa el agente)
+tests/                  suite completa (sin red, con fakes)
 ```
 
 ## Límites declarados
 
 - El agente **no** toca `short_description`, meta title/description ni ALT: son del
   n8n (un solo escritor por campo).
-- GSC es sólo lectura.
-- El mínimo de 150 palabras del cliente **ya no bloquea** (obligaba a rellenar con
-  medidas); el máximo de 300 se mide contra el original. Pendiente de confirmar
-  por SEO.
-- Pendiente de SEO: sacar los códigos del H1 ("Cleopatra Chair (SC1019) by OAK").
-- Sin cron instalado, no hay nada corriendo solo.
+- Search Console es solo lectura.
+- Si una ficha no tiene la marca cargada en WooCommerce, la tienda muestra el H1 sin
+  «by»: el agente lo avisa.
+- Pendiente con el SEO: el umbral de 1.000 búsquedas/mes para el H1; Rock sin «Marble»
+  (la tapa también viene en madera); Steinway, cuyo volumen es el de la marca.

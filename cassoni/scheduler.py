@@ -44,18 +44,18 @@ class Scheduler:
     def _load_state(self) -> dict:
         if self.state_file.exists():
             try:
-                return json.loads(self.state_file.read_text())
+                return json.loads(self.state_file.read_text(encoding="utf-8"))
             except Exception:
                 return {}
         return {}
 
     def _save_state(self):
-        self.state_file.write_text(json.dumps(self._state, ensure_ascii=False, indent=2))
+        self.state_file.write_text(json.dumps(self._state, ensure_ascii=False, indent=2), encoding="utf-8")
 
     def _read_urls(self) -> list[str]:
         if not self.urls_file.exists():
             return []
-        return [l.strip() for l in self.urls_file.read_text().splitlines()
+        return [l.strip() for l in self.urls_file.read_text(encoding="utf-8").splitlines()
                 if l.strip() and not l.startswith("#")]
 
     def hechas_hoy(self, hoy: dt.date | None = None) -> int:

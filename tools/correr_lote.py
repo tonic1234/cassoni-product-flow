@@ -29,7 +29,7 @@ def main() -> int:
     logging.basicConfig(level=logging.WARNING, format="%(levelname)s %(name)s: %(message)s")
     cfg = Config.load(a.env, dry_run=True)
     pipe = Pipeline(cfg, dry_run=True, forzar=True)
-    urls = [u.strip() for u in Path(a.urls).read_text().splitlines()
+    urls = [u.strip() for u in Path(a.urls).read_text(encoding="utf-8").splitlines()
             if u.strip() and not u.startswith("#")]
     commit = subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True,
                             text=True).stdout.strip()
@@ -59,7 +59,7 @@ def main() -> int:
                     "commit": commit, "codigo_con_cambios_sin_commit": sucio,
                     "dry_run": True, "costos": pipe._costos()},
            "fichas": fichas}
-    Path(a.out).write_text(json.dumps(out, ensure_ascii=False, indent=1, default=str))
+    Path(a.out).write_text(json.dumps(out, ensure_ascii=False, indent=1, default=str), encoding="utf-8")
     print("guardado en", a.out)
     return 0
 

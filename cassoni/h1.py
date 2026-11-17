@@ -95,10 +95,11 @@ _TIPOS = ("sofa", "couch", "sectional", "loveseat", "chair", "armchair", "stool"
           "nightstand", "wardrobe", "rug", "carpet", "piano", "shelf", "bookcase", "vase",
           "clock", "lounger", "daybed", "trolley", "parasol", "umbrella", "sunshade",
           "planter", "pot", "light", "buffet", "credenza", "chaise", "screen", "tray",
-          "candleholder", "sculpture")
+          "candleholder", "sculpture", "stand", "set", "basket")
 _PREFIJOS = {"coffee", "side", "dining", "console", "wall", "floor", "lounge", "bar",
              "accent", "bedside", "writing", "ceiling", "pendant", "desk", "office",
-             "sun", "chaise", "counter", "end", "night", "table", "suspension"}
+             "sun", "chaise", "counter", "end", "night", "table", "suspension",
+             "valet", "coat", "foosball", "pool", "billiard", "bathroom", "bath"}
 # ('club' no: en 'Club Sofa' es el nombre del modelo, no un tipo)
 # hoja de categoría (slug) → tipo, para fichas cuyo nombre no lo dice ('Anamon')
 _TIPO_POR_CATEGORIA = {
@@ -113,6 +114,9 @@ _TIPO_POR_CATEGORIA = {
     "poufs-ottomans": "ottoman", "benches": "bench", "stools": "stool",
     "bar-stools": "bar stool", "desks": "desk", "wardrobes": "wardrobe",
     "dressers": "dresser", "vases": "vase", "clocks": "clock", "daybeds": "daybed",
+    "foosball-tables": "foosball table", "pool-tables": "pool table",
+    "bath-counter-sets": "bathroom set", "baskets-and-storage": "basket",
+    "coat-racks": "coat rack",
 }
 # nombres de cassoni que en EE. UU. se buscan con otro término
 _TERMINO_EE_UU = {"wall lamp": "wall sconce", "wall light": "wall sconce",
@@ -132,8 +136,14 @@ def _singular(w: str) -> str:
 
 
 def _tipo_del_nombre(modelo: str) -> tuple[str, int]:
-    """('coffee table', índice de la primera palabra del tipo) o ('', -1)."""
-    palabras = re.findall(r"[a-z]+", _plano(modelo))
+    """('coffee table', índice de la primera palabra del tipo) o ('', -1).
+    Lo que sigue a ' with ' es un complemento, no el tipo: 'Salomé Valet Stand
+    With Mirror' es un valet stand, no un espejo."""
+    plano = _plano(modelo)
+    antes = re.split(r"\s+with\s+", plano, maxsplit=1)[0]
+    if antes != plano and _tipo_del_nombre(antes)[0]:
+        return _tipo_del_nombre(antes)
+    palabras = re.findall(r"[a-z]+", plano)
     for i in range(len(palabras) - 1, -1, -1):
         w = _singular(palabras[i])
         if w in _TIPOS:
@@ -166,6 +176,13 @@ def tipo_ee_uu(nombre: str, ruta_categorias: Iterable[str] = (),
     ruta = [_plano(r) for r in ruta_categorias]
     atributos = list(atributos)
     tipo, _ = _tipo_del_nombre(sin_codigos(nombre))
+    if tipo and " " not in tipo:
+        # 'Arcadia Stool' en bar-stools → 'bar stool': la categoría es más precisa
+        for slug in reversed(ruta):
+            de_cat = _TIPO_POR_CATEGORIA.get(slug, "")
+            if " " in de_cat and de_cat.endswith(f" {tipo}"):
+                tipo = de_cat
+                break
     if not tipo:
         for slug in reversed(ruta):
             if slug in _TIPO_POR_CATEGORIA:
@@ -220,6 +237,17 @@ def modelo_de(nombre: str, marca: str) -> str:
         return modelo
     con_codigo = sin_marca(re.sub(r"\([^)]*\)", " ", _limpio(nombre)), marca)
     return _parte_modelo(_WS.sub(" ", con_codigo).strip()) or limpio
+
+
+def nombre_para_woo(h1: str, marca: str) -> str:
+    """Lo que se escribe en el campo `name` de WooCommerce. Desde nov-2026 la tienda
+    arma el H1 sola como '{name} by {Marca}', con el logo del fabricante, y el
+    <title> como '{name} by {Marca} | Cassoni': si el `name` ya trae 'by {Marca}',
+    queda duplicado. 'Club Sofa by Rugiano' → 'Club Sofa'."""
+    h1 = " ".join((h1 or "").split())
+    if marca and h1.lower().endswith(f" by {marca.lower()}"):
+        return h1[: -len(f" by {marca}")].rstrip()
+    return h1
 
 
 def _titulo(s: str) -> str:

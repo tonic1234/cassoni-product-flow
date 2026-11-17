@@ -64,11 +64,21 @@ class Config:
     # '{Nombre} by {Marca}' + una oración por keyword, 80% del original intacto)
     modo_descripcion: str = "reescritura"
     dfs_intencion: bool = True                 # mirar qué muestra Google antes de elegir
+    # keywords: 'seo' = imita las elecciones del documento del SEO (6-nov) con sus
+    # fichas como ejemplos; 'filtros' = reglas de volumen/intención (v3.2)
+    modo_keywords: str = "reglas"
+    h1_umbral_nombre: int = 1000      # búsquedas/mes para que el nombre solo alcance (Alex, 17-nov)
+    referencia_seo: str = str(Path(__file__).resolve().parent.parent / "evidencia"
+                              / "referencia-seo.json")
     # --- LLM ---
     llm_base_url: str = ""                     # OpenAI-compatible endpoint
     llm_api_key: str = ""
     llm_editor_model: str = ""
     llm_validator_model: str = ""
+    # modelos 'claude-*' van por el SDK de Anthropic; sin clave acá, el SDK la toma
+    # de ANTHROPIC_API_KEY o del perfil de `ant auth login`
+    anthropic_api_key: str = ""
+    anthropic_effort: str = "medium"           # low | medium | high (Sonnet 5.5)
     # --- Scheduler ---
     workday_start: int = 9
     workday_end: int = 18
@@ -115,7 +125,7 @@ class Config:
             resto = c.db_url[len("sqlite:///"):]
             if resto.startswith("./") or (resto and not resto.startswith("/")):
                 ruta = (base_dir / resto.lstrip("./")).resolve()
-                c.db_url = f"sqlite:///{ruta}"
+                c.db_url = f"sqlite:///{ruta.as_posix()}"
         for campo, clave in (("dfs_max_requests_min", "CASSONI_DFS_MAX_REQ_MIN"),
                              ("dfs_location_code", "CASSONI_DFS_LOCATION"),
                              ("dfs_min_volume", "CASSONI_DFS_MIN_VOLUMEN"),
@@ -128,6 +138,13 @@ class Config:
         c.dfs_language_code = g("CASSONI_DFS_LANGUAGE", c.dfs_language_code)
         c.dfs_competidores = g("CASSONI_DFS_COMPETIDORES", c.dfs_competidores)
         c.modo_descripcion = g("CASSONI_MODO_DESCRIPCION", c.modo_descripcion)
+        c.modo_keywords = g("CASSONI_MODO_KEYWORDS", c.modo_keywords)
+        c.anthropic_api_key = g("CASSONI_ANTHROPIC_API_KEY", c.anthropic_api_key)
+        c.anthropic_effort = g("CASSONI_ANTHROPIC_EFFORT", c.anthropic_effort)
+        c.h1_umbral_nombre = int(g("CASSONI_H1_UMBRAL_NOMBRE", c.h1_umbral_nombre))
+        if c.modo_keywords not in ("reglas", "seo", "filtros"):
+            raise ValueError(f"CASSONI_MODO_KEYWORDS inválido: {c.modo_keywords!r}")
+        c.referencia_seo = g("CASSONI_REFERENCIA_SEO", c.referencia_seo)
         if c.modo_descripcion not in ("reescritura", "quirurgica"):
             raise ValueError(f"CASSONI_MODO_DESCRIPCION inválido: {c.modo_descripcion!r} "
                              f"(use reescritura o quirurgica)")

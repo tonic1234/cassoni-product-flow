@@ -214,3 +214,77 @@ otro tipo de producto, palabras sensibles y tipeos.
 Sin saldo (402), cuenta sin verificar (403) o pausada (40201, con HTTP 200) se
 informan con el mensaje de la API y no se reintentan. `CASSONI_DFS_PRESUPUESTO_USD`
 corta los pedidos que pasarían el tope de la corrida.
+
+---
+
+## D-023 · Semillas de investigación con el tipo real y los materiales del texto
+**13-nov-2026 · prueba en seco de la tanda nueva (v3.1 → v3.2)**
+Con v3.1, 7 de 10 fichas nuevas quedaban sin keywords. La causa estaba antes de
+los filtros: el tipo salía solo del nombre ('Salomé Valet Stand With Mirror' →
+mirror; el metegol → table; set de baño y canastos sin tipo), entraban atributos
+técnicos como estilo ('dali chandelier', 'triac chandelier') y los materiales que
+la ficha dice solo en la descripción (latón, vidrio soplado, cuero) no se usaban.
+Ahora:
+- el tipo es el de EE. UU. que ya resuelve el H1 (`tipo_ee_uu`), que además corta
+  en ' with ' y prefiere la categoría cuando es más precisa ('stool' → 'bar stool');
+- las semillas son material/estilo × tipo, con los materiales de la descripción;
+- las semillas mismas son candidatas con su volumen, pedido en el pedido único del
+  lote (ficha por ficha costaba US$ 0,09 cada una y agotaba el presupuesto);
+- `keyword_ideas` filtra por el núcleo del tipo ('%foosball%', '%lamp%' o '%light%');
+- se descartan las ideas que buscan repuestos ('foosball table rods'), algo para el
+  producto ('frame for mirror') o que parten el tipo ('ceiling living room light').
+Resultado medido: tanda nueva 3 → 5 de 10 fichas con keywords; control 4 → 8 de 10.
+Costo: ~US$ 0,09 por ficha en DataForSEO y ~US$ 0,007 en LLM. El tope por corrida
+(`CASSONI_DFS_PRESUPUESTO_USD`) tiene que ser ≥ US$ 1,20 para 10 fichas; con 0,30
+la corrida se corta y ninguna ficha recibe keywords.
+
+---
+
+## D-024 · Imitar el documento del SEO: sus fichas como ejemplos, probado sin ver la respuesta
+**13-nov-2026 · pedido del equipo: "hacer lo mismo que el SEO en el resto de las fichas"**
+El documento del SEO del 6-nov (pestaña "Cómo hacerlo por ficha") resuelve 10 fichas:
+H1, 1–3 keywords y descripción. Su criterio de keywords no es el de v3.2: usa
+variantes del nombre por las que la ficha ya aparece en GSC (sin piso de volumen),
+marca + tipo y una genérica corta de material o tipo, y evita el nombre tal cual.
+`CASSONI_MODO_KEYWORDS=seo` (por defecto):
+- candidatas = GSC (posición ≤ 30, ≥ 2 impresiones, sin tipeos, otro idioma, precio
+  ni navegación ajena) + genéricas armadas solo con datos de la ficha, con volumen;
+- un LLM elige 1–3 viendo las elecciones reales del SEO (`evidencia/referencia-seo.json`,
+  armada con `tools/armar_referencia_seo.py`);
+- el redactor recibe las descripciones del SEO como ejemplo de estilo y largo
+  (60–110 palabras).
+Regla de la prueba: cada ficha ve como ejemplo las OTRAS nueve, nunca la propia, y las
+instrucciones solo tienen ejemplos inventados (una primera corrida que citaba keywords
+de estas fichas en el prompt se descartó por eso).
+Medido en las 10 fichas (`tools/evaluar_vs_seo.py`): H1 idénticos 1 → 4; keywords del SEO
+que elige el agente 2 → 7 de 22; largo 118 → 96 palabras (SEO 86).
+Pendiente: más fichas resueltas por el SEO para que aprenda mejor el criterio de keywords.
+`CASSONI_MODO_KEYWORDS=filtros` conserva la selección por reglas de v3.2.
+
+---
+
+## D-025 · Reglas del SEO en código; DeepSeek solo redacta. Agente diario autónomo
+**17-nov-2026 · devolución de Alex (SEO)**
+Alex: el H1 prioriza lo que la gente busca (si el nombre ya tiene volumen, nombre +
+marca; si no, el rasgo más buscado), y las keywords que funcionan son las de Search
+Console con impresiones y marca + tipo. Las genéricas de DeepSeek fallaban («leather
+table» en Dandy, «marble table» en Palatial). `CASSONI_MODO_KEYWORDS=reglas` (por defecto):
+- H1: si el nombre tiene ≥ `CASSONI_H1_UMBRAL_NOMBRE` búsquedas/mes (1.000: Club Sofa
+  1.000 sí, Rock Coffee Table 480 no) va nombre + marca, fijo. Si no, el redactor elige
+  el rasgo entre los materiales de la ficha con su volumen: el que tienen todas las
+  versiones y, entre esos, el más buscado (el más buscado a secas tomaba opciones:
+  «Wood» en Frog, «Fabric» en Cruise, «Gold Leaf» en Tiffany).
+- Keywords en código: Search Console (primero variantes del nombre; sin el nombre
+  tal cual ni recortado, sin la marca sola, sin símbolos, ≥5 impresiones si no nombra
+  modelo ni marca), marca + tipo con volumen, y una genérica opcional solo si su
+  material es el del H1 (el código lo controla). El redactor las usa todas.
+- La tienda agrega «by {Marca}» con el logo al H1: el `name` se escribe sin la marca.
+Medido en las 10 fichas del SEO: keywords del SEO 7 → 9 de 22, 2,1 por ficha (SEO 2,2);
+19 de 20 aprobadas (la rechazada inventaba un dato y el validador la frenó). Costo:
+US$ 0,005 de LLM y ~US$ 0,05 de DataForSEO por ficha.
+`tools/agente_diario.py` corre solo: lista del SEO (o propuestas de Search Console si
+se vacía), cupo diario, reporte del día en `evidencia/diario/`, medición los lunes.
+En seco y escribiendo llevan estados separados. `scripts/instalar_tarea_windows.ps1`
+lo registra en el Programador de tareas.
+Pendiente con Alex: el umbral de 1.000; Rock sin «Marble» (la tapa también viene en
+madera); Steinway, cuyo volumen es el de la marca Steinway, no el de esta pieza.

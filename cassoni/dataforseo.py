@@ -339,7 +339,8 @@ class DataForSEOFetcher:
                         "posicion_competidor": serp.get("rank_group")})
         return out
 
-    def ideas_de_keywords(self, semillas: list[str], limite: int = 200) -> list[dict]:
+    def ideas_de_keywords(self, semillas: list[str], limite: int = 200,
+                          contiene: Optional[list[str]] = None) -> list[dict]:
         """Investigación de keywords (DataForSEO Labs, keyword_ideas): búsquedas
         relacionadas con las semillas que la ficha TODAVÍA no atrae, con volumen,
         dificultad (0-100) e intención. [{keyword, volume, cpc, difficulty,
@@ -351,6 +352,13 @@ class DataForSEOFetcher:
         payload = [{"keywords": semillas, "location_code": self.cfg.dfs_location_code,
                     "language_code": self.cfg.dfs_language_code, "limit": limite,
                     "include_serp_info": False}]
+        if contiene:
+            # solo ideas que nombran el tipo de producto ('%stool%'): sin esto la
+            # API devuelve lo más buscado de todo el rubro
+            filtros: list = []
+            for w in contiene[:4]:
+                filtros += (["or"] if filtros else []) + [["keyword", "like", f"%{w}%"]]
+            payload[0]["filters"] = filtros if len(filtros) > 1 else filtros[0]
         res = self._tarea(payload, self.IDEAS_URL, COSTO_IDEAS_USD, "investigación de keywords")
         out = []
         for it in (res or {}).get("items") or []:

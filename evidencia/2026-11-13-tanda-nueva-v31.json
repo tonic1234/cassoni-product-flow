@@ -1,0 +1,346 @@
+{
+ "meta": {
+  "modo": "reescritura",
+  "llm": "deepseek-flash",
+  "commit": "07373492da9c7780e09d7be5c2f866f6f08284d9",
+  "codigo_con_cambios_sin_commit": true,
+  "dry_run": true,
+  "costos": {
+   "tokens_in": 31242,
+   "tokens_out": 38709,
+   "cache_hit": 23547,
+   "cache_miss": 7695,
+   "usd": 0.04890058,
+   "llamadas": 21,
+   "dfs_usd": 0.72864
+  }
+ },
+ "fichas": [
+  {
+   "url": "https://cassoni.com/product/cas-bon-salome-valet-stand-01/",
+   "status": "processed",
+   "reason": "dry_run (sin tocar WooCommerce)",
+   "h1_original": "Salomé Valet Stand With Mirror",
+   "h1": "Salomé Valet Stand With Metal Tray and Mirror by Bonaldo",
+   "descripcion": "<p>Salomé is a valet with mirror designed by Mauro Lipparini for Bonaldo, built on a metal structure with a matching tray. Made in Italy.</p>\n<h2>FRAME AND FINISHES</h2>\n<p>The structure and tray come in different metal finishes. The valet stand mirror is held in a frame of delicate geometric shapes.</p>\n<h2>SALOMÉ OR SALOMÉ LIGHT</h2>\n<ul>\n<li><strong>Salomé:</strong> metal structure and tray in the finish you choose.</li>\n<li><strong>Salomé Light:</strong> the same stand with a glass lampshade.</li>\n</ul>\n<p>Check the footprint before ordering: 32 5/8\" W x 19 1/4\" D x 67” H. If you want the glass lampshade, pick Salomé Light. Use the valet mirror for a last check, and see our <a href=\"https://cassoni.com/product-category/accessories/coat-racks/\">coat racks</a> for other entryway pieces.</p>",
+   "descripcion_original": "<p>Salomé is the name of this sophisticated valet stand with mirror. An Italian versatile complement with a design composed of delicate geometric shapes. The metal structure and tray are offered in different finishes. Available also in the Salomé Light model with a glass lampshade.</p>\n<p>A stylish object that lies in the charm of the harmony between the forms and the intensity of its presence, a strongly scenographic design. Made in Italy.</p>\n",
+   "keywords": [
+    "valet with mirror",
+    "valet stand mirror",
+    "valet mirror"
+   ],
+   "keywords_detalle": [
+    {
+     "keyword": "valet with mirror",
+     "clicks": 1,
+     "impressions": 36,
+     "position": 3.611111111111111,
+     "ctr": 0.027777777777777776,
+     "volume": 70,
+     "spell": null
+    },
+    {
+     "keyword": "valet stand mirror",
+     "clicks": 0,
+     "impressions": 23,
+     "position": 1.434782608695652,
+     "ctr": 0,
+     "volume": 110,
+     "spell": null
+    },
+    {
+     "keyword": "valet mirror",
+     "clicks": 0,
+     "impressions": 77,
+     "position": 1.87012987012987,
+     "ctr": 0,
+     "volume": 70,
+     "spell": null
+    }
+   ],
+   "seleccion": "elegidas: valet with mirror (gsc, vol 70), valet stand mirror (gsc, vol 110), valet mirror (gsc, vol 70) | descartadas: modern mirrors (búsqueda de categoría: Google muestra colecciones (7 de 7 títulos en plural), no fichas (intención en Google)); photo (no es de este producto); what is it worth (no es de este producto); mirror (búsqueda informativa: es para un artículo, no para la ficha); salome (no nombra el producto ni un atributo real); full length mirror (no menciona ningún material, acabado o estilo de la ficha); convex mirror (no menciona ningún material, acabado o estilo de la ficha); moderne (no es de este producto)",
+   "validacion": {
+    "aprobado": true,
+    "issues": [],
+    "razon": "Todos los datos (diseñador Mauro Lipparini, estructura y bandeja de metal en distintos acabados, modelo Salomé Light con pantalla de vidrio, medidas 32 5/8\" W x 19 1/4\" D x 67\" H, Made in Italy) coinciden con la ficha. El H1 identifica el producto por su tipo y material, las keywords (valet with mirror, valet stand mirror, valet mirror) están integradas en oraciones con contenido real y el tono es descriptivo, sin relleno ni contradicciones.",
+    "omitidas": [],
+    "mismo_nombre": [],
+    "tipo": "mirror",
+    "url_categoria": "https://cassoni.com/product-category/accessories/coat-racks/",
+    "h1_respaldo_usado": false
+   },
+   "intentos": 1,
+   "segundos": 61.1
+  },
+  {
+   "url": "https://cassoni.com/product/cas-pin-poseidon-square-bathroom-set-01/",
+   "status": "processed",
+   "reason": "dry_run (sin tocar WooCommerce)",
+   "h1_original": "Poseidon Square Bathroom Set",
+   "h1": "Poseidon Square Bathroom Set Leather 10-Piece Bath Counter Set by Pinetti",
+   "descripcion": "<p>The Poseidon Square Bathroom Set by Pinetti is a 10-piece bath counter set, one of the luxury bathroom sets in waterproof genuine leather. Made in Italy.</p><h2>WHAT THE SET INCLUDES</h2><p>The full set groups the pieces needed for a coordinated counter:</p><ul><li>1 Small Box</li><li>1 Soap Dispenser</li><li>1 Toothbrush Holder</li><li>1 Cotton Pad Holder</li><li>1 Tissue Box</li><li>2 Oval Soap Dishes</li><li>1 Rialto Small Tray</li><li>1 Rialto Medium Tray</li><li>1 Paper Bin</li></ul><h2>SECOND SET OPTION</h2><p>Set 2 includes 1 soap dispenser, 1 toothbrush holder, 2 boxes (small and big), and 2 trays (small and medium). Choose the 10-piece set for a complete counter arrangement; choose Set 2 for the dispenser, boxes, and trays. Each piece is covered in soft, waterproof genuine leather. Explore all <a href=\"https://cassoni.com/product-category/bathroom-fixtures/bath-counter-sets/\">bath counter sets</a>.</p>",
+   "descripcion_original": "<p class=\"p1\">The complete expression of elegance and functionality — the Poseidon bathroom set in a refined square shape.<br />\nThis exclusive 10-piece collection includes all the essential accessories to elevate your bathroom: a soap dispenser, a toothbrush holder, a cotton pad holder, a small box, a tissue box, two oval soap dishes, two Rialto trays (small and medium), and a paper bin.<br />\nEach piece is meticulously crafted and entirely covered in soft, waterproof genuine leather.<br />\nWith clean lines and a timeless aesthetic, the square Poseidon set is the ultimate statement of sophistication for both classic and contemporary interiors.</p>\n<p>Made in Italy.</p>\n",
+   "keywords": [
+    "luxury bathroom sets"
+   ],
+   "keywords_detalle": [
+    {
+     "keyword": "luxury bathroom sets",
+     "clicks": 0,
+     "impressions": 1,
+     "position": 13,
+     "ctr": 0,
+     "volume": 590,
+     "spell": null
+    }
+   ],
+   "seleccion": "elegidas: luxury bathroom sets (gsc, vol 590) | descartadas: bathroom accessories sets luxury (el tipo de producto no va al final ('mirror home', 'piano italian'): no se escribe así en inglés); luxury bath accessories sets (genérica de la categoría, no de este producto); luxury bathroom accessory sets (la ficha no dice 'accessory'); poseidon bathroom (no nombra el producto ni un atributo real); high end bathroom accessories set (sin volumen de búsqueda); luxury bathroom trends (la ficha no dice 'trends'); luxury bathroom collection (sin volumen de búsqueda); luxury bathroom elements (la ficha no dice 'elements')",
+   "validacion": {
+    "aprobado": true,
+    "issues": [],
+    "razon": "Todos los datos (10 piezas y su listado, Set 2 con 6 piezas, cuero genuino impermeable, Made in Italy, forma cuadrada, marca Pinetti) provienen de la ficha; el conteo de piezas es correcto, el H1 identifica material, forma y tipo de producto, y la keyword 'luxury bathroom sets' se integra en una oración descriptiva sin inventar atributos.",
+    "omitidas": [],
+    "mismo_nombre": [
+     {
+      "id": 198636,
+      "name": "Poseidon Square Bathroom Set",
+      "marca": "Pinetti",
+      "url": "https://cassoni.com/product/cas-pin-poseidon-square-bathroom-set-02/",
+      "medida": ""
+     }
+    ],
+    "tipo": "",
+    "url_categoria": "https://cassoni.com/product-category/bathroom-fixtures/bath-counter-sets/",
+    "h1_respaldo_usado": false
+   },
+   "intentos": 2,
+   "segundos": 50.1
+  },
+  {
+   "url": "https://cassoni.com/product/cas-ci-arcadia-stool-01/",
+   "status": "processed",
+   "reason": "dry_run (sin tocar WooCommerce) · sin keywords objetivo que una ficha pueda ganar",
+   "h1_original": "Arcadia Stool",
+   "h1": "Arcadia Wood Stool by Cattelan Italia",
+   "descripcion": "<p>Arcadia is a wood-frame stool by Paolo Cattelan for Cattelan Italia, with a backrest and a cover in fabric, soft leather or synthetic leather. Made in Italy.</p>\n<h2>FRAME AND COVER</h2>\n<ul>\n<li>Frame: natural beech, Canaletto walnut, wengè, matt white or black stained beech</li>\n<li>Cover: fabric, soft leather or synthetic leather, as per sample card</li>\n<li>The cover is not removable</li>\n<li>Backrest with no armrests</li>\n</ul>\n<h2>SIZE AND SEAT HEIGHT</h2>\n<p>Two sizes: 18” W x 21 1/4\" D x 36 5/8\" H and 18” W x 22 1/4\" D x 41” H. Seat heights come in counter height (24\"–27\") and bar height (28\"–33\"), so match the seat to your counter before you order.</p>\n<p>To compare frames and seat heights across the range, browse our <a href=\"https://cassoni.com/product-category/entertainment/home-bar/bar-stools/\">bar stools</a>.</p>",
+   "descripcion_original": "<p>Arcadia is a high-end Italian designer stool with frame in natural beech, Canaletto walnut, wengè, matt white or black stained beech.This Contemporary Italian designer &amp; luxury furniture piece can be made with cover in fabric, soft leather or synthetic leather as per sample card. The cover is not removable.</p>\n<p>Made in Italy.</p>\n",
+   "keywords": [],
+   "keywords_detalle": [],
+   "seleccion": "elegidas: ninguna | descartadas: swivel chairs (no es de este producto); swivel armchair chairs (encadena sinónimos del tipo (armchair, chair): no es una frase que se escriba); swivel chairs chairs (no es de este producto); leather couch (no nombra el tipo de producto); patio set chair (no es de este producto); wood bed frame (no nombra el tipo de producto); leather sofa (no nombra el tipo de producto); bar chairs with backrest (la ficha no dice 'chairs')",
+   "validacion": {
+    "aprobado": true,
+    "issues": [],
+    "razon": "Todos los datos (diseñador, materiales del marco y tapizado, opciones de altura, ausencia de apoyabrazos, tapizado no removible, Made in Italy, dos medidas) provienen de la ficha; el H1 identifica producto, material y marca sin elegir un rasgo menor, y no hay keywords forzadas ni relleno repetitivo.",
+    "omitidas": [],
+    "mismo_nombre": [],
+    "tipo": "stool",
+    "url_categoria": "https://cassoni.com/product-category/entertainment/home-bar/bar-stools/",
+    "h1_respaldo_usado": false
+   },
+   "intentos": 1,
+   "segundos": 16.8
+  },
+  {
+   "url": "https://cassoni.com/product/gulp-stylish-chair-dallagnese/",
+   "status": "processed",
+   "reason": "dry_run (sin tocar WooCommerce) · sin keywords objetivo que una ficha pueda ganar",
+   "h1_original": "Gulp Chair",
+   "h1": "Gulp Upholstered Armchair with Wooden Legs by Dallagnese",
+   "descripcion": "<p>Gulp is a generously proportioned upholstered armchair by Dallagnese, designed by the company's R&D team, with a wooden frame and legs. The seat is gently sloped and the backrest wraps into the arms. Made in Italy.</p>\n<h2>ARMREST OR ARMLESS</h2>\n<p>Gulp comes in two versions: with armrests, where the backrest flows into two high arms, and without armrests for those who prefer a streamlined profile. Both keep the same inviting seat.</p>\n<h2>COVERS AND VERSIONS</h2>\n<ul>\n<li>Upholstery in fabric, eco-leather or leather</li>\n<li>Single-color, or two-color with the external cover in a finish that differs from the internal one</li>\n</ul>\n<p>Pick the two-color version if you want the outside of the chair to read differently from the seat. Dimensions run from 19 1/4\" W x 21 1/2\" D x 32 1/4\" H to 21\" W x 22 7/8\" D x 33\" H, so check the width you have at the table before choosing. Browse all <a href=\"https://cassoni.com/product-category/furniture/dining-room/chairs-armchairs/\">dining chairs and armchairs</a>.</p>",
+   "descripcion_original": "<p class=\"p1\">Gulp is a generously proportioned and comfortable chair, designed to assert its presence with balance and refinement. Its finely crafted wooden base rests solidly on the ground, conveying stability and quality, while the gently sloped seat enhances ergonomic comfort.</p>\n<p>The version with armrests elevates the chair’s classic and sophisticated character. The enveloping backrest flows seamlessly into two high armrests, creating a confident, welcoming silhouette defined by soft volumes and clean, essential lines. This design enhances the sense of comfort and support while maintaining a light visual presence.</p>\n<p>The armless Gulp upholstered chair is ideal for more compact interiors or for those who prefer a streamlined profile without sacrificing comfort. It retains the same refined proportions and inviting seat, making it a versatile solution for dining or living spaces where flexibility and elegance are equally important.</p>\n<p>It provides versatile customization options, offering a single-color version or a two-color version that allows the external cover to feature a distinct finish from the internal cover.</p>\n<p class=\"p1\">Made in Italy.</p>\n",
+   "keywords": [],
+   "keywords_detalle": [],
+   "seleccion": "elegidas: ninguna | descartadas: dining modern chair (búsqueda de categoría: Google muestra colecciones (8 de 8 títulos en plural), no fichas (intención en Google)); chair adirondack (no menciona ningún material, acabado o estilo de la ficha); adirondack chairs chairs (no menciona ningún material, acabado o estilo de la ficha); chairs with recliner (búsqueda informativa: es para un artículo, no para la ficha); adirondack chairs (no menciona ningún material, acabado o estilo de la ficha); recliner chair (no menciona ningún material, acabado o estilo de la ficha); chaise lounge with chair (la ficha no dice 'chaise', 'lounge'); chaise lounge and chairs (búsqueda informativa: es para un artículo, no para la ficha)",
+   "validacion": {
+    "aprobado": true,
+    "issues": [],
+    "razon": "Todos los datos (R&D Dallagnese, madera, patas, tapizado fabric/eco-leather/leather, versiones con y sin brazos, single/two-color, Made in Italy, medidas) provienen de la ficha; el H1 identifica producto, material y marca; no hay keywords forzadas ni contradicciones.",
+    "omitidas": [],
+    "mismo_nombre": [],
+    "tipo": "armchair",
+    "url_categoria": "https://cassoni.com/product-category/furniture/dining-room/chairs-armchairs/",
+    "h1_respaldo_usado": false
+   },
+   "intentos": 1,
+   "segundos": 20.8
+  },
+  {
+   "url": "https://cassoni.com/product/spear-refined-italian-chandelier-venicem/",
+   "status": "processed",
+   "reason": "dry_run (sin tocar WooCommerce) · sin keywords objetivo que una ficha pueda ganar",
+   "h1_original": "Spear Chandelier",
+   "h1": "Spear Brass and Black Nickel Chandelier by VENICEM",
+   "descripcion": "<p>Spear is a chandelier built from slender lances that cross in space, finished in light-burnished brass or polished black nickel. Massimo Tonetto designed it for VENICEM, and the intersecting metal elements carry the LED light. Made in Italy.</p>\n<h2>LANCES AND FINISHES</h2>\n<p>The lances are the visible structure: choose light-burnished brass for a warmer tone or polished black nickel for a darker, more graphic line. Both finishes share the same geometry.</p>\n<h2>SIZE AND DIMMING</h2>\n<ul>\n<li>Two sizes: 37\" W x 38 1/8\" D x 38 5/8\" H and 63\" W x 63\" D x 38 5/8\" H</li>\n<li>Dimmer compatibility: DALI, TRIAC</li>\n</ul>\n<p>In a living or dining room, the 37\" version leaves more clearance around the table; the 63\" version suits a larger room where the crossing lances read from below. Dimming through DALI or TRIAC lowers the output for evening use. See the rest of our <a href=\"https://cassoni.com/product-category/lighting/chandeliers-suspension-lamps/\">chandeliers and suspension lamps</a> for other options.</p>",
+   "descripcion_original": "<p data-start=\"0\" data-end=\"430\">Spear Chandelier is defined by refined luminous intersections created by elegant light-burnished brass or polished black nickel lances. These slender architectural elements expand through the space with precision, transforming simple geometric forms into a striking and iconic lighting composition. Its scenic presence makes it a sophisticated statement piece for interiors curated within a luxury furniture brand environment.</p>\n<p data-start=\"432\" data-end=\"881\">The intersecting lances delineate the surrounding space with light, creating a dynamic balance between structure and illumination. Their linear composition generates depth, rhythm, and a strong architectural identity while maintaining a sense of visual lightness. This refined interplay of geometry and light integrates seamlessly into interiors styled with designer furniture, where lighting becomes an essential part of the decorative concept.</p>\n<p data-start=\"883\" data-end=\"1266\" data-is-last-node=\"\" data-is-only-node=\"\">As a sculptural chandelier with advanced LED technology, Spear combines functionality with artistic impact, delivering both atmospheric illumination and contemporary elegance. Its bold yet minimal design makes it ideal for sophisticated residential, hospitality, and contract interiors, enriching curated living room furniture sets with dramatic presence and timeless refinement.</p>\n<p>Made in Italy.</p>\n",
+   "keywords": [],
+   "keywords_detalle": [],
+   "seleccion": "elegidas: ninguna | descartadas: modern chandelier lighting (búsqueda de categoría: Google muestra colecciones (7 de 8 títulos en plural), no fichas (intención en Google)); contemporary chandeliers (búsqueda de categoría: Google muestra colecciones (8 de 8 títulos en plural), no fichas (intención en Google)); chandelier (no menciona ningún material, acabado o estilo de la ficha); dining room chandeliers (no menciona ningún material, acabado o estilo de la ficha); chandelier and light (búsqueda informativa: es para un artículo, no para la ficha); chandelier light (no menciona ningún material, acabado o estilo de la ficha); crystal chandelier (no menciona ningún material, acabado o estilo de la ficha); modern chandelier (no menciona ningún material, acabado o estilo de la ficha)",
+   "validacion": {
+    "aprobado": true,
+    "issues": [],
+    "razon": "La descripción se ajusta a la ficha: lanzas en latón pulido claro o níquel negro pulido, diseñador Massimo Tonetto, tecnología LED, Made in Italy, dos medidas y dimmer DALI/TRIAC, todo presente en los datos. El H1 identifica el producto (chandelier) con sus acabados y la marca, sin elegir un rasgo menor. No hay contradicciones ni keywords forzadas, y las recomendaciones de uso/medida son inferencias razonables a partir de las dimensiones, no datos inventados.",
+    "omitidas": [],
+    "mismo_nombre": [],
+    "tipo": "chandelier",
+    "url_categoria": "https://cassoni.com/product-category/lighting/chandeliers-suspension-lamps/",
+    "h1_respaldo_usado": false
+   },
+   "intentos": 1,
+   "segundos": 26.4
+  },
+  {
+   "url": "https://cassoni.com/product/mediterraneo-refined-sofa-gart/",
+   "status": "processed",
+   "reason": "dry_run (sin tocar WooCommerce) · sin keywords objetivo que una ficha pueda ganar",
+   "h1_original": "Mediterraneo Sofa",
+   "h1": "Mediterraneo Fabric Outdoor Sofa by Gart",
+   "descripcion": "<p>Designed by Gart Creative Lab for Gart, the Mediterraneo is a straight outdoor sofa with armrests, wrapped in a non-removable high-performance outdoor fabric. Made in Italy, it pairs generous proportions with padding that holds its shape.</p>\n<h2>PADDING AND COVER</h2>\n<p>The structure uses polystyrene microspheres and polyester flakes, divided into separate compartments to keep the shape consistent over time. The cover resists UV rays, water and abrasion, and it is non-removable.</p>\n<h2>INCLUDED CUSHION</h2>\n<p>One 19 5/8\" × 19 5/8\" cushion comes with the sofa, upholstered in the same fabric and color as the body.</p>\n<p>Measure your space before ordering: at 82 5/8\" W x 41 3/8\" D x 23 5/8\" H, the sofa suits a wide terrace or a covered porch rather than a narrow balcony. You can compare covers and sizes among our <a href=\"https://cassoni.com/product-category/outdoor/living-area/sofas-sectionals-living-area/\">outdoor sofas and sectionals</a>.</p>",
+   "descripcion_original": "<p>Inspired by the effortless beauty of Mediterranean living, the Mediterraneo sofa features smooth, flowing lines and generous proportions that create a welcoming sense of comfort. Its soft upholstery and refined craftsmanship invite moments of relaxation, while premium outdoor fabrics offer lasting durability and tactile elegance. Designed for sophisticated outdoor spaces, Mediterraneo blends contemporary design, exceptional comfort, and timeless style to create a serene and inviting atmosphere. Made in Italy.</p>\n<p><strong>NOTE:</strong> Includes a 19\"5/8 × 19\"5/8 cushion upholstered in the same fabric and color.</p>\n<p><strong>Technical information</strong><br />\nStructure: Padding in polystyrene microspheres and polyester flakes, divided into separate compartments to maintain shape and ensure consistent comfort over time.<br />\nCover: Non-removable, crafted from high-performance outdoor fabric that resists UV rays, water and abrasion, making it ideal for outdoor living.</p>\n",
+   "keywords": [],
+   "keywords_detalle": [],
+   "seleccion": "elegidas: ninguna | descartadas: couch (no es de este producto); boneless couch (no es de este producto); sofa sectional sofas (encadena sinónimos del tipo (sofa, sectional): no es una frase que se escriba); sectional sofas couches (encadena sinónimos del tipo (sofa, sectional): no es una frase que se escriba); couch sectional couch (no menciona ningún material, acabado o estilo de la ficha); sectional couch (no menciona ningún material, acabado o estilo de la ficha); couch for sofa (encadena sinónimos del tipo (couch, sofa): no es una frase que se escriba); sofa (no menciona ningún material, acabado o estilo de la ficha)",
+   "validacion": {
+    "aprobado": true,
+    "issues": [],
+    "razon": "Todos los datos (diseñador Gart Creative Lab, marca Gart, forma recta, con apoyabrazos, funda fija de tejido outdoor de altas prestaciones, relleno de microesferas de poliestireno y copos de poliéster en compartimentos separados, resistencia a UV/agua/abrasión, Made in Italy, cojín de 19 5/8\" × 19 5/8\" en el mismo tejido y color, medidas 82 5/8\" W x 41 3/8\" D x 23 5/8\" H) coinciden con la ficha; el H1 identifica el producto por tipo y material, y la recomendación de espacio se deriva de las medidas reales sin inventar atributos.",
+    "omitidas": [],
+    "mismo_nombre": [],
+    "tipo": "outdoor sofa",
+    "url_categoria": "https://cassoni.com/product-category/outdoor/living-area/sofas-sectionals-living-area/",
+    "h1_respaldo_usado": false
+   },
+   "intentos": 1,
+   "segundos": 18.6
+  },
+  {
+   "url": "https://cassoni.com/product/cas-pin-almeria-baskets-03/",
+   "status": "processed",
+   "reason": "dry_run (sin tocar WooCommerce) · sin keywords objetivo que una ficha pueda ganar",
+   "h1_original": "Almeria Baskets",
+   "h1": "Almeria Hand-Woven Regenerated Leather Baskets by Pinetti",
+   "descripcion": "<p>Designed by Antonio De Marco for Pinetti, this set of two hand-woven baskets is made from eco-friendly regenerated leather that is washable and resistant to light and water. Made in Italy.</p><h2>INDOOR AND OUTDOOR USE</h2><p>Both baskets resist light and water, so they work in a bathroom, a closet, or by the pool. The regenerated leather can be washed when the baskets need a clean.</p><h2>TWO SIZES, TWO JOBS</h2><ul><li><strong>Small:</strong> round and compact, for towels, accessories, or everyday essentials.</li><li><strong>Medium:</strong> round, with practical handles, adding capacity for blankets, shoes, or laundry.</li></ul><p>Take the small one for accessories and the handled medium for heavier loads, then browse more <a href=\"https://cassoni.com/product-category/accessories/baskets-and-storage/\">baskets and storage</a> in the category.</p>",
+   "descripcion_original": "<p class=\"p1\">Elegant and practical, this Italian set of two hand-woven baskets from the Almeria collection brings refined texture and everyday functionality to any space.<br />\nCrafted from eco-friendly, washable and regenerated leather, both pieces are suitable for indoor and outdoor use—resistant to light and water.</p>\n<p class=\"p1\">The set includes two round baskets in different heights: the small one offers a compact yet spacious solution for organizing towels, accessories, or everyday essentials, while the medium basket—equipped with practical handles—adds extra capacity, making it ideal for storing blankets, shoes, or laundry in bathrooms, closets, or by the pool.<br />\nA perfect duo to combine utility with timeless elegance.</p>\n<p>Made in Italy.</p>\n",
+   "keywords": [],
+   "keywords_detalle": [],
+   "seleccion": "elegidas: ninguna | competidores: https://italianfurniture.com/woven-leather-st, https://oroa.com/woven-leather-strips-squa, https://designitaly.com/leather-basket-alme | descartadas: pinetti wine (la ficha no dice 'wine'); pinetti basket (sin volumen de búsqueda)",
+   "validacion": {
+    "aprobado": true,
+    "issues": [],
+    "razon": "Todos los datos (Pinetti, Antonio De Marco, set de dos, cuero regenerado lavable, resistente a luz y agua, uso interior/exterior, formas y usos de cada cesta, Made in Italy) provienen de la ficha; el H1 identifica producto, material y técnica; no hay keywords forzadas ni contradicciones.",
+    "omitidas": [],
+    "mismo_nombre": [
+     {
+      "id": 200365,
+      "name": "Almeria Baskets",
+      "marca": "Pinetti",
+      "url": "https://cassoni.com/product/cas-pin-almeria-baskets-04/",
+      "medida": ""
+     },
+     {
+      "id": 200243,
+      "name": "Almeria Baskets",
+      "marca": "Pinetti",
+      "url": "https://cassoni.com/product/cas-pin-almeria-baskets-02/",
+      "medida": ""
+     },
+     {
+      "id": 199649,
+      "name": "Almeria Baskets",
+      "marca": "Pinetti",
+      "url": "https://cassoni.com/product/cas-pin-almeria-baskets-01/",
+      "medida": ""
+     }
+    ],
+    "tipo": "",
+    "url_categoria": "https://cassoni.com/product-category/accessories/baskets-and-storage/",
+    "h1_respaldo_usado": false
+   },
+   "intentos": 1,
+   "segundos": 17.0
+  },
+  {
+   "url": "https://cassoni.com/product/cas-tec-cristallino-pirelli-foosball-table-01/",
+   "status": "processed",
+   "reason": "dry_run (sin tocar WooCommerce) · sin keywords objetivo que una ficha pueda ganar",
+   "h1_original": "Cristallino for Pirelli Foosball Table",
+   "h1": "Cristallino for Pirelli Foosball Tempered Glass Table by Teckell",
+   "descripcion": "<p>The Cristallino for Pirelli is a limited-edition foosball table by Teckell, designed by Adriano Design around a 5/8\" low iron tempered glass body and a black Corian® playing field. Made in Italy.</p>\n<h2>GLASS BODY AND FIELD</h2>\n<p>Corners are beveled and cerium oxide-polished, and the long glass side carries a plate with both the Pirelli and Teckell logos. The Corian® field is marked with curved yellow lines drawn from Pirelli branding.</p>\n<h2>RODS AND PLAY</h2>\n<ul>\n<li>Telescopic AISI 316 stainless steel rods with dual-layer shock absorption at the ends</li>\n<li>Self-lubricating bearings for fast, near-silent movement</li>\n<li>Chrome-plated brass scoring units and brass joints in matte black</li>\n<li>Anodized aluminum handles with a P ZERO™ tread motif and rubber tire-style ends on a quick-mount system</li>\n<li>Adjustable rubber feet with the Pirelli logo</li>\n</ul>\n<p>It is built for indoor and covered outdoor use, and the Teckell® Tool Kit includes a Certificate of Authenticity, assembly tools, instructions and lubricant.</p>\n<p>Allow for the rods: 55 1/8\" W x 68 1/2\" D x 36 1/4\" H (with rods). Browse our <a href=\"https://cassoni.com/product-category/entertainment/game-tables/foosball-tables/\">foosball tables</a> for the rest of the range.</p>",
+   "descripcion_original": "<p>A striking collaboration between two icons of Italian excellence, this limited-edition foosball table by Teckell and Pirelli fuses design innovation with motorsport heritage. Refined, bold, and unmistakably premium, it brings together the precision of high-performance engineering and the craftsmanship of luxury interiors. Every detail pays homage to Pirelli’s legacy in racing, creating a piece that is as visually dynamic as it is functionally flawless.</p>\n<p>Luxury foosball table with structure in 5/8\" low iron tempered glass, featuring beveled and cerium oxide-polished corners. The long glass side displays a branded identification plate with both Pirelli and Teckell logos. The playing field is made from sleek black Corian®, enhanced with custom curved yellow markings inspired by Pirelli’s iconic branding.</p>\n<p>Handles are crafted from anodized aluminum and designed with a graphic motif that echoes the tread of the new Pirelli P ZERO™ tire. The ends feature rubber inserts modeled after top-tier motorsport tires, offering superior grip and tactile control. The quick-mount system ensures a precise fit and easy replacement.</p>\n<p>Scoring units are made from chrome-plated brass, with end pieces proudly displaying both Teckell and Pirelli branding. Joints are made of brass, finished in matte black paint for a sportier, more contemporary look.</p>\n<p>Telescopic rods are crafted from AISI 316 stainless steel, with rod ends featuring dual-layer shock absorption. Self-lubricating bearings allow for smooth, fast, and nearly silent movement. The table stands on fully rubber feet, branded with the Pirelli logo and adjustable to accommodate uneven surfaces.</p>\n<p>The Teckell® Tool Kit includes a Certificate of Authenticity, assembly tools, detailed instructions, and a specialized lubricant for optimal game flow.</p>\n<p>Designed for indoor and covered outdoor use, this collector’s piece embodies the spirit of speed, design, and Italian craftsmanship.</p>\n<p>Made in Italy.</p>\n",
+   "keywords": [],
+   "keywords_detalle": [],
+   "seleccion": "elegidas: ninguna | descartadas: picnic table (no menciona ningún material, acabado o estilo de la ficha); table picnic table (no menciona ningún material, acabado o estilo de la ficha); patio set with chairs (no es de este producto); patio table and (no menciona ningún material, acabado o estilo de la ficha); outdoor table (no menciona ningún material, acabado o estilo de la ficha); patio table outside (no menciona ningún material, acabado o estilo de la ficha); outdoor table and chairs (no menciona ningún material, acabado o estilo de la ficha); table and chairs for outdoors (búsqueda informativa: es para un artículo, no para la ficha)",
+   "validacion": {
+    "aprobado": true,
+    "issues": [],
+    "razon": "Todos los datos (diseñador, vidrio templado 5/8\", Corian® negro, varillas AISI 316, piezas cromadas y latón mate, mangos P ZERO™, medidas con varillas, Made in Italy, uso indoor/outdoor cubierto, contenido del Tool Kit) provienen literalmente de la ficha. No hay invenciones ni contradicciones; el H1 identifica producto, material y marca, y no hay keyword forzada ni relleno repetitivo.",
+    "omitidas": [],
+    "mismo_nombre": [],
+    "tipo": "table",
+    "url_categoria": "https://cassoni.com/product-category/entertainment/game-tables/foosball-tables/",
+    "h1_respaldo_usado": false
+   },
+   "intentos": 1,
+   "segundos": 15.8
+  },
+  {
+   "url": "https://cassoni.com/product/cas-dit-beetle-lounge-chair/",
+   "status": "processed",
+   "reason": "dry_run (sin tocar WooCommerce) · sin keywords objetivo que una ficha pueda ganar",
+   "h1_original": "Beetle Lounge Chair",
+   "h1": "Beetle Bi-Color Fabric Lounge Chair by Ditre Italia",
+   "descripcion": "<p>The Beetle lounge chair, designed by Busetti - Garuti - Redaelli for Ditre Italia, takes its shape from the beetle's shell: a three-part structure with taut outer lines, generous padding and narrow metal legs. Made in Italy.</p><h2>FABRIC OR LEATHER</h2><ul><li>Fully upholstered in fabric</li><li>Mixed version: leather on the sides, outer backrest and seat</li></ul><p>The chair can be complemented with a matching footrest. Choose the fabric version for one material throughout, the mixed one for leather where you sit and lean.</p><h2>SEAT HEIGHT AND FOOTPRINT</h2><p>The chair measures 30 5/8\" W x 36 1/4\" D x 41\" H, with a seat height of 18 7/8\" and an arm height of 23 5/8\". Check the footprint against your floor plan before you order.</p><p>See the full range of <a href=\"https://cassoni.com/product-category/furniture/living-room/lounge-chairs/\">lounge chairs</a>.</p>",
+   "descripcion_original": "<p>Beetle Lounge Chair features a splendid design inspired by the typical appearance of beetles. The structure is divided into three parts and elegantly supported by narrow metal legs. The external lines are taut and well-defined, whereas the padded parts are soft and abundant. Available in two versions: fully upholstered in fabric or in a mixed version, with sides and outer backrest and seat in leather. This exclusive Italian furniture piece can be complemented with a stylish matching footrest.</p>\n<p>A great option for living areas following the Contemporary style. Designed by Ditre Italia. Made in Italy.</p>\n",
+   "keywords": [],
+   "keywords_detalle": [],
+   "seleccion": "elegidas: ninguna | competidores: https://gubi.com/beetle-lounge-chair, https://www.ditreitalia.com/outdoor-armch, https://www.ditreitalia.com/tables-and-chairs | descartadas: beetle chairs (Google la asocia a 'dining' (4 de 8 títulos) y la ficha no lo dice: es otro producto (intención en Google)); chair in white (variante forzada: se dice 'white chair'); chairs for reading nooks (no menciona ningún material, acabado o estilo de la ficha); back support on chairs (no menciona ningún material, acabado o estilo de la ficha); conversational chair (búsqueda informativa: es para un artículo, no para la ficha); ergonomic chair with recliner (búsqueda informativa: es para un artículo, no para la ficha); ikea antilop high chair with tray (la ficha no dice 'ikea', 'antilop', 'tray'); wall hugging recliner chair (no menciona ningún material, acabado o estilo de la ficha)",
+   "validacion": {
+    "aprobado": true,
+    "issues": [],
+    "razon": "Todos los datos (diseñador, estructura en tres partes, patas metálicas, versiones tela/piel, puf a juego, medidas y alturas) provienen de la ficha; el H1 identifica producto, material y marca; no hay keywords forzadas ni contradicciones.",
+    "omitidas": [],
+    "mismo_nombre": [],
+    "tipo": "lounge chair",
+    "url_categoria": "https://cassoni.com/product-category/furniture/living-room/lounge-chairs/",
+    "h1_respaldo_usado": false
+   },
+   "intentos": 1,
+   "segundos": 32.4
+  },
+  {
+   "url": "https://cassoni.com/product/contemporary-italian-saba-ceiling-lamp-vistosi/",
+   "status": "processed",
+   "reason": "dry_run (sin tocar WooCommerce)",
+   "h1_original": "Saba Ceiling Lamp",
+   "h1": "Saba Blown Glass Ceiling Lamp by Vistosi",
+   "descripcion": "<p>Among Vistosi's italian ceiling lights, the Saba is a lens-shaped ceiling lamp in satin-finish blown glass, designed by the Vistosi Technical Studio. Its cambered diffuser spreads a warm, glare-free glow. Made in Italy.</p>\n<h2>SIZES AND MOUNTING</h2>\n<p>The same fixture mounts on a ceiling or a wall, so it suits low-ceilinged living rooms, kitchens and corridors. Four diameters are available, from Ø11 7/8\" x 3 1/2\" H up to Ø22 3/8\" x 6\" H; the smaller sizes sit closer to the mounting surface.</p>\n<h2>LIGHT AND DIMMING</h2>\n<ul>\n<li>LED 0: 26W, 3700lm</li>\n<li>LED F: 12W, 1700lm</li>\n<li>LED G: 19W, 2850lm</li>\n<li>Color temperature: 2700 K or 3000 K</li>\n<li>Dimmer: DIM2 (Phase Cut) or DIM3 (0-10V / 1-10V / PUSH)</li>\n</ul>\n<p>Match the dimmer protocol to your wiring before ordering, and choose 2700 K for a warmer tone or 3000 K for a whiter one. To place it within a larger lighting plan, browse our <a href=\"https://cassoni.com/product-category/lighting/ceiling-lamps/\">ceiling lamps</a>.</p>",
+   "descripcion_original": "<p>Designed by the Vistosi Technical Studio, the Saba is a handcrafted masterpiece of Italian design, created to star in the most exclusive contemporary interiors. This ceiling lamp—which doubles as a wall fixture—is defined by its essential, lens-like shape that sits discreetly against the mounting surface. It reflects a luxury lifestyle where light is used to create a calm, atmospheric presence; the satin-finish blown glass diffuser provides a warm, glare-free glow that transitions smoothly across its cambered surface. Its timeless and versatile aesthetic makes it a sophisticated choice for low-ceilinged living rooms, modern kitchens, or elegant corridors. Made in Italy.</p>\n",
+   "keywords": [
+    "italian ceiling lights"
+   ],
+   "keywords_detalle": [
+    {
+     "keyword": "italian ceiling lights",
+     "clicks": 0,
+     "impressions": 1,
+     "position": 1,
+     "ctr": 0,
+     "volume": 90,
+     "spell": null
+    }
+   ],
+   "seleccion": "elegidas: italian ceiling lights (gsc, vol 90) | competidores: https://vistosi.it/design-glass-lamps-collections, https://www.dlaguna.com/vistosi-saba-flushmount-cell, https://vistosi.it/design-glass-lamps-collections | descartadas: modern fixture light (búsqueda de categoría: Google muestra colecciones (9 de 9 títulos en plural), no fichas (intención en Google)); ceiling living room light (búsqueda de categoría: Google muestra colecciones (6 de 9 títulos en plural), no fichas (intención en Google)); red lamp treatment (búsqueda informativa: es para un artículo, no para la ficha); rejuvenation lighting company (no es de este producto); light for a ceiling fan (la ficha no dice 'fan'); warmer lamp candle (búsqueda informativa: es para un artículo, no para la ficha); table lamps table lamps (no menciona ningún material, acabado o estilo de la ficha); lighting under kitchen cabinet (no es de este producto)",
+   "validacion": {
+    "aprobado": true,
+    "issues": [],
+    "razon": "Todos los datos (medidas, LED, dimmer, 2700/3000 K, vidrio soplado satinado, forma lenticular, uso en techo o pared, Made in Italy, diseñador) coinciden con la ficha; la keyword 'italian ceiling lights' aparece en una oración con información real y el H1 identifica producto, material y marca.",
+    "omitidas": [],
+    "mismo_nombre": [],
+    "tipo": "ceiling lamp",
+    "url_categoria": "https://cassoni.com/product-category/lighting/ceiling-lamps/",
+    "h1_respaldo_usado": false
+   },
+   "intentos": 1,
+   "segundos": 36.7
+  }
+ ]
+}

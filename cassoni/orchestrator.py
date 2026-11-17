@@ -38,7 +38,7 @@ from .db import DB
 from .editor import Editor
 from .extract import extract_slug, ExtractionError
 from .gsc import GSCClient
-from .h1 import h1_plantilla, h1_respaldo, modelo_de, tipo_ee_uu
+from .h1 import nombre_para_woo, h1_plantilla, h1_respaldo, modelo_de, tipo_ee_uu
 from .keywords import clave_variante, elegir_keywords
 from .llm import LLMClient, LLMError
 from .woo import WooCommerce, WooError
@@ -165,7 +165,11 @@ class Pipeline:
         self.llm = llm or LLMClient(config)
         self.editor = editor or Editor(config, self.llm)
         from .redactor import Redactor
-        self.redactor = redactor or Redactor(config, self.llm)
+        from .criterio_seo import Referencia, SelectorSEO
+        self.referencia = (Referencia.cargar(config.referencia_seo)
+                           if config.modo_keywords in ("seo", "reglas") else None)
+        self.selector_seo = SelectorSEO(self.llm, config.llm_editor_model, self.referencia)
+        self.redactor = redactor or Redactor(config, self.llm, referencia=self.referencia)
         from .validator import Validator
         self.validator = Validator(config, self.llm)
         self._cat_names_cache: dict[int, tuple] = {}
@@ -221,6 +225,23 @@ class Pipeline:
                 continue
             ordenadas = sorted(filas, key=lambda f: f.get("impressions") or 0, reverse=True)
             todas.extend(f.get("keyword", "") for f in ordenadas[:MAX_KW_A_DFS_POR_FICHA])
+            if self.cfg.modo_keywords in ("seo", "reglas"):
+                try:
+                    prod = self._producto(extract_slug(u)[0])
+                    todas.extend(self._genericas(prod))
+                    if self.cfg.modo_keywords == "reglas":
+                        from .reglas_seo import nombre_de_busqueda
+                        todas.append(nombre_de_busqueda(prod.get("name", "")))
+                except Exception as exc:
+                    log.warning("Genéricas no disponibles en la precarga de %s (%s)", u, exc)
+            elif self.investigacion is not None:
+                # las semillas de investigación también son candidatas: su volumen
+                # va en el mismo pedido del lote (13-nov: ficha por ficha costaba
+                # US$ 0,09 cada una y agotaba el presupuesto)
+                try:
+                    todas.extend(self._semillas(self._producto(extract_slug(u)[0])))
+                except Exception as exc:
+                    log.warning("Semillas no disponibles en la precarga de %s (%s)", u, exc)
         if self.volumenes is not None and todas:
             self.volumenes.obtener(todas)
         if self.competidores is None or self.volumenes is None:
@@ -265,12 +286,14 @@ class Pipeline:
         except Exception as exc:
             raise _FalloGSC(str(exc)) from exc
         kw_rows = self._con_volumen(kw_rows)
-        ideas = self._ideas(url, nombre, marca, categorias, atributos)
+        ideas = self._ideas(url, product, tipo)
+        from .investigacion import materiales_del_texto
+        materiales = materiales_del_texto(strip_html(desc_orig))
         elegir = dict(descripcion=desc_orig, texto_producto=texto_producto,
                       h1_hermanas=self._keywords_ya_usadas(product), categorias=categorias,
                       asignadas=self.db.keywords_asignadas(excepto_url=url),
                       min_volume=self.cfg.dfs_min_volume, n=reglas.KW_OBJETIVO,
-                      texto_especifico=" ".join([nombre, marca, *atributos]),
+                      texto_especifico=" ".join([nombre, marca, *atributos, *materiales]),
                       nombre=nombre, marca=marca,
                       texto_ficha=" ".join([nombre, marca, *atributos, strip_html(desc_orig)]),
                       reescritura=self.cfg.modo_descripcion == "reescritura")
@@ -351,18 +374,98 @@ class Pipeline:
                               for k, m in fuera.items()] + list(sel["descartadas"])
         return sel
 
-    def _ideas(self, url: str, nombre: str, marca: str, categorias, atributos) -> list[dict]:
-        """Keywords que la ficha todavía no atrae (una consulta por ficha, en caché)."""
+    def _semillas(self, product: dict) -> list[str]:
+        from .investigacion import semillas
+        nombre = product.get("name", "")
+        marca, atributos = _brand_y_atributos(product)
+        categorias = tuple(c.get("name", "") for c in (product.get("categories") or [])
+                           if c.get("name"))
+        tipo = tipo_ee_uu(nombre, [r["slug"] for r in self._ruta(product)], atributos)
+        return semillas(nombre, marca, categorias, atributos, tipo=tipo,
+                        descripcion=strip_html(product.get("description", "") or ""))
+
+    def _genericas(self, product: dict) -> list[str]:
+        from .criterio_seo import genericas
+        nombre = product.get("name", "")
+        marca, atributos = _brand_y_atributos(product)
+        tipo = tipo_ee_uu(nombre, [r["slug"] for r in self._ruta(product)], atributos)
+        return genericas(nombre, marca, tipo, atributos, product.get("description", "") or "")
+
+    def _seleccion_reglas(self, url: str, product: dict, ctx: dict) -> dict:
+        from .criterio_seo import candidatas_gsc, con_volumen
+        from .investigacion import materiales_del_texto
+        from .reglas_seo import (elegir_keywords, h1_por_datos, nombre_de_busqueda,
+                                 rasgos_con_volumen)
+        gen = self._genericas(product)
+        nombre_q = nombre_de_busqueda(ctx["nombre"])
+        tipo = ctx["tipo"]
+        nucleo = tipo[len("outdoor "):] if tipo.startswith("outdoor ") else tipo
+        # el rasgo sale primero de nombre + atributos; la descripción, solo si no hay
+        mats = (materiales_del_texto(" ".join([ctx["nombre"], *ctx["atributos"]]))
+                or materiales_del_texto(strip_html(ctx["desc_orig"])))
+        consultas = gen + [nombre_q] + [f"{m} {nucleo}" for m in mats]
+        vol = self.volumenes.obtener(consultas) if self.volumenes is not None else {}
+        rasgos = rasgos_con_volumen(mats, nucleo, vol)
+        r = h1_por_datos(ctx["nombre"], ctx["marca"], tipo,
+                         (vol.get(nombre_q) or {}).get("volume"), rasgos,
+                         umbral=self.cfg.h1_umbral_nombre)
+        ctx["h1_regla"] = r["regla"]
+        # el nombre solo (o sin tipo): H1 fijo. Con rasgo: el redactor elige entre los
+        # rasgos con su volumen el que tienen TODAS las versiones (no una opción)
+        ctx["h1_fijo"] = "" if r["rasgo"] else r["h1"]
+        ctx["h1_rasgos"] = sorted(((m, v) for m, v in rasgos if v), key=lambda x: -x[1])
+        from .reglas_seo import genericas_opcionales
+        ctx["genericas_opcionales"] = genericas_opcionales(mats, nucleo, vol)
+        cands = candidatas_gsc(ctx["kw_rows"], ctx["nombre"], ctx["marca"]) + con_volumen(gen, vol)
+        texto = " ".join([ctx["nombre"], ctx["marca"], *ctx["atributos"],
+                          *ctx["categorias"], strip_html(ctx["desc_orig"])])
+        sel = elegir_keywords(cands, nombre=ctx["nombre"], marca=ctx["marca"], tipo=tipo,
+                              h1=r["h1"], rasgo=r["rasgo"], texto_ficha=texto)
+        for e in sel["elegidas"]:
+            e["volume"], e["impressions"] = e.get("volumen"), e.get("impresiones")
+        sel["faltan"] = 0
+        return sel
+
+    def _seleccion_seo(self, url: str, product: dict, ctx: dict) -> dict:
+        from .criterio_seo import candidatas_gsc, con_volumen
+        from .investigacion import materiales_del_texto
+        gen = self._genericas(product)
+        vol = self.volumenes.obtener(gen) if (self.volumenes is not None and gen) else {}
+        cands = candidatas_gsc(ctx["kw_rows"], ctx["nombre"], ctx["marca"]) + con_volumen(gen, vol)
+        ficha = {"nombre": ctx["nombre"], "marca": ctx["marca"], "tipo": ctx["tipo"],
+                 "materiales": materiales_del_texto(" ".join(
+                     [ctx["nombre"], *ctx["atributos"], strip_html(ctx["desc_orig"])])),
+                 "candidatas": cands}
+        sel = self.selector_seo.elegir(ficha, excluir_url=url)
+        sel["faltan"] = 0
+        return sel
+
+    def _ideas(self, url: str, product: dict, tipo: str = "") -> list[dict]:
+        """Keywords que la ficha todavía no atrae (una consulta por ficha, en caché):
+        las ideas de DataForSEO que nombran el tipo, más las semillas mismas con su
+        volumen ('brass chandelier' es la keyword, no solo el punto de partida)."""
         if self.investigacion is None:
             return []
         if url not in self._ideas_cache:
-            from .investigacion import semillas
-            sem = semillas(nombre, marca, categorias, atributos)
+            from .investigacion import nucleos
+            sem = self._semillas(product)
             try:
-                self._ideas_cache[url] = self.investigacion.ideas_de_keywords(sem) if sem else []
+                ideas = (self.investigacion.ideas_de_keywords(
+                    sem, contiene=nucleos(tipo) or None) if sem else [])
             except Exception as exc:
                 log.warning("Investigación de keywords no disponible (%s)", exc)
-                self._ideas_cache[url] = []
+                ideas = []
+            ya = {(i.get("keyword") or "").lower() for i in ideas}
+            propias = [{"keyword": k, "origen": "investigacion"} for k in sem if k not in ya]
+            propias = [r for r in self._con_volumen(propias) if r.get("volume")]
+            for r in propias:
+                r["origen"] = "investigacion"
+            from .investigacion import motivo_idea
+            for r in ideas:
+                m = motivo_idea(r.get("keyword") or "", tipo)
+                if m:
+                    r["descartar"] = m
+            self._ideas_cache[url] = ideas + propias
         return self._ideas_cache[url]
 
     def _con_volumen(self, filas: list[dict]) -> list[dict]:
@@ -435,14 +538,25 @@ class Pipeline:
         # 4) si faltan: el mismo producto en competidores mejor posicionados
         competidores: list[dict] = []
         candidatas = list(kw_rows)
-        if (sel["faltan"] or self.cfg.dfs_competidores == "siempre") and self.competidores is not None:
+        if self.cfg.modo_keywords == "reglas":
+            # reglas del SEO en código (Alex, 17-nov): H1 por volumen, keywords de
+            # Search Console + marca y tipo; el modelo solo redacta
+            sel = self._seleccion_reglas(url, product, ctx)
+        elif self.cfg.modo_keywords == "seo":
+            # criterio del SEO (documento del 6-nov), con sus fichas como ejemplo
+            try:
+                sel = self._seleccion_seo(url, product, ctx)
+            except LLMError as exc:
+                return self._cerrar(row_id, url, "failed", f"LLM (selección): {exc}")
+        elif (sel["faltan"] or self.cfg.dfs_competidores == "siempre") and self.competidores is not None:
             competidores, cands = self._paginas_competidores(ctx)
             extra = self._con_volumen(cands)
             if extra:
                 candidatas += extra
                 sel = elegir_keywords(candidatas, **elegir)
         # 4b) que una ficha pueda ganarlas: qué muestra Google (devolución SEO 6-nov)
-        sel = self._filtrar_por_intencion(sel, candidatas, elegir, ctx)
+        if self.cfg.modo_keywords == "filtros":
+            sel = self._filtrar_por_intencion(sel, candidatas, elegir, ctx)
         objetivos = sel["elegidas"]
         motivo_sel = self._motivo_seleccion(sel, competidores)
 
@@ -464,6 +578,13 @@ class Pipeline:
             # las que el redactor no pudo meter natural no son objetivo de la ficha
             omitidas = {(o.get("keyword") or "").lower() for o in edited.get("omitidas") or []}
             objetivos = [o for o in objetivos if o["keyword"].lower() not in omitidas]
+            if ficha.get("genericas_opcionales") and aprobado:
+                from .reglas_seo import generica_usada
+                g = generica_usada(strip_html(edited.get("description") or ""), h1,
+                                   ficha["genericas_opcionales"])
+                if g and g[2] and g[0] not in {o["keyword"].lower() for o in objetivos}:
+                    objetivos.append({"keyword": g[0], "origen": "generica", "volume": g[1],
+                                      "volumen": g[1], "por_que": "el material del H1 con el tipo"})
             vres = dict(vres, omitidas=edited.get("omitidas") or [], mismo_nombre=ficha["mismo_nombre"], tipo=ficha["tipo"],
                         url_categoria=ficha["url_categoria"],
                         h1_respaldo_usado=bool(edited.get("h1_respaldo_usado")))
@@ -494,11 +615,14 @@ class Pipeline:
         aplicado, wc_resp = False, {}
         if self.cfg.dry_run:
             wc_resp = {"dry_run": True, "apply_h1": h1,
+                       "apply_name": nombre_para_woo(h1, marca),
                        "apply_desc_len": len(edited.get("description", ""))}
         elif aprobado:
             try:
                 wc_resp = self.woo.update_product(
-                    product["id"], name=h1, description=edited.get("description", ""),
+                    # la tienda agrega 'by {Marca}' (con logo) al H1: el name va sin marca
+                    product["id"], name=nombre_para_woo(h1, marca),
+                    description=edited.get("description", ""),
                     allowed=True)
                 aplicado = True
             except WooError as exc:
@@ -557,7 +681,11 @@ class Pipeline:
                 "tipo": ctx["tipo"], "categorias": [html.unescape(r["name"]) for r in ruta],
                 "url_categoria": url_cat, "atributos": list(ctx["atributos"]),
                 "medidas": medidas_ee_uu(ctx["atributos"]), "descripcion": ctx["desc_orig"],
-                "corta": corta, "mismo_nombre": mismo, "h1_respaldo": ctx["h1"]}
+                "corta": corta, "mismo_nombre": mismo, "h1_respaldo": ctx["h1"],
+                "h1_fijo": ctx.get("h1_fijo", ""), "h1_regla": ctx.get("h1_regla", ""),
+                "h1_rasgos": ctx.get("h1_rasgos", []),
+                "genericas_opcionales": ctx.get("genericas_opcionales", []),
+                "keywords_obligatorias": self.cfg.modo_keywords == "reglas"}
 
     def _paginas_competidores(self, ctx: dict) -> tuple[list[dict], list[dict]]:
         """(competidores leídos, candidatas SIN volumen) para el mismo producto.

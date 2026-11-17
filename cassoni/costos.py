@@ -20,10 +20,26 @@ PRECIOS_PEAK = {
 }
 
 
+# Claude Sonnet 5.5 (USD por 1M tokens; escritura de caché = 1,25 × entrada)
+PRECIOS_SONNET_5_5 = {"entrada_cache": 0.10, "entrada_normal": 2.00, "salida": 10.00}
+
+
+def usage_de_anthropic(u) -> dict:
+    """Pasa el `usage` de la API de Anthropic al formato de este módulo."""
+    leidos = int(getattr(u, "cache_read_input_tokens", 0) or 0)
+    escritos = int(getattr(u, "cache_creation_input_tokens", 0) or 0)
+    normales = int(getattr(u, "input_tokens", 0) or 0)
+    return {"prompt_tokens": normales + leidos + escritos,
+            "completion_tokens": int(getattr(u, "output_tokens", 0) or 0),
+            "prompt_cache_hit_tokens": leidos,
+            "prompt_cache_miss_tokens": normales + round(escritos * 1.25),
+            "_precios": PRECIOS_SONNET_5_5}
+
+
 def costo_de_usage(usage: dict | None, precios: dict | None = None) -> dict:
     """Devuelve tokens y USD de una respuesta. Sin `usage` => todo en cero."""
-    p = {**PRECIOS_PEAK, **(precios or {})}
     u = usage or {}
+    p = {**PRECIOS_PEAK, **(u.get("_precios") or {}), **(precios or {})}
     entrada = int(u.get("prompt_tokens") or 0)
     salida = int(u.get("completion_tokens") or 0)
     hit = u.get("prompt_cache_hit_tokens")

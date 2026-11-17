@@ -85,3 +85,86 @@ def test_filtros_de_las_ideas():
     assert "competida" in motivos["marble coffee table set"]
     assert "volumen" in motivos["metal coffee table"]
     assert out["elegidas"] == []
+
+
+# --- prueba del 13-nov: 7 de 10 fichas quedaban sin keywords por semillas malas ---
+from cassoni.h1 import tipo_ee_uu                       # noqa: E402
+from cassoni.investigacion import materiales_del_texto, nucleos   # noqa: E402
+
+
+def test_tipo_ee_uu_tanda_13_nov():
+    assert tipo_ee_uu("Salomé Valet Stand With Mirror", ["accessories", "coat-racks"]) == "valet stand"
+    assert tipo_ee_uu("Cristallino for Pirelli Foosball Table",
+                      ["entertainment", "game-tables", "foosball-tables"]) == "foosball table"
+    assert tipo_ee_uu("Arcadia Stool", ["entertainment", "home-bar", "bar-stools"]) == "bar stool"
+    assert tipo_ee_uu("Poseidon Square Bathroom Set", ["bath-counter-sets"]) == "bathroom set"
+    assert tipo_ee_uu("Almeria Baskets", ["accessories", "baskets-and-storage"]) == "basket"
+
+
+def test_materiales_de_la_descripcion_sin_repetir_el_general():
+    m = materiales_del_texto("<p>Blown glass diffuser with a satin finish and brass details.</p>")
+    assert m[:2] == ["blown glass", "brass"] and "glass" not in m
+
+
+def test_semillas_usan_el_tipo_y_los_materiales_del_texto():
+    s = semillas("Spear Chandelier", "VENICEM", ["Chandeliers"],
+                 ("Style: Contemporary", "Dimmer: DALI, TRIAC", "Model: Spear 1"),
+                 tipo="chandelier", descripcion="Frame in polished brass.")
+    assert s[0] == "brass chandelier" and "contemporary chandelier" in s
+    assert not any(x in " ".join(s) for x in ("dali", "triac", "spear 1"))
+    assert "chandelier" not in s            # el tipo pelado abre demasiado la búsqueda
+    assert semillas("Almeria Baskets", "Pinetti", ["Baskets"], (), tipo="basket",
+                    descripcion="Woven regenerated leather.")[0] == "leather basket"
+
+
+def test_nucleos_para_filtrar_ideas():
+    assert nucleos("ceiling lamp") == ["lamp", "light"]
+    assert nucleos("foosball table") == ["foosball"]
+    assert nucleos("outdoor sofa") == ["sofa", "couch"]
+
+
+def test_ideas_con_filtro_de_tipo(cfg):
+    vistos = {}
+
+    def fake_post(payload):
+        vistos.update(payload[0])
+        return {"status_code": 20000, "cost": 0.01, "tasks": [{"status_code": 20000,
+                "result": [{"items": []}]}]}
+    cfg.dfs_max_requests_min = 0
+    DataForSEOFetcher(cfg, _post=fake_post).ideas_de_keywords(["brass lamp"],
+                                                               contiene=["lamp", "light"])
+    assert vistos["filters"] == [["keyword", "like", "%lamp%"], "or",
+                                 ["keyword", "like", "%light%"]]
+
+
+def test_motivo_idea_repuestos_y_tipo_partido():
+    from cassoni.investigacion import motivo_idea
+    assert "repuesto" in motivo_idea("foosball table rods", "foosball table")
+    assert "parte el tipo" in motivo_idea("ceiling living room light", "ceiling lamp")
+    assert motivo_idea("blown glass ceiling light", "ceiling lamp") == ""
+    assert motivo_idea("glass foosball table", "foosball table") == ""
+    assert motivo_idea("metal lounge chair", "lounge chair") == ""
+    assert motivo_idea("walnut bar stool", "bar stool") == ""
+    assert motivo_idea("stool with backrest", "bar stool") == ""
+    assert motivo_idea("chair cushions", "chair") != ""
+
+
+def test_la_idea_descartada_sale_con_su_motivo():
+    from cassoni.keywords import elegir_keywords
+    sel = elegir_keywords([{"keyword": "foosball table rods", "volume": 260,
+                            "origen": "investigacion", "descartar": "busca un repuesto"}],
+                          descripcion="", texto_producto="foosball table")
+    assert sel["elegidas"] == []
+    assert sel["descartadas"][0]["motivo"] == "busca un repuesto"
+
+
+def test_motivo_idea_algo_para_el_producto():
+    from cassoni.investigacion import motivo_idea
+    assert "para un mirror" in motivo_idea("frame for mirror", "wall mirror")
+    assert motivo_idea("mirror for living room", "wall mirror") == ""
+
+
+def test_material_negado_no_cuenta():
+    from cassoni.investigacion import materiales_del_texto
+    assert "marble" not in materiales_del_texto("Top: Without Marble Top. Wooden structure.")
+    assert materiales_del_texto("Wooden structure") == ["wood"]
