@@ -19,7 +19,8 @@ Correrlo varias veces por día es seguro: el cupo y lo ya hecho viven en
 ## 1. Instalar
 
 ```bash
-cd /opt && git clone https://github.com/tonic1234/cassoni-product-flow cassoni && cd cassoni
+# la versión v5 está en la rama flujo-seo-v2 hasta que se mergee a master
+cd /opt && git clone -b flujo-seo-v2 https://github.com/tonic1234/cassoni-product-flow cassoni && cd cassoni
 python3 -m venv venv && ./venv/bin/pip install -r requirements.txt
 mkdir -p logs creds evidencia/diario publico
 ```

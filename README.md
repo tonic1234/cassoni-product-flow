@@ -56,7 +56,7 @@ DataForSEO.
 ## Probarlo en cinco comandos
 
 ```bash
-git clone https://github.com/tonic1234/cassoni-product-flow && cd cassoni-product-flow
+git clone -b flujo-seo-v2 https://github.com/tonic1234/cassoni-product-flow && cd cassoni-product-flow
 python3 -m venv venv && ./venv/bin/pip install -r requirements.txt
 ./venv/bin/python -m pytest -q                                   # tests, sin red
 ./venv/bin/python -m cassoni.cli --env prod --preflight          # conexiones, sin gastar LLM
