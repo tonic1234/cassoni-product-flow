@@ -10,6 +10,7 @@ diario. Mide el efecto de cada keyword a 14 y 28 días.
 > **Para instalarlo en el VPS:** [docs/VPS.md](docs/VPS.md).
 > **Cómo funciona por dentro:** [docs/COMO-FUNCIONA.md](docs/COMO-FUNCIONA.md).
 > **Qué pidió el SEO y cómo se resolvió:** [docs/SEO-DEVOLUCIONES.md](docs/SEO-DEVOLUCIONES.md).
+> **Correr una tanda en seco de 30 para que el SEO evalúe:** [docs/EVALUACION-EN-SECO.md](docs/EVALUACION-EN-SECO.md).
 
 ## Estado (17-nov-2026)
 
