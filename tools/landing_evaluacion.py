@@ -184,20 +184,31 @@ def descartadas(sel: str) -> list[tuple[str, str]]:
     return out
 
 
-def acentos(h1_nuevo: str, kws: list[str]) -> str:
-    """Marca en el H1 nuevo las palabras objetivo, conservando cómo están escritas."""
-    if not kws:
-        return esc(h1_nuevo)
-    patron = "|".join(sorted((re.escape(k) for k in kws if k), key=len, reverse=True))
-    if not patron:
-        return esc(h1_nuevo)
-    partes, pos = [], 0
-    for m in re.finditer(patron, h1_nuevo, flags=re.IGNORECASE):
-        partes.append(esc(h1_nuevo[pos:m.start()]))
-        partes.append(f"<em>{esc(m.group(0))}</em>")
-        pos = m.end()
-    partes.append(esc(h1_nuevo[pos:]))
-    return "".join(partes)
+def resaltar_agregado(h1_nuevo: str, h1_original: str) -> str:
+    """Marca en el H1 propuesto las palabras que no estaban en el nombre original."""
+    if not h1_nuevo:
+        return ""
+    previas = {w.lower() for w in re.findall(r"[\w\u00c0-\u024f]+", h1_original or "")}
+    piezas = re.findall(r"\s+|[^\s]+", h1_nuevo)
+    salida, buffer = [], []
+    for pieza in piezas:
+        if pieza.isspace():
+            if buffer:
+                buffer.append(pieza)
+            else:
+                salida.append(esc(pieza))
+            continue
+        limpia = re.sub(r"[^\w\u00c0-\u024f]+", "", pieza).lower()
+        if limpia and limpia not in previas:
+            buffer.append(pieza)
+        else:
+            if buffer:
+                salida.append(f"<em>{esc(''.join(buffer).strip())}</em>")
+                buffer = []
+            salida.append(esc(pieza))
+    if buffer:
+        salida.append(f"<em>{esc(''.join(buffer).strip())}</em>")
+    return "".join(salida)
 
 
 def logo_data_uri() -> str:
@@ -354,7 +365,7 @@ def main() -> int:
     </div>
   </div></div>
   <div class="h1"><span class="l">H1 en la tienda</span><del>{esc(f.get('h1_original'))}</del>
-    <span class="l">H1 propuesto</span><ins>{acentos(f.get('h1') or '', [k.get('keyword') or '' for k in kws])}</ins></div>
+    <span class="l">H1 propuesto</span><ins>{resaltar_agregado(f.get('h1') or '', f.get('h1_original') or '')}</ins></div>
   <div class="kws">{chips}</div>
   <div class="texto">{texto_de_desc(f.get('descripcion') or f.get('descripcion_original') or '', [k.get('keyword') or '' for k in kws])}</div>
   {det}
@@ -364,7 +375,7 @@ def main() -> int:
     E.append(f"""<section id="fichas" hidden><div class="grid">
   <div class="card"><h2>Las {len(fichas)} fichas</h2>
   <p>El H1 nuevo se escribe en WooCommerce <b>sin la marca</b>: la tienda agrega «by + marca» con el logo del
-  fabricante. Lo resaltado en violeta es lo que el agente agrega respecto del nombre original; en la descripción,
+  fabricante. Lo resaltado en violeta son las palabras que el agente agrega al nombre original; en la descripción,
   lo amarillo son las keywords objetivo. Las miniaturas son las iniciales del producto: cassoni.com bloquea
   (Cloudflare) que sus fotos se muestren desde otro dominio.</p></div>
   {''.join(cuerpo)}

@@ -62,10 +62,10 @@ def test_las_cinco_pestanias_existen(tmp_path):
 def test_cada_ficha_llega_con_su_antes_y_despues(tmp_path):
     html = _generar(tmp_path, _lote(tmp_path, n=3))
     assert html.count('class="ficha"') == 3
-    assert "Modelo 0 Lamp" in html and "by Marca</ins>" in html
+    assert "Modelo 0 Lamp" in html and "<em>Leather Sconce by Marca</em></ins>" in html
     # la keyword se marca en la descripción y en el H1 nuevo
     assert "<mark>leather sconce</mark>" in html
-    assert "<em>Leather Sconce</em>" in html
+    assert "<em>Leather Sconce by Marca</em>" in html
 
 
 def test_no_quedan_placeholders_sin_reemplazar(tmp_path):
