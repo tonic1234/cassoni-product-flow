@@ -162,7 +162,7 @@ DESCRIPCIÓN CORTA ACTUAL:
 DESCRIPCIÓN LARGA ACTUAL (fuente de datos; se reescribe):
 {strip_html(ficha.get('descripcion') or '')}
 
-{_bloque_rasgos(ficha)}{_bloque_genericas(ficha)}KEYWORDS OBJETIVO (exactas, 1 o 2 veces cada una){' — las eligió el equipo SEO con datos: usalas TODAS; omití una solo si contradice la ficha' if ficha.get('keywords_obligatorias') else ''}:
+{_bloque_rasgos(ficha)}{_bloque_opciones(ficha)}{_bloque_genericas(ficha)}KEYWORDS OBJETIVO (exactas, 1 o 2 veces cada una){' — las eligió el equipo SEO con datos: usalas TODAS; omití una solo si contradice la ficha' if ficha.get('keywords_obligatorias') else ''}:
 {chr(10).join(f'- {k}' for k in objetivo) or '(ninguna: escribí la ficha igual)'}
 
 Responde SOLO con JSON:
@@ -190,6 +190,18 @@ def _bloque_rasgos(ficha: dict) -> str:
             "Elegí el que tienen TODAS las versiones del producto (no una opción de "
             "tapizado, acabado o tapa); entre los que cumplen, el más buscado. Si ninguno "
             "cumple, usá otro rasgo real de la ficha (forma, técnica, estructura).\n\n")
+
+
+def _bloque_opciones(ficha: dict) -> str:
+    """La parte principal viene en varias opciones (Rock: tapa de madera o de mármol):
+    la descripción cubre TODAS, no solo la del H1 (devolución del 18-nov)."""
+    ops = ficha.get("opciones") or []
+    if len(ops) < 2:
+        return ""
+    return ("OPCIONES — la parte principal del producto viene en " + " o ".join(ops) + ". "
+            "La descripción cubre TODAS las opciones por igual, no solo la del H1: una "
+            "sección (o una lista <ul>) con una línea por opción y lo que la ficha dice de "
+            "cada una. Cada opción con su keyword objetivo, si la tiene.\n\n")
 
 
 def _bloque_genericas(ficha: dict) -> str:

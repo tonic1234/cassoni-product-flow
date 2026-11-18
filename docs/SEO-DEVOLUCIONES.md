@@ -63,7 +63,7 @@ keywords aunque sus oraciones estaban forzadas.
   sesión de trabajo, no Sonnet por API, y ya conocía esos dos errores de DeepSeek al
   escribirla. Hay que tomarla como indicio, no como prueba.
 
-**Pendiente de confirmar con Alex:**
+**Pendiente de confirmar con Alex** (resuelto el 18-nov, ver abajo y D-026):
 
 1. El umbral de 1.000 búsquedas/mes.
 2. Rock: el agente no pone «Marble» porque la tapa también viene en madera (la regla
@@ -78,3 +78,16 @@ La tienda ahora arma el H1 como `{name}` + enlace «by {Marca}» con el logo del
 fabricante, y el `<title>` como «{name} by {Marca} | Cassoni». En WooCommerce el
 `name` está sin marca («Club Sofa»). El agente escribe el `name` sin «by {Marca}»
 (`h1.nombre_para_woo`), así no se duplica.
+
+## 18-nov-2026 · Respuestas a los tres pendientes
+
+1. Umbral de 1.000 búsquedas/mes: **queda**.
+2. Rock: el H1 lleva la opción más buscada («Rock Marble Coffee Table») y la
+   descripción habla de **las dos** tapas, con «marble coffee table» y «wood coffee
+   table». Vale para toda ficha cuya parte principal viene en opciones.
+3. Steinway: el volumen del nombre era el de la marca Steinway. Ahora no cuenta: va el
+   rasgo («Mother-of-Pearl») y «piano steinway» no se toma como keyword.
+
+Siguiente: tanda de 30 fichas nuevas elegidas al azar por código, en seco, para que el
+SEO las revise sin que nadie las haya mirado antes (`scripts/tanda_seo.sh`).
+

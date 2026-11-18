@@ -54,27 +54,103 @@ def nombre_de_busqueda(nombre: str) -> str:
     return _norm(limpio)
 
 
+# marcas de OTROS fabricantes que aparecen en nombres de la tienda («19800 Steinway
+# Piano» de Riva Mobili D'Arte): el volumen de su búsqueda es el de esa marca, no el
+# de la pieza (18-nov-2026)
+MARCAS_AJENAS = frozenset({
+    "steinway", "bosendorfer", "fazioli", "bechstein", "yamaha", "kawai", "bluthner",
+    "rolex", "patek", "cartier", "ferrari", "lamborghini", "porsche", "bugatti",
+    "maserati", "bentley", "aston", "harley", "ducati", "vespa", "chanel", "hermes",
+    "louis vuitton", "gucci", "versace", "dior", "fendi", "tiffany",
+})
+
+
+def marca_ajena_en(nombre: str, marca: str) -> str:
+    """La marca de otro fabricante que nombra la ficha, o ''. 'Hermes' o 'Tiffany'
+    también son modelos de la tienda: solo cuentan si el resto del nombre es el tipo
+    o un código («19800 Steinway Piano»), no si hay un modelo propio."""
+    n = f" {_norm(sin_codigos(nombre or ''))} "
+    propia = _norm(marca)
+    for m in sorted(MARCAS_AJENAS, key=len, reverse=True):
+        if f" {m} " in n and m not in propia:
+            return m
+    return ""
+
+
+def opciones_de_material(texto: str, materiales: Iterable[str]) -> list[str]:
+    """Materiales que la ficha ofrece como alternativa en una misma oración
+    («top available in painted wood or in a wide range of marble options» →
+    ['wood', 'marble']). Sin «or» entre dos materiales distintos, no hay opciones."""
+    mats = sorted({_norm(m) for m in materiales if m}, key=len, reverse=True)
+    out: list[str] = []
+    for oracion in re.split(r"(?<=[.!?;])\s+|\n+", _plano(texto)):
+        palabras = _norm(oracion).split()
+        for i, w in enumerate(palabras):
+            if w != "or":
+                continue
+            izq = " " + " ".join(palabras[max(0, i - 6):i]) + " "
+            der = " " + " ".join(palabras[i + 1:i + 9]) + " "
+            a = [m for m in mats if f" {m} " in izq]
+            b = [m for m in mats if f" {m} " in der]
+            if a and b:
+                # el más cercano al «or» de cada lado
+                a1 = max(a, key=lambda m: izq.rfind(f" {m} "))
+                b1 = min(b, key=lambda m: der.find(f" {m} "))
+                if a1 != b1:
+                    out += [m for m in (a1, b1) if m not in out]
+    return out
+
+
+def keywords_de_opciones(opciones: Iterable[str], nucleo: str, vol: dict,
+                         minimo: int = 0) -> list[dict]:
+    """'{opción} {tipo}' con volumen, una por opción, de la más buscada a la menos:
+    la descripción las cubre a todas (Rock: 'marble coffee table', 'wood coffee table')."""
+    minimo = minimo or MIN_VOL_GENERICA
+    out = []
+    for m in opciones:
+        kw = f"{m} {nucleo}".lower()
+        v = int((vol.get(kw) or {}).get("volume") or 0)
+        if v >= minimo:
+            out.append({"keyword": kw, "origen": "opcion", "volumen": v, "material": m})
+    return sorted(out, key=lambda k: -k["volumen"])
+
+
 def h1_por_datos(nombre: str, marca: str, tipo: str, vol_nombre: Optional[int],
-                 rasgos: Iterable[tuple[str, int]], umbral: int = UMBRAL_NOMBRE) -> dict:
-    """{'h1', 'regla', 'rasgo'}. `rasgos`: (material, volumen de '{material} {tipo}')
-    solo con materiales que la ficha confirma."""
+                 rasgos: Iterable[tuple[str, int]], umbral: int = UMBRAL_NOMBRE,
+                 opciones: Iterable[str] = (), marca_ajena: str = "") -> dict:
+    """{'h1', 'regla', 'rasgo', 'fijo'}. `rasgos`: (material, volumen de '{material}
+    {tipo}') solo con materiales que la ficha confirma. `fijo`: el H1 ya está decidido
+    y el redactor no lo cambia. `opciones`: materiales que la ficha ofrece como
+    alternativa de la parte principal. `marca_ajena`: marca de otro fabricante en el
+    nombre; su volumen no cuenta como «el nombre ya se busca»."""
+    rasgos = list(rasgos)
     por = f" by {marca}" if marca else ""
     base = re.sub(r"\s+", " ", re.sub(r"\([^)]*\)", " ", sin_codigos(nombre or ""))).strip()
     base = re.split(r"\s[-–—]\s", base)[0].strip()
-    if vol_nombre and vol_nombre >= umbral:
+    nota = (f"; el volumen del nombre ({vol_nombre}/mes) es de la marca {marca_ajena}, "
+            "no de esta pieza") if marca_ajena and vol_nombre else ""
+    if vol_nombre and vol_nombre >= umbral and not marca_ajena:
         return {"h1": f"{base}{por}", "regla": f"el nombre ya se busca ({vol_nombre}/mes)",
-                "rasgo": ""}
+                "rasgo": "", "fijo": True}
     if not tipo:
-        return {"h1": f"{base}{por}", "regla": "sin tipo de producto: nombre + marca",
-                "rasgo": ""}
+        return {"h1": f"{base}{por}", "regla": "sin tipo de producto: nombre + marca" + nota,
+                "rasgo": "", "fijo": True}
     modelo = modelo_de(nombre, marca) or base
+    ops = {_norm(o) for o in opciones}
+    mejor_op = max(((m, v) for m, v in rasgos if v and _norm(m) in ops),
+                   key=lambda x: x[1], default=None)
+    if len(ops) >= 2 and mejor_op:
+        return {"h1": f"{modelo} {_titulo(mejor_op[0])} {_titulo(tipo)}{por}",
+                "regla": (f"opción más buscada: '{mejor_op[0]} {tipo}' ({mejor_op[1]}/mes); "
+                          f"la descripción cubre las opciones: {', '.join(sorted(ops))}") + nota,
+                "rasgo": mejor_op[0], "fijo": True}
     mejor = max(((m, v) for m, v in rasgos if v), key=lambda x: x[1], default=None)
     if mejor:
         return {"h1": f"{modelo} {_titulo(mejor[0])} {_titulo(tipo)}{por}",
-                "regla": f"rasgo más buscado: '{mejor[0]} {tipo}' ({mejor[1]}/mes)",
-                "rasgo": mejor[0]}
+                "regla": f"rasgo más buscado: '{mejor[0]} {tipo}' ({mejor[1]}/mes)" + nota,
+                "rasgo": mejor[0], "fijo": False}
     return {"h1": f"{modelo} {_titulo(tipo)}{por}",
-            "regla": "ningún rasgo con volumen: modelo + tipo", "rasgo": ""}
+            "regla": "ningún rasgo con volumen: modelo + tipo" + nota, "rasgo": "", "fijo": True}
 
 
 def rasgos_con_volumen(materiales: Iterable[str], tipo: str, vol: dict) -> list[tuple[str, int]]:
@@ -111,8 +187,14 @@ def generica_usada(descripcion_plana: str, h1: str, opcionales):
 
 
 def elegir_keywords(candidatas: list[dict], *, nombre: str, marca: str, tipo: str,
-                    h1: str, rasgo: str, texto_ficha: str) -> dict:
-    """{'elegidas': [...], 'descartadas': [{keyword, motivo}]} sin LLM."""
+                    h1: str, rasgo: str, texto_ficha: str,
+                    opciones: Optional[list[dict]] = None, marca_ajena: str = "") -> dict:
+    """{'elegidas': [...], 'descartadas': [{keyword, motivo}]} sin LLM.
+    `opciones`: keywords '{opción} {tipo}' (keywords_de_opciones); entran todas después
+    de Search Console, aunque el H1 diga una. `marca_ajena`: las búsquedas que son
+    solo esa marca (+ el tipo) no son de esta ficha."""
+    opciones = opciones or []
+    max_gsc = 1 if len(opciones) >= 2 else 2
     h1n = _norm(h1)
     nombre_n = nombre_de_busqueda(nombre)
     modelo_n = _norm(modelo_de(nombre, marca))
@@ -149,6 +231,9 @@ def elegir_keywords(candidatas: list[dict], *, nombre: str, marca: str, tipo: st
         imp = c.get("impresiones") or 0
         if not re.fullmatch(r"[a-z0-9' &-]+", (c["keyword"] or "").lower()):
             motivo = "tiene símbolos que no son de una búsqueda escrita"
+        elif marca_ajena and set(_clave(kw).split()) - {_clave(t) for t in tipos} \
+                <= set(marca_ajena.split()):
+            motivo = f"es la búsqueda de la marca {marca_ajena}, no de esta pieza"
         elif imp < MIN_IMPRESIONES or (not _nombra(kw) and imp < MIN_IMPRESIONES_GENERICA):
             motivo = "pocas impresiones"
         elif len(kw.split()) < len(nombre_w) and nombre_w[:len(kw.split())] == kw.split():
@@ -159,15 +244,20 @@ def elegir_keywords(candidatas: list[dict], *, nombre: str, marca: str, tipo: st
             motivo = "es solo la marca"
         elif sin:
             motivo = "la ficha no dice " + ", ".join(f"'{w}'" for w in sin)
-        elif len([e for e in elegidas if e["origen"] == "gsc"]) >= 2:
-            motivo = "ya hay dos de Search Console"
+        elif len([e for e in elegidas if e["origen"] == "gsc"]) >= max_gsc:
+            motivo = ("ya hay una de Search Console y las opciones de la ficha"
+                      if max_gsc == 1 else "ya hay dos de Search Console")
         elif _agregar(c, f"ya aparece en Google ({c.get('impresiones')} impresiones)"):
             continue
         else:
             motivo = "repite otra elegida"
         descartadas.append({"keyword": c["keyword"], "motivo": motivo})
 
-    # 2) marca + tipo, con volumen
+    # 2) una por cada opción de la parte principal (Rock: mármol y madera)
+    for c in opciones:
+        _agregar(c, f"opción de la ficha ({c.get('volumen')}/mes)")
+
+    # 3) marca + tipo, con volumen
     if marca_n:
         for c in sorted((c for c in candidatas if c.get("origen") == "generica"
                          and _norm(c["keyword"]).startswith(marca_n + " ")),

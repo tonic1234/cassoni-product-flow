@@ -36,7 +36,7 @@ En `.env.prod`, revisar:
 ```
 CASSONI_DFS_PRESUPUESTO_USD=1.50     # con 0.30 la corrida se corta y no hay keywords
 CASSONI_MODO_KEYWORDS=reglas         # reglas del SEO (Alex, 17-nov). Es el default
-CASSONI_H1_UMBRAL_NOMBRE=1000        # pendiente de confirmar con el SEO
+CASSONI_H1_UMBRAL_NOMBRE=1000        # confirmado por el SEO (18-nov)
 ```
 
 ## 2. Probar antes del cron

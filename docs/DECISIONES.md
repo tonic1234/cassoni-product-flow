@@ -288,3 +288,23 @@ En seco y escribiendo llevan estados separados. `scripts/instalar_tarea_windows.
 lo registra en el Programador de tareas.
 Pendiente con Alex: el umbral de 1.000; Rock sin «Marble» (la tapa también viene en
 madera); Steinway, cuyo volumen es el de la marca Steinway, no el de esta pieza.
+
+## D-026 · Opciones de la parte principal y marcas ajenas en el nombre
+**18-nov-2026 · respuesta a los tres pendientes de D-025**
+- **Umbral de 1.000 búsquedas/mes:** confirmado. Sin cambios.
+- **Opciones (Rock):** cuando la ficha ofrece la parte principal como alternativa en una
+  misma oración («top available in painted wood or in a wide range of marble options»),
+  el H1 lleva la opción más buscada y queda fijo («Rock Marble Coffee Table by Rugiano»,
+  33.100 > 27.100), y la descripción cubre **todas** las opciones, cada una con su
+  genérica '{opción} {tipo}' como keyword objetivo («marble coffee table», «wood coffee
+  table»). Con opciones entra una sola de Search Console para dejar lugar a las dos.
+  `reglas_seo.opciones_de_material`, `keywords_de_opciones`; bloque OPCIONES del redactor.
+- **Marca ajena (Steinway):** el volumen de «steinway piano» (27.100) es el de la marca
+  Steinway, no el de la pieza de Riva Mobili D'Arte. Si el nombre trae una marca de otro
+  fabricante (`reglas_seo.MARCAS_AJENAS`), su volumen no cuenta como «el nombre ya se
+  busca» y va la regla del rasgo («Mother-of-Pearl»); las búsquedas que son solo esa
+  marca (+ el tipo: «piano steinway») no se toman como keyword.
+Descartado: ponerle al H1 las dos opciones («Rock Marble or Wood Coffee Table»): largo y
+no es como escribe el SEO. Tests: `tests/test_opciones_y_marca_ajena.py`,
+`tests/test_seleccion_reglas_opciones.py` (evidencia `2026-11-18-opciones-marca-ajena-*`).
+

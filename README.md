@@ -15,7 +15,7 @@ diario. Mide el efecto de cada keyword a 14 y 28 días.
 
 | Pieza | Estado |
 |---|---|
-| H1 por lo que la gente busca (regla del SEO, 17-nov) | ✅ en código; umbral pendiente de confirmar con el SEO |
+| H1 por lo que la gente busca (regla del SEO, 17-nov) | ✅ en código; umbral de 1.000 confirmado; opciones y marcas ajenas (18-nov, D-026) |
 | Keywords: Search Console + marca y tipo + genérica del material del H1 | ✅ en código, sin LLM |
 | Descripción con la estructura del SEO (DeepSeek, con sus fichas como ejemplo) | ✅ 19 de 20 aprobadas en la última prueba |
 | Validación: reglas en código + un segundo modelo como juez | ✅ frena datos inventados y keywords forzadas |
@@ -109,5 +109,8 @@ tests/                  suite completa (sin red, con fakes)
 - Search Console es solo lectura.
 - Si una ficha no tiene la marca cargada en WooCommerce, la tienda muestra el H1 sin
   «by»: el agente lo avisa.
-- Pendiente con el SEO: el umbral de 1.000 búsquedas/mes para el H1; Rock sin «Marble»
-  (la tapa también viene en madera); Steinway, cuyo volumen es el de la marca.
+- Si la parte principal viene en opciones («wood or marble»), el H1 lleva la más
+  buscada y la descripción cubre todas. Una marca ajena en el nombre («Steinway») no
+  cuenta como volumen del nombre (D-026).
+- Tanda para el SEO sin intervención: `bash scripts/tanda_seo.sh` (30 fichas nuevas al
+  azar, en seco, con página de revisión).

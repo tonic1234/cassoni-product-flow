@@ -406,21 +406,32 @@ class Pipeline:
         consultas = gen + [nombre_q] + [f"{m} {nucleo}" for m in mats]
         vol = self.volumenes.obtener(consultas) if self.volumenes is not None else {}
         rasgos = rasgos_con_volumen(mats, nucleo, vol)
+        from .reglas_seo import (genericas_opcionales, keywords_de_opciones,
+                                 marca_ajena_en, opciones_de_material)
+        # 18-nov: si la parte principal viene en opciones («wood or marble»), el H1 lleva
+        # la más buscada y la descripción cubre todas; una marca ajena en el nombre
+        # («Steinway») no cuenta como «el nombre ya se busca»
+        opciones = opciones_de_material(strip_html(ctx["desc_orig"]), mats)
+        ajena = marca_ajena_en(ctx["nombre"], ctx["marca"])
         r = h1_por_datos(ctx["nombre"], ctx["marca"], tipo,
                          (vol.get(nombre_q) or {}).get("volume"), rasgos,
-                         umbral=self.cfg.h1_umbral_nombre)
+                         umbral=self.cfg.h1_umbral_nombre, opciones=opciones,
+                         marca_ajena=ajena)
         ctx["h1_regla"] = r["regla"]
-        # el nombre solo (o sin tipo): H1 fijo. Con rasgo: el redactor elige entre los
-        # rasgos con su volumen el que tienen TODAS las versiones (no una opción)
-        ctx["h1_fijo"] = "" if r["rasgo"] else r["h1"]
+        # H1 fijo: el nombre solo, sin tipo o la opción más buscada. Con rasgo libre: el
+        # redactor elige entre los rasgos con su volumen el que tienen TODAS las versiones
+        ctx["h1_fijo"] = r["h1"] if r["fijo"] else ""
         ctx["h1_rasgos"] = sorted(((m, v) for m, v in rasgos if v), key=lambda x: -x[1])
-        from .reglas_seo import genericas_opcionales
-        ctx["genericas_opcionales"] = genericas_opcionales(mats, nucleo, vol)
+        kw_opciones = keywords_de_opciones(opciones, nucleo, vol) if len(opciones) >= 2 else []
+        ctx["opciones"] = opciones if len(opciones) >= 2 else []
+        # con opciones, las genéricas son las de cada opción (van como objetivo)
+        ctx["genericas_opcionales"] = [] if ctx["opciones"] else genericas_opcionales(mats, nucleo, vol)
         cands = candidatas_gsc(ctx["kw_rows"], ctx["nombre"], ctx["marca"]) + con_volumen(gen, vol)
         texto = " ".join([ctx["nombre"], ctx["marca"], *ctx["atributos"],
                           *ctx["categorias"], strip_html(ctx["desc_orig"])])
         sel = elegir_keywords(cands, nombre=ctx["nombre"], marca=ctx["marca"], tipo=tipo,
-                              h1=r["h1"], rasgo=r["rasgo"], texto_ficha=texto)
+                              h1=r["h1"], rasgo=r["rasgo"], texto_ficha=texto,
+                              opciones=kw_opciones, marca_ajena=ajena)
         for e in sel["elegidas"]:
             e["volume"], e["impressions"] = e.get("volumen"), e.get("impresiones")
         sel["faltan"] = 0
@@ -685,6 +696,7 @@ class Pipeline:
                 "h1_fijo": ctx.get("h1_fijo", ""), "h1_regla": ctx.get("h1_regla", ""),
                 "h1_rasgos": ctx.get("h1_rasgos", []),
                 "genericas_opcionales": ctx.get("genericas_opcionales", []),
+                "opciones": ctx.get("opciones", []),
                 "keywords_obligatorias": self.cfg.modo_keywords == "reglas"}
 
     def _paginas_competidores(self, ctx: dict) -> tuple[list[dict], list[dict]]:
