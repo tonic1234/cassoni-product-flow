@@ -124,10 +124,14 @@ class DataForSEOFetcher:
         self.costo_usd = 0.0
         self.sin_saldo = ""                # motivo si la cuenta no puede operar
         self.sin_presupuesto = False
+        self._saldo_ok: Optional[bool] = None
 
     def _alcanza(self, costo: float) -> bool:
         """Tope de gasto por corrida (CASSONI_DFS_PRESUPUESTO_USD; 0 = sin tope).
         Si el próximo pedido lo pasaría, no se hace y se sigue sin ese dato."""
+        if not self._saldo_suficiente():
+            self.sin_presupuesto = True
+            return False
         tope = getattr(self.cfg, "dfs_presupuesto_usd", 0) or 0
         if tope and self.costo_usd + costo > tope + 1e-9:
             if not self.sin_presupuesto:
@@ -136,6 +140,21 @@ class DataForSEOFetcher:
             self.sin_presupuesto = True
             return False
         return True
+
+    def _saldo_suficiente(self) -> bool:
+        """Piso de saldo de la cuenta (CASSONI_DFS_SALDO_MINIMO, US$ 5 por defecto): siempre
+        quedan créditos para trabajar. Se consulta una vez por corrida, gratis (23-nov)."""
+        piso = float(getattr(self.cfg, "dfs_saldo_minimo", 0) or 0)
+        if not piso:
+            return True
+        if self._saldo_ok is None:
+            info = self.saldo()
+            saldo = (info or {}).get("saldo_usd")
+            self._saldo_ok = saldo is None or float(saldo) - piso > 1e-9
+            if not self._saldo_ok:
+                log.error("DataForSEO: el saldo (US$ %.2f) está en el piso de US$ %.2f. No se "
+                          "hacen pedidos pagos en esta corrida.", float(saldo), piso)
+        return self._saldo_ok
 
     def saldo(self) -> Optional[dict]:
         """{login, saldo_usd} de la cuenta. Gratis (appendix/user_data)."""

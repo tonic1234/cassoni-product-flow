@@ -59,6 +59,7 @@ class Config:
     dfs_min_volume: int = 50                   # piso de volumen mensual (SEO, 3-nov)
     dfs_cache_dias: int = 30                   # el volumen es mensual
     dfs_presupuesto_usd: float = 0.0          # tope de gasto por corrida (0 = sin tope)
+    dfs_saldo_minimo: float = 5.0             # nunca bajar el saldo de la cuenta de esto
     dfs_competidores: str = "siempre"          # siempre | si_faltan (keywords de competidores)
     # reescritura (plantilla del SEO, 6-nov-2026) | quirurgica (flujo v2: H1
     # '{Nombre} by {Marca}' + una oración por keyword, 80% del original intacto)
@@ -153,6 +154,7 @@ class Config:
         c.dfs_intencion = g("CASSONI_DFS_INTENCION", "1") not in ("0", "no", "false")
         try:
             c.dfs_presupuesto_usd = float(g("CASSONI_DFS_PRESUPUESTO_USD") or 0)
+            c.dfs_saldo_minimo = float(g("CASSONI_DFS_SALDO_MINIMO", str(c.dfs_saldo_minimo)) or 0)
         except ValueError:
             pass
         hosts = g("CASSONI_PROD_HOSTS")
