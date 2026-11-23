@@ -6,6 +6,7 @@ from __future__ import annotations
 import json
 import logging
 import re
+import uuid
 from typing import Optional
 
 import httpx
@@ -29,10 +30,16 @@ def _sin_fence(raw: str) -> str:
     return m.group(1) if m else raw
 
 
+USER_AGENT = "cassoni-seo-agent/1.0"
+
+
 class LLMClient:
     def __init__(self, config: Config, client: Optional[httpx.Client] = None):
         self.cfg = config
         self._http = client or httpx.Client(timeout=180)
+        # OpenCode pide que cada cliente se identifique con su propio user agent y un
+        # ID de sesión estable por conversación (una corrida = una sesión)
+        self.sesion = uuid.uuid4().hex
         self.usage: list[dict] = []      # una entrada por llamada (usage crudo)
         self._anthropic = None           # cliente del SDK, solo si se usa un modelo claude-*
 
@@ -45,15 +52,21 @@ class LLMClient:
         if not (self.cfg.llm_base_url and self.cfg.llm_api_key):
             raise LLMError("Config LLM incompleta (llm_base_url/api_key)")
         r = self._http.get(self.cfg.llm_base_url.rstrip("/") + "/models",
-                           headers={"Authorization": f"Bearer {self.cfg.llm_api_key}"})
+                           headers=self._headers())
         return r.status_code
+
+    def _headers(self) -> dict:
+        h = {"Authorization": f"Bearer {self.cfg.llm_api_key}",
+             "Content-Type": "application/json", "User-Agent": USER_AGENT}
+        if "opencode.ai" in (self.cfg.llm_base_url or ""):
+            h["x-opencode-session"] = self.sesion
+        return h
 
     def _post(self, model: str, messages: list[dict], temperature: float = 0.3,
               max_tokens: int = 1200) -> str:
         if not (self.cfg.llm_base_url and self.cfg.llm_api_key):
             raise LLMError("Config LLM incompleta (llm_base_url/api_key)")
-        headers = {"Authorization": f"Bearer {self.cfg.llm_api_key}",
-                   "Content-Type": "application/json"}
+        headers = self._headers()
         body = {"model": model, "messages": messages,
                 "temperature": temperature, "max_tokens": max_tokens}
         url = self.cfg.llm_base_url.rstrip("/") + "/chat/completions"
