@@ -44,7 +44,8 @@ from cassoni.validator import Validator                # noqa: E402
 CONTROL = "evidencia/2026-11-17-control-reglas3.json"
 
 
-def preparar(ref: dict, desc_orig: str, umbral: int) -> tuple[dict, list[dict], dict]:
+def preparar(ref: dict, desc_orig: str, umbral: int,
+             rankeadas: list[dict] | None = None) -> tuple[dict, list[dict], dict]:
     """(ficha para el redactor, keywords objetivo, decisión del H1)."""
     vol = {c["keyword"].lower(): {"volume": c.get("volumen") or 0} for c in ref["candidatas"]}
     tipo, nombre, marca = ref["tipo"], ref["nombre"], ref["marca"]
@@ -64,9 +65,14 @@ def preparar(ref: dict, desc_orig: str, umbral: int) -> tuple[dict, list[dict], 
         gen_h1 = [{"keyword": k, "origen": "generica", "volumen": v}
                   for k, v, _ in genericas_para_h1(r["h1"], opcionales)]
         opcionales = []
+    from cassoni.reglas_seo import candidatas_de_competencia
+    texto = " ".join([nombre, marca, plano])
+    competencia = candidatas_de_competencia(rankeadas or [], h1=r["h1"], nombre=nombre, marca=marca,
+                                            tipo=tipo, texto_ficha=texto, minimo=10)
     sel = elegir_keywords(ref["candidatas"], nombre=nombre, marca=marca, tipo=tipo, h1=r["h1"],
                           rasgo=r["rasgo"], texto_ficha=" ".join([nombre, marca, plano]),
-                          opciones=kw_ops, marca_ajena=ajena, genericas_h1=gen_h1)
+                          opciones=kw_ops, marca_ajena=ajena, genericas_h1=gen_h1,
+                          competencia=competencia)
     ficha = {"url": ref["url"], "nombre": nombre, "marca": marca, "modelo": modelo_de(nombre, marca),
              "tipo": tipo, "categorias": [], "url_categoria": ref.get("url_categoria_seo") or "",
              "atributos": [], "medidas": [], "descripcion": desc_orig, "corta": "",
@@ -79,10 +85,37 @@ def preparar(ref: dict, desc_orig: str, umbral: int) -> tuple[dict, list[dict], 
     return ficha, sel["elegidas"], r
 
 
+def competencia_de(ruta: str, refs: list[dict], cfg) -> dict:
+    """{url: keywords que rankean hasta 3 competidores con el mismo producto}. Se consulta
+    a DataForSEO una sola vez (misma consulta que el orquestador: el H1 de respaldo sin
+    «by») y queda guardado para no volver a pagar."""
+    p = Path(ruta)
+    if p.exists():
+        return json.loads(p.read_text(encoding="utf-8"))
+    from cassoni.competidores import Competidores
+    from cassoni.dataforseo import DataForSEOFetcher
+    comp = Competidores(DataForSEOFetcher(cfg), propios=("cassoni.com", "www.cassoni.com"))
+    out = {}
+    for ref in refs:
+        consulta = h1_respaldo(ref["nombre"], ref["marca"], ref["tipo"]).replace(" by ", " ")
+        try:
+            resumen, rank = comp.rankeadas(consulta)
+        except Exception as exc:             # sin datos se sigue: la ficha va sin competencia
+            print(f"competencia no disponible para {ref['nombre']}: {exc}", flush=True)
+            resumen, rank = [], []
+        out[ref["url"]] = rank
+        print(f"competencia {ref['nombre'][:28]:28} {len(resumen)} páginas, {len(rank)} keywords", flush=True)
+    p.write_text(json.dumps(out, ensure_ascii=False, indent=1), encoding="utf-8")
+    return out
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", required=True)
     ap.add_argument("--ref", default="evidencia/referencia-seo.json")
+    ap.add_argument("--competencia", default="",
+                    help="JSON {url: keywords que rankea la competencia}; si no existe y hay "
+                         "credenciales de DataForSEO, se consulta una vez y se guarda")
     a = ap.parse_args(argv)
     cfg = Config.load("staging", dry_run=True)
     llm = LLMClient(cfg)
@@ -91,10 +124,12 @@ def main(argv=None) -> int:
     refs = json.loads(Path(a.ref).read_text(encoding="utf-8"))
     originales = {f["url"]: f.get("descripcion_original") or ""
                   for f in json.loads(Path(CONTROL).read_text(encoding="utf-8"))["fichas"]}
+    comp = competencia_de(a.competencia, refs, cfg) if a.competencia else {}
     fichas = []
     for ref in refs:
         t0 = time.time()
-        ficha, objetivos, r = preparar(ref, originales.get(ref["url"], ""), cfg.h1_umbral_nombre)
+        ficha, objetivos, r = preparar(ref, originales.get(ref["url"], ""), cfg.h1_umbral_nombre,
+                                       rankeadas=comp.get(ref["url"]))
         try:
             val = validator.redactar_y_validar(ficha=ficha, keywords=objetivos, redactor=redactor)
         except LLMError as exc:
