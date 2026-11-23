@@ -44,3 +44,12 @@ def test_sin_reservas_queda_con_menos_y_no_fuerza():
     out = v.redactar_hasta_minimo(ficha={}, keywords=K("a b", "c d"), reservas=[],
                                   redactor=None, minimo=3)
     assert [k["keyword"] for k in out["objetivos"]] == ["a b"] and len(v.llamadas) == 1
+
+
+def test_el_validador_no_objeta_el_h1_que_decidio_la_regla():
+    from cassoni.validator import _nota_h1
+    ficha = {"h1_fijo": "Rock Marble Coffee Table by Rugiano",
+             "h1_regla": "opción más buscada: 'marble coffee table'"}
+    assert "No lo objetes" in _nota_h1(ficha, {"h1": "Rock Marble Coffee Table by Rugiano"})
+    assert _nota_h1(ficha, {"h1": "Otro H1"}) == ""
+    assert _nota_h1({}, {"h1": "x"}) == ""

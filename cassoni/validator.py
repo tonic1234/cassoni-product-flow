@@ -53,6 +53,18 @@ No rechaces por estilo o por gustos si los datos son correctos y se lee bien.
 """
 
 
+def _nota_h1(ficha: dict, redactado: dict) -> str:
+    """Si el H1 lo decidió el código con las reglas del SEO (h1_fijo), el validador no lo
+    objeta: en la prueba del 23-nov rechazaba «Rock Marble Coffee Table» (la regla de Alex)
+    por nombrar una de las dos opciones de tapa."""
+    fijo = ficha.get("h1_fijo") or ""
+    if not fijo or (redactado.get("h1") or "") != fijo:
+        return ""
+    regla = ficha.get("h1_regla") or "regla del equipo SEO"
+    return (f"(Este H1 lo decidió el equipo SEO con su regla: {regla}. No lo objetes; "
+            "revisá solo que la descripción sea coherente con él y con la ficha.)\n")
+
+
 class Validator:
     def __init__(self, config: Config, llm: LLMClient):
         self.cfg = config
@@ -69,7 +81,7 @@ Marca: {ficha['marca'] or '(sin dato)'}   Tipo: {ficha['tipo']}
 
 ---- H1 PROPUESTO ----
 {redactado.get('h1', '')}
-
+{_nota_h1(ficha, redactado)}
 ---- DESCRIPCIÓN PROPUESTA ----
 {redactado.get('description', '')[:MAX_CHARS_TEXTO]}
 
