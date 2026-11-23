@@ -224,7 +224,8 @@ BODY = r"""
 
   // prueba 2
   $("#nuevas-h2").innerHTML = `${n} fichas nuevas,<br><span class="v">elegidas por código.</span>`;
-  $("#nuevas-lead").textContent = `Elegidas al azar${D.semilla ? ` (semilla ${D.semilla})` : ""}${D.universo ? ` entre las ${fmt(D.universo)} fichas con al menos 50 impresiones en Google` : ""}, repartidas por familia, sin repetir ninguna de las que ya se usaron. Ninguna está entre las fichas de Alex: el agente las resolvió con sus 10 como ejemplo.`;
+  $("#nuevas-lead").textContent = `Elegidas al azar${D.semilla ? ` (semilla ${D.semilla})` : ""}${D.universo ? ` entre las ${fmt(D.universo)} fichas con al menos 50 impresiones en Google` : ""}, repartidas por familia, sin repetir ninguna de las que ya se usaron. Ninguna está entre las fichas de Alex: el agente las resolvió con sus 10 como ejemplo.` +
+    (N.meta.simulada ? " Corrida fuera de la tienda: los datos de cada ficha se leyeron de la página publicada y, en lugar de Search Console, se usaron las búsquedas que DataForSEO estima para cada página. En la corrida real, con WooCommerce y Search Console, el resultado puede variar." : "");
   const kwN = N.fichas.reduce((a, f) => a + (f.keywords || []).length, 0);
   $("#nuevas-stats").innerHTML = [
     [`${aprob} de ${n}`, "aprobadas por el validador"],

@@ -1,0 +1,159 @@
+{
+ "fuente": "DataForSEO Labs ranked_keywords de cassoni.com (posición <= 30), 23-nov-2026",
+ "semilla": 20261123,
+ "universo": 88,
+ "elegidas": [
+  "https://cassoni.com/product/cas-ark-windsor_sofa-01/",
+  "https://cassoni.com/product/cas-ra-speedform-suspension-lamp-01/",
+  "https://cassoni.com/product/cas-tur-soul-bed-01/",
+  "https://cassoni.com/product/cas-dit-isla-sectional-01/",
+  "https://cassoni.com/product/cas-wmg-efesto-murano-candle-holder-01/",
+  "https://cassoni.com/product/cas-mor-redondo-lounge-chair-01/",
+  "https://cassoni.com/product/cas-var-wellness-therapy-lounger-01/",
+  "https://cassoni.com/product/costanzina-versatile-wall-lamp-luceplan/",
+  "https://cassoni.com/product/boulevard-elegant-lounge-chair-dv-home-collection/",
+  "https://cassoni.com/product/cas-dvhc-windsor-mirror-01/"
+ ],
+ "busquedas": {
+  "https://cassoni.com/product/cas-ark-windsor_sofa-01/": [
+   {
+    "keyword": "couch windsor",
+    "posicion": 1,
+    "volumen": 50
+   },
+   {
+    "keyword": "sofa windsor",
+    "posicion": 2,
+    "volumen": 50
+   },
+   {
+    "keyword": "windsor sofa",
+    "posicion": 3,
+    "volumen": 50
+   }
+  ],
+  "https://cassoni.com/product/cas-ra-speedform-suspension-lamp-01/": [
+   {
+    "keyword": "speedform under armour shoes",
+    "posicion": 24,
+    "volumen": 90
+   },
+   {
+    "keyword": "under armour speedform cleats",
+    "posicion": 28,
+    "volumen": 90
+   }
+  ],
+  "https://cassoni.com/product/cas-tur-soul-bed-01/": [
+   {
+    "keyword": "turri bed",
+    "posicion": 7,
+    "volumen": 40
+   },
+   {
+    "keyword": "turri beds",
+    "posicion": 6,
+    "volumen": 40
+   }
+  ],
+  "https://cassoni.com/product/cas-dit-isla-sectional-01/": [
+   {
+    "keyword": "isla 360",
+    "posicion": 29,
+    "volumen": 320
+   },
+   {
+    "keyword": "isla sofa",
+    "posicion": 12,
+    "volumen": 30
+   },
+   {
+    "keyword": "sofa isla",
+    "posicion": 16,
+    "volumen": 10
+   }
+  ],
+  "https://cassoni.com/product/cas-wmg-efesto-murano-candle-holder-01/": [
+   {
+    "keyword": "venetian candle holder",
+    "posicion": 11,
+    "volumen": 70
+   },
+   {
+    "keyword": "vintage murano glass candle holders",
+    "posicion": 4,
+    "volumen": 50
+   },
+   {
+    "keyword": "murano candles",
+    "posicion": 15,
+    "volumen": 30
+   }
+  ],
+  "https://cassoni.com/product/cas-mor-redondo-lounge-chair-01/": [
+   {
+    "keyword": "lounge chair with built in table",
+    "posicion": 17,
+    "volumen": 30
+   },
+   {
+    "keyword": "redondo armchair",
+    "posicion": 3,
+    "volumen": 30
+   }
+  ],
+  "https://cassoni.com/product/cas-var-wellness-therapy-lounger-01/": [
+   {
+    "keyword": "therapeutic lounge chair",
+    "posicion": 2,
+    "volumen": 140
+   },
+   {
+    "keyword": "therapy lounge chair",
+    "posicion": 1,
+    "volumen": 140
+   },
+   {
+    "keyword": "therapist chaise lounge",
+    "posicion": 8,
+    "volumen": 40
+   }
+  ],
+  "https://cassoni.com/product/costanzina-versatile-wall-lamp-luceplan/": [
+   {
+    "keyword": "luceplan costanzina",
+    "posicion": 6,
+    "volumen": 30
+   },
+   {
+    "keyword": "luceplan lamp",
+    "posicion": 4,
+    "volumen": 30
+   }
+  ],
+  "https://cassoni.com/product/boulevard-elegant-lounge-chair-dv-home-collection/": [
+   {
+    "keyword": "designer leather chair",
+    "posicion": 2,
+    "volumen": 50
+   },
+   {
+    "keyword": "leather designer chair",
+    "posicion": 4,
+    "volumen": 50
+   }
+  ],
+  "https://cassoni.com/product/cas-dvhc-windsor-mirror-01/": [
+   {
+    "keyword": "mirrors windsor",
+    "posicion": 2,
+    "volumen": 210
+   },
+   {
+    "keyword": "windsor mirror",
+    "posicion": 2,
+    "volumen": 210
+   }
+  ]
+ }
+}
