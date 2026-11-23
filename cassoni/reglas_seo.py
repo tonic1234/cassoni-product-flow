@@ -34,7 +34,7 @@ MIN_IMPRESIONES_GENERICA = 5   # búsquedas de GSC que no nombran el modelo ni l
 MIN_VOL_MARCA = 10
 MIN_VOL_GENERICA = 50
 MAX_KEYWORDS = 3              # objetivo: 3 (decisión del 23-nov)
-MIN_KEYWORDS = 2              # mínimo: 2, siempre coherentes con la ficha
+MIN_KEYWORDS = 3              # mínimo: 3, siempre coherentes con la ficha (23-nov)
 
 
 def _plano(s: str) -> str:
@@ -456,10 +456,12 @@ def elegir_keywords(candidatas: list[dict], *, nombre: str, marca: str, tipo: st
                  key=lambda c: (-_nombra(_norm(c["keyword"])), "&" in (c["keyword"] or ""),
                                 -(c.get("impresiones") or 0)))
     flojas: list[dict] = []
+    reservas: list[dict] = []          # pasan todos los filtros pero no entraron
     for c in gsc:
         motivo = _motivo_gsc(c)
         if motivo is None:
             if len([e for e in elegidas if e["origen"] == "gsc"]) >= max_gsc:
+                reservas.append({**c, "por_que": f"ya aparece en Google ({c.get('impresiones')} impresiones)"})
                 motivo = ("ya hay una de Search Console y las opciones de la ficha"
                           if max_gsc == 1 else "ya hay dos de Search Console")
             elif _agregar(c, f"ya aparece en Google ({c.get('impresiones')} impresiones)"):
@@ -485,8 +487,10 @@ def elegir_keywords(candidatas: list[dict], *, nombre: str, marca: str, tipo: st
             resto = set(_norm(c["keyword"])[len(marca_n):].split())
             if (c.get("volumen") or 0) >= MIN_VOL_MARCA and resto & {_clave(t) for t in tipos} | resto & tipos \
                     and _norm(c["keyword"]) not in h1n:
-                if _agregar(c, f"marca + tipo ({c.get('volumen')}/mes)"):
-                    break
+                if any(e.get("por_que", "").startswith("marca + tipo") for e in elegidas):
+                    reservas.append({**c, "por_que": f"marca + tipo ({c.get('volumen')}/mes)"})
+                elif not _agregar(c, f"marca + tipo ({c.get('volumen')}/mes)"):
+                    reservas.append({**c, "por_que": f"marca + tipo ({c.get('volumen')}/mes)"})
 
     # 4) relleno: lo que la competencia rankea con el mismo producto, si quedó lugar
     competencia = competencia or []
@@ -497,7 +501,7 @@ def elegir_keywords(candidatas: list[dict], *, nombre: str, marca: str, tipo: st
             _agregar(c, f"la rankean {c.get('competidores', 1)} competidores con el mismo "
                         f"producto ({c.get('volumen')}/mes)")
 
-    # 5) mínimo de 2 (objetivo 3): se afloja el umbral, nunca la coherencia. Primero
+    # 5) mínimo de 3: se afloja el umbral, nunca la coherencia. Primero
     #    Search Console con 2+ impresiones, después la competencia con menos volumen
     if len(elegidas) < MIN_KEYWORDS:
         for c in flojas:
@@ -513,10 +517,26 @@ def elegir_keywords(candidatas: list[dict], *, nombre: str, marca: str, tipo: st
             _agregar(c, f"la rankean {c.get('competidores', 1)} competidores con el mismo producto "
                         f"({c.get('volumen')}/mes; para llegar al mínimo de {MIN_KEYWORDS})")
 
+    # reservas: lo que pasa todos los filtros y no entró, en el mismo orden de
+    # prioridad; si el redactor omite una por no entrar natural, se prueba la siguiente
+    for c in flojas:
+        if _motivo_gsc(c, relajado=True) is None:
+            reservas.append({**c, "por_que": f"ya aparece en Google ({c.get('impresiones')} impresiones)"})
+    for c in competencia:
+        reservas.append({**c, "por_que": f"la rankean {c.get('competidores', 1)} competidores con "
+                                         f"el mismo producto ({c.get('volumen')}/mes)"})
+    usadas = {_clave(e["keyword"]) for e in elegidas}
+    reservas_ok = []
+    for c in reservas:
+        k = _clave(c["keyword"])
+        if k not in usadas:
+            usadas.add(k)
+            reservas_ok.append(c)
+
     # las genéricas por material no se eligen acá: dependen del H1 que escribe el
     # redactor (genericas_para_h1) o de la opción del H1 (keywords_de_opciones)
     elegidas_k = {e["keyword"] for e in elegidas}
     descartadas += [{"keyword": c["keyword"], "motivo": "no cumple las reglas del SEO"}
                     for c in candidatas if c["keyword"] not in elegidas_k
                     and c["keyword"] not in {d["keyword"] for d in descartadas}]
-    return {"elegidas": elegidas, "descartadas": descartadas}
+    return {"elegidas": elegidas, "descartadas": descartadas, "reservas": reservas_ok[:6]}

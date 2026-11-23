@@ -85,6 +85,52 @@ Responde SOLO con JSON:
         out["aprobado"] = bool(out.get("aprobado"))
         return out
 
+    def redactar_hasta_minimo(self, *, ficha: dict, keywords: list[dict], reservas: list[dict],
+                              redactor, minimo: int) -> dict:
+        """redactar_y_validar y, si el redactor omitió keywords por no entrar natural y
+        la ficha quedó debajo del mínimo, UNA vuelta más con las siguientes reservas
+        (candidatas que pasaron todos los filtros). Devuelve lo mismo más
+        `objetivos`: las keywords que efectivamente quedaron (23-nov)."""
+        from .reglas_seo import genericas_para_h1, genericas_usadas
+        from .checklist import strip_html
+
+        def _quedaron(val, kws):
+            ed = val["edited"]
+            omit = {(o.get("keyword") or "").lower() for o in ed.get("omitidas") or []}
+            quedan = [k for k in kws if k["keyword"].lower() not in omit]
+            gen = ficha.get("genericas_opcionales") or []
+            if gen and val["aprobado"]:
+                h1 = ed.get("h1") or ""
+                validas = {k for k, _, _ in genericas_para_h1(h1, gen)}
+                ya = {k["keyword"].lower() for k in quedan}
+                for kw, v, ok in genericas_usadas(strip_html(ed.get("description") or ""), h1, gen):
+                    if ok and kw in validas and kw not in ya:
+                        ya.add(kw)
+                        quedan.append({"keyword": kw, "origen": "generica", "volumen": v,
+                                       "volume": v, "por_que": "el material del H1 con el tipo"})
+            return quedan, omit
+
+        val = self.redactar_y_validar(ficha=ficha, keywords=keywords, redactor=redactor)
+        quedan, omit = _quedaron(val, keywords)
+        val["objetivos"] = quedan
+        if not val["aprobado"] or len(quedan) >= minimo or not reservas:
+            return val
+        ya = {k["keyword"].lower() for k in quedan} | omit
+        extra = [r for r in reservas if r["keyword"].lower() not in ya][:minimo - len(quedan)]
+        if not extra:
+            return val
+        base = [k for k in keywords if k["keyword"].lower() not in omit]
+        val2 = self.redactar_y_validar(ficha=ficha, keywords=base + extra, redactor=redactor)
+        if not val2["aprobado"]:
+            return val
+        quedan2, _ = _quedaron(val2, base + extra)
+        if len(quedan2) <= len(quedan):
+            return val
+        val2["objetivos"] = quedan2
+        val2["intentos"] = val["intentos"] + val2["intentos"]
+        val2["reservas_usadas"] = [r["keyword"] for r in extra]
+        return val2
+
     def redactar_y_validar(self, *, ficha: dict, keywords: list[dict], redactor,
                            max_passes: int = 3) -> dict:
         """Redacta, controla (código + LLM) y rebota con los motivos hasta

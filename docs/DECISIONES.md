@@ -421,4 +421,10 @@ La competencia se consulta solo si después de las reglas quedan lugares (está 
 desde la precarga). Tests: `test_competencia_rellena.py` y
 `test_seleccion_reglas_opciones.py`. El control sin tienda no tiene datos de competencia:
 el efecto se mide en la corrida del VPS.
+**Ajuste del mismo día (decisión de Antonio): mínimo 3.** El objetivo y el mínimo son 3,
+siempre coherentes. `elegir_keywords` devuelve también `reservas` (candidatas que pasaron
+todos los filtros y no entraron, en el mismo orden de prioridad). Si el redactor omite una
+por no entrar natural y la ficha queda debajo de 3, `Validator.redactar_hasta_minimo`
+redacta UNA vez más con la siguiente reserva. Sin reserva válida, la ficha queda con menos:
+la coherencia no se negocia.
 

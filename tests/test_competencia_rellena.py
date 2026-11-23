@@ -64,7 +64,7 @@ def test_con_una_sola_se_afloja_el_volumen_de_la_competencia():
     sel = elegir_keywords(gsc, nombre="Frog Coffee Table", marca="Sovet Italia", tipo="coffee table",
                           h1=FROG, rasgo="glass", texto_ficha=TEXTO_FROG + " table", competencia=comp)
     assert [e["keyword"] for e in sel["elegidas"]] == ["frog table", "curved glass coffee table"]
-    assert "mínimo de 2" in sel["elegidas"][1]["por_que"]
+    assert "mínimo de 3" in sel["elegidas"][1]["por_que"]
 
 
 def test_con_tres_no_entra_la_de_poco_volumen():

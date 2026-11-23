@@ -615,27 +615,21 @@ class Pipeline:
         if self.cfg.modo_descripcion == "reescritura":
             ficha = self._ficha_para_redactor(url, product, ctx, sc_orig)
             try:
-                val = self.validator.redactar_y_validar(ficha=ficha, keywords=objetivos,
-                                                        redactor=self.redactor)
+                from .reglas_seo import MIN_KEYWORDS
+                val = self.validator.redactar_hasta_minimo(
+                    ficha=ficha, keywords=objetivos, reservas=sel.get("reservas") or [],
+                    redactor=self.redactor,
+                    minimo=MIN_KEYWORDS if self.cfg.modo_keywords == "reglas" else 0)
             except LLMError as exc:
                 return self._cerrar(row_id, url, "failed", f"LLM: {exc}", **comunes)
             aprobado, vres, intentos = val["aprobado"], val["validacion"], val["intentos"]
             edited = val["edited"]
             h1 = edited.get("h1") or h1
-            # las que el redactor no pudo meter natural no son objetivo de la ficha
-            omitidas = {(o.get("keyword") or "").lower() for o in edited.get("omitidas") or []}
-            objetivos = [o for o in objetivos if o["keyword"].lower() not in omitidas]
-            if ficha.get("genericas_opcionales") and aprobado:
-                from .reglas_seo import genericas_para_h1, genericas_usadas
-                ya = {o["keyword"].lower() for o in objetivos}
-                # solo las que corresponden al H1 (Illan: 'wood wall sconce' ya está en el H1)
-                validas = {k for k, _, _ in genericas_para_h1(h1, ficha["genericas_opcionales"])}
-                for kw, v, ok in genericas_usadas(strip_html(edited.get("description") or ""),
-                                                  h1, ficha["genericas_opcionales"]):
-                    if ok and kw in validas and kw not in ya:
-                        ya.add(kw)
-                        objetivos.append({"keyword": kw, "origen": "generica", "volume": v,
-                                          "volumen": v, "por_que": "el material del H1 con el tipo"})
+            # las que quedaron: sin las omitidas por no entrar natural, con las genéricas
+            # del H1 que usó el redactor y, si hizo falta, las reservas (23-nov)
+            objetivos = val["objetivos"]
+            if val.get("reservas_usadas"):
+                vres = dict(vres, reservas_usadas=val["reservas_usadas"])
             vres = dict(vres, omitidas=edited.get("omitidas") or [], mismo_nombre=ficha["mismo_nombre"], tipo=ficha["tipo"],
                         url_categoria=ficha["url_categoria"],
                         h1_respaldo_usado=bool(edited.get("h1_respaldo_usado")))

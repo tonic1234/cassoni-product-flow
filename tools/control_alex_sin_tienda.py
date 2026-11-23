@@ -82,6 +82,7 @@ def preparar(ref: dict, desc_orig: str, umbral: int,
              "genericas_opcionales": opcionales, "marca_ajena": ajena,
              "opciones": opciones_de_material(plano, mats),
              "sufijo": sufijo_del_nombre(nombre, marca, tipo), "keywords_obligatorias": True}
+    r["reservas"] = sel.get("reservas") or []
     return ficha, sel["elegidas"], r
 
 
@@ -131,7 +132,10 @@ def main(argv=None) -> int:
         ficha, objetivos, r = preparar(ref, originales.get(ref["url"], ""), cfg.h1_umbral_nombre,
                                        rankeadas=comp.get(ref["url"]))
         try:
-            val = validator.redactar_y_validar(ficha=ficha, keywords=objetivos, redactor=redactor)
+            from cassoni.reglas_seo import MIN_KEYWORDS
+            val = validator.redactar_hasta_minimo(ficha=ficha, keywords=objetivos,
+                                                  reservas=r["reservas"], redactor=redactor,
+                                                  minimo=MIN_KEYWORDS)
         except LLMError as exc:
             fichas.append({"url": ref["url"], "status": "failed", "reason": str(exc),
                            "h1_original": ref["nombre"], "keywords": []})
@@ -139,23 +143,15 @@ def main(argv=None) -> int:
             continue
         ed = val["edited"]
         h1 = ed.get("h1") or ""
-        omitidas = {(o.get("keyword") or "").lower() for o in ed.get("omitidas") or []}
-        objetivos = [o for o in objetivos if o["keyword"].lower() not in omitidas]
-        if val["aprobado"] and ficha["genericas_opcionales"]:
-            ya = {o["keyword"].lower() for o in objetivos}
-            validas = {k for k, _, _ in genericas_para_h1(h1, ficha["genericas_opcionales"])}
-            for kw, v, ok in genericas_usadas(strip_html(ed.get("description") or ""), h1,
-                                              ficha["genericas_opcionales"]):
-                if ok and kw in validas and kw not in ya:
-                    ya.add(kw)
-                    objetivos.append({"keyword": kw, "origen": "generica", "volumen": v})
+        objetivos = val["objetivos"]
         fichas.append({
             "url": ref["url"], "status": "processed" if val["aprobado"] else "rejected",
             "reason": "dry_run sin tienda", "h1_original": ref["nombre"], "h1": h1,
             "h1_regla": r["regla"], "descripcion": ed.get("description") or "",
             "descripcion_original": ficha["descripcion"],
             "keywords": [o["keyword"] for o in objetivos], "keywords_detalle": objetivos,
-            "omitidas": ed.get("omitidas") or [], "validacion": val["validacion"],
+            "omitidas": ed.get("omitidas") or [], "reservas_usadas": val.get("reservas_usadas") or [],
+            "validacion": val["validacion"],
             "intentos": val["intentos"], "segundos": round(time.time() - t0, 1)})
         print(f"{fichas[-1]['status']:9} {h1}  kw={fichas[-1]['keywords']}", flush=True)
     commit = subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip()
