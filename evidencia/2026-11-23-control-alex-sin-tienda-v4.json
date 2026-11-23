@@ -1,0 +1,440 @@
+{
+ "meta": {
+  "modo": "reescritura sin tienda",
+  "llm": "deepseek-v4.1-flash",
+  "validador": "deepseek-v4.1-flash",
+  "commit": "34237e8d7933919423513553351638f27e532f9b",
+  "dry_run": true,
+  "faltan": "atributos y descripción corta de WooCommerce",
+  "costos": {
+   "tokens_in": 73903,
+   "tokens_out": 99033,
+   "cache_hit": 0,
+   "cache_miss": 73903,
+   "usd": 0.1410105,
+   "llamadas": 33
+  }
+ },
+ "fichas": [
+  {
+   "url": "https://cassoni.com/product/cas-rug-rock-coffee-table-01/",
+   "status": "processed",
+   "reason": "dry_run sin tienda",
+   "h1_original": "Rock Coffee Table",
+   "h1": "Rock Marble Coffee Table by Rugiano",
+   "h1_regla": "opción más buscada: 'marble coffee table' (33100/mes); la descripción cubre las opciones: marble, wood",
+   "descripcion": "<p>This Rugiano coffee table sets a shaped top on two bronzed brass legs. The top comes in painted Decoro wood or in marble. Made in Italy.</p><h2>WOOD OR MARBLE</h2><ul><li><strong>Wood:</strong> the wood table version has a Decoro decorated painted top.</li><li><strong>Marble:</strong> the marble table version offers a wide range of marble options.</li></ul><h2>SIZE AND PLACE</h2><p>It is a low table made to sit in front of a sofa. It comes in two sizes, so check the width against your sofa before you order. More <a href=\"https://cassoni.com/product-category/furniture/living-room/coffee-side-tables/\">coffee tables</a>.</p>",
+   "descripcion_original": "<p>The Italian Rock coffee table features a stylish shaped top available in Decoro decorated painted wood or in a wide range of marble options. This versatile low table, available in two different sizes, has two refined legs made of bronzed brass metal. An innovative and functional coffee table to complement sophisticated sofas. Designed by Rugiano. Made in Italy.</p>\n",
+   "keywords": [
+    "rugiano coffee table",
+    "wood table",
+    "marble table"
+   ],
+   "keywords_detalle": [
+    {
+     "keyword": "rugiano coffee table",
+     "origen": "gsc",
+     "impresiones": 4,
+     "posicion": 2,
+     "volumen": 10,
+     "por_que": "ya aparece en Google (4 impresiones)"
+    },
+    {
+     "keyword": "wood table",
+     "origen": "opcion",
+     "volumen": 22200,
+     "material": "wood",
+     "por_que": "opción de la ficha (22200/mes)"
+    },
+    {
+     "keyword": "marble table",
+     "origen": "opcion",
+     "volumen": 9900,
+     "material": "marble",
+     "por_que": "opción de la ficha (9900/mes)"
+    }
+   ],
+   "omitidas": [],
+   "validacion": {
+    "aprobado": true,
+    "issues": [],
+    "razon": "Todos los datos (tapa de madera Decoro pintada o mármol, dos patas de latón bronceado, dos tamaños, Made in Italy) provienen de la ficha; no hay contradicciones ni keywords forzadas y el H1 identifica material y tipología del producto."
+   },
+   "intentos": 3,
+   "segundos": 121.2
+  },
+  {
+   "url": "https://cassoni.com/product/cas-rug-club-sofa-01/",
+   "status": "processed",
+   "reason": "dry_run sin tienda",
+   "h1_original": "Club Sofa",
+   "h1": "Club Sofa by Rugiano",
+   "h1_regla": "el nombre ya se busca (1000/mes)",
+   "descripcion": "<p>This Rugiano sofa from the Club collection has a structure of drawn tubes in brushed brass or bronze, combined with upholstered leather or fabric to form a pattern. Made in Italy.</p><h2>BRASS OR BRONZE</h2><p>The metal structure comes in two finishes: brushed brass or bronze, drawn into tubes.</p><h2>LEATHER OR FABRIC</h2><ul><li>Leather upholstery, combined with the metal tubes.</li><li>Fabric upholstery, combined with the metal tubes.</li></ul><p>The house calls it high-end glamour furniture, a club style sofa for a sophisticated living area. For more options, see our <a href=\"https://cassoni.com/product-category/furniture/living-room/sofas-sectionals/\">sofas and sectionals</a>.</p>",
+   "descripcion_original": "<p>This is a designer Italian Sofa, part of the exclusive Club collection. It stands out for the innovative structure created by refined brushed brass or bronze drawn tubes that, combined with the upholstered leather or fabric, create a stylish pattern. A high-end Glamour furniture, ideal to fit in any sophisticated living area.Made in Italy.</p>\n",
+   "keywords": [
+    "club style sofa",
+    "rugiano sofa"
+   ],
+   "keywords_detalle": [
+    {
+     "keyword": "club style sofa",
+     "origen": "gsc",
+     "impresiones": 18,
+     "posicion": 8.6,
+     "volumen": 30,
+     "por_que": "ya aparece en Google (18 impresiones)"
+    },
+    {
+     "keyword": "rugiano sofa",
+     "origen": "generica",
+     "volumen": 10,
+     "por_que": "marca + tipo (10/mes)"
+    }
+   ],
+   "omitidas": [
+    {
+     "keyword": "club couch",
+     "motivo": "La ficha no describe el uso ni el ambiente del producto más allá de 'sophisticated living area', así que meter 'club couch' obligaría a una oración de relleno sin dato nuevo, como en la versión rechazada."
+    }
+   ],
+   "validacion": {
+    "aprobado": true,
+    "issues": [],
+    "razon": "Todos los datos (tubos de latón cepillado o bronce, tapizado de cuero o tela, patrón, high-end glamour, sophisticated living area, Made in Italy) provienen de la ficha; el H1 identifica producto y marca, y las keywords se integran sin forzar el sentido ni inventar atributos."
+   },
+   "intentos": 2,
+   "segundos": 60.0
+  },
+  {
+   "url": "https://cassoni.com/product/cas-dvhc-hermes-maxi-bed-01/",
+   "status": "processed",
+   "reason": "dry_run sin tienda",
+   "h1_original": "Hermes Maxi Bed",
+   "h1": "Hermes Maxi Upholstered King Bed by DV Home Collection",
+   "h1_regla": "rasgo más buscado: 'leather king bed' (1000/mes)",
+   "descripcion": "<p>This Hermes bed is an upholstered king bed by DV Home Collection, built on a multilayer structure padded with non-deformable polyurethane foam. Made in Italy.</p><h2>UPHOLSTERY</h2><p>This maxi bed comes in a wide range of fabric or leather upholstery. The large headboard is finished with vertical quilting.</p><h2>DECORATIVE CUSHIONS</h2><p>Square goose feather cushions are available on request and are not included; ask for them when you order. Browse all <a href=\"https://cassoni.com/product-category/furniture/bedroom/double-beds/\">king beds</a> to compare frames.</p>",
+   "descripcion_original": "<p>Part of the Italian Hermes collection, this double bed is offered with a multilayer structure covered with non-deformable polyurethane foam.</p>\n<p>The upholstery is offered in a wide range of fabric or leather options and the large headboard features a refined vertical quilting. Also, to add more comfort, goose feather square decorative cushions (19”5/8 or 15”3/4) are available upon request.</p>\n<p>Elegance and Glamour characterize this versatile Italian furniture piece. Made in Italy.</p>\n",
+   "keywords": [
+    "hermes bed",
+    "maxi bed"
+   ],
+   "keywords_detalle": [
+    {
+     "keyword": "hermes bed",
+     "origen": "gsc",
+     "impresiones": 197,
+     "posicion": 4.2,
+     "volumen": 260,
+     "por_que": "ya aparece en Google (197 impresiones)"
+    },
+    {
+     "keyword": "maxi bed",
+     "origen": "gsc",
+     "impresiones": 31,
+     "posicion": 4.2,
+     "volumen": 10,
+     "por_que": "ya aparece en Google (31 impresiones)"
+    }
+   ],
+   "omitidas": [],
+   "validacion": {
+    "aprobado": true,
+    "issues": [],
+    "razon": "La descripción respeta todos los datos de la ficha (estructura multilayer, espuma de poliuretano no deformable, tapizado en tela o cuero, cabecero con acolchado vertical, cojines de pluma de ganso a pedido, Made in Italy). El H1 identifica correctamente el producto (cama king tapizada de DV Home Collection) y las keywords 'hermes bed' y 'maxi bed' aparecen de forma natural, sin frases de relleno."
+   },
+   "intentos": 1,
+   "segundos": 31.8
+  },
+  {
+   "url": "https://cassoni.com/product/cas-dvhc-tiffany-mirror-01/",
+   "status": "processed",
+   "reason": "dry_run sin tienda",
+   "h1_original": "Tiffany  Mirror",
+   "h1": "Tiffany Multilayered Wall Mirror by DV Home Collection",
+   "h1_regla": "rasgo más buscado: 'bronze wall mirror' (390/mes)",
+   "descripcion": "<p>Tiffany mirrors come with a 1/8″ thick natural mirror in a frame offered in six finishes. This wall mirror is by DV Home Collection. Made in Italy.</p><h2>FRAME FINISHES</h2><ul><li>Shining stainless steel, antique bronze satin or chrome black.</li><li>Shaded glossy, shaded satin, or dipped in 24Kt gold.</li></ul><p>The multilayered structure and the natural mirror are the same in all six versions, so only the finish changes. Browse all <a href=\"https://cassoni.com/product-category/accessories/mirrors/\">wall mirrors</a>.</p>",
+   "descripcion_original": "<p>The exclusive Italian Tiffany mirror comes with a multilayered structure. Natural mirror (1/8” thick). The refined frame is offered in shining stainless steel, antique bronze satin, shaded glossy, shaded satin, chrome black or dipped in 24Kt gold. This luxury Italian piece will surely add a Glamour style to any interior space. Made in Italy.</p>\n",
+   "keywords": [
+    "tiffany mirrors"
+   ],
+   "keywords_detalle": [
+    {
+     "keyword": "tiffany mirrors",
+     "origen": "gsc",
+     "impresiones": 9,
+     "posicion": 7.8,
+     "volumen": 210,
+     "por_que": "ya aparece en Google (9 impresiones)"
+    }
+   ],
+   "omitidas": [
+    {
+     "keyword": "tiffany style mirror",
+     "motivo": "«Tiffany style» remite al vidrio emplomado y la ficha no lo menciona: Tiffany es solo el nombre del modelo, así que la keyword cambiaría el sentido del producto."
+    }
+   ],
+   "validacion": {
+    "aprobado": true,
+    "issues": [],
+    "razon": "Todos los datos (1/8\" de grosor, estructura multicapa, las seis terminaciones contadas correctamente, Made in Italy, marca y tipo wall mirror) provienen de la ficha; no hay contradicciones, el H1 identifica el producto por material/estructura y las keywords se integran con sentido sin relleno."
+   },
+   "intentos": 2,
+   "segundos": 88.2
+  },
+  {
+   "url": "https://cassoni.com/product/cas-oak-sc_1019_chair-01/",
+   "status": "processed",
+   "reason": "dry_run sin tienda",
+   "h1_original": "Cleopatra Chair (SC1019)",
+   "h1": "Cleopatra Wood and Leather Dining Chair by OAK",
+   "h1_regla": "el producto es de wood and leather (primera oración; 'wood and leather chair' 1300/mes)",
+   "descripcion": "<p>The Cleopatra wooden chair by OAK is a dining chair with leather upholstery. The Cleopatra chair design comes in three wood finishes: Rosewood, Ebony or Citronier.</p>\n<h2>WOOD AND LEATHER</h2>\n<p>As a wood and leather chair, it pairs the selected wood finish with leather upholstery. Pick the finish to suit your dining table.</p>\n<p>Browse all <a href=\"https://cassoni.com/product-category/furniture/dining-room/chairs-armchairs/\">dining chairs</a> to compare this OAK model with other options.</p>",
+   "descripcion_original": "<p>Wooden chair with leather upholstery. Rosewood, Ebony or Citronier finish.</p>\n",
+   "keywords": [
+    "cleopatra chair design",
+    "cleopatra wooden chair",
+    "wood and leather chair"
+   ],
+   "keywords_detalle": [
+    {
+     "keyword": "cleopatra chair design",
+     "origen": "gsc",
+     "impresiones": 27,
+     "posicion": 9.3,
+     "volumen": 10,
+     "por_que": "ya aparece en Google (27 impresiones)"
+    },
+    {
+     "keyword": "cleopatra wooden chair",
+     "origen": "gsc",
+     "impresiones": 15,
+     "posicion": 8.1,
+     "volumen": 20,
+     "por_que": "ya aparece en Google (15 impresiones)"
+    },
+    {
+     "keyword": "wood and leather chair",
+     "origen": "generica",
+     "volumen": 1300,
+     "por_que": "el material del H1 con el tipo (1300/mes)"
+    }
+   ],
+   "omitidas": [],
+   "validacion": {
+    "aprobado": true,
+    "issues": [],
+    "razon": "El H1 describe correctamente el producto (madera + cuero, dining chair, marca OAK) y la descripción solo usa datos de la ficha: tapizado en cuero y las tres opciones de acabado (Rosewood, Ebony, Citronier) bien contadas. No hay datos inventados ni contradicciones; las keywords aparecen en contexto natural y con el sentido correcto. El cierre con el enlace a la categoría es pertinente."
+   },
+   "intentos": 1,
+   "segundos": 57.0
+  },
+  {
+   "url": "https://cassoni.com/product/cas-tal-cruise-teak-sofa-01/",
+   "status": "processed",
+   "reason": "dry_run sin tienda",
+   "h1_original": "Cruise Sofa",
+   "h1": "Cruise Teak Outdoor Sofa by Talenti",
+   "h1_regla": "rasgo más buscado: 'fabric outdoor sofa' (5400/mes)",
+   "descripcion": "<p>The Cruise couch is a three-seater outdoor sofa by Talenti, made in Italy, with a nautical, nature-inspired design. Its frame is entirely teak wood.</p>\n<h2>ROPE AND CUSHIONS</h2>\n<p>This Talenti sofa uses synthetic rope on the armrests and backrest. The cushions are made with weather-resistant fabrics for outdoor living areas.</p>\n<p>As a teak sofa, this is the three-seater version; see more <a href=\"https://cassoni.com/product-category/outdoor/living-area/sofas-sectionals-living-area/\">outdoor sofas</a> in this category.</p>",
+   "descripcion_original": "<p>The exclusive three seater sofa of the refined Cruise teak collection is created with a nautical and nature inspired style. Indeed, the high-end structure is entirely realized in teak wood, the use of synthetic rope is reserved to the armrests and backrest and the cushions are made with weather resistant fabrics, making the product perfect for outdoor living areas. Here you have a stylish Italian furniture ideal for relaxing moments outside.Made in Italy.</p>\n",
+   "keywords": [
+    "cruise couch",
+    "talenti sofa",
+    "teak sofa"
+   ],
+   "keywords_detalle": [
+    {
+     "keyword": "cruise couch",
+     "origen": "gsc",
+     "impresiones": 824,
+     "posicion": 4.4,
+     "volumen": 90,
+     "por_que": "ya aparece en Google (824 impresiones)"
+    },
+    {
+     "keyword": "talenti sofa",
+     "origen": "generica",
+     "volumen": 10,
+     "por_que": "marca + tipo (10/mes)"
+    },
+    {
+     "keyword": "teak sofa",
+     "origen": "generica",
+     "volumen": 590
+    }
+   ],
+   "omitidas": [],
+   "validacion": {
+    "aprobado": true,
+    "issues": [],
+    "razon": "Todos los datos de la descripción salen de la ficha: sofá de tres plazas, estructura íntegramente en teak, cuerda sintética en reposabrazos y respaldo, cojines con tejidos resistentes a la intemperie, estilo náutico y inspirado en la naturaleza, Made in Italy. El H1 identifica producto (outdoor sofa), material (teak) y marca, sin elegir un rasgo menor. Las keywords 'cruise couch' y 'talenti sofa' aparecen de forma natural, sin cambiar el sentido (couch/sofa como sinónimos). No hay contradicciones con los atributos ni afirmaciones inventadas. Menor: 'As a teak sofa, this is the three-seater version' repite el dato de tres plazas ya dicho y suena algo de relleno, pero es una línea de enlace de categoría y no llega a justificar rechazo."
+   },
+   "intentos": 1,
+   "segundos": 98.8
+  },
+  {
+   "url": "https://cassoni.com/product/cas-tnl-bakkarat-table-01/",
+   "status": "processed",
+   "reason": "dry_run sin tienda",
+   "h1_original": "Bakkarat Table",
+   "h1": "Bakkarat Glass Dining Table by Tonelli Design",
+   "h1_regla": "rasgo más buscado: 'glass dining table' (8100/mes)",
+   "descripcion": "<p>Bakkarat is a dining table in glass by Tonelli Design. Its extra clear glass slab top contrasts with the round top and sculptural central leg on a chrome-plated metal base. Made in Italy.</p>\n<h2>TOP AND BASE</h2>\n<p>This glass table pairs the extra clear slab with a chrome-plated base. The central leg means chair placement matters, so check it before you choose among our <a href=\"https://cassoni.com/product-category/furniture/dining-room/fixed-tables/\">dining tables</a>.</p>",
+   "descripcion_original": "<p>Bakkarat is a refined Italian table in extra clear glass. The top’s slab creates an elegant contrast with the round top and sculptural central leg that rest on a chrome-plated metal base. Ideal for interior designers that want to incorporate high-end Italian products with a timeless design to their projects. Made in Italy.</p>\n",
+   "keywords": [
+    "dining table in glass",
+    "glass table"
+   ],
+   "keywords_detalle": [
+    {
+     "keyword": "dining table in glass",
+     "origen": "generica",
+     "volumen": 8100
+    },
+    {
+     "keyword": "glass table",
+     "origen": "generica",
+     "volumen": 6600
+    }
+   ],
+   "omitidas": [],
+   "validacion": {
+    "aprobado": true,
+    "issues": [],
+    "razon": "La descripción reproduce fielmente los datos de la ficha: vidrio extra clear, tapa de losa, pie central escultórico, base de metal cromado y Made in Italy. El H1 identifica el producto (mesa de comedor de vidrio) por su material y forma, y la observación sobre la colocación de sillas se deduce del pie central, sin inventar materiales, acabados ni certificaciones. No hay keywords forzadas ni relleno de catálogo."
+   },
+   "intentos": 1,
+   "segundos": 57.7
+  },
+  {
+   "url": "https://cassoni.com/product/illan-luxury-wall-lamp-luceplan/",
+   "status": "processed",
+   "reason": "dry_run sin tienda",
+   "h1_original": "Illan Wall Lamp",
+   "h1": "Illan Wood Wall Sconce by Luceplan",
+   "h1_regla": "rasgo más buscado: 'wood wall sconce' (1900/mes)",
+   "descripcion": "<p>The Illan lamp is a wall sconce by Luceplan, designed by Zsuzsanna Horvath. Its laser-cut layered wood shade is made from surplus material from the Illan suspension and wraps a die-cast aluminum body. Made in Italy.</p><h2>LIGHT AND DIMMING</h2><p>The Luceplan Illan uses a 21W LED, 1265lm, 2700K or 3000K, CRI 90, and is dimmable. It is UL approved and casts light upward, so it works beside a bed or in a hallway.</p><p>This wood sconce houses the LED source. For more <a href=\"https://cassoni.com/product-category/lighting/wall-lamps-sconces/\">wall sconces</a>, browse the category.</p>",
+   "descripcion_original": "<p>The Illan wall lamp brings the poetic lightness and innovative spirit of Zsuzsanna Horvath’s design into a refined, space-saving format. This elegant wall light features a die-cast aluminum body housing an efficient LED source that casts a soft, warm glow upward, enriching interiors with atmospheric, eco-friendly illumination. Its distinctive shade is crafted from laser-cut, layered wood, an ultra-thin and flexible material that defines Illan’s iconic geometric silhouette. In a commitment to sustainable design, the wooden element is made from surplus material left over from producing the Illan suspension lamp, transforming production scraps into a sculptural, decorative feature.</p>\n<p>Lightweight, contemporary, and environmentally conscious, the Illan wall lamp is a perfect choice for those seeking designer wall lighting, warm LED ambience, and Italian craftsmanship that merges technology, beauty, and sustainability. UL Approved (Product build according to the National Electrical Code’s requirements and tested by Underwriters Laboratories). Made in Italy.</p>\n<p><strong>Light source:</strong> LED 21W 1265lm 2700K/3000K CRI 90 Dimmable. UL Approved.</p>\n<p><img src=\"https://cassoni.com/wp-content/uploads/2025/11/c-UL-us.jpg\" alt=\"\" width=\"90\" height=\"14\" class=\"alignnone size-full wp-image-230107\" /></p>\n",
+   "keywords": [
+    "illan lamp",
+    "luceplan illan",
+    "wood sconce"
+   ],
+   "keywords_detalle": [
+    {
+     "keyword": "illan lamp",
+     "origen": "gsc",
+     "impresiones": 416,
+     "posicion": 8.8,
+     "volumen": 40,
+     "por_que": "ya aparece en Google (416 impresiones)"
+    },
+    {
+     "keyword": "luceplan illan",
+     "origen": "gsc",
+     "impresiones": 78,
+     "posicion": 7.7,
+     "volumen": 30,
+     "por_que": "ya aparece en Google (78 impresiones)"
+    },
+    {
+     "keyword": "wood sconce",
+     "origen": "generica",
+     "volumen": 1300
+    }
+   ],
+   "omitidas": [],
+   "validacion": {
+    "aprobado": true,
+    "issues": [],
+    "razon": "Todos los datos (diseñador, madera laminada cortada a láser, sobrante de la suspensión, cuerpo de aluminio fundido, LED 21W/1265lm/2700K-3000K/CRI 90, dimmable, UL, Made in Italy, luz hacia arriba) coinciden con la ficha. El H1 identifica producto y material, y las keywords 'illan lamp' y 'luceplan illan' aparecen de forma natural, sin forzar. No hay contradicciones ni datos inventados de material, acabado o certificación."
+   },
+   "intentos": 1,
+   "segundos": 53.9
+  },
+  {
+   "url": "https://cassoni.com/product/luxury-exquisite-masterpiece-19800-steinway-piano-by-riva-mobili-darte/",
+   "status": "processed",
+   "reason": "dry_run sin tienda",
+   "h1_original": "19800 Steinway Piano",
+   "h1": "Steinway Mother-of-Pearl Piano by Riva Mobili D'Arte",
+   "h1_regla": "rasgo más buscado: 'mother of pearl piano' (110/mes); el volumen del nombre (27100/mes) es de la marca steinway, no de esta pieza",
+   "descripcion": "<p>Catalogued as the 19800 Steinway Piano, this instrument by Riva Mobili D'Arte is a hand-carved piece finished with mother-of-pearl inlays. Made in Italy.</p><h2>CARVING AND INLAY</h2><p>The carved decoration covers the base and sides. The mother-of-pearl inlays lie in the surface and reflect light in iridescent shades.</p><h2>THE STEINWAY NAME</h2><p>If you are searching for a Steinway and Sons piano, note that this one is manufactured by Riva Mobili D'Arte. Browse <a href=\"https://cassoni.com/brand/riva-mobili-darte/\">pianos by Riva Mobili D'Arte</a>.</p>",
+   "descripcion_original": "<p>Piano of extraordinary elegance that is a true masterpiece of fine craftsmanship. Every detail reveals exceptional artisanal mastery: from the harmonious structure to the rich, refined carvings that adorn the base and sides. The hand-carved decorations embody timeless artistry and lend the instrument an aura of grandeur and prestige. The surface is embellished with mother-of-pearl inlays, a noble and luminous material that reflects light in iridescent shades, creating an effect of refined sophistication. This piano is a true work of art, a symbol of an era when manual skill and aesthetic taste achieved a level of absolute perfection. Made in Italy.</p>\n",
+   "keywords": [
+    "19800 steinway piano",
+    "steinway and sons piano"
+   ],
+   "keywords_detalle": [
+    {
+     "keyword": "19800 steinway piano",
+     "origen": "gsc",
+     "impresiones": 38,
+     "posicion": 1.2,
+     "volumen": 50,
+     "por_que": "ya aparece en Google (38 impresiones)"
+    },
+    {
+     "keyword": "steinway and sons piano",
+     "origen": "gsc",
+     "impresiones": 18,
+     "posicion": 3,
+     "volumen": 27100,
+     "por_que": "ya aparece en Google (18 impresiones)"
+    }
+   ],
+   "omitidas": [],
+   "validacion": {
+    "aprobado": true,
+    "issues": [],
+    "razon": "El H1 identifica producto, material y marca; la descripción se limita a datos de la ficha (tallado en base y lados, incrustaciones de nácar con reflejos iridiscentes, Made in Italy, marca Riva Mobili D'Arte) sin inventar materiales ni acabados. Las keywords se usan con su sentido real y en contexto (nombre del catálogo y aclaración de marca), sin contradicciones ni relleno."
+   },
+   "intentos": 3,
+   "segundos": 135.6
+  },
+  {
+   "url": "https://cassoni.com/product/shibari-modern-designer-chair-visionnaire/",
+   "status": "processed",
+   "reason": "dry_run sin tienda",
+   "h1_original": "Shibari Chair",
+   "h1": "Shibari Fabric Armchair by Visionnaire",
+   "h1_regla": "rasgo más buscado: 'fabric armchair' (320/mes)",
+   "descripcion": "<p>The Shibari is a Visionnaire armchair fully covered in stretch fabric, with a continuous, enveloping silhouette. Its curved tubular metal legs converge at the backrest in a fluid knot.</p><h2>SEAT AND SUPPORT</h2><p>Under the fabric, a high-density polyurethane core and a webbed seat take the weight. If you are comparing Shibari chairs, the comfort comes from the seat and the character from the legs. See other <a href=\"https://cassoni.com/product-category/furniture/dining-room/chairs-armchairs/\">chairs and armchairs</a>.</p><h2>THE KNOT'S MEANING</h2><p>The knot carried sacred and religious meanings across history: life and divine love in Egypt, infinite devotion in Buddhist China and Tibet. Here it is a soft connection, not a restraint.</p>",
+   "descripcion_original": "<p>The Shibari chair comes fully covered in stretch fabric, featuring a continuous and enveloping silhouette. The curved tubular metal legs converge at the backrest, forming a fluid knot that merges structure and formal expression. The high-density polyurethane core and webbed seat ensure comfort and support, striking a balance between visual lightness and structural solidity.</p>\n<p>Across history the knot has had many different meanings, including sacred and religious symbolism. In Egypt it represented life: the knot of Isis stood for immortality and divine love. The endless knot is one of the most ancient figures utilized in Buddhist symbolism in China and Tibet, but also in geographically distant zones, to convey a sense of infinite devotion. Tying and knotting mean joining, connecting two objects, bringing them together in harmonious progress. Since ancient times the knot has had a clear meaning of junction and commitment between two people. This meaning is immediately associated with love, precisely to emphasize the inseparable nature of a bond.</p>\n<p>This symbol conveys meanings of eternity and faithfulness. A knot made properly will not come undone, opening and separating the two objects it holds fast. Therefore a love knot unites two people forever. It is not a noose, not a tight restraint, but an intertwined connection, representing a sense of give and take, of help in moments of need. It is a soft knot that links without duress. Extended horizontally, it reminds us of the symbol of infinity: what could be a better way to represent everlasting love?</p>\n",
+   "keywords": [
+    "shibari chairs",
+    "visionnaire armchair"
+   ],
+   "keywords_detalle": [
+    {
+     "keyword": "shibari chairs",
+     "origen": "gsc",
+     "impresiones": 100,
+     "posicion": 6.4,
+     "volumen": 210,
+     "por_que": "ya aparece en Google (100 impresiones)"
+    },
+    {
+     "keyword": "visionnaire armchair",
+     "origen": "generica",
+     "volumen": 10,
+     "por_que": "marca + tipo (10/mes)"
+    }
+   ],
+   "omitidas": [
+    {
+     "keyword": "chair shibari",
+     "motivo": "El orden invertido solo entraría con una sintaxis forzada (\"the chair Shibari\" o \"this chair, Shibari,\"), que rompe la oración y no aporta información del producto."
+    }
+   ],
+   "validacion": {
+    "aprobado": true,
+    "issues": [],
+    "razon": "Todos los datos (funda integral en stretch, patas tubulares metálicas curvas que convergen en un nudo, núcleo de poliuretano de alta densidad y asiento con cinchas elásticas, simbolismo del nudo en Egipto/China/Tíbet) provienen de la ficha, sin contradicciones ni invenciones. El H1 identifica producto, material y marca. La frase de transición sobre comparar Shibari chairs es puente editorial, no un dato falso."
+   },
+   "intentos": 2,
+   "segundos": 94.8
+  }
+ ]
+}
