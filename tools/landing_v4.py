@@ -324,7 +324,8 @@ def armar(vs_seo: str, nuevas: str, muestra: str, fecha: str, nota_vs: str,
              "historial": [{"fecha": f, "r": leer(p)["resumen"]} for f, p in HISTORIAL if Path(p).exists()],
              "nuevas": {"meta": meta, "fichas": lote["fichas"]},
              "fotos": leer(fotos) if fotos else {},
-             "semilla": m.group(1) if m else "", "universo": int(m.group(2)) if m else None,
+             "semilla": m.group(1) if m else str(meta.get("semilla") or ""),
+             "universo": int(m.group(2)) if m else meta.get("universo"),
              "pie": f"Corridas en seco del {fecha} · código {(meta.get('commit') or '')[:7]} · {meta.get('llm', '')}"}
     seguro = (json.dumps(datos, ensure_ascii=False, separators=(",", ":"))
               .replace("</", "<\\/").replace("<!--", "<\\!--"))
