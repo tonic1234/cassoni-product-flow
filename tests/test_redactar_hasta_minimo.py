@@ -53,3 +53,23 @@ def test_el_validador_no_objeta_el_h1_que_decidio_la_regla():
     assert "No lo objetes" in _nota_h1(ficha, {"h1": "Rock Marble Coffee Table by Rugiano"})
     assert _nota_h1(ficha, {"h1": "Otro H1"}) == ""
     assert _nota_h1({}, {"h1": "x"}) == ""
+
+
+class _ValForzada(_Val):
+    def redactar_y_validar(self, *, ficha, keywords, redactor, max_passes=3):
+        out = super().redactar_y_validar(ficha=ficha, keywords=keywords, redactor=redactor)
+        if "italian piano" in [k["keyword"] for k in keywords]:
+            out["aprobado"] = False
+            out["validacion"] = {"aprobado": False, "issues": [
+                "Keyword forzada: «As an italian piano, it is a piece…» existe solo para meter «italian piano»."]}
+        return out
+
+
+def test_la_keyword_forzada_sale_en_vez_de_rechazar_la_ficha():
+    v = _ValForzada()
+    out = v.redactar_hasta_minimo(ficha={}, keywords=K("19800 steinway piano", "steinway and sons piano",
+                                                       "italian piano"),
+                                  reservas=K("mother of pearl piano"), redactor=None, minimo=3)
+    assert out["aprobado"] and out["forzadas_sacadas"] == ["italian piano"]
+    assert [k["keyword"] for k in out["objetivos"]] == [
+        "19800 steinway piano", "steinway and sons piano", "mother of pearl piano"]

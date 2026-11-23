@@ -73,7 +73,8 @@ def preparar(ref: dict, desc_orig: str, umbral: int,
     sel = elegir_keywords(ref["candidatas"], nombre=nombre, marca=marca, tipo=tipo, h1=r["h1"],
                           rasgo=r["rasgo"], texto_ficha=" ".join([nombre, marca, plano]),
                           opciones=kw_ops, marca_ajena=ajena, genericas_h1=gen_h1,
-                          competencia=competencia)
+                          competencia=competencia,
+                          lugares_reservados=0 if r["fijo"] else min(2, len(opcionales)))
     ficha = {"url": ref["url"], "nombre": nombre, "marca": marca, "modelo": modelo_de(nombre, marca),
              "tipo": tipo, "categorias": [], "url_categoria": ref.get("url_categoria_seo") or "",
              "atributos": [], "medidas": [], "descripcion": desc_orig, "corta": "",

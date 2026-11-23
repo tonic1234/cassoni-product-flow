@@ -116,6 +116,8 @@ Responde SOLO con JSON:
                 validas = {k for k, _, _ in genericas_para_h1(h1, gen)}
                 ya = {k["keyword"].lower() for k in quedan}
                 for kw, v, ok in genericas_usadas(strip_html(ed.get("description") or ""), h1, gen):
+                    if len(quedan) >= max(minimo, 3):
+                        break                       # tope de 3 (Illan terminaba con 4)
                     if ok and kw in validas and kw not in ya:
                         ya.add(kw)
                         quedan.append({"keyword": kw, "origen": "generica", "volumen": v,
@@ -123,6 +125,22 @@ Responde SOLO con JSON:
             return quedan, omit
 
         val = self.redactar_y_validar(ficha=ficha, keywords=keywords, redactor=redactor)
+        if not val["aprobado"] and minimo:
+            # el validador marcó una keyword como forzada: una vuelta sin ella (y con la
+            # siguiente reserva) en vez de rechazar la ficha (Steinway, 23-nov)
+            texto = " ".join(map(str, (val.get("validacion") or {}).get("issues") or [])).lower()
+            forzadas = [k for k in keywords if "forzad" in texto and k["keyword"].lower() in texto]
+            if forzadas:
+                fuera = {k["keyword"].lower() for k in forzadas}
+                base = [k for k in keywords if k["keyword"].lower() not in fuera]
+                extra = [r for r in reservas if r["keyword"].lower() not in fuera
+                         and r["keyword"].lower() not in {k["keyword"].lower() for k in base}]
+                nuevas = base + extra[:max(0, minimo - len(base))]
+                val2 = self.redactar_y_validar(ficha=ficha, keywords=nuevas, redactor=redactor)
+                if val2["aprobado"]:
+                    val2["intentos"] = val["intentos"] + val2["intentos"]
+                    val2["forzadas_sacadas"] = sorted(fuera)
+                    val, keywords = val2, nuevas
         quedan, omit = _quedaron(val, keywords)
         val["objetivos"] = quedan
         if not val["aprobado"] or len(quedan) >= minimo or not reservas:

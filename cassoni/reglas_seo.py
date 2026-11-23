@@ -395,7 +395,8 @@ def elegir_keywords(candidatas: list[dict], *, nombre: str, marca: str, tipo: st
                     h1: str, rasgo: str, texto_ficha: str,
                     opciones: Optional[list[dict]] = None, marca_ajena: str = "",
                     genericas_h1: Optional[list[dict]] = None,
-                    competencia: Optional[list[dict]] = None) -> dict:
+                    competencia: Optional[list[dict]] = None,
+                    lugares_reservados: int = 0) -> dict:
     """{'elegidas': [...], 'descartadas': [{keyword, motivo}]} sin LLM.
     `opciones`: keywords '{opción} {tipo}' (keywords_de_opciones); entran todas después
     de Search Console, aunque el H1 diga una. `marca_ajena`: no cambia la elección
@@ -511,8 +512,12 @@ def elegir_keywords(candidatas: list[dict], *, nombre: str, marca: str, tipo: st
                       and _norm(c["keyword"]) in frases_tipo and len(_norm(c["keyword"]).split()) >= 2
                       and (c.get("volumen") or 0) >= MIN_VOL_GENERICA),
                      key=lambda c: -(c.get("volumen") or 0))
+    # lugares que van a ocupar las genéricas del material del H1 que escribe el redactor:
+    # el relleno no se los come (Cruise pedía 4; Bakkarat perdía «glass table», 23-nov)
+    tope = MAX_KEYWORDS - max(0, lugares_reservados)
+    de_tipo.sort(key=lambda c: _norm(c["keyword"]).startswith("italian "))
     for c in de_tipo:
-        if len(elegidas) >= MAX_KEYWORDS:
+        if len(elegidas) >= tope:
             reservas.append({**c, "por_que": f"el tipo de producto ({c.get('volumen')}/mes)"})
             continue
         _agregar(c, f"el tipo de producto ({c.get('volumen')}/mes)")
@@ -526,23 +531,24 @@ def elegir_keywords(candidatas: list[dict], *, nombre: str, marca: str, tipo: st
                 f"({c.get('volumen')}/mes{extra})")
 
     for c in competencia:
-        if len(elegidas) >= MAX_KEYWORDS:
+        if len(elegidas) >= tope:
             break
         if (c.get("volumen") or 0) >= MIN_VOL_GENERICA:
             _agregar(c, _por_que_relleno(c))
 
     # 5) mínimo de 3: se afloja el umbral, nunca la coherencia. Primero
     #    Search Console con 2+ impresiones, después la competencia con menos volumen
-    if len(elegidas) < MIN_KEYWORDS:
+    minimo_ahora = min(MIN_KEYWORDS, tope)
+    if len(elegidas) < minimo_ahora:
         for c in flojas:
-            if len(elegidas) >= MIN_KEYWORDS:
+            if len(elegidas) >= minimo_ahora:
                 break
             if _motivo_gsc(c, relajado=True) is None and _agregar(
                     c, f"ya aparece en Google ({c.get('impresiones')} impresiones; para llegar "
                        f"al mínimo de {MIN_KEYWORDS})"):
                 descartadas[:] = [d for d in descartadas if d["keyword"] != c["keyword"]]
         for c in competencia:
-            if len(elegidas) >= MIN_KEYWORDS:
+            if len(elegidas) >= minimo_ahora:
                 break
             _agregar(c, _por_que_relleno(c, f"; para llegar al mínimo de {MIN_KEYWORDS}"))
 

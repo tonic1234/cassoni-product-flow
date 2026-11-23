@@ -451,7 +451,8 @@ class Pipeline:
         ctx["marca_ajena"] = ajena
         args = dict(nombre=ctx["nombre"], marca=ctx["marca"], tipo=tipo, h1=r["h1"],
                     rasgo=r["rasgo"], texto_ficha=texto, opciones=kw_opciones,
-                    marca_ajena=ajena, genericas_h1=gen_h1)
+                    marca_ajena=ajena, genericas_h1=gen_h1,
+                    lugares_reservados=0 if r["fijo"] else min(2, len(ctx["genericas_opcionales"])))
         sel = elegir_keywords(cands, **args)
         # 23-nov: si quedan lugares, lo que la competencia rankea con el mismo producto
         # (ya consultado en la precarga: está en caché)

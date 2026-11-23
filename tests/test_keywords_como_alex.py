@@ -51,3 +51,14 @@ def test_nunca_el_tipo_suelto_de_una_palabra():
 
 def test_club_sofa_sigue_como_alex():
     assert set(_elegir("club")) == {"club style sofa", "club couch", "rugiano sofa"}
+
+
+def test_cruise_reserva_lugar_para_la_generica_del_h1():
+    r = REFS["cruise"]
+    texto = " ".join([r["nombre"], r["marca"], ORIG[r["url"]]])
+    sel = elegir_keywords(r["candidatas"], nombre=r["nombre"], marca=r["marca"], tipo=r["tipo"],
+                          h1="Cruise Teak Outdoor Sofa by Talenti", rasgo="", texto_ficha=texto,
+                          lugares_reservados=1)
+    kws = [e["keyword"] for e in sel["elegidas"]]
+    assert len(kws) == 2 and "outdoor couch" not in kws
+    assert "outdoor couch" in [c["keyword"] for c in sel["reservas"]]

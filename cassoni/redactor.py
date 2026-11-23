@@ -280,7 +280,7 @@ def controles(ficha: dict, redactado: dict, keywords: list[str]) -> list[str]:
                               "la del material que dice el H1")
         # como Alex: si el H1 tiene material, va su genérica (salvo que no entre natural)
         esperadas = genericas_para_h1(h1, ficha["genericas_opcionales"])
-        if esperadas and not any(ok for _, _, ok in usadas) \
+        if esperadas and len(keywords) < 3 and not any(ok for _, _, ok in usadas) \
                 and not any(k in omitidas for k, _, _ in esperadas):
             issues.append("Falta la genérica del material del H1: sumá "
                           + " o ".join(f"'{k}'" for k, _, _ in esperadas)
