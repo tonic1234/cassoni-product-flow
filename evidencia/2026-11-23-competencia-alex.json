@@ -1,0 +1,1250 @@
+{
+ "https://cassoni.com/product/cas-rug-rock-coffee-table-01/": [],
+ "https://cassoni.com/product/cas-rug-club-sofa-01/": [],
+ "https://cassoni.com/product/cas-dvhc-hermes-maxi-bed-01/": [
+  {
+   "keyword": "mattress topper for king size",
+   "volume": 8100,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 16,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "king mattress topper",
+   "volume": 6600,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 12,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "king size mattress and box spring",
+   "volume": 4400,
+   "difficulty": 12,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 14,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "mattress and box spring king size",
+   "volume": 4400,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 13,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "king bed mattress cheap",
+   "volume": 3600,
+   "difficulty": 7,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 18,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "king size mattress pillow topper",
+   "volume": 2900,
+   "difficulty": 1,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 20,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "mattress in a box king",
+   "volume": 2900,
+   "difficulty": 12,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 17,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "king size bed memory foam topper",
+   "volume": 2400,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 13,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "king size mattress memory foam topper",
+   "volume": 2400,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 13,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "king size memory foam mattress pad",
+   "volume": 2400,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 13,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "mattress topper king size memory foam",
+   "volume": 2400,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 15,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "foam mattress topper king",
+   "volume": 1600,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 20,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "foam mattress topper king size",
+   "volume": 1600,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 20,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "king foam mattress topper",
+   "volume": 1600,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 16,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "king size bed foam topper",
+   "volume": 1600,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 12,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "king size mattress for sale",
+   "volume": 1300,
+   "difficulty": 7,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 19,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "king pillow top mattress pad",
+   "volume": 880,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 15,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "king size mattress memory foam",
+   "volume": 880,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 13,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "king size bed mattress firm",
+   "volume": 720,
+   "difficulty": 18,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 9,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "king size mattress for sale near me",
+   "volume": 720,
+   "difficulty": 14,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 14,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "automatic tortilla maker machine for home",
+   "volume": 590,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 20,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "king size mattress wayfair",
+   "volume": 590,
+   "difficulty": 8,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 1,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "mahogany king headboard",
+   "volume": 590,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 5,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "mattress firm king",
+   "volume": 590,
+   "difficulty": 9,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 17,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "wayfair king size mattress",
+   "volume": 590,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 1,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "cal king mattress pad",
+   "volume": 480,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 20,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "cal king mattress pad waterproof",
+   "volume": 480,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 18,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "wayfair king mattress",
+   "volume": 480,
+   "difficulty": 8,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 1,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "4 inch mattress topper king",
+   "volume": 390,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 20,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "4 inch memory foam mattress topper king size",
+   "volume": 390,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 17,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "cal king mattress protector",
+   "volume": 390,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 7,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "colchon memory foam king size",
+   "volume": 390,
+   "difficulty": 4,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 8,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "king size mattress review",
+   "volume": 390,
+   "difficulty": 27,
+   "intent": "informational",
+   "competidores": 1,
+   "mejor_posicion": 11,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "king size memory foam topper",
+   "volume": 390,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 16,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "king size topper",
+   "volume": 390,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 11,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "king-size topper",
+   "volume": 390,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 12,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "mattress king foam",
+   "volume": 390,
+   "difficulty": 17,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 16,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "mattress topper king nearby",
+   "volume": 390,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 19,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "topper king size",
+   "volume": 390,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 20,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "washable.mattress topper",
+   "volume": 390,
+   "difficulty": 2,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 14,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "firm foam mattress king",
+   "volume": 320,
+   "difficulty": 12,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 19,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "firm memory foam mattress king",
+   "volume": 320,
+   "difficulty": 4,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 17,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "foam bed king",
+   "volume": 320,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 16,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "foam king mattress",
+   "volume": 320,
+   "difficulty": 18,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 9,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "king size mattress topper nearby",
+   "volume": 320,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 16,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "martha stewart mattress pad",
+   "volume": 320,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 9,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "pillow top for king mattress",
+   "volume": 320,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 18,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "corn tortilla maker",
+   "volume": 260,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 20,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "firm king size mattress topper",
+   "volume": 260,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 17,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "king memory foam topper",
+   "volume": 260,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 15,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "king size firm mattress topper",
+   "volume": 260,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 13,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "king size mattress cheap near me",
+   "volume": 260,
+   "difficulty": 7,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 11,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "king size mattress topper 4 inch",
+   "volume": 260,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 15,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "king size memory foam",
+   "volume": 260,
+   "difficulty": 16,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 17,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "king size pillow top mattress topper",
+   "volume": 260,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 17,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "locked mailboxes with slot",
+   "volume": 260,
+   "difficulty": 2,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 20,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "pillow top mattress cover king size",
+   "volume": 260,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 15,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "pillow top mattress pad king size",
+   "volume": 260,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 16,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "3 inch king size memory foam mattress topper",
+   "volume": 210,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 12,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "king bed mattress firm",
+   "volume": 210,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 18,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "king firm mattress topper for back pain",
+   "volume": 210,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 19,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "king mattress gel memory foam",
+   "volume": 210,
+   "difficulty": 4,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 7,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "king size mattress pad cover",
+   "volume": 210,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 19,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "king size pillow top mattress cover",
+   "volume": 210,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 16,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "mattress pad covers king size",
+   "volume": 210,
+   "difficulty": 2,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 20,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "mattress pads for king size bed",
+   "volume": 210,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 15,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "non ticking analog alarm clock",
+   "volume": 210,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 7,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "small lockable mailbox",
+   "volume": 210,
+   "difficulty": 2,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 20,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "small mailbox with lock",
+   "volume": 210,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 20,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "6 inch king size memory foam mattress topper",
+   "volume": 170,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 12,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "6 inch memory foam mattress topper king size",
+   "volume": 170,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 13,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "firm king size memory foam mattress",
+   "volume": 170,
+   "difficulty": 2,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 13,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "firm memory foam king size mattress",
+   "volume": 170,
+   "difficulty": 16,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 14,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "foam mattress king size",
+   "volume": 170,
+   "difficulty": 13,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 20,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "king bed mattress sale",
+   "volume": 170,
+   "difficulty": 7,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 20,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "king foam",
+   "volume": 170,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 20,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "king mattress in box",
+   "volume": 170,
+   "difficulty": 12,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 20,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "king size firm memory foam mattress",
+   "volume": 170,
+   "difficulty": 12,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 19,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "mattress topper king firm",
+   "volume": 170,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 15,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "alaskan king mattress topper",
+   "volume": 140,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 19,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "buy king size mattress",
+   "volume": 140,
+   "difficulty": 12,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 13,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "california king cooling mattress topper",
+   "volume": 140,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 10,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "california king firm mattress topper",
+   "volume": 140,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 19,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "california king mattress topper firm",
+   "volume": 140,
+   "difficulty": 0,
+   "intent": "commercial",
+   "competidores": 1,
+   "mejor_posicion": 11,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "california king pillow topper",
+   "volume": 140,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 8,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "california king topper",
+   "volume": 140,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 14,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "firm mattress topper california king",
+   "volume": 140,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 20,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "king firm mattress sale",
+   "volume": 140,
+   "difficulty": 4,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 20,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "king size fitted mattress cover",
+   "volume": 140,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 19,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "king size foam topper",
+   "volume": 140,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 19,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "king size mahogany headboard",
+   "volume": 140,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 6,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "king size mattress topper near me",
+   "volume": 140,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 15,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "king size mattress toppers near me",
+   "volume": 140,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 17,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "king size memory foam mattress for sale",
+   "volume": 140,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 17,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "king size memory foam mattress on sale",
+   "volume": 140,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 15,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "king size memory foam mattresses sale",
+   "volume": 140,
+   "difficulty": 3,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 14,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "mahogany headboards king size",
+   "volume": 140,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 5,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "mahogany wood king size headboard",
+   "volume": 140,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 5,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "mailcase locking mailbox",
+   "volume": 140,
+   "difficulty": 8,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 19,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "memory foam king size mattress sale",
+   "volume": 140,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 9,
+   "urls": [
+    "https://www.wayfair.com/king-ma"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "base de metal para cama king size",
+   "volume": 90,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 3,
+   "urls": [
+    "https://cr.ebay.com/King-Beds-an"
+   ],
+   "origen": "competidor"
+  },
+  {
+   "keyword": "base de fierro para cama king size",
+   "volume": 20,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 4,
+   "urls": [
+    "https://cr.ebay.com/King-Beds-an"
+   ],
+   "origen": "competidor"
+  }
+ ],
+ "https://cassoni.com/product/cas-dvhc-tiffany-mirror-01/": [
+  {
+   "keyword": "grey wash mirror",
+   "volume": 40,
+   "difficulty": 0,
+   "intent": "transactional",
+   "competidores": 1,
+   "mejor_posicion": 2,
+   "urls": [
+    "https://www.lowes.com/Amanti-Art-Dove-Grey-Wash"
+   ],
+   "origen": "competidor"
+  }
+ ],
+ "https://cassoni.com/product/cas-oak-sc_1019_chair-01/": [],
+ "https://cassoni.com/product/cas-tal-cruise-teak-sofa-01/": [],
+ "https://cassoni.com/product/cas-tnl-bakkarat-table-01/": [],
+ "https://cassoni.com/product/illan-luxury-wall-lamp-luceplan/": [],
+ "https://cassoni.com/product/luxury-exquisite-masterpiece-19800-steinway-piano-by-riva-mobili-darte/": [],
+ "https://cassoni.com/product/shibari-modern-designer-chair-visionnaire/": []
+}
