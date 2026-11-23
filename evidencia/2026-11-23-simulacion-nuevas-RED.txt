@@ -1,0 +1,6 @@
+=========================== short test summary info ============================
+FAILED tests/test_simulacion_nuevas.py::test_lounger_y_lounge_chair_son_el_mismo_producto
+FAILED tests/test_simulacion_nuevas.py::test_orden_invertido_del_nombre_no_entra
+FAILED tests/test_simulacion_nuevas.py::test_tercera_de_search_console_si_falta_para_el_minimo
+FAILED tests/test_simulacion_nuevas.py::test_generica_de_otro_material_no_rechaza_la_ficha
+4 failed in 0.07s

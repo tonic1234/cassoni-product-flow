@@ -101,14 +101,17 @@ def test_steinway_el_volumen_del_nombre_no_cuenta():
 
 
 def test_la_busqueda_de_la_marca_ajena_puede_ser_keyword():
-    cands = [{"keyword": "piano steinway", "origen": "gsc", "impresiones": 300, "volumen": 27100},
+    # «piano steinway» queda afuera por orden invertido (23-nov); la marca sigue valiendo
+    cands = [{"keyword": "steinway and sons piano", "origen": "gsc", "impresiones": 18, "volumen": 27100},
+             {"keyword": "piano steinway", "origen": "gsc", "impresiones": 300, "volumen": 27100},
              {"keyword": "19800 steinway piano", "origen": "gsc", "impresiones": 38, "volumen": 50}]
     sel = elegir_keywords(cands, nombre="19800 Steinway Piano", marca="Riva Mobili D'Arte",
                           tipo="piano", h1="Mother-of-Pearl Steinway Piano by Riva Mobili D'Arte",
                           rasgo="mother of pearl",
                           texto_ficha="19800 Steinway Piano mother-of-pearl piano",
                           marca_ajena="steinway")
-    assert "piano steinway" in [e["keyword"] for e in sel["elegidas"]]
+    kws = [e["keyword"] for e in sel["elegidas"]]
+    assert "steinway and sons piano" in kws and "piano steinway" not in kws
 
 
 def test_steinway_and_sons_como_alex():

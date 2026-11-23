@@ -73,7 +73,8 @@ class LLMClient:
         try:
             try:
                 r = self._http.post(url, json=body, headers=headers)
-            except httpx.TimeoutException:
+            except (httpx.TimeoutException, httpx.TransportError):
+                # también un corte de conexión (Connection reset, simulación del 23-nov)
                 # una corrida autónoma no puede caerse por una respuesta lenta
                 log.warning("LLM %s tardó demasiado: reintento una vez", model)
                 r = self._http.post(url, json=body, headers=headers)

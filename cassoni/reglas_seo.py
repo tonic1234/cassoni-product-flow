@@ -377,7 +377,9 @@ def candidatas_de_competencia(rankeadas: Iterable[dict], *, h1: str, nombre: str
     nucleo = nucleo[len("outdoor "):] if nucleo.startswith("outdoor ") else nucleo
     cabeza = cabeza_de(nucleo)
     tipo_w = {_singular(w) for w in nucleo.split()}
-    tipos = set(nucleo.split()) | {"couch", "light", "lamp"}
+    from .criterio_seo import _SINONIMOS as _SIN
+    tipos = set(nucleo.split()) | {"couch", "light", "lamp"} | {
+        w for x in _SIN.get(nucleo, []) for w in _norm(x).split()}
     h1n = f" {_norm(h1)} "
     nombre_n = nombre_de_busqueda(nombre)
     out, vistas = [], set()
@@ -425,7 +427,9 @@ def elegir_keywords(candidatas: list[dict], *, nombre: str, marca: str, tipo: st
     nombre_n = nombre_de_busqueda(nombre)
     modelo_n = _norm(modelo_de(nombre, marca))
     marca_n = _norm(marca)
-    tipos = set(_norm(tipo).split()) | {"couch", "light", "lamp"}
+    from .criterio_seo import _SINONIMOS as _SIN
+    tipos = set(_norm(tipo).split()) | {"couch", "light", "lamp"} | {
+        w for x in _SIN.get(_norm(tipo), []) for w in _norm(x).split()}
     elegidas: list[dict] = []
     descartadas: list[dict] = []
     vistas: set[str] = set()
@@ -464,6 +468,11 @@ def elegir_keywords(candidatas: list[dict], *, nombre: str, marca: str, tipo: st
             return "pocas impresiones"
         if len(kw.split()) < len(nombre_w) and nombre_w[:len(kw.split())] == kw.split():
             return "es el nombre recortado"
+        palabras = kw.split()
+        if (len(palabras) >= 2 and _singular(palabras[0]) in {_singular(t) for t in tipos}
+                and set(palabras[1:]) & modelo_w):
+            # «sofa windsor», «chair shibari»: no entran natural en un texto en inglés
+            return "orden invertido (tipo antes del modelo): no entra natural"
         if kw in h1n or kw in (nombre_n, modelo_n):
             return "ya lo dice el H1 o es el nombre tal cual"
         if kw == marca_n or (marca_ajena and _clave(kw) in {
@@ -558,6 +567,12 @@ def elegir_keywords(candidatas: list[dict], *, nombre: str, marca: str, tipo: st
     #    Search Console con 2+ impresiones, después la competencia con menos volumen
     minimo_ahora = min(MIN_KEYWORDS, tope)
     if len(elegidas) < minimo_ahora:
+        # primero, Search Console que pasó todo y quedó afuera por el tope de 2 (Isla)
+        for c in [r for r in reservas if r.get("origen") == "gsc"]:
+            if len(elegidas) >= minimo_ahora:
+                break
+            if _agregar(c, c.get("por_que") or "ya aparece en Google"):
+                descartadas[:] = [d for d in descartadas if d["keyword"] != c["keyword"]]
         for c in flojas:
             if len(elegidas) >= minimo_ahora:
                 break

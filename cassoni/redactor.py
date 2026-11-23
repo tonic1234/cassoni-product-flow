@@ -274,10 +274,8 @@ def controles(ficha: dict, redactado: dict, keywords: list[str]) -> list[str]:
         h1 = redactado.get("h1") or ""
         desc = strip_html(redactado.get("description") or "")
         usadas = genericas_usadas(desc, h1, ficha["genericas_opcionales"])
-        for kw, _, ok in usadas:
-            if not ok:
-                issues.append(f"La genérica '{kw}' no es del material del H1: sacala o usá "
-                              "la del material que dice el H1")
+        # una genérica de otro material en el texto no es error (si es un dato real, el
+        # validador lo controla): simplemente no cuenta como keyword (Soul Bed, 23-nov)
         # como Alex: si el H1 tiene material, va su genérica (salvo que no entre natural)
         esperadas = genericas_para_h1(h1, ficha["genericas_opcionales"])
         from .reglas_seo import MAX_KEYWORDS

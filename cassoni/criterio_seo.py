@@ -45,7 +45,10 @@ _OTRO_IDIOMA = {"specchio", "specchi", "espejo", "espejos", "cama", "camas", "me
 # tipo de EE. UU. → otras formas con que se busca el mismo producto
 _SINONIMOS = {"wall sconce": ["wall light"], "pendant light": ["pendant lamp"],
               "ceiling lamp": ["ceiling light"], "sofa": ["couch"],
-              "outdoor sofa": ["outdoor couch"], "nightstand": ["bedside table"]}
+              "outdoor sofa": ["outdoor couch"], "nightstand": ["bedside table"],
+              # 23-nov: la ficha dice «lounger» y la gente busca «lounge chair» (Wellness)
+              "lounger": ["lounge chair", "chaise lounge"], "lounge chair": ["lounger"],
+              "sectional": ["sectional sofa"]}
 
 
 def _plano(s: str) -> str:
