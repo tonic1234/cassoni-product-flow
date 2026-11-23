@@ -308,3 +308,29 @@ Descartado: ponerle al H1 las dos opciones («Rock Marble or Wood Coffee Table»
 no es como escribe el SEO. Tests: `tests/test_opciones_y_marca_ajena.py`,
 `tests/test_seleccion_reglas_opciones.py` (evidencia `2026-11-18-opciones-marca-ajena-*`).
 
+## D-027 · El H1 no pierde términos del nombre; las fichas sin presupuesto se rehacen
+**23-nov-2026 · revisión de la tanda de 30 del 18-nov (notas de TARS en EVALUACION-EN-SECO)**
+TARS anotó H1 que pierden códigos de modelo y ediciones, y que el tope de DataForSEO
+(US$ 2,00) se agotó al final del lote. Tres causas en el H1 y una en el presupuesto:
+- **D-026 demasiado amplio:** la lista de marcas ajenas tenía marcas de autos y de moda
+  (Hermes, Tiffany, Harley, Vespa) que en Cassoni son nombres de modelo; esas fichas
+  pasaban a la regla del rasgo. Ahora solo fabricantes de pianos, y solo si el modelo
+  ES la marca («19800 Steinway Piano»; «Aurora Steinway Grand Piano» no).
+- **La regla del rasgo cortaba después del tipo** (viene de D-025): «Cleopatra Chair
+  Limited Edition» → «Cleopatra Walnut Chair». Ahora el H1 conserva lo que el nombre dice
+  después del tipo (`reglas_seo.sufijo_del_nombre`), y si lo arma el redactor, el
+  control en código lo exige.
+- **Los números de modelo se borraban como código de catálogo** aunque la gente los
+  busque («19800 steinway piano», 38 impresiones en posición 1,2). Un código que aparece
+  en una búsqueda de Search Console con impresiones queda en el H1
+  (`codigos_buscados`, `modelo_para_h1`); los demás se siguen sacando.
+- **Presupuesto:** con el tope agotado, las keywords se descartan «sin datos de Google»
+  y la ficha sale «sin keywords objetivo», igual que una a la que no le corresponde
+  ninguna. Ahora cada ficha del lote lleva `dfs_sin_presupuesto` y
+  `tools/rehacer_sin_presupuesto.py` las vuelve a correr (reconoce también lotes viejos
+  por el motivo). `scripts/tanda_seo.sh` usa tope 3,50, base propia y rehace solo.
+Como cambian las reglas del H1, el lote del 18-nov no representa el código actual: se
+vuelven a correr **las mismas 30** (`URLS=elegidas.txt`).
+Tests: `test_h1_conserva_nombre.py`, `test_rehacer_sin_presupuesto.py`,
+`test_seleccion_reglas_opciones.py` (evidencia `2026-11-23-h1-conserva-nombre-*`).
+

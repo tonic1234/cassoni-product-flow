@@ -143,7 +143,7 @@ class Redactor:
 Nombre actual: {ficha['nombre']}
 Marca: {ficha['marca'] or '(sin marca)'}
 {('H1 (DADO POR EL EQUIPO SEO: devolvelo tal cual, no lo cambies): ' + ficha['h1_fijo']) if ficha.get('h1_fijo') else ''}
-Modelo (para el H1): {ficha['modelo']}
+Modelo (para el H1): {ficha['modelo']}{(chr(10) + 'Después del tipo, tal cual (es parte del nombre, no lo saques): ' + ficha['sufijo']) if ficha.get('sufijo') else ''}
 Tipo en inglés de EE. UU. (para el H1): {ficha['tipo'] or '(decidilo de la categoría)'}
 Categoría: {' > '.join(ficha.get('categorias') or []) or '(sin dato)'}
 URL de la categoría (el único enlace): {ficha.get('url_categoria') or '(no hay: sin enlace)'}
@@ -240,7 +240,15 @@ def controles(ficha: dict, redactado: dict, keywords: list[str]) -> list[str]:
     # piden correcciones que no puede hacer
     issues = [] if ficha.get("h1_fijo") else [f"H1: {i}" for i in verificar_h1(
         redactado.get("h1") or "", nombre=ficha["nombre"], marca=ficha["marca"],
-        tipo=ficha["tipo"], texto_ficha=fuentes)]
+        tipo=ficha["tipo"], texto_ficha=fuentes,
+        codigos_permitidos=ficha.get("codigos") or ())]
+    if not ficha.get("h1_fijo"):
+        h1_plano = " " + " ".join(re.findall(r"[a-z0-9]+", (redactado.get("h1") or "").lower())) + " "
+        for parte, que in ((ficha.get("sufijo") or "", "lo que el nombre dice después del tipo"),
+                           (" ".join(ficha.get("codigos") or []), "el código que la gente busca")):
+            w = " ".join(re.findall(r"[a-z0-9]+", parte.lower()))
+            if w and f" {w} " not in h1_plano:
+                issues.append(f"H1: perdió {que}: '{parte}'")
     issues += check_reescritura(redactado, keywords=keywords, fuentes=fuentes,
                                 url_categoria=ficha.get("url_categoria") or "")
     if ficha.get("genericas_opcionales"):

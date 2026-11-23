@@ -61,3 +61,30 @@ def test_steinway_el_h1_no_queda_en_el_nombre_de_la_marca():
     assert ctx["h1_rasgos"] == [("mother of pearl", 110)]
     assert "steinway" in ctx["h1_regla"]
     assert [e["keyword"] for e in sel["elegidas"]] == ["19800 steinway piano"]
+
+
+def test_steinway_el_h1_conserva_el_numero_que_se_busca():
+    pipe = _pipe({"steinway piano": 27100, "mother of pearl piano": 110})
+    ctx = _ctx("19800 Steinway Piano", "Riva Mobili D'Arte", "piano", PIANO_DESC,
+               [{"keyword": "19800 steinway piano", "impressions": 38, "position": 1.2}])
+    pipe._seleccion_reglas("u", {}, ctx)
+    assert ctx["modelo_h1"] == "19800 Steinway" and ctx["codigos_h1"] == ["19800"]
+
+
+def test_hermes_maxi_no_es_marca_ajena_y_su_nombre_manda():
+    pipe = _pipe({"hermes maxi bed": 1300})
+    ctx = _ctx("Hermes Maxi Bed", "Cava", "bed", "<p>A leather bed.</p>", [])
+    pipe._seleccion_reglas("u", {}, ctx)
+    assert ctx["h1_fijo"] == "Hermes Maxi Bed by Cava"
+
+
+def test_controles_rechazan_un_h1_que_pierde_la_edicion():
+    from cassoni.redactor import controles
+    ficha = {"nombre": "Cleopatra Chair Limited Edition", "marca": "Jumbo", "tipo": "chair",
+             "modelo": "Cleopatra", "sufijo": "Limited Edition", "codigos": [],
+             "descripcion": "<p>Cleopatra chair in walnut, limited edition.</p>",
+             "atributos": [], "categorias": [], "medidas": []}
+    malo = {"h1": "Cleopatra Walnut Chair by Jumbo", "description": "<p>x</p>"}
+    bueno = {"h1": "Cleopatra Walnut Chair Limited Edition by Jumbo", "description": "<p>x</p>"}
+    assert any("Limited Edition" in i for i in controles(ficha, malo, []))
+    assert not any("Limited Edition" in i for i in controles(ficha, bueno, []))

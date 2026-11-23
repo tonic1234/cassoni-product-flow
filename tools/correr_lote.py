@@ -20,6 +20,28 @@ from cassoni.config import Config            # noqa: E402
 from cassoni.orchestrator import Pipeline    # noqa: E402
 
 
+def procesar(pipe, u: str) -> dict:
+    """Una ficha en seco, con todo lo que la página de revisión necesita."""
+    t0 = time.time()
+    r = pipe.process(u)
+    fila = pipe.db.get_state(u)
+    return {
+        "url": u, "status": r.status, "reason": r.reason,
+        "h1_original": getattr(fila, "original_h1", None),
+        "h1": r.edited_h1, "descripcion": r.edited_description,
+        "descripcion_original": getattr(fila, "original_description", None),
+        "keywords": [k["keyword"] for k in r.selected],
+        "keywords_detalle": r.selected,
+        "seleccion": getattr(fila, "selection_reason", None),
+        "validacion": json.loads(fila.validation_result) if getattr(
+            fila, "validation_result", None) else None,
+        "intentos": getattr(fila, "validation_attempts", None),
+        "segundos": round(time.time() - t0, 1),
+        # si el tope de DataForSEO se agotó, la ficha salió sin datos de Google:
+        # no es un resultado del agente, hay que volver a correrla
+        "dfs_sin_presupuesto": bool(getattr(pipe, "dfs_sin_presupuesto", False))}
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--urls", required=True)
@@ -38,22 +60,10 @@ def main() -> int:
     pipe.precargar(urls)          # volumen en 2 pedidos para todo el lote
     fichas = []
     for u in urls:
-        t0 = time.time()
-        r = pipe.process(u)
-        fila = pipe.db.get_state(u)
-        fichas.append({
-            "url": u, "status": r.status, "reason": r.reason,
-            "h1_original": getattr(fila, "original_h1", None),
-            "h1": r.edited_h1, "descripcion": r.edited_description,
-            "descripcion_original": getattr(fila, "original_description", None),
-            "keywords": [k["keyword"] for k in r.selected],
-            "keywords_detalle": r.selected,
-            "seleccion": getattr(fila, "selection_reason", None),
-            "validacion": json.loads(fila.validation_result) if getattr(
-                fila, "validation_result", None) else None,
-            "intentos": getattr(fila, "validation_attempts", None),
-            "segundos": round(time.time() - t0, 1)})
-        print(f"[{len(fichas)}/{len(urls)}] {r.status:9} {r.edited_h1}  kw={fichas[-1]['keywords']}",
+        fichas.append(procesar(pipe, u))
+        print(f"[{len(fichas)}/{len(urls)}] {fichas[-1]['status']:9} {fichas[-1]['h1']}  "
+              f"kw={fichas[-1]['keywords']}"
+              + ("  ⚠ DataForSEO sin presupuesto" if fichas[-1]["dfs_sin_presupuesto"] else ""),
               flush=True)
     out = {"meta": {"modo": cfg.modo_descripcion, "llm": cfg.llm_editor_model,
                     "commit": commit, "codigo_con_cambios_sin_commit": sucio,

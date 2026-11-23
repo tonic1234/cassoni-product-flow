@@ -277,7 +277,8 @@ def _raiz(w: str) -> str:
 
 
 def verificar_h1(h1: str, *, nombre: str, marca: str, tipo: str,
-                 texto_ficha: str, max_palabras: int = 9) -> list[str]:
+                 texto_ficha: str, max_palabras: int = 9,
+                 codigos_permitidos=()) -> list[str]:
     """Problemas del H1 propuesto ([] = válido). `texto_ficha`: nombre, atributos,
     categorías y descripción original: cada palabra del H1 tiene que estar ahí
     (o ser el tipo de EE. UU. que decidió el código)."""
@@ -294,7 +295,7 @@ def verificar_h1(h1: str, *, nombre: str, marca: str, tipo: str,
             cuerpo = h1[: -len(sufijo)]
         if marca.lower() in cuerpo.lower():
             issues.append("la marca aparece dos veces en el H1")
-    del_modelo = set(modelo_de(nombre, marca).split())
+    del_modelo = set(modelo_de(nombre, marca).split()) | set(codigos_permitidos or ())
     codigos = [t for t in cuerpo.split() if es_codigo(t) and t not in del_modelo]
     if codigos:
         issues.append(f"el H1 tiene códigos de catálogo: {', '.join(codigos)}")

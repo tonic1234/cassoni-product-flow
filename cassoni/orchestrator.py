@@ -413,10 +413,17 @@ class Pipeline:
         # («Steinway») no cuenta como «el nombre ya se busca»
         opciones = opciones_de_material(strip_html(ctx["desc_orig"]), mats)
         ajena = marca_ajena_en(ctx["nombre"], ctx["marca"])
+        # 23-nov: el H1 no pierde lo que el nombre dice después del tipo ni los
+        # códigos que la gente busca («19800 steinway piano»)
+        from .reglas_seo import codigos_buscados, modelo_para_h1, sufijo_del_nombre
+        codigos = codigos_buscados(ctx["nombre"], ctx["kw_rows"])
+        ctx["codigos_h1"] = codigos
+        ctx["modelo_h1"] = modelo_para_h1(ctx["nombre"], ctx["marca"], codigos)
+        ctx["sufijo_h1"] = sufijo_del_nombre(ctx["nombre"], ctx["marca"], tipo)
         r = h1_por_datos(ctx["nombre"], ctx["marca"], tipo,
                          (vol.get(nombre_q) or {}).get("volume"), rasgos,
                          umbral=self.cfg.h1_umbral_nombre, opciones=opciones,
-                         marca_ajena=ajena)
+                         marca_ajena=ajena, codigos=codigos)
         ctx["h1_regla"] = r["regla"]
         # H1 fijo: el nombre solo, sin tipo o la opción más buscada. Con rasgo libre: el
         # redactor elige entre los rasgos con su volumen el que tienen TODAS las versiones
@@ -487,6 +494,12 @@ class Pipeline:
         except Exception as exc:
             log.warning("Volumen degradado (%s): sigo con GSC", exc)
             return filas
+
+    @property
+    def dfs_sin_presupuesto(self) -> bool:
+        """DataForSEO dejó de responder por el tope de la corrida: las fichas de acá en
+        más quedan sin volumen ni SERP y hay que volver a correrlas (23-nov)."""
+        return bool(getattr(getattr(self.volumenes, "fetcher", None), "sin_presupuesto", False))
 
     def _costos(self) -> dict:  # noqa: D401
         fn = getattr(self.llm, "consumo", None)
@@ -688,7 +701,8 @@ class Pipeline:
             except Exception as exc:
                 log.warning("No se pudo buscar fichas con el mismo nombre (%s)", exc)
         return {"url": url, "nombre": html.unescape(ctx["nombre"]), "marca": ctx["marca"],
-                "modelo": modelo_de(html.unescape(ctx["nombre"]), ctx["marca"]),
+                "modelo": ctx.get("modelo_h1") or modelo_de(html.unescape(ctx["nombre"]), ctx["marca"]),
+                "sufijo": ctx.get("sufijo_h1", ""), "codigos": ctx.get("codigos_h1", []),
                 "tipo": ctx["tipo"], "categorias": [html.unescape(r["name"]) for r in ruta],
                 "url_categoria": url_cat, "atributos": list(ctx["atributos"]),
                 "medidas": medidas_ee_uu(ctx["atributos"]), "descripcion": ctx["desc_orig"],

@@ -23,7 +23,7 @@ import re
 import unicodedata
 from typing import Iterable, Optional
 
-from .h1 import modelo_de, sin_codigos
+from .h1 import _singular, es_codigo, modelo_de, sin_codigos
 from .keywords import palabras_sin_respaldo
 
 UMBRAL_NOMBRE = 50        # búsquedas/mes para que el nombre solo alcance
@@ -54,27 +54,78 @@ def nombre_de_busqueda(nombre: str) -> str:
     return _norm(limpio)
 
 
-# marcas de OTROS fabricantes que aparecen en nombres de la tienda («19800 Steinway
-# Piano» de Riva Mobili D'Arte): el volumen de su búsqueda es el de esa marca, no el
-# de la pieza (18-nov-2026)
+# fabricantes de pianos que aparecen en nombres de la tienda («19800 Steinway Piano» de
+# Riva Mobili D'Arte): el volumen de su búsqueda es el de esa marca, no el de la pieza
+# (18-nov). Sin marcas de autos o de moda: en Cassoni son nombres de modelo (Hermes
+# Maxi, Tiffany, Harley) y no se pueden distinguir por el nombre (23-nov).
 MARCAS_AJENAS = frozenset({
     "steinway", "bosendorfer", "fazioli", "bechstein", "yamaha", "kawai", "bluthner",
-    "rolex", "patek", "cartier", "ferrari", "lamborghini", "porsche", "bugatti",
-    "maserati", "bentley", "aston", "harley", "ducati", "vespa", "chanel", "hermes",
-    "louis vuitton", "gucci", "versace", "dior", "fendi", "tiffany",
+    "petrof", "schimmel", "grotrian",
 })
 
 
 def marca_ajena_en(nombre: str, marca: str) -> str:
-    """La marca de otro fabricante que nombra la ficha, o ''. 'Hermes' o 'Tiffany'
-    también son modelos de la tienda: solo cuentan si el resto del nombre es el tipo
-    o un código («19800 Steinway Piano»), no si hay un modelo propio."""
-    n = f" {_norm(sin_codigos(nombre or ''))} "
+    """La marca de otro fabricante que ES el modelo de la ficha, o ''.
+    '19800 Steinway Piano' → 'steinway'; 'Aurora Steinway Grand Piano' → '' (tiene
+    modelo propio: el volumen de su nombre sí es de la pieza)."""
+    modelo = _norm(modelo_de(nombre or "", marca or ""))
     propia = _norm(marca)
-    for m in sorted(MARCAS_AJENAS, key=len, reverse=True):
-        if f" {m} " in n and m not in propia:
-            return m
+    if modelo in MARCAS_AJENAS and modelo not in propia:
+        return modelo
     return ""
+
+
+def _partes_del_nombre(nombre: str) -> list[str]:
+    """Palabras de la parte principal del nombre: sin paréntesis de códigos ni lo que
+    va después de ' - '."""
+    limpio = re.sub(r"\([^)]*\)", " ", nombre or "")
+    limpio = re.split(r"\s[-–—]\s", limpio)[0]
+    return limpio.split()
+
+
+def sufijo_del_nombre(nombre: str, marca: str, tipo: str) -> str:
+    """Lo que el nombre dice después del tipo y el H1 no puede perder:
+    'Cleopatra Chair Limited Edition' → 'Limited Edition'; 'Club Sofa 3-Seater' →
+    '3-Seater'. Sin códigos de catálogo ni la marca."""
+    if not tipo:
+        return ""
+    ultima = _singular(_norm(tipo).split()[-1])
+    palabras = [w for w in _partes_del_nombre(sin_codigos(nombre)) if not es_codigo(w)]
+    idx = [i for i, w in enumerate(palabras) if _singular(_norm(w)) == ultima]
+    if not idx:
+        return ""
+    resto = palabras[idx[-1] + 1:]
+    marca_w = set(_norm(marca).split())
+    resto = [w for w in resto if _norm(w) not in marca_w and _norm(w) != "by"]
+    return " ".join(resto).strip()
+
+
+def codigos_buscados(nombre: str, filas: Iterable[dict], minimo: int = 0) -> list[str]:
+    """Códigos del nombre que la gente escribe al buscar («19800 steinway piano» con
+    impresiones en Search Console): esos van en el H1 aunque parezcan de catálogo."""
+    minimo = minimo or MIN_IMPRESIONES
+    consultas = [set(_norm(f.get("keyword") or "").split()) for f in filas or []
+                 if (f.get("impressions") or f.get("impresiones") or 0) >= minimo]
+    out = []
+    for t in (nombre or "").replace("(", " ").replace(")", " ").split():
+        t = t.strip(",.;:[]")
+        if es_codigo(t) and t not in out and any(_norm(t) in c for c in consultas):
+            out.append(t)
+    return out
+
+
+def modelo_para_h1(nombre: str, marca: str, codigos: Iterable[str] = ()) -> str:
+    """El modelo (modelo_de) con los códigos buscados en su lugar del nombre:
+    '19800 Steinway Piano' + ['19800'] → '19800 Steinway'."""
+    modelo = modelo_de(nombre, marca)
+    palabras = (nombre or "").split()
+    for c in codigos:
+        if c in modelo.split() or c not in palabras:
+            continue
+        primera = modelo.split()[0] if modelo else ""
+        antes = primera in palabras and palabras.index(c) < palabras.index(primera)
+        modelo = f"{c} {modelo}".strip() if antes else f"{modelo} {c}".strip()
+    return modelo
 
 
 def opciones_de_material(texto: str, materiales: Iterable[str]) -> list[str]:
@@ -117,16 +168,22 @@ def keywords_de_opciones(opciones: Iterable[str], nucleo: str, vol: dict,
 
 def h1_por_datos(nombre: str, marca: str, tipo: str, vol_nombre: Optional[int],
                  rasgos: Iterable[tuple[str, int]], umbral: int = UMBRAL_NOMBRE,
-                 opciones: Iterable[str] = (), marca_ajena: str = "") -> dict:
+                 opciones: Iterable[str] = (), marca_ajena: str = "",
+                 codigos: Iterable[str] = ()) -> dict:
     """{'h1', 'regla', 'rasgo', 'fijo'}. `rasgos`: (material, volumen de '{material}
     {tipo}') solo con materiales que la ficha confirma. `fijo`: el H1 ya está decidido
     y el redactor no lo cambia. `opciones`: materiales que la ficha ofrece como
     alternativa de la parte principal. `marca_ajena`: marca de otro fabricante en el
-    nombre; su volumen no cuenta como «el nombre ya se busca»."""
+    nombre; su volumen no cuenta como «el nombre ya se busca». `codigos`: códigos
+    del nombre que la gente busca (codigos_buscados); no se borran del H1."""
     rasgos = list(rasgos)
+    codigos = [c for c in codigos if c]
     por = f" by {marca}" if marca else ""
-    base = re.sub(r"\s+", " ", re.sub(r"\([^)]*\)", " ", sin_codigos(nombre or ""))).strip()
-    base = re.split(r"\s[-–—]\s", base)[0].strip()
+    base = " ".join(w for w in _partes_del_nombre(nombre)
+                    if not es_codigo(w.strip(",.;:")) or w.strip(",.;:") in codigos)
+    base = re.sub(r"\s+", " ", base).strip(" -–—|")
+    suf = sufijo_del_nombre(nombre, marca, tipo)
+    suf = f" {suf}" if suf else ""
     nota = (f"; el volumen del nombre ({vol_nombre}/mes) es de la marca {marca_ajena}, "
             "no de esta pieza") if marca_ajena and vol_nombre else ""
     if vol_nombre and vol_nombre >= umbral and not marca_ajena:
@@ -135,21 +192,21 @@ def h1_por_datos(nombre: str, marca: str, tipo: str, vol_nombre: Optional[int],
     if not tipo:
         return {"h1": f"{base}{por}", "regla": "sin tipo de producto: nombre + marca" + nota,
                 "rasgo": "", "fijo": True}
-    modelo = modelo_de(nombre, marca) or base
+    modelo = modelo_para_h1(nombre, marca, codigos) or base
     ops = {_norm(o) for o in opciones}
     mejor_op = max(((m, v) for m, v in rasgos if v and _norm(m) in ops),
                    key=lambda x: x[1], default=None)
     if len(ops) >= 2 and mejor_op:
-        return {"h1": f"{modelo} {_titulo(mejor_op[0])} {_titulo(tipo)}{por}",
+        return {"h1": f"{modelo} {_titulo(mejor_op[0])} {_titulo(tipo)}{suf}{por}",
                 "regla": (f"opción más buscada: '{mejor_op[0]} {tipo}' ({mejor_op[1]}/mes); "
                           f"la descripción cubre las opciones: {', '.join(sorted(ops))}") + nota,
                 "rasgo": mejor_op[0], "fijo": True}
     mejor = max(((m, v) for m, v in rasgos if v), key=lambda x: x[1], default=None)
     if mejor:
-        return {"h1": f"{modelo} {_titulo(mejor[0])} {_titulo(tipo)}{por}",
+        return {"h1": f"{modelo} {_titulo(mejor[0])} {_titulo(tipo)}{suf}{por}",
                 "regla": f"rasgo más buscado: '{mejor[0]} {tipo}' ({mejor[1]}/mes)" + nota,
                 "rasgo": mejor[0], "fijo": False}
-    return {"h1": f"{modelo} {_titulo(tipo)}{por}",
+    return {"h1": f"{modelo} {_titulo(tipo)}{suf}{por}",
             "regla": "ningún rasgo con volumen: modelo + tipo" + nota, "rasgo": "", "fijo": True}
 
 

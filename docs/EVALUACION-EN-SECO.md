@@ -26,8 +26,9 @@ CASSONI_DFS_PRESUPUESTO_USD=2.00 \
   --titulo "Treinta fichas de Cassoni, en seco"
 ```
 
-`scripts/tanda_seo.sh` hace los cuatro pasos de una, pero usa la base por defecto: para staging
-hay que pasar `CASSONI_DB_URL` a mano.
+`scripts/tanda_seo.sh` hace todo de una (23-nov): base propia en `evaluacion/`, tope de
+DataForSEO 3,50, rehace las fichas que se quedaron sin presupuesto y arma esta página. Para
+repetir una lista ya elegida: `URLS=/root/wt-cassoni-v5/elegidas.txt bash scripts/tanda_seo.sh`.
 
 ## Tiempos y costos reales (30 fichas)
 
@@ -52,7 +53,8 @@ hay que pasar `CASSONI_DB_URL` a mano.
 
 Además de aprobadas y rechazadas:
 
-1. **H1 que pierden un término del nombre** (códigos de modelo, ediciones). Es el costo de la regla
-   de marcas ajenas (D-026) y lo que más se nota al leer.
-2. **Fichas sin keyword objetivo**: cada una debería traer el motivo escrito en `seleccion`.
+1. **H1 que pierden un término del nombre** (códigos de modelo, ediciones). Corregido en D-027:
+   si vuelve a aparecer, es un bug.
+2. **Fichas sin keyword objetivo**: cada una debería traer el motivo escrito en `seleccion`. Si
+   el motivo es «sin datos de Google», fue el presupuesto: `tools/rehacer_sin_presupuesto.py`.
 3. **Cantidad de intentos** por ficha: dos o tres significa que el validador rebotó y hubo re-trabajo.
