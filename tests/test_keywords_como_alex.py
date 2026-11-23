@@ -36,7 +36,8 @@ def test_shibari_variantes_con_las_mismas_palabras_cuentan_una():
 
 def test_illan_el_tipo_de_producto_completa():
     kws = _elegir("illan")
-    assert len(kws) == 3 and ("wall sconce" in kws or "wall light" in kws)
+    # mínimo 3, más si son coherentes: las tres de Alex están
+    assert {"luceplan illan", "wall sconce", "wall light"} <= set(kws) and len(kws) <= 5
 
 
 def test_steinway_italian_mas_tipo_si_la_ficha_dice_italy():
@@ -60,5 +61,17 @@ def test_cruise_reserva_lugar_para_la_generica_del_h1():
                           h1="Cruise Teak Outdoor Sofa by Talenti", rasgo="", texto_ficha=texto,
                           lugares_reservados=1)
     kws = [e["keyword"] for e in sel["elegidas"]]
-    assert len(kws) == 2 and "outdoor couch" not in kws
-    assert "outdoor couch" in [c["keyword"] for c in sel["reservas"]]
+    from cassoni.reglas_seo import MAX_KEYWORDS
+    assert len(kws) <= MAX_KEYWORDS - 1                  # queda el lugar de la genérica del H1
+
+
+def test_el_tipo_de_categoria_no_entra():
+    for clave in ("rock", "bakkarat"):
+        kws = _elegir(clave)
+        assert "coffee table" not in kws and "dining table" not in kws, clave
+
+
+def test_con_poco_texto_el_techo_es_el_minimo():
+    from cassoni.reglas_seo import MIN_KEYWORDS, MAX_KEYWORDS, techo_de_keywords
+    assert techo_de_keywords("Wooden chair with leather upholstery. Rosewood, Ebony or Citronier finish.") == MIN_KEYWORDS
+    assert techo_de_keywords(" ".join(["word"] * 60)) == MAX_KEYWORDS

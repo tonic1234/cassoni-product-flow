@@ -121,7 +121,7 @@ def test_illan_la_generica_que_repite_el_h1_no_cuenta():
     assert [k for k, _, _ in genericas_para_h1("Illan Wood Wall Sconce by Luceplan", ops)] == ["wood sconce"]
 
 
-def test_la_generica_del_h1_fijo_ocupa_un_lugar_de_tres():
+def test_la_generica_del_h1_fijo_entra_antes_que_marca_y_tipo():
     from cassoni.reglas_seo import elegir_keywords
     cands = [{"keyword": k, "origen": "gsc", "impresiones": i, "volumen": 20} for k, i in
              [("cleopatra chair design", 27), ("cleopatra wooden chair", 15)]] + \
@@ -132,7 +132,7 @@ def test_la_generica_del_h1_fijo_ocupa_un_lugar_de_tres():
                           genericas_h1=[{"keyword": "wood and leather chair", "origen": "generica",
                                          "volumen": 1300}])
     kws = [e["keyword"] for e in sel["elegidas"]]
-    assert len(kws) == 3 and "wood and leather chair" in kws and "oak dining chair" not in kws
+    assert kws.index("wood and leather chair") < kws.index("oak dining chair")
 
 
 def test_redactor_sabe_el_nombre_completo_de_la_marca_ajena():

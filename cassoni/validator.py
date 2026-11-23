@@ -116,8 +116,9 @@ Responde SOLO con JSON:
                 validas = {k for k, _, _ in genericas_para_h1(h1, gen)}
                 ya = {k["keyword"].lower() for k in quedan}
                 for kw, v, ok in genericas_usadas(strip_html(ed.get("description") or ""), h1, gen):
-                    if len(quedan) >= max(minimo, 3):
-                        break                       # tope de 3 (Illan terminaba con 4)
+                    from .reglas_seo import MAX_KEYWORDS
+                    if len(quedan) >= MAX_KEYWORDS:
+                        break                       # techo práctico (mínimo 3)
                     if ok and kw in validas and kw not in ya:
                         ya.add(kw)
                         quedan.append({"keyword": kw, "origen": "generica", "volumen": v,

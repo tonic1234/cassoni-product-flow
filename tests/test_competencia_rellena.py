@@ -41,18 +41,21 @@ def test_rellena_solo_los_lugares_libres():
     sel = elegir_keywords(gsc, nombre="Frog Coffee Table", marca="Sovet Italia", tipo="coffee table",
                           h1=FROG, rasgo="glass", texto_ficha=TEXTO_FROG + " table", competencia=comp)
     kws = [e["keyword"] for e in sel["elegidas"]]
-    assert kws == ["frog table", "modern glass coffee table", "curved glass coffee table"]
+    # mínimo 3, más si son coherentes (23-nov): entran las tres de la competencia
+    assert kws == ["frog table", "modern glass coffee table", "curved glass coffee table", "glass table"]
     assert sel["elegidas"][1]["por_que"].startswith("la rankean 2 competidores")
 
 
-def test_sin_lugar_no_entra_la_competencia():
+def test_con_el_techo_lleno_no_entra_la_competencia():
     gsc = [{"keyword": k, "origen": "gsc", "impresiones": 40, "volumen": 30}
            for k in ("frog table", "frog glass table")]
     marca = [{"keyword": "sovet italia coffee table", "origen": "generica", "volumen": 50}]
+    from cassoni.reglas_seo import MAX_KEYWORDS
     comp = [{"keyword": "modern glass coffee table", "origen": "competidor", "volumen": 1900, "competidores": 3}]
     sel = elegir_keywords(gsc + marca, nombre="Frog Coffee Table", marca="Sovet Italia",
                           tipo="coffee table", h1=FROG, rasgo="glass",
-                          texto_ficha=TEXTO_FROG + " table", competencia=comp)
+                          texto_ficha=TEXTO_FROG + " table", competencia=comp,
+                          lugares_reservados=MAX_KEYWORDS - 3)
     assert "modern glass coffee table" not in [e["keyword"] for e in sel["elegidas"]]
 
 

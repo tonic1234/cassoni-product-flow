@@ -446,4 +446,10 @@ Cambios:
 - La keyword de la competencia tiene que **terminar en el tipo** («foam bed king» no).
 Descartado: SERP en cola por lote: ahorra US$ 0,0014 por ficha y suma complejidad.
 Pendiente: una fuente que rinda más para completar hasta 3 en productos de nicho.
+**Ajuste (Antonio): 3 es el mínimo, no el máximo.** Se usan más keywords si son coherentes
+y entran natural, con un techo práctico de 5 (`CASSONI_MAX_KEYWORDS`): con 60-110 palabras,
+más que eso es un listado. Las fuentes pagas (nombre + fabricante, competencia) se consultan
+solo si no se llega a 3; «italian + tipo» solo completa el mínimo. El tipo de producto suelto
+no entra por encima de 100.000 búsquedas/mes (`MAX_VOL_TIPO`): «coffee table» (301.000) es
+categoría; «wall sconce» (60.500) es la que usa Alex.
 

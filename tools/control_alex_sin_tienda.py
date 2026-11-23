@@ -66,7 +66,7 @@ def preparar(ref: dict, desc_orig: str, umbral: int,
         gen_h1 = [{"keyword": k, "origen": "generica", "volumen": v}
                   for k, v, _ in genericas_para_h1(r["h1"], opcionales)]
         opcionales = []
-    from cassoni.reglas_seo import candidatas_de_competencia
+    from cassoni.reglas_seo import candidatas_de_competencia, techo_de_keywords
     texto = " ".join([nombre, marca, plano])
     competencia = candidatas_de_competencia(rankeadas or [], h1=r["h1"], nombre=nombre, marca=marca,
                                             tipo=tipo, texto_ficha=texto, minimo=10, origen=origen)
@@ -74,7 +74,8 @@ def preparar(ref: dict, desc_orig: str, umbral: int,
                           rasgo=r["rasgo"], texto_ficha=" ".join([nombre, marca, plano]),
                           opciones=kw_ops, marca_ajena=ajena, genericas_h1=gen_h1,
                           competencia=competencia,
-                          lugares_reservados=0 if r["fijo"] else min(2, len(opcionales)))
+                          lugares_reservados=0 if r["fijo"] else min(2, len(opcionales)),
+                          techo=techo_de_keywords(plano))
     ficha = {"url": ref["url"], "nombre": nombre, "marca": marca, "modelo": modelo_de(nombre, marca),
              "tipo": tipo, "categorias": [], "url_categoria": ref.get("url_categoria_seo") or "",
              "atributos": [], "medidas": [], "descripcion": desc_orig, "corta": "",

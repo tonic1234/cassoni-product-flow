@@ -33,7 +33,14 @@ MIN_IMPRESIONES = 2
 MIN_IMPRESIONES_GENERICA = 5   # búsquedas de GSC que no nombran el modelo ni la marca
 MIN_VOL_MARCA = 10
 MIN_VOL_GENERICA = 50
-MAX_KEYWORDS = 3              # objetivo: 3 (decisión del 23-nov)
+PALABRAS_PARA_MAS = 50        # con menos texto original que esto, el techo es el mínimo (3):
+                              # Cleopatra (12 palabras) con 4 keywords era keyword stuffing
+MAX_VOL_TIPO = 100_000        # el tipo suelto por encima de esto es categoría: «coffee table»
+                              # 301.000 no; «wall sconce» 60.500 sí (Alex, Illan)
+import os as _os
+# 3 es el MÍNIMO, no el máximo (Antonio, 23-nov): más si son coherentes y entran natural.
+# El techo evita convertir 60-110 palabras en un listado de keywords.
+MAX_KEYWORDS = int(_os.environ.get("CASSONI_MAX_KEYWORDS", "5"))
 MIN_KEYWORDS = 3              # mínimo: 3, siempre coherentes con la ficha (23-nov)
 
 
@@ -213,6 +220,12 @@ def rasgo_combinado(texto: str, materiales: Iterable[str], nucleo: str,
     v = max(int((vol.get(f"{frase} {cabeza}") or {}).get("volume") or 0),
             int((vol.get(f"{mats[1]} and {mats[0]} {cabeza}") or {}).get("volume") or 0))
     return (frase, v) if v >= minimo else None
+
+
+def techo_de_keywords(texto_original: str) -> int:
+    """Cuántas keywords caben: el mínimo (3) si la ficha tiene poco texto propio; si no, el
+    techo práctico (5). Más keywords que contenido no se integran natural (23-nov)."""
+    return MIN_KEYWORDS if len(_norm(texto_original).split()) < PALABRAS_PARA_MAS else MAX_KEYWORDS
 
 
 def h1_por_datos(nombre: str, marca: str, tipo: str, vol_nombre: Optional[int],
@@ -396,7 +409,7 @@ def elegir_keywords(candidatas: list[dict], *, nombre: str, marca: str, tipo: st
                     opciones: Optional[list[dict]] = None, marca_ajena: str = "",
                     genericas_h1: Optional[list[dict]] = None,
                     competencia: Optional[list[dict]] = None,
-                    lugares_reservados: int = 0) -> dict:
+                    lugares_reservados: int = 0, techo: Optional[int] = None) -> dict:
     """{'elegidas': [...], 'descartadas': [{keyword, motivo}]} sin LLM.
     `opciones`: keywords '{opción} {tipo}' (keywords_de_opciones); entran todas después
     de Search Console, aunque el H1 diga una. `marca_ajena`: no cambia la elección
@@ -422,10 +435,12 @@ def elegir_keywords(candidatas: list[dict], *, nombre: str, marca: str, tipo: st
         return " ".join(w[:-1] if len(w) > 3 and w.endswith("s") and not w.endswith("ss") else w
                         for w in _norm(k).replace("'s ", " ").split())
 
+    techo_total = min(techo or MAX_KEYWORDS, MAX_KEYWORDS)
+
     def _agregar(c: dict, por: str) -> bool:
         # las mismas palabras en otro orden son la misma keyword («chair shibari»)
         k = " ".join(sorted(_clave(c["keyword"]).split()))
-        if k in vistas or len(elegidas) >= MAX_KEYWORDS:
+        if k in vistas or len(elegidas) >= techo_total:
             return False
         vistas.add(k)
         elegidas.append({**c, "por_que": por})
@@ -510,14 +525,16 @@ def elegir_keywords(candidatas: list[dict], *, nombre: str, marca: str, tipo: st
         frases_tipo.add(f"italian {cabeza_de(nucleo_t) or nucleo_t.split()[-1]}")
     de_tipo = sorted((c for c in candidatas if c.get("origen") == "generica"
                       and _norm(c["keyword"]) in frases_tipo and len(_norm(c["keyword"]).split()) >= 2
-                      and (c.get("volumen") or 0) >= MIN_VOL_GENERICA),
+                      and MIN_VOL_GENERICA <= (c.get("volumen") or 0) <= MAX_VOL_TIPO),
                      key=lambda c: -(c.get("volumen") or 0))
     # lugares que van a ocupar las genéricas del material del H1 que escribe el redactor:
     # el relleno no se los come (Cruise pedía 4; Bakkarat perdía «glass table», 23-nov)
-    tope = MAX_KEYWORDS - max(0, lugares_reservados)
+    tope = techo_total - max(0, lugares_reservados)
     de_tipo.sort(key=lambda c: _norm(c["keyword"]).startswith("italian "))
     for c in de_tipo:
-        if len(elegidas) >= tope:
+        # «italian + tipo» es la más débil: solo para completar el mínimo
+        limite = min(tope, MIN_KEYWORDS) if _norm(c["keyword"]).startswith("italian ") else tope
+        if len(elegidas) >= limite:
             reservas.append({**c, "por_que": f"el tipo de producto ({c.get('volumen')}/mes)"})
             continue
         _agregar(c, f"el tipo de producto ({c.get('volumen')}/mes)")

@@ -449,17 +449,20 @@ class Pipeline:
                       for k, v, _ in genericas_para_h1(r["h1"], ctx["genericas_opcionales"])]
             ctx["genericas_opcionales"] = []
         ctx["marca_ajena"] = ajena
+        from .reglas_seo import techo_de_keywords
         args = dict(nombre=ctx["nombre"], marca=ctx["marca"], tipo=tipo, h1=r["h1"],
                     rasgo=r["rasgo"], texto_ficha=texto, opciones=kw_opciones,
                     marca_ajena=ajena, genericas_h1=gen_h1,
-                    lugares_reservados=0 if r["fijo"] else min(2, len(ctx["genericas_opcionales"])))
+                    lugares_reservados=0 if r["fijo"] else min(2, len(ctx["genericas_opcionales"])),
+                    techo=techo_de_keywords(strip_html(ctx["desc_orig"])))
         sel = elegir_keywords(cands, **args)
         # 23-nov: si quedan lugares, lo que la competencia rankea con el mismo producto
         # (ya consultado en la precarga: está en caché)
         sel["competidores_leidos"] = []
-        from .reglas_seo import MAX_KEYWORDS, candidatas_de_competencia
+        from .reglas_seo import MIN_KEYWORDS, candidatas_de_competencia, techo_de_keywords
         relleno = self.cfg.relleno_keywords
-        if len(sel["elegidas"]) < MAX_KEYWORDS and relleno == "sugerencias":
+        # las fuentes pagas solo si no se llega al mínimo de 3 (no gastar de más)
+        if len(sel["elegidas"]) < MIN_KEYWORDS and relleno == "sugerencias":
             # búsquedas reales con el nombre del producto y el fabricante (23-nov)
             sug = self._sugerencias(ctx)
             comp = candidatas_de_competencia(sug, h1=r["h1"], nombre=ctx["nombre"],
@@ -468,7 +471,7 @@ class Pipeline:
             if comp:
                 sel = elegir_keywords(cands, **args, competencia=comp)
             sel["competidores_leidos"] = []
-        elif len(sel["elegidas"]) < MAX_KEYWORDS and relleno == "competencia" \
+        elif len(sel["elegidas"]) < MIN_KEYWORDS and relleno == "competencia" \
                 and self.competidores is not None:
             leidos, rank = self._paginas_competidores(ctx)
             comp = candidatas_de_competencia(self._con_volumen(rank), h1=r["h1"],
