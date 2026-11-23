@@ -473,8 +473,12 @@ def elegir_keywords(candidatas: list[dict], *, nombre: str, marca: str, tipo: st
                 and set(palabras[1:]) & modelo_w):
             # «sofa windsor», «chair shibari»: no entran natural en un texto en inglés
             return "orden invertido (tipo antes del modelo): no entra natural"
-        if kw in h1n or kw in (nombre_n, modelo_n):
-            return "ya lo dice el H1 o es el nombre tal cual"
+        if kw in h1n or kw == modelo_n:
+            return "ya lo dice el H1 o es solo el modelo"
+        if kw == nombre_n and not relajado:
+            # el nombre tal cual, si el H1 no lo repite textual, solo completa el mínimo
+            # (Windsor Mirror: «windsor mirror» en posición 2; «tiffany mirror» de Alex)
+            return "es el nombre tal cual (queda de reserva para el mínimo)"
         if kw == marca_n or (marca_ajena and _clave(kw) in {
                 _clave(marca_ajena), _clave(NOMBRE_COMPLETO.get(marca_ajena, marca_ajena))}):
             return "es solo la marca"
@@ -499,7 +503,7 @@ def elegir_keywords(candidatas: list[dict], *, nombre: str, marca: str, tipo: st
                 continue
             else:
                 motivo = "repite otra elegida"
-        elif motivo == "pocas impresiones":
+        elif motivo == "pocas impresiones" or motivo.startswith("es el nombre tal cual"):
             flojas.append(c)
         descartadas.append({"keyword": c["keyword"], "motivo": motivo})
 

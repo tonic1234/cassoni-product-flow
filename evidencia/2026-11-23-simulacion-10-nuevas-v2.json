@@ -1,0 +1,405 @@
+{
+ "meta": {
+  "modo": "simulación sin tienda",
+  "llm": "deepseek-v4.1-flash",
+  "commit": "956b38dc8c9ba96ea783871c0660259b429c18e2",
+  "dry_run": true,
+  "simulada": true,
+  "semilla": 20261123,
+  "universo": 88,
+  "nota": "Ficha leída de la página publicada con DataForSEO; Search Console reemplazado por las búsquedas que DataForSEO estima para la página.",
+  "costos": {
+   "tokens_in": 80426,
+   "tokens_out": 112671,
+   "cache_hit": 0,
+   "cache_miss": 80426,
+   "usd": 0.159333,
+   "llamadas": 32,
+   "dfs_usd": 0.199
+  }
+ },
+ "fichas": [
+  {
+   "url": "https://cassoni.com/product/cas-ark-windsor_sofa-01/",
+   "status": "processed",
+   "reason": "simulación en seco: ficha leída de la página publicada",
+   "h1_original": "Windsor Sofa",
+   "h1": "Windsor Tufted Sofa by Arketipo",
+   "h1_regla": "rasgo más buscado: 'velvet sofa' (8100/mes)",
+   "descripcion": "<p>The Windsor is an Arketipo sofa with diamond-quilted, button-tufted upholstery, soft and welcoming to sit on. This italian sofa is made in Italy and comes upholstered in fabric, leather or velvet.</p>\n<h2>UPHOLSTERY OPTIONS</h2>\n<ul>\n<li>Fabric (category E).</li>\n<li>Leather: Pelle A, Pelle B, Pelle Leonardo.</li>\n<li>Velvet: Vellù in eight colorways.</li>\n</ul>\n<h2>TRADITIONAL OR CONTEMPORARY</h2>\n<p>The quilting and the button detail let the Windsor style sofa sit in a classic living room as easily as a modern one. An extra-large version is also available: pick it if you have the floor space for a longer sofa. Browse all <a href=\"https://cassoni.com/product-category/furniture/living-room/sofas-sectionals/\">sofas</a> to compare versions and upholstery lines before you order.</p>",
+   "descripcion_original": "<p>The Windsor Italian luxury designer sofa fits in with all kinds of furnitures: perfect in a Traditional setting, in a Contemporary setting it stands out like a valuable work of art. This Italian sofa with high-end tufted upholstery, has a decidedly distinctive feel. It is refined, luxurious and sophisticated, yet also soft and welcoming, due to the characteristic button buried in the diamond quilting of the padding. Windsor sofa has extended its range with an additional, extra-large sofa of 123″5/8. Besides, there is a new high-end version in velvet which gives the sofa a silky and sumptuous look.Made in Italy.</p>\n",
+   "keywords": [
+    "arketipo sofa",
+    "italian sofa",
+    "windsor style sofa"
+   ],
+   "keywords_detalle": [
+    {
+     "keyword": "arketipo sofa",
+     "origen": "generica",
+     "volumen": 30,
+     "por_que": "marca + tipo (30/mes)"
+    },
+    {
+     "keyword": "italian sofa",
+     "origen": "generica",
+     "volumen": 1900,
+     "por_que": "el tipo de producto (1900/mes)"
+    },
+    {
+     "keyword": "windsor style sofa",
+     "origen": "sugerencia",
+     "volumen": 10,
+     "competidores": 1,
+     "mejor_posicion": null,
+     "por_que": "se busca con el nombre o el fabricante (10/mes; para llegar al mínimo de 3)"
+    }
+   ],
+   "omitidas": [],
+   "reservas_usadas": [],
+   "validacion": {
+    "aprobado": true,
+    "issues": [],
+    "razon": "Los datos coinciden con la ficha: tufted/diamond quilting, button detail, Made in Italy, categorías de tapizado (Fabric E, Pelle A/B/Leonardo, Vellù en 8 variantes contadas correctamente), versión extra-large y versatilidad traditional/contemporary. El H1 identifica el producto y su técnica distintiva (tufted), y las keywords se usan con el sentido de la ficha sin relleno llamativo."
+   },
+   "intentos": 1,
+   "segundos": 53.9
+  },
+  {
+   "url": "https://cassoni.com/product/cas-ra-speedform-suspension-lamp-01/",
+   "status": "processed",
+   "reason": "simulación en seco: ficha leída de la página publicada",
+   "h1_original": "Speedform Suspension Lamp",
+   "h1": "Speedform Glass Pendant Light by Reflex",
+   "h1_regla": "rasgo más buscado: 'brass pendant light' (2400/mes)",
+   "descripcion": "<p>The Speedform is a glass pendant light by Reflex, with a curved element in a metallic finish and a mirror glass support. The LEDs are integrated, and it is made in Italy.</p>\n<h2>METALLIC FINISHES</h2>\n<p>Three finishes: satin brass, satin dark brass or satin titanium. Each element carries a 24W LED strip, 12V, 2700–3000K.</p>\n<h2>ONE OR TWO PENDANTS</h2>\n<p>Order one pendant lamp or a pair. Both hang at 51 1/8\" high; the footprint is 40 1/8\" W x 23 5/8\" D or 43 1/4\" W x 19 5/8\" D, so check your table. Compare it with other <a href=\"https://cassoni.com/product-category/lighting/chandeliers-suspension-lamps/\">suspension lamps</a>; the Reflex light ships in 12-16 weeks.</p>",
+   "descripcion_original": "<p>Speedform is a luxury Italian designer suspension lamp with mirror glass support equipped with LED (6 x 3W 12V 2700-3000K). Pendant curved element in stylish metallic finishes, with LED-strip. (24W STRIP 12V 2700-3000K each element). This Contemporary Italian lighting is a great addition to sophisticated interiors. Made in Italy.</p>\n",
+   "keywords": [
+    "reflex light",
+    "pendant light",
+    "pendant lamp"
+   ],
+   "keywords_detalle": [
+    {
+     "keyword": "reflex light",
+     "origen": "generica",
+     "volumen": 70,
+     "por_que": "marca + tipo (70/mes)"
+    },
+    {
+     "keyword": "pendant light",
+     "origen": "generica",
+     "volumen": 18100,
+     "por_que": "el tipo de producto (18100/mes)"
+    },
+    {
+     "keyword": "pendant lamp",
+     "origen": "generica",
+     "volumen": 4400,
+     "por_que": "el tipo de producto (4400/mes)"
+    }
+   ],
+   "omitidas": [],
+   "reservas_usadas": [],
+   "validacion": {
+    "aprobado": true,
+    "issues": [],
+    "razon": "Todos los datos (medidas, alturas, acabados, 24W LED strip, 2700-3000K, Made in Italy, plazos 12-16 semanas, opciones de 1 o 2 pendants) coinciden con la ficha; el H1 identifica el producto y las keywords aparecen en contexto natural, sin contradicciones ni datos inventados."
+   },
+   "intentos": 1,
+   "segundos": 56.4
+  },
+  {
+   "url": "https://cassoni.com/product/cas-tur-soul-bed-01/",
+   "status": "processed",
+   "reason": "simulación en seco: ficha leída de la página publicada",
+   "h1_original": "Soul Bed",
+   "h1": "Soul Bed with Rounded Headboard by Turri",
+   "h1_regla": "rasgo más buscado: 'wood bed' (6600/mes)",
+   "descripcion": "<p>The Soul is a Turri bed with a rounded headboard that curves slightly around the mattress, so the frame and headboard read as one sinuous body. Made in Italy.</p><h2>HEADBOARD AND FRAME</h2><p>The seams follow the curve of the headboard, and wooden details connect it to the bed frame. This Italian bed comes in Queen or King size.</p><h2>SIZES AND UPHOLSTERY</h2><ul><li>70 1/2\" W x 96 7/8\" D x 41 3/8\" H or 86 1/4\" W x 96 7/8\" D x 41 3/8\" H.</li><li>Fabric categories X, B, T and F; leather LD, LH, LM and LT; velvet B and F.</li></ul><p>Before you order this Turri bed, check the room length: it is 96 7/8\" deep. For more options, see our <a href=\"https://cassoni.com/product-category/furniture/bedroom/double-beds/\">double beds</a>.</p>",
+   "descripcion_original": "<p>The exclusive Soul Bed immediately refers to a feeling of relaxation and well-being. The rounded and accommodating headboard, slightly curved around the mattress, follows the pattern of the seams, giving further softness to the shapes and wooden details that incorporate the bed frame and the headboard. Everything appears as a single and sinuous body. Soul bed is available in different finishes as per collection. Made in Italy.</p>\n",
+   "keywords": [
+    "turri bed",
+    "italian bed"
+   ],
+   "keywords_detalle": [
+    {
+     "keyword": "turri bed",
+     "origen": "gsc",
+     "posicion": 7,
+     "volumen": 40,
+     "impresiones": 40,
+     "por_que": "ya aparece en Google (40 impresiones)"
+    },
+    {
+     "keyword": "italian bed",
+     "origen": "generica",
+     "volumen": 390,
+     "por_que": "el tipo de producto (390/mes)"
+    }
+   ],
+   "omitidas": [],
+   "reservas_usadas": [],
+   "validacion": {
+    "aprobado": true,
+    "issues": [],
+    "razon": "Todos los datos (medidas, categorías de tapizado, Italia, cabecero redondeado, detalles de madera, costuras) provienen de la ficha original; el H1 identifica el producto por su rasgo distintivo y las keywords 'turri bed' e 'italian bed' están integradas sin frases de relleno."
+   },
+   "intentos": 2,
+   "segundos": 98.9
+  },
+  {
+   "url": "https://cassoni.com/product/cas-dit-isla-sectional-01/",
+   "status": "processed",
+   "reason": "simulación en seco: ficha leída de la página publicada",
+   "h1_original": "Isla Sectional",
+   "h1": "Isla Sectional by Ditre Italia",
+   "h1_regla": "ningún rasgo con volumen: modelo + tipo",
+   "descripcion": "<p>The Isla sofa is a sectional sofa by Ditre Italia: an archipelago of rounded islands with soft cushions you arrange to your liking. Made in Italy.</p>\n<h2>TILTING BACKRESTS</h2>\n<p>The backrest tilts to different angles, so each seat adapts to a different body and position.</p>\n<h2>SHAPES AND SIZES</h2>\n<ul>\n<li>Six compositions (A, B, C, D, G, H), plus left- and right-facing versions of A, D and E.</li>\n<li>From 100 3/8\" W x 51 1/8\" D to 208 5/8\" W x 141 3/4\" D, all 31\" H.</li>\n</ul>\n<p>Measure the wall first: the widest version is over 208\". This Italian sectional can be regrouped later; browse our <a href=\"https://cassoni.com/product-category/furniture/living-room/sofas-sectionals/\">sectional sofas</a>.</p>",
+   "descripcion_original": "<p>Compositional freedom combined with a yearning for informality have given rise to a sofa consisting of an archipelago of rounded shapes. Islands providing comfortable seats, with soft cushions to be arranged to your liking, including a backrest with a variable tilt angle that distinguishes the ensemble and adapts to varying body shapes and to different surroundings. Made in Italy.</p>\n",
+   "keywords": [
+    "isla sofa",
+    "sectional sofa",
+    "italian sectional"
+   ],
+   "keywords_detalle": [
+    {
+     "keyword": "isla sofa",
+     "origen": "gsc",
+     "posicion": 12,
+     "volumen": 30,
+     "impresiones": 3,
+     "por_que": "ya aparece en Google (3 impresiones)"
+    },
+    {
+     "keyword": "sectional sofa",
+     "origen": "generica",
+     "volumen": 90500,
+     "por_que": "el tipo de producto (90500/mes)"
+    },
+    {
+     "keyword": "italian sectional",
+     "origen": "generica",
+     "volumen": 70,
+     "por_que": "el tipo de producto (70/mes)"
+    }
+   ],
+   "omitidas": [],
+   "reservas_usadas": [
+    "italian sectional"
+   ],
+   "validacion": {
+    "aprobado": true,
+    "issues": [],
+    "razon": "La descripción se apoya en los datos de la ficha: archipelago de islas redondeadas, cojines reconfigurables, respaldo con inclinación variable, Made in Italy. Las seis composiciones (A, B, C, D, G, H) más las versiones L/R de A, D y E están bien contadas, y el rango de medidas (100 3/8\" a 208 5/8\" de ancho, 31\" de alto) coincide con la ficha. Las keywords (isla sofa, sectional sofa, italian sectional) aparecen de forma natural y sin contradicciones; el H1 respeta la decisión del equipo SEO."
+   },
+   "intentos": 2,
+   "segundos": 133.5
+  },
+  {
+   "url": "https://cassoni.com/product/cas-wmg-efesto-murano-candle-holder-01/",
+   "status": "processed",
+   "reason": "simulación en seco: ficha leída de la página publicada",
+   "h1_original": "Efesto Murano Candle Holder",
+   "h1": "Efesto Murano Candle Holder by Wave Murano Glass",
+   "h1_regla": "sin tipo de producto: nombre + marca",
+   "descripcion": "<p>The Efesto is a Murano glass candle holder from Wave Murano Glass, hand-blown by Venetian artisans, with delicate colors and a soft sun-bleached effect. Made in Italy.</p>\n<h2>SUN-BLEACHED COLOR</h2>\n<p>Each Venetian candle holder is blown by hand, so tone and silhouette vary slightly from one piece to the next. That faded, sun-bleached color sits well on a modern table and on a classic one. Because every piece is one of a kind, buy them one at a time rather than expecting a matched set. See more <a href=\"https://cassoni.com/product-category/lighting/murano-lighting/murano-ceiling-lamps/\">Murano glass candle holders</a>.</p>",
+   "descripcion_original": "<p>Efesto is an elegant collection of Murano glass candle holders distinguished by their delicate colors and soft sun-bleached effect. Masterfully hand-blown by Venetian artisans, each piece is unique and displays a perfect balance between contemporary elegance and timeless craftsmanship. With their refined silhouettes and versatile design, these candle holders perfectly complement modern and classic interiors, bringing a touch of luminous sophistication to any space. Made in Italy.</p>\n",
+   "keywords": [
+    "venetian candle holder"
+   ],
+   "keywords_detalle": [
+    {
+     "keyword": "venetian candle holder",
+     "origen": "gsc",
+     "posicion": 11,
+     "volumen": 70,
+     "impresiones": 3,
+     "por_que": "ya aparece en Google (3 impresiones)"
+    }
+   ],
+   "omitidas": [
+    {
+     "keyword": "murano candles",
+     "motivo": "El producto es un portavelas, no una vela: la keyword describiría otro objeto y solo entraría en una oración confusa o negativa, sin dato real de la ficha."
+    }
+   ],
+   "reservas_usadas": [],
+   "validacion": {
+    "aprobado": true,
+    "issues": [],
+    "razon": "La descripción se ciñe a los datos de la ficha: vaso de Murano soplado a mano por artesanos venecianos, colores delicados y efecto sun-bleached, pieza única y Made in Italy. La variación de tono y silueta se deriva de 'each piece is unique' y la mención a interiores modernos y clásicos está respaldada. La keyword 'venetian candle holder' aparece de forma natural, sin relleno ni contradicciones."
+   },
+   "intentos": 2,
+   "segundos": 127.4
+  },
+  {
+   "url": "https://cassoni.com/product/cas-var-wellness-therapy-lounger-01/",
+   "status": "processed",
+   "reason": "simulación en seco: ficha leída de la página publicada",
+   "h1_original": "Wellness Therapy Lounger",
+   "h1": "Wellness Therapy Luminous Ring Lounger by Varaschin",
+   "h1_regla": "rasgo más buscado: 'fabric lounger' (50/mes)",
+   "descripcion": "<p>Wellness Therapy is a customizable therapy lounge chair by Varaschin for wellness therapy and spa areas. It combines a bed, a support and a luminous ring, and it is made in Italy.</p>\n<h2>LIGHT, COLOR, SOUND AND SCENT</h2>\n<p>The stones version adds a Corian touch top with chromotherapy and aromatherapy, music and a cup warmer.</p>\n<h2>SINGLE OR DOUBLE</h2>\n<p>This lounge chair is built around a single or a double bed, resting on stones, feet or a plexiglass support. The Abaco fabric comes in nine colors, from Abacobianco to Abacosalvia.</p>\n<p>Choose the bed version and the support first, then the fabric. See all <a href=\"https://cassoni.com/product-category/high-end-home-gym-equipment-and-spa/spa-wellness/wellness-beds-loungers/\">wellness beds and loungers</a>.</p>",
+   "descripcion_original": "<p>Inspired on the search of the best possible to create a balance between body, mind and soul, here is a sophisticated Italian customizable collection for wellness therapy and SPA that consists of a bed (single or double) resting on stones, feet or plexiglass support and a luminous ring. Stones available with Corian touch top with chromotherapy and aromatherapy function, music and cup warmer.</p>\n<p>Wellness Therapy is an innovative furnishing system where light, color, sound and scent chase each other, creating an experience of relaxation that is not only form and ergonomics, but in which emotion and holistic sensoriality also come into play. Designed by Varaschin. Made in Italy.</p>\n<p>See the “Data Sheet” PDF for technical information.</p>\n",
+   "keywords": [
+    "therapy lounge chair",
+    "lounge chair"
+   ],
+   "keywords_detalle": [
+    {
+     "keyword": "therapy lounge chair",
+     "origen": "gsc",
+     "posicion": 1,
+     "volumen": 140,
+     "impresiones": 140,
+     "por_que": "ya aparece en Google (140 impresiones)"
+    },
+    {
+     "keyword": "lounge chair",
+     "origen": "generica",
+     "volumen": 74000,
+     "por_que": "el tipo de producto (74000/mes)"
+    }
+   ],
+   "omitidas": [
+    {
+     "keyword": "chaise lounge",
+     "motivo": "La ficha describe una bed (single o double) sobre stones, feet o plexiglass con luminous ring, no una chaise: usarla obligaría a inventar una comparación o a cambiar el tipo de producto."
+    }
+   ],
+   "reservas_usadas": [],
+   "validacion": {
+    "aprobado": true,
+    "issues": [],
+    "razon": "Todos los datos coinciden con la ficha: colección personalizable para wellness/SPA, cama single o double sobre piedras, patas o soporte de plexiglás, anillo luminoso, versión stones con Corian, cromoterapia, aromaterapia, música y calientatazas, fabric Abaco en nueve colores (C471–C479) y Made in Italy. El H1 identifica el producto (lounger) con su rasgo distintivo (anillo luminoso) y la marca. No hay datos inventados ni contradicciones; el tono se mantiene sobrio y las keywords se integran con naturalidad."
+   },
+   "intentos": 2,
+   "segundos": 260.2
+  },
+  {
+   "url": "https://cassoni.com/product/costanzina-versatile-wall-lamp-luceplan/",
+   "status": "processed",
+   "reason": "simulación en seco: ficha leída de la página publicada",
+   "h1_original": "Costanzina Wall Lamp",
+   "h1": "Costanzina Aluminum Wall Sconce by Luceplan",
+   "h1_regla": "rasgo más buscado: 'aluminum wall sconce' (30/mes)",
+   "descripcion": "<p>The Luceplan Costanzina is a wall sconce with an interchangeable silkscreened polycarbonate shade on a slim aluminum stem. Made in Italy.</p><h2>SHADE AND SWITCH</h2><p>The shade diffuses light softly and swaps out to change the look. A rod switch sits by the light source. Each Luceplan lamp takes an LED 60W candelabra base G16 1/2 bulb and is not dimmable.</p><h2>SIZE AND PLACEMENT</h2><p>At Ø10 1/4\" x 6 5/8\" H, it suits a hallway or a bedside. This wall light is UL approved and is available as a set of two, for both sides of a bed. See all <a href=\"https://cassoni.com/product-category/lighting/wall-lamps-sconces/\">wall sconces</a>.</p>",
+   "descripcion_original": "<p>Costanzina is a refined wall lamp that brings warm, inviting illumination to any interior space. Its interchangeable silkscreened polycarbonate shade adds versatility and personality, allowing you to refresh the look with ease. Designed for both modern and classic décor, this lamp features a sleek aluminum stem and a practical rod-switch positioned close to the light source for effortless control. The lightweight shade softly diffuses the light, creating a cozy atmosphere ideal for living rooms, bedrooms, and hallways. A timeless piece that combines Italian design, high-quality materials, and functional elegance. UL Approved (Product build according to the National Electrical Code’s requirements and tested by Underwriters Laboratories). Made in Italy.</p>\n<p>Light source: LED 60W Candelabra Base G16 1/2 Bulb. Not dimmable. UL Approved.</p>\n",
+   "keywords": [
+    "luceplan costanzina",
+    "luceplan lamp",
+    "wall sconce",
+    "wall light"
+   ],
+   "keywords_detalle": [
+    {
+     "keyword": "luceplan costanzina",
+     "origen": "gsc",
+     "posicion": 6,
+     "volumen": 30,
+     "impresiones": 30,
+     "por_que": "ya aparece en Google (30 impresiones)"
+    },
+    {
+     "keyword": "luceplan lamp",
+     "origen": "gsc",
+     "posicion": 4,
+     "volumen": 30,
+     "impresiones": 30,
+     "por_que": "ya aparece en Google (30 impresiones)"
+    },
+    {
+     "keyword": "wall sconce",
+     "origen": "generica",
+     "volumen": 60500,
+     "por_que": "el tipo de producto (60500/mes)"
+    },
+    {
+     "keyword": "wall light",
+     "origen": "generica",
+     "volumen": 22200,
+     "por_que": "el tipo de producto (22200/mes)"
+    }
+   ],
+   "omitidas": [],
+   "reservas_usadas": [],
+   "validacion": {
+    "aprobado": true,
+    "issues": [],
+    "razon": "Todos los datos (policarbonato serigrafiado intercambiable, varilla de aluminio, interruptor de varilla, LED 60W G16 1/2 no regulable, UL, Made in Italy, set de 2, medidas) salen de la ficha; no hay contradicciones, keywords usadas con sentido natural y el H1 identifica tipo y material."
+   },
+   "intentos": 1,
+   "segundos": 42.0
+  },
+  {
+   "url": "https://cassoni.com/product/boulevard-elegant-lounge-chair-dv-home-collection/",
+   "status": "processed",
+   "reason": "simulación en seco: ficha leída de la página publicada",
+   "h1_original": "Boulevard Lounge Chair",
+   "h1": "Boulevard Upholstered Lounge Chair by DV Home Collection",
+   "h1_regla": "rasgo más buscado: 'leather lounge chair' (4400/mes)",
+   "descripcion": "<p>The Boulevard is an upholstered lounge chair by DV Home Collection, with a sculptural wooden structure and a generously proportioned seat. Made in Italy.</p>\n<h2>FABRIC OR LEATHER</h2>\n<ul>\n<li>VIP fabric.</li>\n<li>Leather in category C, in the COL. color options.</li>\n</ul>\n<p>Pick leather if you want a designer leather chair; the VIP fabric version shares the same frame and dimensions.</p>\n<h2>SIZE AND PLACE</h2>\n<p>At 27 1/2\" W x 28 3/8\" D x 29 1/8\" H it takes little floor space, so it works in a bedroom corner or next to a sofa. See all <a href=\"https://cassoni.com/product-category/furniture/living-room/lounge-chairs/\">lounge chairs</a>.</p>",
+   "descripcion_original": "<p>Crafted with timeless elegance, this refined lounge chair embodies the perfect harmony of comfort and sophistication. It features a sculptural wooden structure and a generously proportioned seat which is upholstered in leather or fabric, each option carefully selected for its tactile allure and enduring quality. Every curve and contour is designed to embrace the body, inviting hours of effortless relaxation. A piece that balances artisanal craftsmanship with understated luxury. Made in Italy.</p>\n",
+   "keywords": [
+    "designer leather chair",
+    "lounge chair"
+   ],
+   "keywords_detalle": [
+    {
+     "keyword": "designer leather chair",
+     "origen": "gsc",
+     "posicion": 2,
+     "volumen": 50,
+     "impresiones": 50,
+     "por_que": "ya aparece en Google (50 impresiones)"
+    },
+    {
+     "keyword": "lounge chair",
+     "origen": "generica",
+     "volumen": 74000,
+     "por_que": "el tipo de producto (74000/mes)"
+    }
+   ],
+   "omitidas": [],
+   "reservas_usadas": [],
+   "validacion": {
+    "aprobado": true,
+    "issues": [],
+    "razon": "El H1 identifica correctamente el producto (lounge chair tapizada, marca DV Home Collection) y la descripción se limita a los datos de la ficha: estructura de madera escultórica, asiento amplio, tapizado en cuero o tejido VIP, categoría C de cuero, medidas exactas y Made in Italy. Las keywords 'lounge chair' y 'designer leather chair' aparecen usadas con sentido correcto y de forma natural, sin contradicciones ni datos inventados."
+   },
+   "intentos": 5,
+   "segundos": 283.9
+  },
+  {
+   "url": "https://cassoni.com/product/cas-dvhc-windsor-mirror-01/",
+   "status": "processed",
+   "reason": "simulación en seco: ficha leída de la página publicada",
+   "h1_original": "Windsor Mirror",
+   "h1": "Windsor Stainless Steel Mirror by DV Home Collection",
+   "h1_regla": "rasgo más buscado: 'stainless steel mirror' (720/mes)",
+   "descripcion": "<p>The Windsor is an Italian mirror by DV Home Collection, built on a multilayered stainless steel frame with a central panel of natural beveled mirror, 1/8\" thick. Made in Italy.</p><h2>CHOOSE THE HEIGHT</h2><p>Both sizes are 47 1/4\" wide, so the choice is height: 55 1/8\" or 78 3/4\".</p><h2>FRAME FINISHES</h2><ul><li>Stainless steel</li><li>Dipped Champagne Gold</li><li>Dipped Pink Gold</li><li>Gold Saten</li></ul><p>Every version is a stainless steel mirror frame underneath; the three gold tones are finishes applied to that same steel. Lead time is 12-16 weeks, so measure the wall before you order, and compare the other <a href=\"https://cassoni.com/product-category/accessories/mirrors/\">mirrors</a> in the category.</p>",
+   "descripcion_original": "<p>The refined Italian Windsor mirror features a multilayered structure and a high-end stainless steel frame with a refined design available in different finishes. The central section is in natural beveled mirror 1/8”.</p>\n<p>With a sophisticated Glamour style, this Italian piece will surely enhance any area of your home. Made in Italy.</p>\n",
+   "keywords": [
+    "italian mirror"
+   ],
+   "keywords_detalle": [
+    {
+     "keyword": "italian mirror",
+     "origen": "generica",
+     "volumen": 260,
+     "por_que": "el tipo de producto (260/mes)"
+    }
+   ],
+   "omitidas": [],
+   "reservas_usadas": [],
+   "validacion": {
+    "aprobado": true,
+    "issues": [],
+    "razon": "Todos los datos (medidas, las cuatro opciones de acabado, 1/8\" de espejo biselado, estructura multicapa, marco de acero inoxidable, Made in Italy, lead time 12-16 semanas) provienen de la ficha. La keyword 'italian mirror' aparece de forma natural en la primera oración. El H1 identifica producto + material. El conteo de tres tonos dorados es correcto. No hay datos inventados ni contradicciones."
+   },
+   "intentos": 1,
+   "segundos": 45.4
+  }
+ ]
+}

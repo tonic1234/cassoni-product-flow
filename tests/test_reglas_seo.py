@@ -62,7 +62,8 @@ def test_sin_genericas_por_material():
     sel = elegir_keywords(cands, nombre="Rock Coffee Table", marca="Rugiano",
                           tipo="coffee table", h1="Rock Marble Coffee Table by Rugiano",
                           rasgo="marble", texto_ficha="Rock Coffee Table marble top wood")
-    assert [e["keyword"] for e in sel["elegidas"]] == []      # 'rock coffee table' es el nombre
+    # sin genéricas sueltas de material; el nombre solo completa el mínimo (23-nov)
+    assert [e["keyword"] for e in sel["elegidas"]] == ["rock coffee table"]
 
 
 def test_dandy_sin_leather_table():
