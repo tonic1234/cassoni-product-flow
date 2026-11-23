@@ -372,4 +372,10 @@ que escribió el agente (antes 9 medido). Las 6 que faltan son elecciones puntua
 bed frame», «cleopatra's chair», «wall light», «wall sconce», «italian piano», «visionnaire
 chair»): forzarlas sería ajustar a 10 fichas. Lo que hace el redactor con la regla nueva
 se mide en la próxima tanda en seco.
+**Medido el mismo día con DeepSeek real** (`tools/control_alex_sin_tienda.py`, deepseek-v4.1-flash
+por OpenCode, en seco y sin atributos de WooCommerce;
+`evidencia/2026-11-23-control-alex-sin-tienda*.json`): keywords de Alex **15 de 22** (17-nov: 9),
+H1 idénticos 3 (antes 2), parecido 0,74 (antes 0,66), 10 de 10 aprobadas, 87 palabras promedio
+(Alex 86). Diferencias que quedan: Cleopatra sale «Leather» y no «Wood and Leather» (por eso no
+entra «wood and leather chair»); Illan suma dos genéricas del mismo material.
 
