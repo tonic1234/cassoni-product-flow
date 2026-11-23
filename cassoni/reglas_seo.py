@@ -33,7 +33,8 @@ MIN_IMPRESIONES = 2
 MIN_IMPRESIONES_GENERICA = 5   # búsquedas de GSC que no nombran el modelo ni la marca
 MIN_VOL_MARCA = 10
 MIN_VOL_GENERICA = 50
-MAX_KEYWORDS = 3
+MAX_KEYWORDS = 3              # objetivo: 3 (decisión del 23-nov)
+MIN_KEYWORDS = 2              # mínimo: 2, siempre coherentes con la ficha
 
 
 def _plano(s: str) -> str:
@@ -347,10 +348,49 @@ def genericas_usadas(descripcion_plana: str, h1: str, opcionales) -> list[tuple[
     return out
 
 
+_RELLENO = frozenset({"and", "with", "in", "for", "the", "a", "of", "by"})
+
+
+def candidatas_de_competencia(rankeadas: Iterable[dict], *, h1: str, nombre: str, marca: str,
+                              tipo: str, texto_ficha: str, minimo: int = 0) -> list[dict]:
+    """Keywords que la competencia rankea con el MISMO producto (DataForSEO
+    ranked_keywords, hasta 3 competidores) que esta ficha puede usar, con los filtros de
+    Alex: nombran el tipo sin volverlo otro producto ('leather table' de una mesa de
+    pool no), no son el tipo suelto ('coffee table'), la ficha respalda cada palabra,
+    no repiten el H1 y tienen volumen. Primero las que rankean más competidores."""
+    minimo = minimo or MIN_VOL_GENERICA
+    nucleo = _norm(tipo)
+    nucleo = nucleo[len("outdoor "):] if nucleo.startswith("outdoor ") else nucleo
+    cabeza = cabeza_de(nucleo)
+    tipo_w = {_singular(w) for w in nucleo.split()}
+    tipos = set(nucleo.split()) | {"couch", "light", "lamp"}
+    h1n = f" {_norm(h1)} "
+    nombre_n = nombre_de_busqueda(nombre)
+    out, vistas = [], set()
+    for c in rankeadas or []:
+        kw = _norm(c.get("keyword") or "")
+        v = int(c.get("volume") or c.get("volumen") or 0)
+        palabras = kw.split()
+        sing = [_singular(w) for w in palabras]
+        nombra_tipo = (cabeza and _singular(cabeza) in sing) or (not cabeza and nucleo in kw)
+        resto = [w for w, s_ in zip(palabras, sing) if s_ not in tipo_w and w not in _RELLENO]
+        if (not kw or kw in vistas or v < minimo or not nombra_tipo or not resto
+                or not re.fullmatch(r"[a-z0-9' &-]+", (c.get("keyword") or "").lower())
+                or f" {kw} " in h1n or kw == nombre_n
+                or palabras_sin_respaldo(kw, texto_ficha, tipos)):
+            continue
+        vistas.add(kw)
+        out.append({"keyword": kw, "origen": "competidor", "volumen": v,
+                    "competidores": int(c.get("competidores") or 1),
+                    "mejor_posicion": c.get("mejor_posicion")})
+    return sorted(out, key=lambda c: (-c["competidores"], -c["volumen"]))
+
+
 def elegir_keywords(candidatas: list[dict], *, nombre: str, marca: str, tipo: str,
                     h1: str, rasgo: str, texto_ficha: str,
                     opciones: Optional[list[dict]] = None, marca_ajena: str = "",
-                    genericas_h1: Optional[list[dict]] = None) -> dict:
+                    genericas_h1: Optional[list[dict]] = None,
+                    competencia: Optional[list[dict]] = None) -> dict:
     """{'elegidas': [...], 'descartadas': [{keyword, motivo}]} sin LLM.
     `opciones`: keywords '{opción} {tipo}' (keywords_de_opciones); entran todas después
     de Search Console, aunque el H1 diga una. `marca_ajena`: no cambia la elección
@@ -392,32 +432,42 @@ def elegir_keywords(candidatas: list[dict], *, nombre: str, marca: str, tipo: st
         return 2 if w & modelo_w else (1 if marca_n and marca_n in kw else 0)
 
     # 1) Search Console: ya trae impresiones; primero las variantes del nombre
-    for c in sorted((c for c in candidatas if c.get("origen") == "gsc"),
-                    key=lambda c: (-_nombra(_norm(c["keyword"])), "&" in (c["keyword"] or ""),
-                                   -(c.get("impresiones") or 0))):
+    def _motivo_gsc(c: dict, relajado: bool = False) -> Optional[str]:
         kw = _norm(c["keyword"])
-        sin = palabras_sin_respaldo(kw, texto_ficha, tipos)
         imp = c.get("impresiones") or 0
+        minimo_gen = MIN_IMPRESIONES if relajado else MIN_IMPRESIONES_GENERICA
         if not re.fullmatch(r"[a-z0-9' &-]+", (c["keyword"] or "").lower()):
-            motivo = "tiene símbolos que no son de una búsqueda escrita"
-        elif imp < MIN_IMPRESIONES or (not _nombra(kw) and imp < MIN_IMPRESIONES_GENERICA):
-            motivo = "pocas impresiones"
-        elif len(kw.split()) < len(nombre_w) and nombre_w[:len(kw.split())] == kw.split():
-            motivo = "es el nombre recortado"
-        elif kw in h1n or kw in (nombre_n, modelo_n):
-            motivo = "ya lo dice el H1 o es el nombre tal cual"
-        elif kw == marca_n or (marca_ajena and _clave(kw) in {
+            return "tiene símbolos que no son de una búsqueda escrita"
+        if imp < MIN_IMPRESIONES or (not _nombra(kw) and imp < minimo_gen):
+            return "pocas impresiones"
+        if len(kw.split()) < len(nombre_w) and nombre_w[:len(kw.split())] == kw.split():
+            return "es el nombre recortado"
+        if kw in h1n or kw in (nombre_n, modelo_n):
+            return "ya lo dice el H1 o es el nombre tal cual"
+        if kw == marca_n or (marca_ajena and _clave(kw) in {
                 _clave(marca_ajena), _clave(NOMBRE_COMPLETO.get(marca_ajena, marca_ajena))}):
-            motivo = "es solo la marca"
-        elif sin:
-            motivo = "la ficha no dice " + ", ".join(f"'{w}'" for w in sin)
-        elif len([e for e in elegidas if e["origen"] == "gsc"]) >= max_gsc:
-            motivo = ("ya hay una de Search Console y las opciones de la ficha"
-                      if max_gsc == 1 else "ya hay dos de Search Console")
-        elif _agregar(c, f"ya aparece en Google ({c.get('impresiones')} impresiones)"):
-            continue
-        else:
-            motivo = "repite otra elegida"
+            return "es solo la marca"
+        sin = palabras_sin_respaldo(kw, texto_ficha, tipos)
+        if sin:
+            return "la ficha no dice " + ", ".join(f"'{w}'" for w in sin)
+        return None
+
+    gsc = sorted((c for c in candidatas if c.get("origen") == "gsc"),
+                 key=lambda c: (-_nombra(_norm(c["keyword"])), "&" in (c["keyword"] or ""),
+                                -(c.get("impresiones") or 0)))
+    flojas: list[dict] = []
+    for c in gsc:
+        motivo = _motivo_gsc(c)
+        if motivo is None:
+            if len([e for e in elegidas if e["origen"] == "gsc"]) >= max_gsc:
+                motivo = ("ya hay una de Search Console y las opciones de la ficha"
+                          if max_gsc == 1 else "ya hay dos de Search Console")
+            elif _agregar(c, f"ya aparece en Google ({c.get('impresiones')} impresiones)"):
+                continue
+            else:
+                motivo = "repite otra elegida"
+        elif motivo == "pocas impresiones":
+            flojas.append(c)
         descartadas.append({"keyword": c["keyword"], "motivo": motivo})
 
     # 2) una por cada opción de la parte principal (Rock: mármol y madera)
@@ -437,6 +487,31 @@ def elegir_keywords(candidatas: list[dict], *, nombre: str, marca: str, tipo: st
                     and _norm(c["keyword"]) not in h1n:
                 if _agregar(c, f"marca + tipo ({c.get('volumen')}/mes)"):
                     break
+
+    # 4) relleno: lo que la competencia rankea con el mismo producto, si quedó lugar
+    competencia = competencia or []
+    for c in competencia:
+        if len(elegidas) >= MAX_KEYWORDS:
+            break
+        if (c.get("volumen") or 0) >= MIN_VOL_GENERICA:
+            _agregar(c, f"la rankean {c.get('competidores', 1)} competidores con el mismo "
+                        f"producto ({c.get('volumen')}/mes)")
+
+    # 5) mínimo de 2 (objetivo 3): se afloja el umbral, nunca la coherencia. Primero
+    #    Search Console con 2+ impresiones, después la competencia con menos volumen
+    if len(elegidas) < MIN_KEYWORDS:
+        for c in flojas:
+            if len(elegidas) >= MIN_KEYWORDS:
+                break
+            if _motivo_gsc(c, relajado=True) is None and _agregar(
+                    c, f"ya aparece en Google ({c.get('impresiones')} impresiones; para llegar "
+                       f"al mínimo de {MIN_KEYWORDS})"):
+                descartadas[:] = [d for d in descartadas if d["keyword"] != c["keyword"]]
+        for c in competencia:
+            if len(elegidas) >= MIN_KEYWORDS:
+                break
+            _agregar(c, f"la rankean {c.get('competidores', 1)} competidores con el mismo producto "
+                        f"({c.get('volumen')}/mes; para llegar al mínimo de {MIN_KEYWORDS})")
 
     # las genéricas por material no se eligen acá: dependen del H1 que escribe el
     # redactor (genericas_para_h1) o de la opción del H1 (keywords_de_opciones)

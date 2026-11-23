@@ -1,0 +1,2 @@
+FAILED tests/test_competencia_rellena.py::test_con_una_sola_entra_search_console_con_menos_impresiones
+2 failed, 6 passed in 0.04s

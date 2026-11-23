@@ -162,7 +162,7 @@ DESCRIPCIÓN CORTA ACTUAL:
 DESCRIPCIÓN LARGA ACTUAL (fuente de datos; se reescribe):
 {strip_html(ficha.get('descripcion') or '')}
 
-{_bloque_rasgos(ficha)}{_bloque_opciones(ficha)}{_bloque_genericas(ficha)}{_bloque_marca_ajena(ficha)}KEYWORDS OBJETIVO (exactas, 1 o 2 veces cada una){' — las eligió el equipo SEO con datos: usalas TODAS; omití una solo si contradice la ficha' if ficha.get('keywords_obligatorias') else ''}:
+{_bloque_rasgos(ficha)}{_bloque_opciones(ficha)}{_bloque_genericas(ficha)}{_bloque_marca_ajena(ficha)}KEYWORDS OBJETIVO (exactas, 1 o 2 veces cada una){' — las eligió el equipo SEO con datos. El objetivo es que entren las 3 (mínimo 2), cada una en una oración que diga algo real del producto. Omití una solo si contradice la ficha o no entra natural, con el motivo en omitidas' if ficha.get('keywords_obligatorias') else ''}:
 {chr(10).join(f'- {k}' for k in objetivo) or '(ninguna: escribí la ficha igual)'}
 
 Responde SOLO con JSON:

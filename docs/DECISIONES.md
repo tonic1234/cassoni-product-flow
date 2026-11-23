@@ -401,3 +401,24 @@ entra «wood and leather chair»); Illan suma dos genéricas del mismo material.
 
 Costo de la corrida: ~US$ 0,14 a precio de lista (28 llamadas).
 
+## D-029 · Objetivo 3 keywords, mínimo 2; la competencia completa
+**23-nov-2026 · decisión de Antonio**
+Las fichas nuevas quedaban con una sola keyword: Search Console + marca y tipo no
+alcanzan cuando la ficha tiene pocas búsquedas propias. Y la consulta a la competencia
+(D-014: el mismo producto en hasta 3 competidores, DataForSEO `ranked_keywords`) se
+pagaba en la precarga (~26 min en 30 fichas) pero en modo reglas nunca llegaba a la
+elección: el orquestador la tenía en una rama `elif` que el modo reglas no recorre.
+- **Objetivo 3, mínimo 2, siempre coherentes.** Orden: Search Console, opciones, genérica
+  del H1, marca + tipo y **lo que rankea la competencia** con el mismo producto
+  (`candidatas_de_competencia`): nombra el tipo sin volverlo otro producto, no es el tipo
+  suelto, la ficha respalda cada palabra, no repite el H1, volumen ≥ 50, primero las que
+  rankean más competidores.
+- **Mínimo 2:** si no llega, se afloja el umbral y nunca la coherencia: Search Console con
+  2+ impresiones (en vez de 5) y competencia desde 10/mes.
+- El redactor recibe «objetivo 3, mínimo 2». Si una no entra natural la omite con el
+  motivo: dos integradas valen más que tres forzadas.
+La competencia se consulta solo si después de las reglas quedan lugares (está en caché
+desde la precarga). Tests: `test_competencia_rellena.py` y
+`test_seleccion_reglas_opciones.py`. El control sin tienda no tiene datos de competencia:
+el efecto se mide en la corrida del VPS.
+

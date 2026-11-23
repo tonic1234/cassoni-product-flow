@@ -27,6 +27,7 @@ def _pipe(vol):
     p = object.__new__(Pipeline)
     p.cfg = Config(env="staging")
     p.volumenes = _Vol(vol)
+    p.competidores = None
     p._genericas = lambda product: []
     return p
 
@@ -111,3 +112,21 @@ def test_controles_rechazan_un_h1_que_pierde_la_edicion():
     bueno = {"h1": "Cleopatra Walnut Chair Limited Edition by Jumbo", "description": "<p>x</p>"}
     assert any("Limited Edition" in i for i in controles(ficha, malo, []))
     assert not any("Limited Edition" in i for i in controles(ficha, bueno, []))
+
+
+def test_la_competencia_completa_hasta_tres_en_la_seleccion():
+    pipe = _pipe({"frog coffee table": 30, "glass coffee table": 22200})
+    pipe.competidores = object()
+    pipe._con_volumen = lambda filas: filas
+    pipe._paginas_competidores = lambda ctx: (
+        [{"url": "https://otra.com/frog"}],
+        [{"keyword": "modern glass coffee table", "volume": 1900, "competidores": 2},
+         {"keyword": "curved glass coffee table", "volume": 320, "competidores": 2},
+         {"keyword": "coffee table", "volume": 301000, "competidores": 3}])
+    ctx = _ctx("Frog Coffee Table", "Sovet Italia", "coffee table",
+               "<p>Frog coffee table with a tempered glass top and a curved glass base. Modern design.</p>",
+               [{"keyword": "frog table", "impressions": 40, "position": 5}])
+    sel = pipe._seleccion_reglas("u", {}, ctx)
+    assert [e["keyword"] for e in sel["elegidas"]] == [
+        "frog table", "modern glass coffee table", "curved glass coffee table"]
+    assert sel["competidores_leidos"] == [{"url": "https://otra.com/frog"}]

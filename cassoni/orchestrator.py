@@ -445,9 +445,22 @@ class Pipeline:
                       for k, v, _ in genericas_para_h1(r["h1"], ctx["genericas_opcionales"])]
             ctx["genericas_opcionales"] = []
         ctx["marca_ajena"] = ajena
-        sel = elegir_keywords(cands, nombre=ctx["nombre"], marca=ctx["marca"], tipo=tipo,
-                              h1=r["h1"], rasgo=r["rasgo"], texto_ficha=texto,
-                              opciones=kw_opciones, marca_ajena=ajena, genericas_h1=gen_h1)
+        args = dict(nombre=ctx["nombre"], marca=ctx["marca"], tipo=tipo, h1=r["h1"],
+                    rasgo=r["rasgo"], texto_ficha=texto, opciones=kw_opciones,
+                    marca_ajena=ajena, genericas_h1=gen_h1)
+        sel = elegir_keywords(cands, **args)
+        # 23-nov: si quedan lugares, lo que la competencia rankea con el mismo producto
+        # (ya consultado en la precarga: está en caché)
+        sel["competidores_leidos"] = []
+        from .reglas_seo import MAX_KEYWORDS, candidatas_de_competencia
+        if len(sel["elegidas"]) < MAX_KEYWORDS and self.competidores is not None:
+            leidos, rank = self._paginas_competidores(ctx)
+            comp = candidatas_de_competencia(self._con_volumen(rank), h1=r["h1"],
+                                             nombre=ctx["nombre"], marca=ctx["marca"],
+                                             tipo=tipo, texto_ficha=texto, minimo=10)
+            if comp:
+                sel = elegir_keywords(cands, **args, competencia=comp)
+            sel["competidores_leidos"] = leidos
         for e in sel["elegidas"]:
             e["volume"], e["impressions"] = e.get("volumen"), e.get("impresiones")
         sel["faltan"] = 0
@@ -575,6 +588,7 @@ class Pipeline:
             # reglas del SEO en código (Alex, 17-nov): H1 por volumen, keywords de
             # Search Console + marca y tipo; el modelo solo redacta
             sel = self._seleccion_reglas(url, product, ctx)
+            competidores = sel.get("competidores_leidos") or []
         elif self.cfg.modo_keywords == "seo":
             # criterio del SEO (documento del 6-nov), con sus fichas como ejemplo
             try:
