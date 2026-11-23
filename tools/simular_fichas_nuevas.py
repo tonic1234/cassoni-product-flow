@@ -101,8 +101,9 @@ def categoria_para(nombre: str, tipo: str, menu: list[tuple[str, str]]) -> tuple
         p = len(w & tw)
         if p > puntos:
             mejor, puntos = (texto, url), p
-    ruta = [s for s in mejor[1].split("/product-category/")[-1].split("/") if s] if mejor[1] else []
-    return ruta, mejor[1]
+    url = mejor[1].split("?")[0]           # sin filtros del menú («?filter_pa_…»)
+    ruta = [s for s in url.split("/product-category/")[-1].split("/") if s] if url else []
+    return ruta, url
 
 
 def main(argv=None) -> int:
@@ -155,7 +156,13 @@ def main(argv=None) -> int:
     fichas = []
     for r in refs:
         t0 = time.time()
-        ficha, objetivos, dec = preparar(r, descs[r["url"]], cfg.h1_umbral_nombre)
+        try:
+            ficha, objetivos, dec = preparar(r, descs[r["url"]], cfg.h1_umbral_nombre)
+        except Exception as exc:                 # una ficha con error no frena las demás
+            fichas.append({"url": r["url"], "status": "failed", "reason": f"error: {exc}",
+                           "h1_original": r["nombre"], "keywords": [], "keywords_detalle": []})
+            print(f"failed    {r['nombre']}: {exc}", flush=True)
+            continue
         if len(objetivos) < MIN_KEYWORDS:
             sug = []
             from cassoni.h1 import modelo_de

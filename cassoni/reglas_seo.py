@@ -521,7 +521,8 @@ def elegir_keywords(candidatas: list[dict], *, nombre: str, marca: str, tipo: st
     from .criterio_seo import _SINONIMOS
     frases_tipo = {nucleo_t, _norm(tipo), *(_norm(x) for x in _SINONIMOS.get(_norm(tipo), [])),
                    *(_norm(x) for x in _SINONIMOS.get(nucleo_t, []))}
-    if re.search(r"\b(italy|italian)\b", _plano(texto_ficha)):
+    # sin tipo no hay «italian + tipo» (fallaba con IndexError, simulación del 23-nov)
+    if nucleo_t and re.search(r"\b(italy|italian)\b", _plano(texto_ficha)):
         frases_tipo.add(f"italian {cabeza_de(nucleo_t) or nucleo_t.split()[-1]}")
     de_tipo = sorted((c for c in candidatas if c.get("origen") == "generica"
                       and _norm(c["keyword"]) in frases_tipo and len(_norm(c["keyword"]).split()) >= 2

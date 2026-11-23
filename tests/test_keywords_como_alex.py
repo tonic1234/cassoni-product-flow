@@ -75,3 +75,10 @@ def test_con_poco_texto_el_techo_es_el_minimo():
     from cassoni.reglas_seo import MIN_KEYWORDS, MAX_KEYWORDS, techo_de_keywords
     assert techo_de_keywords("Wooden chair with leather upholstery. Rosewood, Ebony or Citronier finish.") == MIN_KEYWORDS
     assert techo_de_keywords(" ".join(["word"] * 60)) == MAX_KEYWORDS
+
+
+def test_sin_tipo_no_se_cae():
+    sel = elegir_keywords([{"keyword": "windsor mirror", "origen": "gsc", "impresiones": 200}],
+                          nombre="Windsor", marca="DV Home Collection", tipo="", h1="Windsor by DV Home Collection",
+                          rasgo="", texto_ficha="Windsor, made in Italy")
+    assert isinstance(sel["elegidas"], list)
