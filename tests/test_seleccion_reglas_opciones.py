@@ -117,6 +117,7 @@ def test_controles_rechazan_un_h1_que_pierde_la_edicion():
 def test_la_competencia_completa_hasta_tres_en_la_seleccion():
     pipe = _pipe({"frog coffee table": 30, "glass coffee table": 22200})
     pipe.competidores = object()
+    pipe.cfg.relleno_keywords = "competencia"      # apagada por defecto desde el 23-nov
     pipe._con_volumen = lambda filas: filas
     pipe._paginas_competidores = lambda ctx: (
         [{"url": "https://otra.com/frog"}],
@@ -130,3 +131,19 @@ def test_la_competencia_completa_hasta_tres_en_la_seleccion():
     assert [e["keyword"] for e in sel["elegidas"]] == [
         "frog table", "modern glass coffee table", "curved glass coffee table"]
     assert sel["competidores_leidos"] == [{"url": "https://otra.com/frog"}]
+
+
+def test_las_sugerencias_completan_hasta_tres_por_defecto():
+    pipe = _pipe({"frog coffee table": 30, "glass coffee table": 22200})
+    pipe._sugerencias = lambda ctx: [
+        {"keyword": "frog coffee table", "volume": 30},                 # repite el nombre
+        {"keyword": "curved glass coffee table", "volume": 320},
+        {"keyword": "modern glass coffee table", "volume": 1900},
+        {"keyword": "frog legs recipe", "volume": 9900}]                  # ruido
+    ctx = _ctx("Frog Coffee Table", "Sovet Italia", "coffee table",
+               "<p>Frog coffee table with a tempered glass top and a curved glass base. Modern design.</p>",
+               [{"keyword": "frog table", "impressions": 40, "position": 5}])
+    sel = pipe._seleccion_reglas("u", {}, ctx)
+    assert [e["keyword"] for e in sel["elegidas"]] == [
+        "frog table", "modern glass coffee table", "curved glass coffee table"]
+    assert sel["elegidas"][1]["origen"] == "sugerencia"

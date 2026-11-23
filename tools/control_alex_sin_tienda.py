@@ -45,7 +45,8 @@ CONTROL = "evidencia/2026-11-17-control-reglas3.json"
 
 
 def preparar(ref: dict, desc_orig: str, umbral: int,
-             rankeadas: list[dict] | None = None) -> tuple[dict, list[dict], dict]:
+             rankeadas: list[dict] | None = None,
+             origen: str = "competidor") -> tuple[dict, list[dict], dict]:
     """(ficha para el redactor, keywords objetivo, decisión del H1)."""
     vol = {c["keyword"].lower(): {"volume": c.get("volumen") or 0} for c in ref["candidatas"]}
     tipo, nombre, marca = ref["tipo"], ref["nombre"], ref["marca"]
@@ -68,7 +69,7 @@ def preparar(ref: dict, desc_orig: str, umbral: int,
     from cassoni.reglas_seo import candidatas_de_competencia
     texto = " ".join([nombre, marca, plano])
     competencia = candidatas_de_competencia(rankeadas or [], h1=r["h1"], nombre=nombre, marca=marca,
-                                            tipo=tipo, texto_ficha=texto, minimo=10)
+                                            tipo=tipo, texto_ficha=texto, minimo=10, origen=origen)
     sel = elegir_keywords(ref["candidatas"], nombre=nombre, marca=marca, tipo=tipo, h1=r["h1"],
                           rasgo=r["rasgo"], texto_ficha=" ".join([nombre, marca, plano]),
                           opciones=kw_ops, marca_ajena=ajena, genericas_h1=gen_h1,
@@ -117,6 +118,8 @@ def main(argv=None) -> int:
     ap.add_argument("--competencia", default="",
                     help="JSON {url: keywords que rankea la competencia}; si no existe y hay "
                          "credenciales de DataForSEO, se consulta una vez y se guarda")
+    ap.add_argument("--sugerencias", default="",
+                    help="JSON {url: {semillas, sugerencias: {keyword: volumen}}} ya consultado")
     a = ap.parse_args(argv)
     cfg = Config.load("staging", dry_run=True)
     llm = LLMClient(cfg)
@@ -125,12 +128,17 @@ def main(argv=None) -> int:
     refs = json.loads(Path(a.ref).read_text(encoding="utf-8"))
     originales = {f["url"]: f.get("descripcion_original") or ""
                   for f in json.loads(Path(CONTROL).read_text(encoding="utf-8"))["fichas"]}
-    comp = competencia_de(a.competencia, refs, cfg) if a.competencia else {}
+    comp, origen = (competencia_de(a.competencia, refs, cfg) if a.competencia else {}), "competidor"
+    if a.sugerencias:
+        datos = json.loads(Path(a.sugerencias).read_text(encoding="utf-8"))
+        comp = {u: [{"keyword": k, "volume": v} for k, v in d["sugerencias"].items()]
+                for u, d in datos.items()}
+        origen = "sugerencia"
     fichas = []
     for ref in refs:
         t0 = time.time()
         ficha, objetivos, r = preparar(ref, originales.get(ref["url"], ""), cfg.h1_umbral_nombre,
-                                       rankeadas=comp.get(ref["url"]))
+                                       rankeadas=comp.get(ref["url"]), origen=origen)
         try:
             from cassoni.reglas_seo import MIN_KEYWORDS
             val = validator.redactar_hasta_minimo(ficha=ficha, keywords=objetivos,

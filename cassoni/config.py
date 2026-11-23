@@ -67,6 +67,7 @@ class Config:
     # keywords: 'seo' = imita las elecciones del documento del SEO (6-nov) con sus
     # fichas como ejemplos; 'filtros' = reglas de volumen/intención (v3.2)
     modo_keywords: str = "reglas"
+    relleno_keywords: str = "sugerencias"     # sugerencias | competencia | ninguno (23-nov)
     h1_umbral_nombre: int = 1000      # búsquedas/mes para que el nombre solo alcance (Alex, 17-nov)
     referencia_seo: str = str(Path(__file__).resolve().parent.parent / "evidencia"
                               / "referencia-seo.json")
@@ -142,6 +143,7 @@ class Config:
         c.anthropic_api_key = g("CASSONI_ANTHROPIC_API_KEY", c.anthropic_api_key)
         c.anthropic_effort = g("CASSONI_ANTHROPIC_EFFORT", c.anthropic_effort)
         c.h1_umbral_nombre = int(g("CASSONI_H1_UMBRAL_NOMBRE", c.h1_umbral_nombre))
+        c.relleno_keywords = g("CASSONI_RELLENO_KEYWORDS", c.relleno_keywords)
         if c.modo_keywords not in ("reglas", "seo", "filtros"):
             raise ValueError(f"CASSONI_MODO_KEYWORDS inválido: {c.modo_keywords!r}")
         c.referencia_seo = g("CASSONI_REFERENCIA_SEO", c.referencia_seo)

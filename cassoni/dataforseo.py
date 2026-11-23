@@ -35,6 +35,7 @@ _SIMBOLOS_PROHIBIDOS = set(",!@%^()={};~`<>?\\|*")
 COSTO_VOLUMEN_USD = 0.09        # hasta 1.000 keywords por pedido
 COSTO_SERP_USD = 0.002          # una búsqueda orgánica
 COSTO_RANKED_USD = 0.03         # estimado, por página de competidor
+COSTO_SUGERENCIAS_USD = 0.016  # US$ 0,012 + 0,00012 por resultado (30): precio de la cuenta, 23-nov
 COSTO_IDEAS_USD = 0.03          # estimado (Labs cobra por pedido + por resultado):
                                 # se reemplaza por el real con la primera corrida
 
@@ -111,6 +112,7 @@ class DataForSEOFetcher:
     SERP_URL = "https://api.dataforseo.com/v3/serp/google/organic/live/advanced"
     IDEAS_URL = "https://api.dataforseo.com/v3/dataforseo_labs/google/keyword_ideas/live"
     RANKED_URL = "https://api.dataforseo.com/v3/dataforseo_labs/google/ranked_keywords/live"
+    SUGERENCIAS_URL = "https://api.dataforseo.com/v3/dataforseo_labs/google/keyword_suggestions/live"
 
     def __init__(self, config: Config, session: Optional[requests.Session] = None,
                  _post: Optional[Callable] = None):
@@ -305,6 +307,19 @@ class DataForSEOFetcher:
                 fila.update(real)
             out.append(fila)
         return out
+
+    def sugerencias(self, semilla: str, limite: int = 30) -> list[dict]:
+        """Búsquedas reales que CONTIENEN la semilla (DataForSEO Labs keyword_suggestions):
+        el nombre del producto y el fabricante («talenti cruise», «cruise sofa»), con su
+        volumen, sin importar quién rankea (23-nov). [{keyword, volume}]."""
+        payload = [{"keyword": semilla, "location_code": self.cfg.dfs_location_code,
+                    "language_code": self.cfg.dfs_language_code, "limit": limite,
+                    "include_seed_keyword": True,
+                    "order_by": ["keyword_info.search_volume,desc"]}]
+        res = self._tarea(payload, self.SUGERENCIAS_URL, COSTO_SUGERENCIAS_USD, "sugerencias")
+        return [{"keyword": it.get("keyword"),
+                 "volume": (it.get("keyword_info") or {}).get("search_volume")}
+                for it in (res or {}).get("items") or [] if it.get("keyword")]
 
     def ranked_keywords(self, url: str, limite: int = 40, max_posicion: int = 20,
                         patron: str = "") -> list[dict]:

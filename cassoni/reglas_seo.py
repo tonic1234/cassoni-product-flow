@@ -352,7 +352,8 @@ _RELLENO = frozenset({"and", "with", "in", "for", "the", "a", "of", "by"})
 
 
 def candidatas_de_competencia(rankeadas: Iterable[dict], *, h1: str, nombre: str, marca: str,
-                              tipo: str, texto_ficha: str, minimo: int = 0) -> list[dict]:
+                              tipo: str, texto_ficha: str, minimo: int = 0,
+                              origen: str = "competidor") -> list[dict]:
     """Keywords que la competencia rankea con el MISMO producto (DataForSEO
     ranked_keywords, hasta 3 competidores) que esta ficha puede usar, con los filtros de
     Alex: nombran el tipo sin volverlo otro producto ('leather table' de una mesa de
@@ -376,13 +377,15 @@ def candidatas_de_competencia(rankeadas: Iterable[dict], *, h1: str, nombre: str
         nombra_tipo = ((cabeza and sing and sing[-1] == _singular(cabeza))
                        or (not cabeza and kw.endswith(nucleo)))
         resto = [w for w, s_ in zip(palabras, sing) if s_ not in tipo_w and w not in _RELLENO]
+        if len(set(sing)) < len(sing) or {"a", "an", "the"} & set(palabras):
+            continue                     # «steinway piano piano», «steinway a piano»
         if (not kw or kw in vistas or v < minimo or not nombra_tipo or not resto
                 or not re.fullmatch(r"[a-z0-9' &-]+", (c.get("keyword") or "").lower())
                 or f" {kw} " in h1n or kw == nombre_n
                 or palabras_sin_respaldo(kw, texto_ficha, tipos)):
             continue
         vistas.add(kw)
-        out.append({"keyword": kw, "origen": "competidor", "volumen": v,
+        out.append({"keyword": kw, "origen": origen, "volumen": v,
                     "competidores": int(c.get("competidores") or 1),
                     "mejor_posicion": c.get("mejor_posicion")})
     return sorted(out, key=lambda c: (-c["competidores"], -c["volumen"]))
@@ -419,7 +422,8 @@ def elegir_keywords(candidatas: list[dict], *, nombre: str, marca: str, tipo: st
                         for w in _norm(k).replace("'s ", " ").split())
 
     def _agregar(c: dict, por: str) -> bool:
-        k = _clave(c["keyword"])
+        # las mismas palabras en otro orden son la misma keyword («chair shibari»)
+        k = " ".join(sorted(_clave(c["keyword"]).split()))
         if k in vistas or len(elegidas) >= MAX_KEYWORDS:
             return False
         vistas.add(k)
@@ -494,14 +498,38 @@ def elegir_keywords(candidatas: list[dict], *, nombre: str, marca: str, tipo: st
                 elif not _agregar(c, f"marca + tipo ({c.get('volumen')}/mes)"):
                     reservas.append({**c, "por_que": f"marca + tipo ({c.get('volumen')}/mes)"})
 
+    # 3b) el tipo de producto específico y «italian + tipo», como Alex («wall sconce»,
+    #     «wall light» en Illan; «italian piano» en Steinway). Nunca el tipo de una palabra
+    nucleo_t = _norm(tipo)
+    nucleo_t = nucleo_t[len("outdoor "):] if nucleo_t.startswith("outdoor ") else nucleo_t
+    from .criterio_seo import _SINONIMOS
+    frases_tipo = {nucleo_t, _norm(tipo), *(_norm(x) for x in _SINONIMOS.get(_norm(tipo), [])),
+                   *(_norm(x) for x in _SINONIMOS.get(nucleo_t, []))}
+    if re.search(r"\b(italy|italian)\b", _plano(texto_ficha)):
+        frases_tipo.add(f"italian {cabeza_de(nucleo_t) or nucleo_t.split()[-1]}")
+    de_tipo = sorted((c for c in candidatas if c.get("origen") == "generica"
+                      and _norm(c["keyword"]) in frases_tipo and len(_norm(c["keyword"]).split()) >= 2
+                      and (c.get("volumen") or 0) >= MIN_VOL_GENERICA),
+                     key=lambda c: -(c.get("volumen") or 0))
+    for c in de_tipo:
+        if len(elegidas) >= MAX_KEYWORDS:
+            reservas.append({**c, "por_que": f"el tipo de producto ({c.get('volumen')}/mes)"})
+            continue
+        _agregar(c, f"el tipo de producto ({c.get('volumen')}/mes)")
+
     # 4) relleno: lo que la competencia rankea con el mismo producto, si quedó lugar
     competencia = competencia or []
+    def _por_que_relleno(c: dict, extra: str = "") -> str:
+        if c.get("origen") == "sugerencia":
+            return f"se busca con el nombre o el fabricante ({c.get('volumen')}/mes{extra})"
+        return (f"la rankean {c.get('competidores', 1)} competidores con el mismo producto "
+                f"({c.get('volumen')}/mes{extra})")
+
     for c in competencia:
         if len(elegidas) >= MAX_KEYWORDS:
             break
         if (c.get("volumen") or 0) >= MIN_VOL_GENERICA:
-            _agregar(c, f"la rankean {c.get('competidores', 1)} competidores con el mismo "
-                        f"producto ({c.get('volumen')}/mes)")
+            _agregar(c, _por_que_relleno(c))
 
     # 5) mínimo de 3: se afloja el umbral, nunca la coherencia. Primero
     #    Search Console con 2+ impresiones, después la competencia con menos volumen
@@ -516,8 +544,7 @@ def elegir_keywords(candidatas: list[dict], *, nombre: str, marca: str, tipo: st
         for c in competencia:
             if len(elegidas) >= MIN_KEYWORDS:
                 break
-            _agregar(c, f"la rankean {c.get('competidores', 1)} competidores con el mismo producto "
-                        f"({c.get('volumen')}/mes; para llegar al mínimo de {MIN_KEYWORDS})")
+            _agregar(c, _por_que_relleno(c, f"; para llegar al mínimo de {MIN_KEYWORDS}"))
 
     # reservas: lo que pasa todos los filtros y no entró, en el mismo orden de
     # prioridad; si el redactor omite una por no entrar natural, se prueba la siguiente
@@ -525,12 +552,11 @@ def elegir_keywords(candidatas: list[dict], *, nombre: str, marca: str, tipo: st
         if _motivo_gsc(c, relajado=True) is None:
             reservas.append({**c, "por_que": f"ya aparece en Google ({c.get('impresiones')} impresiones)"})
     for c in competencia:
-        reservas.append({**c, "por_que": f"la rankean {c.get('competidores', 1)} competidores con "
-                                         f"el mismo producto ({c.get('volumen')}/mes)"})
-    usadas = {_clave(e["keyword"]) for e in elegidas}
+        reservas.append({**c, "por_que": _por_que_relleno(c)})
+    usadas = {" ".join(sorted(_clave(e["keyword"]).split())) for e in elegidas}
     reservas_ok = []
     for c in reservas:
-        k = _clave(c["keyword"])
+        k = " ".join(sorted(_clave(c["keyword"]).split()))
         if k not in usadas:
             usadas.add(k)
             reservas_ok.append(c)

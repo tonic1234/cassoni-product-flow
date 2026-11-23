@@ -46,11 +46,12 @@ def test_keywords_search_console_y_marca_tipo():
                           tipo="wall clock", h1="Barcelona Premium Wall Clock by Nomon",
                           rasgo="", texto_ficha=TEXTO)
     kws = [e["keyword"] for e in sel["elegidas"]]
-    assert kws == ["nomon barcelona", "nomon wall clock"]
+    # 23-nov: objetivo 3 y el tipo de producto completa, como «wall sconce» en la
+    # referencia de Alex (antes: «wall clock» era «genérica de categoría»)
+    assert kws == ["nomon barcelona", "nomon wall clock", "wall clock"]
     assert "nomon" not in kws                                  # la marca sola
     assert "barcelona premium wall clock" not in kws          # es el H1
     assert "modern wall clocks manufacturer nj" not in kws    # la ficha no lo dice
-    assert "wall clock" not in kws                             # genérica de categoría
 
 
 def test_sin_genericas_por_material():

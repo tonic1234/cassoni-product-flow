@@ -234,6 +234,8 @@ BODY = r"""
   ].map(s => `<div class="stat"><b>${s[0]}</b><small>${s[1]}</small></div>`).join("");
   const origen = k => k.origen === "gsc" ? ["ya aparece", fmt(k.impresiones || k.impressions) + " impr.", "gsc"]
     : k.origen === "opcion" ? ["opción de la ficha", fmt(k.volumen || k.volume) + "/mes", "gen"]
+    : k.origen === "sugerencia" ? ["se busca con el nombre", fmt(k.volumen || k.volume) + "/mes", "gen"]
+    : k.origen === "competidor" ? ["la usa la competencia", fmt(k.volumen || k.volume) + "/mes", "gen"]
     : ["genérica", fmt(k.volumen || k.volume) + "/mes", "gen"];
   $("#fichas").innerHTML = N.fichas.map(f => {
     const ok = f.status === "processed";

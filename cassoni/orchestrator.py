@@ -457,7 +457,18 @@ class Pipeline:
         # (ya consultado en la precarga: está en caché)
         sel["competidores_leidos"] = []
         from .reglas_seo import MAX_KEYWORDS, candidatas_de_competencia
-        if len(sel["elegidas"]) < MAX_KEYWORDS and self.competidores is not None:
+        relleno = self.cfg.relleno_keywords
+        if len(sel["elegidas"]) < MAX_KEYWORDS and relleno == "sugerencias":
+            # búsquedas reales con el nombre del producto y el fabricante (23-nov)
+            sug = self._sugerencias(ctx)
+            comp = candidatas_de_competencia(sug, h1=r["h1"], nombre=ctx["nombre"],
+                                             marca=ctx["marca"], tipo=tipo, texto_ficha=texto,
+                                             minimo=10, origen="sugerencia")
+            if comp:
+                sel = elegir_keywords(cands, **args, competencia=comp)
+            sel["competidores_leidos"] = []
+        elif len(sel["elegidas"]) < MAX_KEYWORDS and relleno == "competencia" \
+                and self.competidores is not None:
             leidos, rank = self._paginas_competidores(ctx)
             comp = candidatas_de_competencia(self._con_volumen(rank), h1=r["h1"],
                                              nombre=ctx["nombre"], marca=ctx["marca"],
@@ -738,6 +749,37 @@ class Pipeline:
                 "opciones": ctx.get("opciones", []),
                 "marca_ajena": ctx.get("marca_ajena", ""),
                 "keywords_obligatorias": self.cfg.modo_keywords == "reglas"}
+
+    def _sugerencias(self, ctx: dict) -> list[dict]:
+        """Búsquedas que contienen el modelo con el tipo y la marca con el modelo
+        («cruise sofa», «talenti cruise»), con caché de 30 días en la base."""
+        from .reglas_seo import _norm, cabeza_de
+        fetcher = getattr(self.volumenes, "fetcher", None)
+        if fetcher is None or not hasattr(fetcher, "sugerencias"):
+            return []
+        modelo = _norm(modelo_de(ctx["nombre"], ctx["marca"]))
+        marca = (_norm(ctx["marca"]).split() or [""])[0]
+        cab = cabeza_de(ctx["tipo"]) or _norm(ctx["tipo"])
+        semillas = [x for x in dict.fromkeys([f"{modelo} {cab}".strip(), f"{marca} {modelo}".strip()])
+                    if len(x.split()) >= 2]
+        loc = self.cfg.dfs_location_code
+        out: list[dict] = []
+        for semilla in semillas:
+            clave = f"sug:{semilla}"
+            guardada = self.db.competencia_fresca(clave, loc, self.cfg.dfs_cache_dias) \
+                if self.db is not None else None
+            if guardada is not None:
+                out += guardada[1]
+                continue
+            try:
+                filas = fetcher.sugerencias(semilla)
+            except Exception as exc:
+                log.warning("Sugerencias no disponibles para %r (%s)", semilla, exc)
+                filas = []
+            if self.db is not None and filas:
+                self.db.guardar_competencia(clave, loc, [], filas)
+            out += filas
+        return out
 
     def _paginas_competidores(self, ctx: dict) -> tuple[list[dict], list[dict]]:
         """(competidores leídos, candidatas SIN volumen) para el mismo producto.

@@ -1,0 +1,8 @@
+
+tests/test_keywords_como_alex.py:40: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_keywords_como_alex.py::test_tiffany_el_nombre_cuando_el_h1_no_lo_repite
+FAILED tests/test_keywords_como_alex.py::test_shibari_variantes_con_las_mismas_palabras_cuentan_una
+FAILED tests/test_keywords_como_alex.py::test_illan_el_tipo_de_producto_completa
+FAILED tests/test_keywords_como_alex.py::test_steinway_italian_mas_tipo_si_la_ficha_dice_italy
+4 failed, 2 passed in 0.05s
