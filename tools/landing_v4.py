@@ -224,7 +224,9 @@ BODY = r"""
 
   // prueba 2
   $("#nuevas-h2").innerHTML = `${n} fichas nuevas,<br><span class="v">elegidas por código.</span>`;
-  $("#nuevas-lead").textContent = `Elegidas al azar${D.semilla ? ` (semilla ${D.semilla})` : ""}${D.universo ? ` entre las ${fmt(D.universo)} fichas con al menos 50 impresiones en Google` : ""}, repartidas por familia, sin repetir ninguna de las que ya se usaron. Ninguna está entre las fichas de Alex: el agente las resolvió con sus 10 como ejemplo.` +
+  $("#nuevas-lead").textContent = (N.meta.simulada
+    ? `Elegidas al azar${D.semilla ? ` (semilla ${D.semilla})` : ""}${D.universo ? ` entre las ${fmt(D.universo)} fichas que el agente nunca procesó y que aparecen en Google por 2 o más búsquedas` : ""}. Ninguna está entre las fichas de Alex: el agente las resolvió con sus 10 como ejemplo.`
+    : `Elegidas al azar${D.semilla ? ` (semilla ${D.semilla})` : ""}${D.universo ? ` entre las ${fmt(D.universo)} fichas con al menos 50 impresiones en Google` : ""}, repartidas por familia, sin repetir ninguna de las que ya se usaron. Ninguna está entre las fichas de Alex: el agente las resolvió con sus 10 como ejemplo.`) +
     (N.meta.simulada ? " Corrida fuera de la tienda: los datos de cada ficha se leyeron de la página publicada y, en lugar de Search Console, se usaron las búsquedas que DataForSEO estima para cada página. En la corrida real, con WooCommerce y Search Console, el resultado puede variar." : "");
   const kwN = N.fichas.reduce((a, f) => a + (f.keywords || []).length, 0);
   $("#nuevas-stats").innerHTML = [
@@ -233,7 +235,7 @@ BODY = r"""
     [kwN, "keywords en total"],
     [`US$ ${costo.toFixed(3)}`, "costo por ficha"]
   ].map(s => `<div class="stat"><b>${s[0]}</b><small>${s[1]}</small></div>`).join("");
-  const origen = k => k.origen === "gsc" ? ["ya aparece", fmt(k.impresiones || k.impressions) + " impr.", "gsc"]
+  const origen = k => k.origen === "gsc" ? ["ya aparece", N.meta.simulada && k.posicion ? "posición " + k.posicion : fmt(k.impresiones || k.impressions) + " impr.", "gsc"]
     : k.origen === "opcion" ? ["opción de la ficha", fmt(k.volumen || k.volume) + "/mes", "gen"]
     : k.origen === "sugerencia" ? ["se busca con el nombre", fmt(k.volumen || k.volume) + "/mes", "gen"]
     : k.origen === "competidor" ? ["la usa la competencia", fmt(k.volumen || k.volume) + "/mes", "gen"]

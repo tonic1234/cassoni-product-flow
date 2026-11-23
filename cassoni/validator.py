@@ -175,8 +175,10 @@ Responde SOLO con JSON:
         for intento in range(1, max_passes + 1):
             redactado = redactor.redactar(ficha=ficha, keywords=keywords, feedback=feedback)
             mecanicas = controles(ficha, redactado, objetivo)
-            if intento == max_passes and all(m.startswith("H1:") for m in mecanicas) \
-                    and mecanicas:
+            # la genérica que falta es la del H1 propuesto: si el H1 no sirve, tampoco
+            # cuenta (Boulevard: H1 con «Wood» inventado + «falta wood chair», 23-nov)
+            if intento == max_passes and mecanicas and all(
+                    m.startswith("H1:") or m.startswith("Falta la genérica") for m in mecanicas):
                 redactado["h1"] = ficha["h1_respaldo"]
                 redactado["h1_respaldo_usado"] = True
                 mecanicas = controles(ficha, redactado, objetivo)

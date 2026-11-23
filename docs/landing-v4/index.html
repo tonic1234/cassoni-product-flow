@@ -1,0 +1,630 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Agente SEO Cassoni · v4 — lo que pidió Alex, en cada ficha</title>
+<meta name="description" content="Las devoluciones de Alex del 17-nov, en el código: sus 10 fichas en tres fechas y 30 fichas nuevas elegidas por código. Todo en seco: nada se escribió en la tienda.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#111014">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="cassoni · seo">
+<meta property="og:url" content="https://tarsterminal.duckdns.org/cassoni-agente-seo/">
+<meta property="og:title" content="Agente SEO Cassoni · v4 — lo que pidió Alex, en cada ficha">
+<meta property="og:description" content="Las devoluciones de Alex del 17-nov, en el código: sus 10 fichas en tres fechas y 30 fichas nuevas elegidas por código. Todo en seco: nada se escribió en la tienda.">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Agente SEO Cassoni · v4 — lo que pidió Alex, en cada ficha">
+<meta name="twitter:description" content="Las devoluciones de Alex del 17-nov, en el código: sus 10 fichas en tres fechas y 30 fichas nuevas elegidas por código. Todo en seco: nada se escribió en la tienda.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: bandas a todo el ancho que alternan noche (oscuro) y papel (claro), contenido en una columna de 1120px; el flujo se lee de arriba abajo como el recorrido de una ficha. */
+:root {
+  --ink: #111014;          /* fondo noche */
+  --ink-2: #19171E;        /* superficies sobre la noche */
+  --line: rgba(240, 237, 244, .12);
+  --fg: #F0EDF4;           /* texto sobre noche */
+  --mute: #9B92A5;
+  --violet: #AE62FF;       /* acento */
+  --violet-deep: #782AC2;
+  --rose: #F08BB4;
+  --paper: #EEEDF0;        /* banda clara */
+  --paper-2: #E2E0E6;
+  --paper-fg: #211A29;
+  --paper-mute: #625A6D;
+  --ok: #6FD8A4;
+  --bad: #FF7D93;
+  --display: "Space Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --body: "Manrope", "Helvetica Neue", Arial, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --wrap: 1120px;
+  --radius: 14px;
+  color-scheme: dark;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0; background: var(--ink); color: var(--fg);
+  font-family: var(--body); font-size: 17px; line-height: 1.6;
+  -webkit-font-smoothing: antialiased; overflow-x: hidden;
+}
+body::before {
+  content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px);
+  z-index: 10; background: var(--ink);
+}
+img, svg, canvas { max-width: 100%; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--violet); outline-offset: 3px; border-radius: 6px; }
+
+.wrap {
+  max-width: var(--wrap); margin-inline: auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.band { padding-block: clamp(72px, 10vw, 128px); position: relative; }
+.band.paper { background: var(--paper); color: var(--paper-fg); }
+
+h1, h2, h3 { font-family: var(--display); font-weight: 400; letter-spacing: -.02em; line-height: 1.02; margin: 0; text-wrap: balance; }
+h1 { font-size: clamp(48px, 9vw, 112px); }
+h2 { font-size: clamp(36px, 6vw, 72px); }
+h3 { font-size: clamp(20px, 2.2vw, 26px); letter-spacing: -.01em; line-height: 1.2; }
+.v { color: var(--violet); }
+.paper .v { color: var(--violet-deep); }
+p { margin: 0; max-width: 62ch; }
+.lead { font-size: clamp(17px, 1.6vw, 20px); color: var(--mute); }
+.paper .lead { color: var(--paper-mute); }
+
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--mute);
+}
+.eyebrow::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--violet); }
+.paper .eyebrow { color: var(--paper-mute); }
+.paper .eyebrow::before { background: var(--violet-deep); }
+.head { display: grid; gap: 22px; margin-bottom: clamp(40px, 6vw, 72px); }
+
+/* nav */
+.nav {
+  position: fixed; z-index: 20; left: 50%; transform: translateX(-50%);
+  top: calc(env(safe-area-inset-top, 0px) + 14px);
+  width: min(var(--wrap), calc(100% - 2 * max(16px, env(safe-area-inset-left, 0px))));
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 10px 12px 10px 20px; border: 1px solid var(--line); border-radius: 999px;
+  background: rgba(17, 16, 20, .72); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+}
+.brand { font-family: var(--display); font-size: 20px; letter-spacing: -.02em; text-decoration: none; }
+.brand b { font-weight: 500; color: var(--violet); }
+.nav ul { display: flex; gap: 4px; list-style: none; margin: 0; padding: 0; }
+.nav a.l { display: block; padding: 6px 12px; border-radius: 999px; text-decoration: none; font-size: 14px; color: var(--mute); }
+.nav a.l:hover { color: var(--fg); background: var(--ink-2); }
+@media (max-width: 860px) { .nav ul { display: none; } }
+
+/* botones */
+.btns { display: flex; flex-wrap: wrap; gap: 12px; }
+.btn {
+  display: inline-flex; align-items: stretch; border-radius: 10px; text-decoration: none;
+  font-weight: 600; font-size: 15px; overflow: hidden; border: 1px solid var(--line);
+}
+.btn span { padding: 13px 18px; }
+.btn i { display: grid; place-items: center; width: 46px; border-left: 1px solid rgba(255,255,255,.18); font-style: normal; }
+.btn.primary { background: var(--violet); border-color: var(--violet); color: #fff; }
+.btn.ghost { background: transparent; color: var(--fg); }
+.btn:hover i { background: rgba(255,255,255,.08); }
+
+/* hero */
+.hero { padding-top: calc(env(safe-area-inset-top, 0px) + 150px); padding-bottom: 0; overflow: hidden; }
+.hero .wrap { display: grid; gap: 30px; position: relative; z-index: 1; }
+.hero-meta { display: flex; flex-wrap: wrap; gap: 28px 44px; margin-top: 18px; }
+.stat { display: grid; gap: 2px; }
+.stat b { font-family: var(--display); font-weight: 400; font-size: clamp(30px, 4vw, 44px); letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.stat small { font-family: var(--mono); font-size: 12px; color: var(--mute); letter-spacing: .06em; }
+#waves { display: block; width: 100%; height: clamp(220px, 32vw, 380px); margin-top: -40px; }
+
+/* problema */
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(28px, 5vw, 72px); align-items: start; }
+.split > * { min-width: 0; }
+@media (max-width: 820px) { .split { grid-template-columns: 1fr; } }
+.query-card { border: 1px solid var(--paper-2); background: #fff; border-radius: var(--radius); padding: 22px; display: grid; gap: 14px; }
+.qrow { display: grid; grid-template-columns: 1fr auto auto; gap: 14px; align-items: baseline; font-family: var(--mono); font-size: 14px; border-bottom: 1px dashed var(--paper-2); padding-bottom: 10px; }
+.qrow:last-child { border-bottom: 0; padding-bottom: 0; }
+.qrow span:not(:first-child) { color: var(--paper-mute); font-variant-numeric: tabular-nums; text-align: right; }
+.qhead { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--paper-mute); }
+
+/* flujo */
+.flow-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 20px; background: var(--ink-2); }
+#flow { display: block; min-width: 900px; width: 100%; height: auto; }
+#flow text { font-family: var(--body); }
+.steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 20px; overflow: hidden; margin-top: 28px; }
+.step { background: var(--ink); padding: 26px; display: grid; gap: 10px; align-content: start; }
+.step .n { font-family: var(--mono); font-size: 12px; color: var(--violet); letter-spacing: .1em; }
+.step p { color: var(--mute); font-size: 15px; }
+.step code { font-family: var(--mono); font-size: 13px; color: var(--fg); }
+@media (max-width: 900px) { .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .steps { grid-template-columns: 1fr; } }
+
+/* H1 */
+.h1-demo { border: 1px solid var(--line); border-radius: 20px; padding: clamp(24px, 4vw, 44px); background: radial-gradient(120% 140% at 0% 0%, rgba(174,98,255,.14), transparent 60%), var(--ink-2); display: grid; gap: 26px; }
+.h1-out { font-family: var(--display); font-size: clamp(30px, 5vw, 58px); letter-spacing: -.02em; line-height: 1.1; min-height: 2.3em; }
+.h1-out .by { color: var(--violet); }
+.caret { display: inline-block; width: .06em; height: .9em; background: var(--violet); vertical-align: -.08em; margin-left: .04em; animation: blink 1s steps(2) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+.cases { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 640px) { .cases { grid-template-columns: 1fr; } }
+.case { border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; display: grid; gap: 4px; font-size: 14px; }
+.case .from { font-family: var(--mono); color: var(--mute); font-size: 13px; overflow-wrap: anywhere; }
+.case .to { font-family: var(--mono); color: var(--fg); font-size: 13px; overflow-wrap: anywhere; }
+.case .why { color: var(--mute); font-size: 13px; }
+
+/* embudo */
+.funnel { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: clamp(20px, 4vw, 48px); align-items: start; }
+@media (max-width: 900px) { .funnel { grid-template-columns: 1fr; } }
+.ftable { background: #fff; border: 1px solid var(--paper-2); border-radius: var(--radius); overflow: hidden; }
+.ftable-scroll { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 520px; }
+th { text-align: left; font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--paper-mute); font-weight: 500; padding: 14px 16px; border-bottom: 1px solid var(--paper-2); }
+td { padding: 11px 16px; border-bottom: 1px solid var(--paper-2); vertical-align: middle; }
+tr:last-child td { border-bottom: 0; }
+td.kw { font-family: var(--mono); font-size: 13.5px; }
+td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; text-align: right; color: var(--paper-mute); }
+.tag { display: inline-block; font-size: 12px; font-weight: 600; padding: 3px 9px; border-radius: 999px; white-space: nowrap; }
+.tag.out { background: #F6E3E8; color: #9B2C46; }
+.tag.in { background: #E6DBF7; color: var(--violet-deep); }
+tr.cut td.kw { text-decoration: line-through; text-decoration-color: rgba(155,44,70,.5); color: var(--paper-mute); }
+tr.pick td { background: #F6F1FD; }
+tr.flash td { animation: flash .9s ease; }
+@keyframes flash { 0% { background: #EBDDFF; } 100% { background: transparent; } }
+.pick-col { display: grid; gap: 14px; }
+.pick-col h3 { color: var(--paper-fg); }
+.chips { display: grid; gap: 10px; }
+.chip { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; padding: 14px 16px; border-radius: 12px; background: var(--paper-fg); color: var(--paper); font-family: var(--mono); font-size: 14px; }
+.chip small { color: #C9B6E8; font-variant-numeric: tabular-nums; }
+.rules { display: grid; gap: 8px; padding: 0; margin: 0; list-style: none; font-size: 15px; color: var(--paper-mute); }
+.rules li { display: grid; grid-template-columns: 20px 1fr; gap: 8px; }
+.rules li::before { content: "→"; color: var(--violet-deep); }
+.replay { justify-self: start; font: 600 14px var(--body); color: var(--paper-fg); background: transparent; border: 1px solid #C9C3D1; border-radius: 999px; padding: 9px 16px; cursor: pointer; }
+.replay:hover { background: #fff; }
+
+/* competidores */
+.serp { display: grid; gap: 8px; }
+.serp-row { display: grid; grid-template-columns: 34px 1fr auto; gap: 14px; align-items: center; padding: 12px 16px; border: 1px solid var(--line); border-radius: 12px; font-size: 14px; }
+.serp-row > * { min-width: 0; }
+.serp-row .r { font-family: var(--mono); color: var(--mute); font-variant-numeric: tabular-nums; }
+.serp-row .u { font-family: var(--mono); font-size: 13px; overflow-wrap: anywhere; }
+.serp-row.top { border-color: rgba(174,98,255,.55); background: rgba(174,98,255,.08); }
+.serp-row.us { border-style: dashed; }
+.serp-row.skip { opacity: .5; }
+.serp-row .t { font-size: 12px; color: var(--mute); white-space: nowrap; }
+.serp-row.top .t { color: var(--violet); }
+.extract { display: grid; gap: 14px; }
+.ngram { display: flex; flex-wrap: wrap; gap: 8px; }
+.ng { font-family: var(--mono); font-size: 13px; padding: 6px 10px; border-radius: 8px; border: 1px solid var(--line); color: var(--mute); }
+.ng.hit { color: var(--fg); border-color: var(--violet); background: rgba(174,98,255,.12); }
+.ng.hit em { font-style: normal; color: var(--violet); margin-left: 6px; }
+.note { border-left: 2px solid var(--violet); padding: 4px 0 4px 16px; color: var(--mute); font-size: 15px; }
+
+/* editor */
+.diff { background: #fff; border: 1px solid var(--paper-2); border-radius: var(--radius); padding: clamp(18px, 3vw, 28px); font-size: 15.5px; line-height: 1.75; color: var(--paper-fg); display: grid; gap: 14px; }
+.diff .h2 { font-family: var(--display); font-size: 20px; }
+.diff ins { text-decoration: none; background: linear-gradient(transparent 55%, #E3D0FF 55%); }
+.diff mark { background: none; color: var(--violet-deep); font-weight: 700; }
+.gates { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+@media (max-width: 560px) { .gates { grid-template-columns: 1fr; } }
+.gate { display: grid; grid-template-columns: 26px 1fr; gap: 10px; align-items: start; padding: 14px; border-radius: 12px; background: #fff; border: 1px solid var(--paper-2); font-size: 14px; }
+.gate b { display: block; color: var(--paper-fg); font-weight: 600; }
+.gate span { color: var(--paper-mute); }
+.tick { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; background: var(--paper-fg); color: #fff; font-size: 12px; }
+.gate.llm .tick { background: var(--violet-deep); }
+
+/* ritmo */
+.week { border: 1px solid var(--line); border-radius: 20px; background: var(--ink-2); padding: clamp(18px, 3vw, 28px); overflow-x: auto; }
+#weekSvg { display: block; min-width: 640px; width: 100%; height: auto; }
+.legend { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 16px; font-size: 13px; color: var(--mute); }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; vertical-align: 0; }
+
+/* medición */
+.chart-card { background: #fff; border: 1px solid var(--paper-2); border-radius: var(--radius); padding: clamp(16px, 3vw, 26px); overflow-x: auto; }
+#chart { display: block; min-width: 560px; width: 100%; height: auto; }
+.example { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--paper-mute); }
+.verdicts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+@media (max-width: 700px) { .verdicts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.verdict { padding: 14px; border-radius: 12px; border: 1px solid var(--paper-2); display: grid; gap: 4px; font-size: 14px; background: #fff; }
+.verdict b { font-family: var(--mono); font-size: 13px; color: var(--violet-deep); }
+.verdict span { color: var(--paper-mute); }
+
+/* garantías */
+.vs { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--line); border-radius: 20px; overflow: hidden; }
+.vs > div { padding: clamp(20px, 3vw, 32px); display: grid; gap: 0; align-content: start; }
+.vs > div + div { border-left: 1px solid var(--line); background: rgba(174,98,255,.06); }
+.vs h3 { margin-bottom: 14px; font-size: 14px; font-family: var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--mute); }
+.vs > div + div h3 { color: var(--violet); }
+.vs p { padding: 14px 0; border-top: 1px solid var(--line); font-size: 15.5px; }
+.vs > div:first-child p { color: var(--mute); }
+@media (max-width: 720px) { .vs { grid-template-columns: 1fr; } .vs > div + div { border-left: 0; border-top: 1px solid var(--line); } }
+
+/* prueba real */
+.resumen { display: flex; flex-wrap: wrap; gap: 28px 44px; margin-bottom: 36px; }
+.resumen .stat small { color: var(--paper-mute); }
+.filtros { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px; }
+.filtro { font: 600 13px var(--body); padding: 7px 14px; border-radius: 999px; border: 1px solid #C9C3D1; background: transparent; color: var(--paper-fg); cursor: pointer; }
+.filtro[aria-pressed="true"] { background: var(--paper-fg); color: var(--paper); border-color: var(--paper-fg); }
+.fichas { display: grid; gap: 22px; }
+.ficha { background: #fff; border: 1px solid var(--paper-2); border-radius: 18px; overflow: hidden; display: grid; grid-template-columns: 240px minmax(0, 1fr); }
+@media (max-width: 820px) { .ficha { grid-template-columns: 1fr; } }
+.ficha-foto { background: #F3F1F6; display: grid; place-items: center; min-height: 200px; }
+.ficha-foto img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ficha-foto span { font-family: var(--mono); font-size: 12px; color: var(--paper-mute); padding: 16px; text-align: center; }
+.ficha-cuerpo { padding: clamp(18px, 3vw, 28px); display: grid; gap: 18px; min-width: 0; }
+.ficha-top { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; align-items: center; }
+.ficha-top .meta { font-family: var(--mono); font-size: 12px; color: var(--paper-mute); letter-spacing: .04em; }
+.estado { font-size: 12px; font-weight: 700; padding: 4px 11px; border-radius: 999px; }
+.estado.ok { background: #DDF3E8; color: #1E6B47; }
+.estado.no { background: #F6E3E8; color: #9B2C46; }
+.estado.h1 { background: #E6DBF7; color: var(--violet-deep); }
+.estado.skip { background: var(--paper-2); color: var(--paper-mute); }
+.h1-cambio { display: grid; gap: 4px; }
+.h1-cambio .antes { font-family: var(--mono); font-size: 13px; color: var(--paper-mute); text-decoration: line-through; text-decoration-color: rgba(98,90,109,.5); overflow-wrap: anywhere; }
+.h1-cambio .despues { font-family: var(--display); font-size: clamp(22px, 2.6vw, 30px); letter-spacing: -.015em; line-height: 1.15; overflow-wrap: anywhere; }
+.h1-cambio .despues em { font-style: normal; color: var(--violet-deep); }
+.kws { display: flex; flex-wrap: wrap; gap: 8px; }
+.kw { display: inline-flex; flex-wrap: wrap; align-items: baseline; gap: 8px; padding: 8px 12px; border-radius: 10px; background: var(--paper-fg); color: var(--paper); font-family: var(--mono); font-size: 13px; }
+.kw small { color: #C9B6E8; font-variant-numeric: tabular-nums; }
+.kw .org { font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; padding: 1px 6px; border-radius: 4px; background: rgba(255,255,255,.12); color: #E7DCF8; }
+.kw.comp .org { background: var(--rose); color: var(--paper-fg); }
+.aporte { display: flex; flex-wrap: wrap; gap: 10px; }
+.aporte span { font-size: 13px; padding: 7px 12px; border-radius: 10px; background: #F3EEFB; color: var(--paper-fg); }
+.aporte b { color: var(--violet-deep); font-variant-numeric: tabular-nums; }
+.aporte span.cero { background: var(--paper-2); color: var(--paper-mute); }
+.kw.inv .org { background: var(--ok); color: var(--paper-fg); }
+.desc { font-size: 15px; line-height: 1.75; color: var(--paper-fg); display: grid; gap: 10px; border-left: 2px solid var(--paper-2); padding-left: 16px; }
+.desc .bh2 { font-family: var(--display); font-size: 18px; }
+.desc ins { text-decoration: none; background: linear-gradient(transparent 55%, #E3D0FF 55%); }
+.desc b { color: var(--violet-deep); }
+.solo-nuevo .desc span.orig { opacity: .28; }
+.medidas { display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 13px; color: var(--paper-mute); font-variant-numeric: tabular-nums; }
+.medidas b { color: var(--paper-fg); font-weight: 600; }
+.ficha details { border-top: 1px dashed var(--paper-2); padding-top: 12px; font-size: 14px; color: var(--paper-mute); }
+.ficha summary { cursor: pointer; font-weight: 600; color: var(--paper-fg); }
+.ficha details ul { margin: 10px 0 0; padding-left: 18px; display: grid; gap: 4px; }
+.ficha details code { font-family: var(--mono); font-size: 12.5px; color: var(--paper-fg); }
+.vacio { padding: 28px; border: 1px dashed #C9C3D1; border-radius: 18px; color: var(--paper-mute); }
+
+/* comandos */
+.cmds { display: grid; gap: 12px; }
+.cmd { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.cmd header { display: flex; justify-content: space-between; gap: 12px; padding: 10px 14px; font-size: 13px; color: var(--mute); border-bottom: 1px solid var(--line); }
+.cmd pre { margin: 0; padding: 14px; overflow-x: auto; font-family: var(--mono); font-size: 13px; color: var(--fg); }
+.copy { font: 500 12px var(--mono); color: var(--mute); background: none; border: 1px solid var(--line); border-radius: 6px; padding: 2px 8px; cursor: pointer; }
+.copy:hover { color: var(--fg); }
+
+footer { padding-block: 48px; border-top: 1px solid var(--line); color: var(--mute); font-size: 14px; }
+footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; }
+
+/* revelado: visible en reposo; solo se anima si hay JS y movimiento permitido */
+.js .reveal { transition: opacity .8s ease, transform .8s ease; }
+.js .reveal.pre { opacity: .001; transform: translateY(24px); }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .js .reveal.pre { opacity: 1; transform: none; }
+  .caret { animation: none; }
+  tr.flash td { animation: none; }
+}
+
+/* v3 */
+.cmp { display: grid; gap: 1px; background: var(--paper-2); border: 1px solid var(--paper-2); border-radius: var(--radius); overflow: hidden; }
+.cmp-row { display: grid; grid-template-columns: minmax(0, 1.6fr) repeat(3, minmax(0, 1fr)); background: #fff; }
+.cmp-row > div { padding: 14px 16px; font-size: 15px; }
+.cmp-row.h > div { font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--paper-mute); background: #FAF9FB; }
+.cmp-row .n { font-family: var(--mono); font-variant-numeric: tabular-nums; color: var(--paper-mute); }
+.cmp-row .n.now { color: var(--violet-deep); font-weight: 600; }
+@media (max-width: 640px) { .cmp-row { grid-template-columns: minmax(0, 1.4fr) repeat(3, minmax(0, .8fr)); } .cmp-row > div { padding: 12px 10px; font-size: 13px; } }
+.par { display: grid; gap: 14px; }
+.par-item { background: #fff; border: 1px solid var(--paper-2); border-radius: 16px; padding: clamp(16px, 2.6vw, 24px); display: grid; gap: 12px; min-width: 0; }
+.par-top { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 14px; align-items: baseline; }
+.par-top h3 { color: var(--paper-fg); }
+.par-top span { font-family: var(--mono); font-size: 12px; color: var(--paper-mute); }
+.duo { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.duo > div { min-width: 0; display: grid; gap: 8px; align-content: start; padding: 12px 14px; border-radius: 12px; background: #F7F6F9; }
+.duo .who { font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--paper-mute); }
+.duo .who.ag { color: var(--violet-deep); }
+.duo .t { font-family: var(--display); font-size: 18px; line-height: 1.2; color: var(--paper-fg); overflow-wrap: anywhere; }
+.duo .t .igual { font-family: var(--body); font-size: 11px; font-weight: 700; color: #1E6B47; background: #DDF3E8; border-radius: 999px; padding: 2px 8px; margin-left: 6px; vertical-align: 3px; white-space: nowrap; }
+.pill { display: inline-block; font-family: var(--mono); font-size: 12px; padding: 3px 8px; border-radius: 6px; border: 1px solid var(--paper-2); color: var(--paper-mute); margin: 0 4px 4px 0; background: #fff; }
+.pill.hit { background: #DDF3E8; color: #1E6B47; border-color: transparent; font-weight: 600; }
+@media (max-width: 680px) { .duo { grid-template-columns: 1fr; } }
+.duo-desc { font-size: 14px; line-height: 1.65; border-left: 0; padding-left: 0; padding-top: 10px; border-top: 1px solid var(--paper-2); gap: 8px; }
+.duo-desc h2 { font-size: 15px; }
+.palabras { font-family: var(--mono); font-size: 11px; color: var(--paper-mute); }
+.aprende { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 20px; overflow: hidden; }
+.aprende > div { background: var(--ink); padding: 26px; display: grid; gap: 10px; align-content: start; }
+.aprende p { color: var(--mute); font-size: 15px; }
+.aprende .n { font-family: var(--mono); font-size: 12px; color: var(--violet); letter-spacing: .1em; }
+@media (max-width: 860px) { .aprende { grid-template-columns: 1fr; } }
+.par-item { grid-template-columns: 132px minmax(0, 1fr); align-items: start; column-gap: 18px; }
+.par-item > .par-foto { grid-row: span 2; }
+.par-foto { display: block; aspect-ratio: 1; border-radius: 12px; overflow: hidden; background: #F3F1F6; }
+.par-foto img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.par-foto span { display: grid; place-items: center; height: 100%; font-family: var(--mono); font-size: 11px; color: var(--paper-mute); }
+@media (max-width: 680px) { .par-item { grid-template-columns: 84px minmax(0, 1fr); } .par-item > .duo { grid-column: 1 / -1; } .par-item > .par-foto { grid-row: auto; } }
+a.ficha-foto { text-decoration: none; }
+.ficha-foto img { aspect-ratio: 1; }
+.kw .org.gsc { background: rgba(255,255,255,.14); }
+.kw .org.gen { background: var(--ok); color: var(--paper-fg); }
+.desc h2, .desc .bh2 { font-family: var(--display); font-size: 17px; font-weight: 500; margin: 4px 0 0; letter-spacing: 0; }
+.desc p { margin: 0; max-width: none; }
+.desc ul { margin: 0; padding-left: 18px; }
+.desc a { color: var(--violet-deep); }
+.desc mark { background: linear-gradient(transparent 55%, #E3D0FF 55%); color: inherit; }
+.pend { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.pend > div { border: 1px solid var(--line); border-radius: 14px; padding: 18px; display: grid; gap: 6px; }
+.pend b { font-family: var(--display); font-weight: 500; font-size: 18px; }
+.pend span { color: var(--mute); font-size: 15px; }
+@media (max-width: 720px) { .pend { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<nav class="nav" aria-label="Secciones">
+  <a class="brand" href="#top">cassoni<b>·</b>seo <span style="font-size:13px;color:var(--mute)">v4</span></a>
+  <ul>
+    <li><a class="l" href="#cambios">Qué cambió</a></li>
+    <li><a class="l" href="#vs-seo">Agente vs Alex</a></li>
+    <li><a class="l" href="#nuevas">Fichas nuevas</a></li>
+    <li><a class="l" href="#preguntas">Para confirmar</a></li>
+    <li><a class="l" href="#garantias">Garantías</a></li>
+  </ul>
+</nav>
+
+<header class="band hero" id="top">
+  <div class="wrap">
+    <span class="eyebrow" id="eyebrow">Agente SEO · fichas de producto · v4</span>
+    <h1>Lo que pidió Alex,<br><span class="v">en cada ficha.</span></h1>
+    <p class="lead">El 17-nov Alex pidió priorizar lo que la gente busca: el nombre cuando ya se busca, el rasgo más buscado cuando no, y las keywords que ya traen impresiones en Search Console. Esta página muestra cómo quedó en sus 10 fichas y en fichas que nadie había mirado. <b>Todo en seco: nada se escribió en la tienda.</b></p>
+    <div class="btns">
+      <a class="btn primary" href="#vs-seo"><span>Agente vs Alex</span><i aria-hidden="true">↘</i></a>
+      <a class="btn ghost" href="#nuevas"><span id="btn-nuevas">Fichas nuevas</span><i aria-hidden="true">↘</i></a>
+    </div>
+    <div class="hero-meta" id="hero-stats"></div>
+  </div>
+  <canvas id="waves" aria-hidden="true"></canvas>
+</header>
+
+<section class="band paper" id="cambios">
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">Desde el 17-nov</span>
+      <h2>Qué cambió <span class="v">y por qué.</span></h2>
+      <p class="lead">Cada regla está en código, con tests: el modelo redacta, no decide el H1 ni las keywords.</p>
+    </div>
+    <div class="ftable reveal"><div class="ftable-scroll"><table>
+      <thead><tr><th></th><th>Lo que dijo Alex</th><th>Cómo quedó</th></tr></thead>
+      <tbody>
+        <tr><td><b>H1</b></td><td>Si el nombre ya se busca, nombre y marca («Club Sofa»). Si no, el rasgo más buscado («Marble» en Rock).</td><td>Nombre + marca desde 1.000 búsquedas/mes. Si no, el rasgo más buscado entre los materiales que tienen todas las versiones.</td></tr>
+        <tr><td><b>Opciones</b></td><td>Rock: la tapa viene en mármol o en madera.</td><td>Si la parte principal viene en opciones, el H1 lleva la más buscada y la descripción cubre todas, con una keyword por opción («marble table», «wood table»). Si la opción es el tapizado, el H1 dice «Upholstered», como en Hermes.</td></tr>
+        <tr><td><b>Dos materiales</b></td><td>Cleopatra: «Wood and Leather Dining Chair».</td><td>Si la ficha se define con dos materiales que no son opciones («Wooden chair with leather upholstery»), el H1 lleva los dos.</td></tr>
+        <tr><td><b>Keywords</b></td><td>Lo que funciona: Search Console con impresiones y marca + tipo («nomon wall clock»).</td><td>Primero Search Console, después marca + tipo, y la genérica corta del material exacto del H1, como en sus fichas («glass table», «dining table in glass»).</td></tr>
+        <tr><td><b>Cuántas y de dónde</b></td><td>Search Console y marca + tipo dejaban muchas fichas con una sola.</td><td>Mínimo 3 (más si son coherentes y entran natural, hasta 5), con los mismos tipos de keyword que usa Alex: búsquedas de Search Console, marca + tipo, el material del H1 con el tipo corto, el tipo de producto («wall sconce») e «italian + tipo» si la ficha lo dice. Si faltan, búsquedas reales con el nombre y el fabricante. Si una no entra natural en el texto, el redactor la deja afuera con el motivo.</td></tr>
+        <tr><td><b>Genéricas que fallaban</b></td><td>«marble table» en Palatial y «leather table» en Dandy.</td><td>Nunca un material que la ficha no tiene (Palatial no tiene mármol) ni un tipo que, acortado, es otro producto (Dandy es una mesa de pool).</td></tr>
+        <tr><td><b>Marca de otro fabricante</b></td><td>Steinway: el volumen es el de la marca, no el de esta pieza.</td><td>No cuenta como «el nombre ya se busca»: va el rasgo («Mother-of-Pearl»). La marca sí puede ser keyword («steinway and sons piano»).</td></tr>
+      </tbody>
+    </table></div></div>
+  </div>
+</section>
+
+<section class="band paper" id="vs-seo">
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">Prueba 1 · las 10 fichas que resolvió Alex</span>
+      <h2>Agente vs Alex,<br><span class="v">en las mismas fichas.</span></h2>
+      <p class="lead">Cada ficha se procesa viendo cómo Alex resolvió las otras nueve, nunca la propia: es la misma situación que una ficha nueva del catálogo.</p>
+    </div>
+    <div class="cmp reveal" id="cmp" role="table" aria-label="Parecido con Alex por fecha"></div>
+    <p class="note" style="margin-top:22px;color:var(--paper-mute);border-color:var(--violet-deep)" id="nota-vs"></p>
+    <p class="lead" style="margin:28px 0 22px">En verde, lo que eligieron los dos.</p>
+    <div class="par" id="par"></div>
+  </div>
+</section>
+
+<section class="band paper" id="nuevas" style="padding-top:0">
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">Prueba 2 · fichas que nadie había mirado</span>
+      <h2 id="nuevas-h2">Fichas nuevas,<br><span class="v">elegidas por código.</span></h2>
+      <p class="lead" id="nuevas-lead"></p>
+    </div>
+    <div class="resumen" id="nuevas-stats"></div>
+    <div class="fichas" id="fichas"></div>
+  </div>
+</section>
+
+<section class="band" id="preguntas">
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">Para confirmar con Alex</span>
+      <h2>Tres lecturas<br><span class="v">que conviene confirmar.</span></h2>
+    </div>
+    <div class="pend">
+      <div class="reveal"><b>Genéricas cortas</b><span>El 17-nov marcaste «marble table» en Palatial y «leather table» en Dandy. Lo leímos como «nunca una genérica falsa o de otro producto», no «nunca una genérica corta», porque en Rock y Bakkarat las usás. ¿Es así?</span></div>
+      <div class="reveal"><b>Tapizado en el H1</b><span>Cuando el tapizado viene en tela o cuero, el H1 dice «Upholstered» y no elige uno, como en Hermes. ¿Vale para todas las camas, sofás y sillas?</span></div>
+      <div class="reveal"><b>Códigos de catálogo</b><span>El H1 no lleva códigos («SC1019», «19800»), como en tus fichas, aunque alguno traiga impresiones en Search Console. La keyword con el código sí puede ir en la descripción.</span></div>
+      <div class="reveal"><b>Nada escrito en la tienda</b><span>Todas las corridas son en seco. El primer lote real lo aprueba Alex.</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="garantias" style="padding-top:0">
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">Garantías</span>
+      <h2>Lo que hace,<br><span class="v">y lo que nunca.</span></h2>
+    </div>
+    <div class="vs">
+      <div>
+        <h3>Nunca</h3>
+        <p>Escribir en la tienda sin <code>--write</code> y sin aprobación.</p>
+        <p>Inventar medidas, materiales, diseñadores o colecciones.</p>
+        <p>Elegir una keyword que no esté en la lista de candidatas.</p>
+        <p>Tocar la descripción corta, los metadatos o los ALT, que son de n8n.</p>
+        <p>Escribir en Search Console.</p>
+      </div>
+      <div>
+        <h3>Siempre</h3>
+        <p>Corre en seco por defecto.</p>
+        <p>Deja cada ficha con su estado, su motivo y lo que descartó.</p>
+        <p>Controla en código cada número de la descripción contra la ficha.</p>
+        <p>Escribe solo <code>name</code> y <code>description</code>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap"><span>Agente SEO Cassoni · v4</span><span id="pie"></span></div></footer>
+
+<script type="application/json" id="datos">{"vs":{"resumen":{"fichas":10,"h1_iguales":4,"h1_parecido_promedio":0.77,"keywords_seo":22,"keywords_agente":33,"keywords_en_comun":17,"cobertura":0.77,"acierto":0.52,"palabras_agente_prom":90,"palabras_seo_prom":86,"aprobadas":10},"meta":{"modo":"reescritura sin tienda","llm":"deepseek-v4.1-flash","validador":"deepseek-v4.1-flash","commit":"c6b5909a135f439f239b3f77e1eea98cc97f4370","dry_run":true,"faltan":"atributos y descripción corta de WooCommerce","costos":{"tokens_in":93850,"tokens_out":141552,"cache_hit":0,"cache_miss":93850,"usd":0.1980174,"llamadas":40}},"fichas":[{"url":"https://cassoni.com/product/cas-rug-rock-coffee-table-01/","nombre":"Rock Coffee Table","h1_agente":"Rock Marble Coffee Table by Rugiano","h1_seo":"Rock Marble Coffee Table by Rugiano","h1_igual":true,"h1_parecido":1.0,"kw_agente":["rugiano coffee table","wood table","marble table"],"kw_seo":["marble table","rugiano coffee table","wood table"],"kw_en_comun":["marble table","rugiano coffee table","wood table"],"cobertura":1.0,"acierto":1.0,"palabras_agente":88,"palabras_seo":103,"secciones_agente":1,"secciones_seo":2,"lista_agente":false,"lista_seo":true,"kw_en_apertura":true,"aprobada":true,"descripcion_agente":"<p>Designed by Rugiano, the Rock is a low coffee table with a shaped top and two legs in bronzed brass metal. Made in Italy, this Rugiano coffee table comes in two different sizes.<\/p><h2>WOOD OR MARBLE TOP<\/h2><p>You can order the wood table with a Decoro decorated painted top, or the marble table with a top from the wide range of marble options.<\/p><p>It is a low table made to sit in front of a sofa, so match the size to its length. See all <a href=\"https://cassoni.com/product-category/furniture/living-room/coffee-side-tables/\">coffee tables<\/a>.<\/p>","descripcion_seo":"The Rock is a Rugiano coffee table with an irregular, pebble-like top resting on two bronzed brass legs. Made in Italy.\nTWO TOPS, TWO LOOKS\n • Marble table top in 19 marbles, from Travertino and Emperador Dark (category A) to Calacatta Gold (B) and Patagonia or Calcite St Barth (C).\n • A hand-painted wood table top in Rugiano's Decoro technique, with 11 designs inspired by painters such as Van Gogh, Monet and Botticelli.\nWHICH SIZE\n The three large sizes are 11\" high, for a low sofa. The small one (size C) is 14 1/8\" high and works as a side table next to an armchair."},{"url":"https://cassoni.com/product/cas-rug-club-sofa-01/","nombre":"Club Sofa","h1_agente":"Club Sofa by Rugiano","h1_seo":"Club Sofa with Brass Tube Frame by Rugiano","h1_igual":false,"h1_parecido":0.33,"kw_agente":["club style sofa","club couch","rugiano sofa","leather club sofa"],"kw_seo":["club couch","club style sofa","rugiano sofas"],"kw_en_comun":["club couch","club style sofa","rugiano sofas"],"cobertura":1.0,"acierto":0.75,"palabras_agente":91,"palabras_seo":102,"secciones_agente":2,"secciones_seo":2,"lista_agente":true,"lista_seo":false,"kw_en_apertura":false,"aprobada":true,"descripcion_agente":"<p>The Club is a Rugiano sofa built on refined brushed brass or bronze drawn tubes, combined with upholstered leather or fabric. Made in Italy.<\/p>\n<h2>METAL AND UPHOLSTERY<\/h2>\n<ul>\n<li>Structure in brushed brass or bronze drawn tubes.<\/li>\n<li>Upholstery in leather or fabric.<\/li>\n<\/ul>\n<h2>BEFORE YOU ORDER<\/h2>\n<p>The tubes form a pattern against the upholstery, so the metal you pick shapes the look of this club style sofa. Decide the upholstery too: a leather club sofa and a fabric club couch are the same design in two materials. See the other <a href=\"https://cassoni.com/product-category/furniture/living-room/sofas-sectionals/\">sofas and sectionals<\/a>.<\/p>","descripcion_seo":"A club style sofa with straight lines and a frame of brushed brass or bronze tubes that outline the upholstery. If you are comparing Rugiano sofas, this is the one where the metal frame is the design.\nFITS MORE ROOMS THAN IT LOOKS\n At 33 1/2\" deep, this club couch is shallower than most luxury sofas. That makes it a good choice for apartments and narrow living rooms. It comes in four widths, from a 2-seater to the 4-seater Major.\nUPHOLSTERY\n Fabric (categories A and B) or leather (C and D). You can also send your own fabric or leather (C.O.M. / C.O.L.)."},{"url":"https://cassoni.com/product/cas-dvhc-hermes-maxi-bed-01/","nombre":"Hermes Maxi Bed","h1_agente":"Hermes Maxi Upholstered King Bed by DV Home Collection","h1_seo":"Hermes Maxi Upholstered King Bed by DV Home Collection","h1_igual":true,"h1_parecido":1.0,"kw_agente":["hermes bed","maxi bed","king bed"],"kw_seo":["hermes bed frame","maxi bed"],"kw_en_comun":["maxi bed"],"cobertura":0.5,"acierto":0.33,"palabras_agente":92,"palabras_seo":102,"secciones_agente":2,"secciones_seo":2,"lista_agente":true,"lista_seo":false,"kw_en_apertura":false,"aprobada":true,"descripcion_agente":"<p>The Hermes Maxi is an upholstered king bed by DV Home Collection, made in Italy, with a large headboard in vertical quilting.<\/p>\n<h2>FABRIC OR LEATHER<\/h2>\n<ul>\n<li><strong>Fabric<\/strong>: a wide range of fabrics.<\/li>\n<li><strong>Leather<\/strong>: a wide range of leathers.<\/li>\n<\/ul>\n<h2>STRUCTURE AND CUSHIONS<\/h2>\n<p>The Hermes bed is built on a multilayer structure covered with non-deformable polyurethane foam. Goose feather square decorative cushions in two sizes are available on request.<\/p>\n<p>Upholstery is the main decision to make on the Maxi bed; compare it with other <a href=\"https://cassoni.com/product-category/furniture/bedroom/double-beds/\">king beds<\/a> if you want a different headboard shape.<\/p>","descripcion_seo":"The Hermes bed frame pairs a low upholstered base with an extra-wide headboard in vertical quilting. The \"Maxi\" is the wide version of the Hermes Bed: the headboard runs well past the sides of the mattress.\nBEFORE YOU ORDER\n It fits a standard American King mattress (76 3/4\" × 80\"). Slats are included and the mattress is not. Measure the wall first: this maxi bed is much wider than the mattress.\nUPHOLSTERY\n Fabrics from the Lario, Lido, Cloud and Vegan Nabuk lines, or leather in categories A, B and C. Square goose feather cushions (19 5/8\" or 15 3/4\") are available on request."},{"url":"https://cassoni.com/product/cas-dvhc-tiffany-mirror-01/","nombre":"Tiffany  Mirror","h1_agente":"Tiffany Multilayered Wall Mirror by DV Home Collection","h1_seo":"Tiffany Large Rectangular Wall Mirror by DV Home Collection","h1_igual":false,"h1_parecido":0.5,"kw_agente":["tiffany style mirror","tiffany mirrors","wall mirror"],"kw_seo":["tiffany mirror"],"kw_en_comun":["tiffany mirror"],"cobertura":1.0,"acierto":0.33,"palabras_agente":81,"palabras_seo":72,"secciones_agente":1,"secciones_seo":2,"lista_agente":true,"lista_seo":false,"kw_en_apertura":true,"aprobada":true,"descripcion_agente":"<p>The Tiffany is a wall mirror by DV Home Collection with a multilayered structure and a natural mirror surface. Made in Italy. This Tiffany style mirror comes with a frame in six finishes, from shining stainless steel and chrome black to 24Kt gold.<\/p><h2>SIX FRAME FINISHES<\/h2><ul><li>Antique bronze satin, shaded glossy, shaded satin, shining stainless steel, chrome black, or 24Kt gold.<\/li><\/ul><p>Tiffany mirrors let you choose the finish, while the natural mirror surface stays the same. See all <a href=\"https://cassoni.com/product-category/accessories/mirrors/\">wall mirrors<\/a>.<\/p>","descripcion_seo":"The Tiffany mirror is a rectangular wall mirror with a slim metal frame and natural mirror glass, 1/8\" thick. Made in Italy.\nVERTICAL OR HORIZONTAL\n You can hang it upright, or turn it sideways over a console or a sideboard. For a taller, narrower mirror, see the Tiffany Extra Large.\nFRAME FINISHES\n Stainless steel, antique bronze satin, shaded glossy, shaded satin, chrome black, 24kt gold, champagne gold, pink gold or gold satin."},{"url":"https://cassoni.com/product/cas-oak-sc_1019_chair-01/","nombre":"Cleopatra Chair (SC1019)","h1_agente":"Cleopatra Wood and Leather Dining Chair by OAK","h1_seo":"Cleopatra Wood and Leather Dining Chair by OAK","h1_igual":true,"h1_parecido":1.0,"kw_agente":["cleopatra chair design","cleopatra wooden chair","wood and leather chair"],"kw_seo":["cleopatra wooden chair","cleopatra's chair","wood and leather chair"],"kw_en_comun":["cleopatra wooden chair","wood and leather chair"],"cobertura":0.67,"acierto":0.67,"palabras_agente":63,"palabras_seo":74,"secciones_agente":1,"secciones_seo":2,"lista_agente":true,"lista_seo":false,"kw_en_apertura":true,"aprobada":true,"descripcion_agente":"<p>The Cleopatra chair design is a wooden dining chair by OAK with leather upholstery, and the wood comes in three finishes.<\/p>\n<h2>WOOD FINISHES<\/h2>\n<ul>\n<li>Rosewood<\/li>\n<li>Ebony<\/li>\n<li>Citronier<\/li>\n<\/ul>\n<p>Choose the finish first: the wood and leather chair comes in these three options. Each Cleopatra wooden chair is upholstered in leather, so the wood is the part you select.<\/p>\n<p>See all <a href=\"https://cassoni.com/product-category/furniture/dining-room/chairs-armchairs/\">dining chairs<\/a> to compare finishes.<\/p>","descripcion_seo":"Designed by Luca Scacchetti, Cleopatra's chair is a wood and leather chair for the dining room. It has a tall backrest that stands out around the table.\nWOOD\n This Cleopatra wooden chair comes in amara ebony, or lacquered in black, ivory, lead grey, red or white. Each option has a satin or a polished finish.\nLEATHER\n Smooth leather in categories A to C, waxed leather or nabuk, including a nabuk with a Kuba pattern."},{"url":"https://cassoni.com/product/cas-tal-cruise-teak-sofa-01/","nombre":"Cruise Sofa","h1_agente":"Cruise Teak Outdoor Sofa by Talenti","h1_seo":"Cruise Teak Outdoor Sofa by Talenti","h1_igual":true,"h1_parecido":1.0,"kw_agente":["cruise couch","talenti sofa","outdoor couch","teak sofa"],"kw_seo":["cruise couch"],"kw_en_comun":["cruise couch"],"cobertura":1.0,"acierto":0.25,"palabras_agente":89,"palabras_seo":88,"secciones_agente":2,"secciones_seo":2,"lista_agente":false,"lista_seo":true,"kw_en_apertura":false,"aprobada":true,"descripcion_agente":"<p>The Cruise is a three-seater outdoor couch by Talenti, with a structure in teak wood and cushions in weather-resistant fabric. Made in Italy.<\/p>\n<h2>ROPE AND TEAK<\/h2>\n<p>The synthetic rope is reserved for the armrests and backrest; everything else is teak wood. That mix gives this teak sofa its nautical look, and it is designed for outdoor living areas.<\/p>\n<h2>THREE SEATS OUTSIDE<\/h2>\n<p>This Cruise couch seats three, so it fits a large terrace or garden living area. To compare this Talenti sofa with other models, browse our <a href=\"https://cassoni.com/product-category/outdoor/living-area/sofas-sectionals-living-area/\">outdoor sofas<\/a>.<\/p>","descripcion_seo":"The Cruise couch is a three-seater outdoor sofa by Ludovica + Roberto Palomba for Talenti. It has a full teak frame, with woven synthetic rope on the arms and backrest, like the deck of a boat.\nMADE TO STAY OUTSIDE\n • Smoke teak frame.\n • Quick-dry foam padding.\n • Removable cushion covers in weather-resistant, fire-rated outdoor fabrics (Mambo Taupe, Twill Beige, Slate Grey).\nA LOW, RELAXED SEAT\n The seat is 14 5/8\" high, lower than an indoor sofa, for lounging by the pool or on a terrace. Extra decorative cushions are optional."},{"url":"https://cassoni.com/product/cas-tnl-bakkarat-table-01/","nombre":"Bakkarat Table","h1_agente":"Bakkarat Glass Dining Table by Tonelli Design","h1_seo":"Bakkarat Round Glass Dining Table by Tonelli Design","h1_igual":false,"h1_parecido":0.8,"kw_agente":["italian table","dining table in glass","glass table"],"kw_seo":["dining table in glass","glass table"],"kw_en_comun":["dining table in glass","glass table"],"cobertura":1.0,"acierto":0.67,"palabras_agente":89,"palabras_seo":87,"secciones_agente":1,"secciones_seo":2,"lista_agente":false,"lista_seo":false,"kw_en_apertura":true,"aprobada":true,"descripcion_agente":"<p>The Bakkarat is an Italian table in extra clear glass by Tonelli Design, made in Italy. The glass table pairs a slab top with a round shape and a sculptural central leg on a chrome-plated metal base.<\/p><h2>TOP AND BASE<\/h2><p>Chairs sit anywhere around the round top, since the support is one central leg rather than four corner legs. As a dining table in glass, the Bakkarat stays open underneath, so the base is visible from every side. See our <a href=\"https://cassoni.com/product-category/furniture/dining-room/fixed-tables/\">fixed dining tables<\/a> for other glass tops and bases.<\/p>","descripcion_seo":"A round dining table in glass by D'Urbino e Lomazzi for Tonelli. The top is extra clear tempered glass. The sculptural central leg is a 1 1/8\" thick glass piece on a polished chrome base. Made in Italy.\nWHY EXTRA CLEAR GLASS\n Standard glass shows a green tint at the edges. Extra clear glass stays colorless, so this glass table lets you see the twist of the leg from every side of the room.\nFOUR DIAMETERS\n From 43 1/4\" to 55 1/8\", all at standard dining height."},{"url":"https://cassoni.com/product/illan-luxury-wall-lamp-luceplan/","nombre":"Illan Wall Lamp","h1_agente":"Illan Wood Wall Sconce by Luceplan","h1_seo":"Illan LED Wall Sconce by Luceplan","h1_igual":false,"h1_parecido":0.6,"kw_agente":["illan lamp","luceplan illan","wall sconce","wood sconce"],"kw_seo":["luceplan illan","wall light","wall sconce"],"kw_en_comun":["luceplan illan","wall sconce"],"cobertura":0.67,"acierto":0.5,"palabras_agente":99,"palabras_seo":81,"secciones_agente":2,"secciones_seo":2,"lista_agente":true,"lista_seo":true,"kw_en_apertura":true,"aprobada":true,"descripcion_agente":"<p>Designed by Zsuzsanna Horvath, the Luceplan Illan lamp is a wood wall sconce. A die-cast aluminum body holds an LED that lights upward through a laser-cut layered wood shade. Made in Italy.<\/p><h2>SURPLUS WOOD SHADE<\/h2><p>The shade is laser-cut from wood left over from making the Illan suspension, so each wood sconce turns production scraps into a thin, flexible silhouette.<\/p><h2>LED AND DIMMING<\/h2><ul><li>LED 21W, 1265lm, 2700K or 3000K, CRI 90, dimmable.<\/li><li>UL Approved, built to National Electrical Code requirements.<\/li><\/ul><p>Hang it where a table lamp would take up surface space, and browse our <a href=\"https://cassoni.com/product-category/lighting/wall-lamps-sconces/\">wall sconces<\/a> to compare formats.<\/p>","descripcion_seo":"Luceplan Illan is an LED wall sconce designed by Zsuzsanna Horvath. Its shade is laser-cut birch wood in thin layers, made from the material left over when producing the Illan suspension lamp.\nTHE LIGHT\n • LED 21W, 1265 lumens, CRI 90.\n • Dimmable, in 2700K (warmer) or 3000K.\n • The light points upward, so this wall light washes the wall without glare.\n • UL approved.\nWHERE IT WORKS\n At 11\" wide and only 5 1/8\" deep, it fits hallways and both sides of a bed."},{"url":"https://cassoni.com/product/luxury-exquisite-masterpiece-19800-steinway-piano-by-riva-mobili-darte/","nombre":"19800 Steinway Piano","h1_agente":"Steinway Mother-of-Pearl Piano by Riva Mobili D'Arte","h1_seo":"Hand-Carved Mother-of-Pearl Steinway Piano by Riva Mobili D'Arte","h1_igual":false,"h1_parecido":0.71,"kw_agente":["italian piano","contemporary luxury piano","luxury interior piano"],"kw_seo":["italian piano","steinway and sons pianos"],"kw_en_comun":["italian piano"],"cobertura":0.5,"acierto":0.33,"palabras_agente":97,"palabras_seo":91,"secciones_agente":2,"secciones_seo":2,"lista_agente":false,"lista_seo":false,"kw_en_apertura":true,"aprobada":true,"descripcion_agente":"<p>The Steinway is an Italian piano by Riva Mobili D'Arte, with hand-carved decoration on the base and sides and mother-of-pearl inlays set into the surface.<\/p>\n<h2>CARVING AND INLAY<\/h2>\n<p>The decoration on the base and sides is carved by hand, and the mother-of-pearl reflects light in iridescent shades that change with the angle.<\/p>\n<h2>IN A ROOM<\/h2>\n<p>Because the ornament runs along the base and sides, a luxury interior piano like this one can stand away from a wall. Pair it with plain furniture: a contemporary luxury piano already carries enough decoration. Browse more <a href=\"https://cassoni.com/brand/riva-mobili-darte/\">Riva Mobili D'Arte pianos<\/a>.<\/p>","descripcion_seo":"Among Steinway and Sons pianos, this is a one-of-a-kind dressed piece. Riva Mobili d'Arte covers it in mother-of-pearl, with inlays of precious wood and brass and a deep high-gloss finish. The result is an Italian piano case made to be the centerpiece of a room.\nCRAFT\n A solid wood base, hand-carved in three dimensions and finished in hand-applied gold leaf. The mother-of-pearl changes color with the angle of light. A matching ottoman is included.\nMATCHING PIECES\n The same finish is available on sofas, lounge chairs, consoles and mirrors from the collection."},{"url":"https://cassoni.com/product/shibari-modern-designer-chair-visionnaire/","nombre":"Shibari Chair","h1_agente":"Shibari Fabric Armchair by Visionnaire","h1_seo":"Shibari Stretch Fabric Armchair by Visionnaire","h1_igual":false,"h1_parecido":0.75,"kw_agente":["shibari chairs","shibari furniture","visionnaire armchair"],"kw_seo":["shibari chairs","visionnaire chair"],"kw_en_comun":["shibari chairs"],"cobertura":0.5,"acierto":0.33,"palabras_agente":112,"palabras_seo":62,"secciones_agente":2,"secciones_seo":1,"lista_agente":false,"lista_seo":false,"kw_en_apertura":false,"aprobada":true,"descripcion_agente":"<p>The Shibari is a Visionnaire armchair, fully covered in stretch fabric, with a continuous, enveloping silhouette. Curved tubular metal legs converge at the backrest and form a fluid knot.<\/p><h2>THE KNOT<\/h2><p>The knot links rather than restrains: in this piece of Shibari furniture, the legs and backrest merge into one intertwined line, and the symbol carries the design.<\/p><h2>SEAT AND STRUCTURE<\/h2><p>A high-density polyurethane core and a webbed seat keep it comfortable while the frame stays visually light. The stretch cover wraps the whole chair, so this fabric armchair reads as one continuous form. Comparing Shibari chairs, look at how the tubes meet the back. See all <a href=\"https://cassoni.com/product-category/furniture/dining-room/chairs-armchairs/\">upholstered chairs and armchairs<\/a>.<\/p>","descripcion_seo":"A Visionnaire chair designed by Studiopepe. Curved metal tubes run from the legs to the backrest, where they close in a soft knot, the idea behind the name.\nUPHOLSTERY\n Fully covered in recycled stretch fabric (Paddington) in Chalk, Carbon, Natural, Amaretto or Gris, with a backrest cushion included. Like all Shibari chairs, it has a high-density foam core and a webbed seat."}]},"fecha":"23-nov","nota_vs":"Medido en seco con DeepSeek sobre las 10 fichas de Alex, con los datos guardados de cada ficha (Search Console, volúmenes y descripción); sin los atributos de WooCommerce, que la corrida en el servidor sí lee.","historial":[{"fecha":"13-nov","r":{"fichas":10,"h1_iguales":4,"h1_parecido_promedio":0.75,"keywords_seo":22,"keywords_agente":23,"keywords_en_comun":7,"cobertura":0.32,"acierto":0.3,"palabras_agente_prom":96,"palabras_seo_prom":86,"aprobadas":10}},{"fecha":"17-nov","r":{"fichas":10,"h1_iguales":2,"h1_parecido_promedio":0.66,"keywords_seo":22,"keywords_agente":21,"keywords_en_comun":9,"cobertura":0.41,"acierto":0.43,"palabras_agente_prom":96,"palabras_seo_prom":86,"aprobadas":10}}],"nuevas":{"meta":{"modo":"simulación sin tienda","llm":"deepseek-v4.1-flash","commit":"9204a46b3be3a6b8307d5432238dae613d96d02b","dry_run":true,"simulada":true,"semilla":20261123,"universo":88,"nota":"Ficha leída de la página publicada con DataForSEO; Search Console reemplazado por las búsquedas que DataForSEO estima para la página.","costos":{"tokens_in":63704,"tokens_out":95261,"cache_hit":0,"cache_miss":63704,"usd":0.1334244,"llamadas":26,"dfs_usd":0.1708}},"fichas":[{"url":"https://cassoni.com/product/cas-ark-windsor_sofa-01/","status":"processed","reason":"simulación en seco: ficha leída de la página publicada","h1_original":"Windsor Sofa","h1":"Windsor Diamond-Quilted Sofa by Arketipo","h1_regla":"rasgo más buscado: 'velvet sofa' (8100/mes)","descripcion":"<p>The Windsor sofa is an Arketipo sofa with diamond-quilted upholstery, the button sunk into the padding. The high-end tufting gives the seat a soft, deep feel. Made in Italy.<\/p>\n<h2>FABRIC, LEATHER OR VELLÙ<\/h2>\n<ul>\n<li>Fabric in category E.<\/li>\n<li>Pelle A, Pelle B or Pelle Leonardo leather.<\/li>\n<li>Vellù, in eight colorways: 5500, 5502, 5503, 5504, 5505, 5506, 5509 and 5510.<\/li>\n<\/ul>\n<p>The quilting suits a traditional room, and this Italian sofa also holds its own in a contemporary one. Compare the covers in our <a href=\"https://cassoni.com/product-category/furniture/living-room/sofas-sectionals/\">sofas and sectionals<\/a>.<\/p>","descripcion_original":"<p>The Windsor Italian luxury designer sofa fits in with all kinds of furnitures: perfect in a Traditional setting, in a Contemporary setting it stands out like a valuable work of art. This Italian sofa with high-end tufted upholstery, has a decidedly distinctive feel. It is refined, luxurious and sophisticated, yet also soft and welcoming, due to the characteristic button buried in the diamond quilting of the padding. Windsor sofa has extended its range with an additional, extra-large sofa of 123″5/8. Besides, there is a new high-end version in velvet which gives the sofa a silky and sumptuous look.Made in Italy.<\/p>\n","keywords":["arketipo sofa","italian sofa","windsor sofa"],"keywords_detalle":[{"keyword":"arketipo sofa","origen":"generica","volumen":30,"por_que":"marca + tipo (30/mes)"},{"keyword":"italian sofa","origen":"generica","volumen":1900,"por_que":"el tipo de producto (1900/mes)"},{"keyword":"windsor sofa","origen":"gsc","posicion":3,"volumen":50,"impresiones":50,"por_que":"ya aparece en Google (50 impresiones; para llegar al mínimo de 3)"}],"omitidas":[],"reservas_usadas":[],"validacion":{"aprobado":true,"issues":[],"razon":"El H1 identifica el producto y lo distingue por su técnica (diamond-quilted); todos los datos (tapizado capitoné con botón, categorías Fabric E, Pelle A/B/Leonardo, las ocho variantes Vellù 5500-5506/5509-5510, Made in Italy, uso en ambientes tradicionales y contemporáneos) provienen de la ficha, sin contradicciones ni keywords forzadas."},"intentos":1,"segundos":34.9,"palabras":85},{"url":"https://cassoni.com/product/cas-ra-speedform-suspension-lamp-01/","status":"processed","reason":"simulación en seco: ficha leída de la página publicada","h1_original":"Speedform Suspension Lamp","h1":"Speedform Glass Pendant Light by Reflex","h1_regla":"rasgo más buscado: 'brass pendant light' (2400/mes)","descripcion":"<p>The Speedform is a glass pendant light by Reflex: a mirror glass support holds a curved metallic element with its own LED strip. Made in Italy.<\/p><h2>FINISHES AND CONFIGURATION<\/h2><p>This glass light comes in satin brass, satin dark brass or satin titanium. Order it as one pendant lamp or two; lead time is 12-16 weeks.<\/p><h2>LED AND SIZES<\/h2><p>The Reflex light carries the LED support (6 x 3W, 12V, 2700-3000K) and a 24W strip in each curved element.<\/p><p>Both versions are 51 1/8\" H; only the footprint changes: 40 1/8\" W x 23 5/8\" D or 43 1/4\" W x 19 5/8\" D. See all <a href=\"https://cassoni.com/product-category/lighting/chandeliers-suspension-lamps/\">suspension lamps<\/a>.<\/p>","descripcion_original":"<p>Speedform is a luxury Italian designer suspension lamp with mirror glass support equipped with LED (6 x 3W 12V 2700-3000K). Pendant curved element in stylish metallic finishes, with LED-strip. (24W STRIP 12V 2700-3000K each element). This Contemporary Italian lighting is a great addition to sophisticated interiors. Made in Italy.<\/p>\n","keywords":["reflex light","pendant light","pendant lamp","glass light"],"keywords_detalle":[{"keyword":"reflex light","origen":"generica","volumen":70,"por_que":"marca + tipo (70/mes)"},{"keyword":"pendant light","origen":"generica","volumen":18100,"por_que":"el tipo de producto (18100/mes)"},{"keyword":"pendant lamp","origen":"generica","volumen":4400,"por_que":"el tipo de producto (4400/mes)"},{"keyword":"glass light","origen":"generica","volumen":1000,"volume":1000,"por_que":"el material del H1 con el tipo"}],"omitidas":[],"reservas_usadas":[],"validacion":{"aprobado":true,"issues":[],"razon":"Todos los datos (medidas, acabados, opciones de 1 o 2 pendants, LED 6x3W y tira de 24W, lead time 12-16 semanas, Made in Italy) provienen de la ficha; el H1 identifica el producto por marca, nombre y material (mirror glass), y las keywords aparecen integradas en oraciones con sentido propio, sin contradicciones ni relleno."},"intentos":2,"segundos":137.0,"palabras":108},{"url":"https://cassoni.com/product/cas-tur-soul-bed-01/","status":"processed","reason":"simulación en seco: ficha leída de la página publicada","h1_original":"Soul Bed","h1":"Soul Rounded Headboard Bed by Turri","h1_regla":"rasgo más buscado: 'wood bed' (6600/mes)","descripcion":"<p>The Soul is a Turri bed with a rounded headboard that curves slightly around the mattress, so frame and headboard read as one continuous body. Wooden details run along both. Made in Italy.<\/p><h2>QUEEN OR KING<\/h2><p>Both sizes are 96 7/8\" deep and 41 3/8\" high; only the width changes, 70 1/2\" or 86 1/4\". Measure the wall before you pick this Italian bed.<\/p><h2>COVER OPTIONS<\/h2><ul><li>Fabric, Cat. X, B, T and F.<\/li><li>Leather, Cat. LD, LH, LM and LT.<\/li><li>Velvet, Cat. B and F.<\/li><\/ul><p>The cover you choose sets the look, while the wooden frame and headboard details stay the same. See all <a href=\"https://cassoni.com/product-category/furniture/bedroom/double-beds/\">double beds<\/a>.<\/p>","descripcion_original":"<p>The exclusive Soul Bed immediately refers to a feeling of relaxation and well-being. The rounded and accommodating headboard, slightly curved around the mattress, follows the pattern of the seams, giving further softness to the shapes and wooden details that incorporate the bed frame and the headboard. Everything appears as a single and sinuous body. Soul bed is available in different finishes as per collection. Made in Italy.<\/p>\n","keywords":["turri bed","italian bed"],"keywords_detalle":[{"keyword":"turri bed","origen":"gsc","posicion":7,"volumen":40,"impresiones":40,"por_que":"ya aparece en Google (40 impresiones)"},{"keyword":"italian bed","origen":"generica","volumen":390,"por_que":"el tipo de producto (390/mes)"}],"omitidas":[],"reservas_usadas":[],"validacion":{"aprobado":true,"issues":[],"razon":"El H1 identifica el producto por su rasgo distintivo (cabecero redondeado) y la marca. La descripción respeta los datos: medidas y diferencias Queen/King correctas, las tres familias de tapizado con sus categorías bien contadas, el 'Made in Italy' respaldado por la ficha y el cuerpo continuo formado por estructura y cabecero con detalles de madera tal como dice el original. Las keywords 'turri bed' e 'italian bed' aparecen de forma natural, sin frases inventadas ni contradicciones."},"intentos":1,"segundos":70.4,"palabras":107},{"url":"https://cassoni.com/product/cas-dit-isla-sectional-01/","status":"processed","reason":"simulación en seco: ficha leída de la página publicada","h1_original":"Isla Sectional","h1":"Isla Sectional by Ditre Italia","h1_regla":"ningún rasgo con volumen: modelo + tipo","descripcion":"<p>The Isla sofa is a sectional sofa by Ditre Italia built from an archipelago of rounded islands with soft cushions you arrange yourself. The backrest tilts to different angles. Made in Italy.<\/p>\n<h2>ISLANDS AND BACKRESTS<\/h2>\n<p>You set the cushions and the backrest angle, so the seats suit different bodies.<\/p>\n<h2>SIX COMPOSITIONS<\/h2>\n<ul>\n<li>Compositions A, B, C, D, G and H, with A, D and E also in left- or right-hand versions.<\/li>\n<li>From 100 3/8\" W x 51 1/8\" D to 208 5/8\" W x 141 3/4\" D; all 31\" H.<\/li>\n<\/ul>\n<p>Measure the wall: at its largest this Italian sectional is 208 5/8\" wide and 141 3/4\" deep. More <a href=\"https://cassoni.com/product-category/furniture/living-room/sofas-sectionals/\">sectional sofas<\/a>.<\/p>","descripcion_original":"<p>Compositional freedom combined with a yearning for informality have given rise to a sofa consisting of an archipelago of rounded shapes. Islands providing comfortable seats, with soft cushions to be arranged to your liking, including a backrest with a variable tilt angle that distinguishes the ensemble and adapts to varying body shapes and to different surroundings. Made in Italy.<\/p>\n","keywords":["isla sofa","sectional sofa","italian sectional"],"keywords_detalle":[{"keyword":"isla sofa","origen":"gsc","posicion":12,"volumen":30,"impresiones":3,"por_que":"ya aparece en Google (3 impresiones)"},{"keyword":"sectional sofa","origen":"generica","volumen":90500,"por_que":"el tipo de producto (90500/mes)"},{"keyword":"italian sectional","origen":"generica","volumen":70,"por_que":"el tipo de producto (70/mes)"}],"omitidas":[],"reservas_usadas":["italian sectional"],"validacion":{"aprobado":true,"issues":[],"razon":"Todos los datos (islas de formas redondeadas, cojines movibles, respaldo de inclinación variable, Made in Italy, seis composiciones A/B/C/D/G/H con versiones L/R de A, D y E, y las medidas de 100 3/8\" x 51 1/8\" hasta 208 5/8\" x 141 3/4\" con 31\" de alto) salen de la ficha. Las keywords aparecen de forma natural y el H1 no se objeta por regla SEO."},"intentos":2,"segundos":84.4,"palabras":110},{"url":"https://cassoni.com/product/cas-wmg-efesto-murano-candle-holder-01/","status":"processed","reason":"simulación en seco: ficha leída de la página publicada","h1_original":"Efesto Murano Candle Holder","h1":"Efesto Murano Candle Holder by Wave Murano Glass","h1_regla":"sin tipo de producto: nombre + marca","descripcion":"<p>Efesto is a Venetian candle holder hand-blown in Murano glass by Wave Murano Glass. Venetian artisans shape each piece by mouth, so no two come out the same. Made in Italy.<\/p>\n<h2>SUN-BLEACHED COLORS<\/h2>\n<p>Delicate tones with a soft, sun-bleached effect run through the glass. Small differences in shade and silhouette belong to the hand-blown process.<\/p>\n<h2>ONE OR A GROUP<\/h2>\n<p>Efesto is a collection, so several holders can sit together on a dining table or a console. Choose two or three and vary the colors. See more <a href=\"https://cassoni.com/product-category/lighting/murano-lighting/murano-ceiling-lamps/\">Murano glass candle holders<\/a>.<\/p>","descripcion_original":"<p>Efesto is an elegant collection of Murano glass candle holders distinguished by their delicate colors and soft sun-bleached effect. Masterfully hand-blown by Venetian artisans, each piece is unique and displays a perfect balance between contemporary elegance and timeless craftsmanship. With their refined silhouettes and versatile design, these candle holders perfectly complement modern and classic interiors, bringing a touch of luminous sophistication to any space. Made in Italy.<\/p>\n","keywords":["venetian candle holder"],"keywords_detalle":[{"keyword":"venetian candle holder","origen":"gsc","posicion":11,"volumen":70,"impresiones":3,"por_que":"ya aparece en Google (3 impresiones)"}],"omitidas":[{"keyword":"murano candles","motivo":"La ficha describe un candelero (candle holder), no velas; usar 'Murano candles' afirmaría que el producto son velas de Murano y contradice el dato."}],"reservas_usadas":[],"validacion":{"aprobado":true,"issues":[],"razon":"La descripción se ciñe a la ficha: colección, colores delicados con efecto sun-bleached, soplado a mano por artesanos venecianos, piezas únicas y Made in Italy. No hay materiales, acabados, certificaciones ni cantidades inventadas; la keyword 'venetian candle holder' está integrada con sentido y el conjunto se lee natural, sin relleno de catálogo."},"intentos":1,"segundos":37.0,"palabras":91},{"url":"https://cassoni.com/product/cas-var-wellness-therapy-lounger-01/","status":"processed","reason":"simulación en seco: ficha leída de la página publicada","h1_original":"Wellness Therapy Lounger","h1":"Wellness Therapy Fabric Lounger by Varaschin","h1_regla":"rasgo más buscado: 'fabric lounger' (50/mes)","descripcion":"<p>The Wellness Therapy is a lounger in fabric by Varaschin: a customizable spa bed on stones, feet or a plexiglass support. Made in Italy.<\/p><h2>LIGHT, SOUND AND SCENT<\/h2><p>A luminous ring ties light, color, sound and scent together in this therapy lounge chair. The Corian touch top adds chromotherapy, aromatherapy, a cup warmer and music.<\/p><h2>BASE AND UPHOLSTERY<\/h2><p>Only the stones version takes the Corian top. Choose the chaise lounge as a single or a double bed; the lounge chair upholstery comes in Composition 9, Composition 10, fabric C or nine Abaco colors. See all <a href=\"https://cassoni.com/product-category/high-end-home-gym-equipment-and-spa/spa-wellness/wellness-beds-loungers/\">wellness beds and loungers<\/a>.<\/p>","descripcion_original":"<p>Inspired on the search of the best possible to create a balance between body, mind and soul, here is a sophisticated Italian customizable collection for wellness therapy and SPA that consists of a bed (single or double) resting on stones, feet or plexiglass support and a luminous ring. Stones available with Corian touch top with chromotherapy and aromatherapy function, music and cup warmer.<\/p>\n<p>Wellness Therapy is an innovative furnishing system where light, color, sound and scent chase each other, creating an experience of relaxation that is not only form and ergonomics, but in which emotion and holistic sensoriality also come into play. Designed by Varaschin. Made in Italy.<\/p>\n<p>See the “Data Sheet” PDF for technical information.<\/p>\n","keywords":["therapy lounge chair","chaise lounge","lounge chair"],"keywords_detalle":[{"keyword":"therapy lounge chair","origen":"gsc","posicion":1,"volumen":140,"impresiones":140,"por_que":"ya aparece en Google (140 impresiones)"},{"keyword":"chaise lounge","origen":"generica","volumen":90500,"por_que":"el tipo de producto (90500/mes)"},{"keyword":"lounge chair","origen":"generica","volumen":74000,"por_que":"el tipo de producto (74000/mes)"}],"omitidas":[],"reservas_usadas":[],"validacion":{"aprobado":true,"issues":[],"razon":"El H1 dice qué es (lounger de exterior/wellness de Varaschin) y la descripción se ciñe a los datos de la ficha: base sobre piedras, patas o plexiglás, anillo luminoso, tapa Corian con cromoterapia, aromaterapia, calientatazas y música, tapizado en Composition 9/10, Fabric (C) o los 9 colores Abaco (contados correctamente), y Made in Italy tal como figura en el original. Las keywords (therapy lounge chair, chaise lounge, lounge chair) están integradas con su sentido real y sin frases vacías."},"intentos":2,"segundos":115.0,"palabras":100},{"url":"https://cassoni.com/product/costanzina-versatile-wall-lamp-luceplan/","status":"processed","reason":"simulación en seco: ficha leída de la página publicada","h1_original":"Costanzina Wall Lamp","h1":"Costanzina Aluminum Wall Sconce by Luceplan","h1_regla":"rasgo más buscado: 'aluminum wall sconce' (30/mes)","descripcion":"<p>The Luceplan Costanzina is an aluminum wall sconce with an interchangeable silkscreened polycarbonate shade, so you can change its look without replacing the fixture. Made in Italy.<\/p><h2>SHADE AND LIGHT SOURCE<\/h2><p>The lightweight shade diffuses light softly, and the rod switch sits close to the light source. This Luceplan lamp takes an LED 60W candelabra base G16 1/2 bulb and is not dimmable. It is UL Approved.<\/p><h2>SIZE AND PLACEMENT<\/h2><p>The shade measures Ø10 1/4\" x 6 5/8\" H. As a wall light, it suits living rooms, bedrooms and hallways, and it is also available as a set of two. Browse our <a href=\"https://cassoni.com/product-category/lighting/wall-lamps-sconces/\">wall lamps and sconces<\/a> for more Luceplan designs.<\/p>","descripcion_original":"<p>Costanzina is a refined wall lamp that brings warm, inviting illumination to any interior space. Its interchangeable silkscreened polycarbonate shade adds versatility and personality, allowing you to refresh the look with ease. Designed for both modern and classic décor, this lamp features a sleek aluminum stem and a practical rod-switch positioned close to the light source for effortless control. The lightweight shade softly diffuses the light, creating a cozy atmosphere ideal for living rooms, bedrooms, and hallways. A timeless piece that combines Italian design, high-quality materials, and functional elegance. UL Approved (Product build according to the National Electrical Code’s requirements and tested by Underwriters Laboratories). Made in Italy.<\/p>\n<p>Light source: LED 60W Candelabra Base G16 1/2 Bulb. Not dimmable. UL Approved.<\/p>\n","keywords":["luceplan costanzina","luceplan lamp","wall sconce","wall light"],"keywords_detalle":[{"keyword":"luceplan costanzina","origen":"gsc","posicion":6,"volumen":30,"impresiones":30,"por_que":"ya aparece en Google (30 impresiones)"},{"keyword":"luceplan lamp","origen":"gsc","posicion":4,"volumen":30,"impresiones":30,"por_que":"ya aparece en Google (30 impresiones)"},{"keyword":"wall sconce","origen":"generica","volumen":60500,"por_que":"el tipo de producto (60500/mes)"},{"keyword":"wall light","origen":"generica","volumen":22200,"por_que":"el tipo de producto (22200/mes)"}],"omitidas":[],"reservas_usadas":[],"validacion":{"aprobado":true,"issues":[],"razon":"Todos los datos (aluminio, pantalla de policarbonato serigrafiada e intercambiable, Made in Italy, LED 60W G16 1/2 no regulable, UL, medidas, set de 2, usos) provienen de la ficha; las keywords aparecen de forma natural y el H1 identifica material, tipo y marca sin elegir un rasgo menor."},"intentos":1,"segundos":30.4,"palabras":110},{"url":"https://cassoni.com/product/boulevard-elegant-lounge-chair-dv-home-collection/","status":"rejected","reason":"simulación en seco: ficha leída de la página publicada","h1_original":"Boulevard Lounge Chair","h1":"Boulevard Wood Lounge Chair by DV Home Collection","h1_regla":"rasgo más buscado: 'leather lounge chair' (4400/mes)","descripcion":"<p>The Boulevard is a lounge chair with a sculptural wooden structure and a generously proportioned seat, upholstered in leather (C) or VIP fabric. Made in Italy by DV Home Collection.<\/p>\n<h2>LEATHER OR FABRIC<\/h2>\n<p>Leather is category C, the only leather listed, so a designer leather chair is simply the Boulevard with a hide cover instead of VIP fabric. The other options are ten COL. references, COL. 03 to COL. 1406.<\/p>\n<h2>SIZE AND PLACE<\/h2>\n<p>This italian chair measures 27 1/2\" W x 28 3/8\" D x 29 1/8\" H, small enough for a bedroom corner or a pair; see all <a href=\"https://cassoni.com/product-category/furniture/living-room/lounge-chairs/\">lounge chairs<\/a>.<\/p>","descripcion_original":"<p>Crafted with timeless elegance, this refined lounge chair embodies the perfect harmony of comfort and sophistication. It features a sculptural wooden structure and a generously proportioned seat which is upholstered in leather or fabric, each option carefully selected for its tactile allure and enduring quality. Every curve and contour is designed to embrace the body, inviting hours of effortless relaxation. A piece that balances artisanal craftsmanship with understated luxury. Made in Italy.<\/p>\n","keywords":["designer leather chair","lounge chair","italian chair"],"keywords_detalle":[{"keyword":"designer leather chair","origen":"gsc","posicion":2,"volumen":50,"impresiones":50,"por_que":"ya aparece en Google (50 impresiones)"},{"keyword":"lounge chair","origen":"generica","volumen":74000,"por_que":"el tipo de producto (74000/mes)"},{"keyword":"italian chair","origen":"generica","volumen":210,"por_que":"el tipo de producto (210/mes)"}],"omitidas":[],"reservas_usadas":[],"validacion":{"aprobado":false,"issues":["H1: el H1 dice cosas que la ficha no dice: wood","Falta la genérica del material del H1: sumá 'wood chair' (exacta, en una oración real; si no entra natural, ponela en omitidas)"],"razon":"reglas en código"},"intentos":3,"segundos":171.0,"palabras":102},{"url":"https://cassoni.com/product/cas-dvhc-windsor-mirror-01/","status":"processed","reason":"simulación en seco: ficha leída de la página publicada","h1_original":"Windsor Mirror","h1":"Windsor Stainless Steel Mirror by DV Home Collection","h1_regla":"rasgo más buscado: 'stainless steel mirror' (720/mes)","descripcion":"<p>The Windsor is an Italian mirror by DV Home Collection with a multilayered stainless steel frame and a 1/8\" natural beveled mirror center. Made in Italy.<\/p><h2>TWO HEIGHTS<\/h2><p>The Windsor mirror comes in two sizes, both 47 1/4\" wide: 55 1/8\" high for a console or bathroom wall, 78 3/4\" high for a hallway. Standard lead time is 12-16 weeks.<\/p><h2>FRAME FINISHES<\/h2><ul><li>Stainless steel<\/li><li>Dipped Champagne Gold<\/li><li>Dipped Pink Gold<\/li><li>Gold Saten<\/li><\/ul><p>The stainless steel mirror frame sets the tone: pick Stainless Steel for a neutral look, or a dipped gold finish for a warmer metal tone. To compare sizes, see all <a href=\"https://cassoni.com/product-category/accessories/mirrors/\">mirrors<\/a>.<\/p>","descripcion_original":"<p>The refined Italian Windsor mirror features a multilayered structure and a high-end stainless steel frame with a refined design available in different finishes. The central section is in natural beveled mirror 1/8”.<\/p>\n<p>With a sophisticated Glamour style, this Italian piece will surely enhance any area of your home. Made in Italy.<\/p>\n","keywords":["italian mirror","windsor mirror"],"keywords_detalle":[{"keyword":"italian mirror","origen":"generica","volumen":260,"por_que":"el tipo de producto (260/mes)"},{"keyword":"windsor mirror","origen":"gsc","posicion":2,"volumen":210,"impresiones":210,"por_que":"ya aparece en Google (210 impresiones; para llegar al mínimo de 3)"}],"omitidas":[],"reservas_usadas":[],"validacion":{"aprobado":true,"issues":[],"razon":"Todos los datos (medidas 47 1/4 x 55 1/8 y 47 1/4 x 78 3/4, los cuatro acabados, espejo biselado 1/8\", estructura multicapa, marco de acero inoxidable, lead time 12-16 semanas, Made in Italy) coinciden con la ficha. El H1 identifica producto y material, y las keywords 'italian mirror' y 'windsor mirror' aparecen de forma natural y con el sentido correcto. Las sugerencias de ubicación (consola, baño, pasillo) son compatibles con 'any area of your home' y no constituyen un dato inventado relevante."},"intentos":1,"segundos":33.7,"palabras":104}]},"fotos":{},"semilla":"20261123","universo":88,"pie":"Corridas en seco del 23-nov · código 9204a46 · deepseek-v4.1-flash"}</script>
+<script>
+(function(){
+  document.documentElement.classList.add("js");
+  const D = JSON.parse(document.getElementById("datos").textContent);
+  const $ = s => document.querySelector(s);
+  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const fmt = n => n == null ? "s/d" : Number(n).toLocaleString("es-AR");
+  const pct = x => Math.round(x * 100) + "%";
+  const clave = k => k.toLowerCase().replace(/&/g," and ").replace(/['’]s\b/g,"").replace(/[^a-z0-9 ]/g," ").split(/\s+/).filter(Boolean).map(w => w.length>3 && w.endsWith("s") && !w.endsWith("ss") ? w.slice(0,-1) : w).join(" ");
+  const A = D.vs.resumen, N = D.nuevas, n = N.fichas.length;
+  const cols = D.historial.concat([{fecha: D.fecha, r: A}]);
+
+  $("#eyebrow").textContent = `Agente SEO · fichas de producto · v4 · ${D.fecha}`;
+  $("#btn-nuevas").textContent = `${n} fichas nuevas`;
+  const aprob = N.fichas.filter(f => f.status === "processed").length;
+  const conKw = N.fichas.filter(f => (f.keywords || []).length).length;
+  const costo = ((N.meta.costos.usd || 0) + (N.meta.costos.dfs_usd || 0)) / Math.max(n, 1);
+  $("#hero-stats").innerHTML = [
+    [`${A.h1_iguales}/10`, "H1 idénticos al de Alex"],
+    [`${A.keywords_en_comun}/${A.keywords_seo}`, "keywords en común con Alex"],
+    [`${aprob}/${n}`, "fichas nuevas aprobadas"],
+    [`US$ ${costo.toFixed(2)}`, "por ficha"]
+  ].map(s => `<div class="stat"><b>${s[0]}</b><small>${s[1]}</small></div>`).join("");
+
+  // prueba 1
+  const filas = [
+    ["H1 idéntico al de Alex", r => `${r.h1_iguales} de 10`],
+    ["Palabras del H1 en común", r => pct(r.h1_parecido_promedio)],
+    ["Keywords de Alex que eligió el agente", r => `${r.keywords_en_comun} de ${r.keywords_seo}`],
+    [`Palabras de la descripción (Alex: ${A.palabras_seo_prom})`, r => r.palabras_agente_prom],
+    ["Aprobadas por el validador", r => `${r.aprobadas} de 10`]
+  ];
+  const gc = `style="grid-template-columns:minmax(0,1.6fr) repeat(${cols.length},minmax(0,1fr))"`;
+  $("#cmp").innerHTML = `<div class="cmp-row h" role="row" ${gc}><div>Medida</div>${cols.map(c => `<div>${esc(c.fecha)}</div>`).join("")}</div>` +
+    filas.map(f => `<div class="cmp-row" role="row" ${gc}><div>${esc(f[0])}</div>${cols.map((c, i) => `<div class="n${i === cols.length - 1 ? " now" : ""}">${esc(f[1](c.r))}</div>`).join("")}</div>`).join("");
+  $("#nota-vs").textContent = D.nota_vs;
+  const foto = (url, alt, cls) => {
+    const src = (D.fotos || {})[url] || "";
+    return `<a class="${cls}" href="${esc(url)}" target="_blank" rel="noopener" title="Ver en cassoni.com">${src ? `<img src="${src}" alt="${esc(alt)}" loading="lazy">` : "<span>sin foto</span>"}</a>`;
+  };
+  const pills = (lista, otras) => { const c = new Set(otras.map(clave)); return lista.length ? lista.map(k => `<span class="pill ${c.has(clave(k)) ? "hit" : ""}">${esc(k)}</span>`).join("") : `<span class="pill">ninguna</span>`; };
+  function textoSEO(t){
+    const out = []; let lista = [];
+    const cerrar = () => { if (lista.length){ out.push("<ul>" + lista.map(x => `<li>${esc(x)}</li>`).join("") + "</ul>"); lista = []; } };
+    (t || "").split(/\r?\n/).map(l => l.trim()).filter(Boolean).forEach(l => {
+      if (l.startsWith("•")) { lista.push(l.replace(/^•\s*/, "")); return; }
+      cerrar();
+      out.push(l === l.toUpperCase() && /[A-Z]/.test(l) ? `<h2>${esc(l)}</h2>` : `<p>${esc(l)}</p>`);
+    });
+    cerrar(); return out.join("");
+  }
+  function limpio(html, kws){
+    const t = document.createElement("template"); t.innerHTML = html || "";
+    const OK = new Set(["P","H2","UL","LI","STRONG","EM","A","BR"]);
+    (function rec(n){ [...n.childNodes].forEach(c => {
+      if (c.nodeType === 1){ if (!OK.has(c.tagName)){ rec(c); c.replaceWith(...c.childNodes); return; }
+        [...c.attributes].forEach(a => { if (!(c.tagName === "A" && a.name === "href")) c.removeAttribute(a.name); });
+        if (c.tagName === "A"){ const h = c.getAttribute("href") || ""; if (!/^https:\/\//.test(h)) c.removeAttribute("href"); else { c.target = "_blank"; c.rel = "noopener"; } }
+        rec(c); } else if (c.nodeType !== 3) c.remove(); }); })(t.content);
+    if (kws.length){
+      const rx = new RegExp("(" + kws.map(k => k.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).sort((a,b) => b.length - a.length).join("|") + ")", "gi");
+      const w = document.createTreeWalker(t.content, NodeFilter.SHOW_TEXT); const ns = []; while (w.nextNode()) ns.push(w.currentNode);
+      ns.forEach(n => { if (!rx.test(n.nodeValue)) return; rx.lastIndex = 0; const s = document.createElement("span"); s.innerHTML = esc(n.nodeValue).replace(rx, "<mark>$1</mark>"); n.replaceWith(...s.childNodes); });
+    }
+    const d = document.createElement("div"); d.append(t.content); return d.innerHTML;
+  }
+  $("#par").innerHTML = D.vs.fichas.map(f => `
+    <article class="par-item reveal">
+      ${foto(f.url, f.nombre, "par-foto")}
+      <div class="par-top"><h3>${esc(f.nombre)}</h3><span>${f.kw_en_comun.length}/${f.kw_seo.length} keywords en común · ${f.palabras_agente} vs ${f.palabras_seo} palabras</span></div>
+      <div class="duo">
+        <div><span class="who">Alex</span><div class="t">${esc(f.h1_seo)}</div><div>${pills(f.kw_seo, f.kw_agente)}</div>
+          <div class="desc duo-desc">${limpio(textoSEO(f.descripcion_seo), f.kw_seo)}</div><span class="palabras">${f.palabras_seo} palabras</span></div>
+        <div><span class="who ag">Agente · ${esc(D.fecha)}</span><div class="t">${esc(f.h1_agente)}${f.h1_igual ? '<span class="igual">igual</span>' : ""}</div><div>${pills(f.kw_agente, f.kw_seo)}</div>
+          <div class="desc duo-desc">${limpio(f.descripcion_agente, f.kw_agente)}</div><span class="palabras">${f.palabras_agente} palabras</span></div>
+      </div>
+    </article>`).join("");
+
+  // prueba 2
+  $("#nuevas-h2").innerHTML = `${n} fichas nuevas,<br><span class="v">elegidas por código.</span>`;
+  $("#nuevas-lead").textContent = (N.meta.simulada
+    ? `Elegidas al azar${D.semilla ? ` (semilla ${D.semilla})` : ""}${D.universo ? ` entre las ${fmt(D.universo)} fichas que el agente nunca procesó y que aparecen en Google por 2 o más búsquedas` : ""}. Ninguna está entre las fichas de Alex: el agente las resolvió con sus 10 como ejemplo.`
+    : `Elegidas al azar${D.semilla ? ` (semilla ${D.semilla})` : ""}${D.universo ? ` entre las ${fmt(D.universo)} fichas con al menos 50 impresiones en Google` : ""}, repartidas por familia, sin repetir ninguna de las que ya se usaron. Ninguna está entre las fichas de Alex: el agente las resolvió con sus 10 como ejemplo.`) +
+    (N.meta.simulada ? " Corrida fuera de la tienda: los datos de cada ficha se leyeron de la página publicada y, en lugar de Search Console, se usaron las búsquedas que DataForSEO estima para cada página. En la corrida real, con WooCommerce y Search Console, el resultado puede variar." : "");
+  const kwN = N.fichas.reduce((a, f) => a + (f.keywords || []).length, 0);
+  $("#nuevas-stats").innerHTML = [
+    [`${aprob} de ${n}`, "aprobadas por el validador"],
+    [`${conKw} de ${n}`, "con keywords"],
+    [kwN, "keywords en total"],
+    [`US$ ${costo.toFixed(3)}`, "costo por ficha"]
+  ].map(s => `<div class="stat"><b>${s[0]}</b><small>${s[1]}</small></div>`).join("");
+  const origen = k => k.origen === "gsc" ? ["ya aparece", N.meta.simulada && k.posicion ? "posición " + k.posicion : fmt(k.impresiones || k.impressions) + " impr.", "gsc"]
+    : k.origen === "opcion" ? ["opción de la ficha", fmt(k.volumen || k.volume) + "/mes", "gen"]
+    : k.origen === "sugerencia" ? ["se busca con el nombre", fmt(k.volumen || k.volume) + "/mes", "gen"]
+    : k.origen === "competidor" ? ["la usa la competencia", fmt(k.volumen || k.volume) + "/mes", "gen"]
+    : ["genérica", fmt(k.volumen || k.volume) + "/mes", "gen"];
+  $("#fichas").innerHTML = N.fichas.map(f => {
+    const ok = f.status === "processed";
+    const kws = f.keywords_detalle || [];
+    const v = f.validacion || {};
+    const kwHtml = kws.length ? kws.map(k => { const o = origen(k); return `<span class="kw"><span>${esc(k.keyword)}</span><small>${o[1]}</small><span class="org ${o[2]}">${o[0]}</span></span>`; }).join("")
+      : `<span class="aporte"><span class="cero">Ninguna candidata cumplió el criterio: queda con H1 y descripción nuevos</span></span>`;
+    return `<article class="ficha reveal">
+      ${foto(f.url, f.h1_original, "ficha-foto")}
+      <div class="ficha-cuerpo">
+        <div class="ficha-top"><a class="meta" href="${esc(f.url)}" target="_blank" rel="noopener">${esc(f.url.replace("https://cassoni.com/product/", ""))}</a>
+          <span class="estado ${ok ? "ok" : "no"}">${ok ? "Aprobada" : (f.status === "failed" ? "Falló" : "Rechazada")}</span></div>
+        <div class="h1-cambio"><span class="antes">${esc(f.h1_original)}</span><span class="despues">${esc(f.h1 || "—")}</span></div>
+        <div class="kws">${kwHtml}</div>
+        ${f.descripcion ? `<div class="desc">${limpio(f.descripcion, kws.map(k => k.keyword))}</div>` : ""}
+        ${!ok ? `<p style="font-size:14px;color:var(--paper-mute)"><b>Motivo:</b> ${esc((v.issues || []).join(" ") || f.reason)}</p>` : ""}
+        <details><summary>Descripción original</summary><div class="desc" style="margin-top:10px;opacity:.75">${limpio(f.descripcion_original, [])}</div></details>
+      </div></article>`;
+  }).join("");
+  $("#pie").textContent = D.pie;
+
+  if (!matchMedia("(prefers-reduced-motion: reduce)").matches && "IntersectionObserver" in window){
+    const els = document.querySelectorAll(".reveal");
+    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting){ e.target.classList.remove("pre"); io.unobserve(e.target); } }), {rootMargin: "0px 0px -8% 0px"});
+    els.forEach(el => { const r = el.getBoundingClientRect(); if (r.top > innerHeight) { el.classList.add("pre"); io.observe(el); } });
+  }
+  const cv = document.getElementById("waves");
+  if (cv && cv.getContext){
+    const ctx = cv.getContext("2d"); let t = 0;
+    const quieto = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    function draw(){
+      const w = cv.clientWidth, h = cv.clientHeight, dpr = Math.min(devicePixelRatio || 1, 2);
+      if (cv.width !== w * dpr){ cv.width = w * dpr; cv.height = h * dpr; }
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, w, h);
+      for (let i = 0; i < 18; i++){
+        ctx.beginPath();
+        for (let x = 0; x <= w; x += 8){
+          const y = h * .55 + Math.sin(x * .006 + t + i * .35) * (18 + i * 2.2) + Math.cos(x * .002 - t * .6 + i) * 22;
+          x ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+        }
+        ctx.strokeStyle = `rgba(174,98,255,${.05 + i * .018})`; ctx.lineWidth = 1; ctx.stroke();
+      }
+      if (!quieto){ t += .006; requestAnimationFrame(draw); }
+    }
+    draw();
+  }
+})();
+</script>
+
+</body>
+</html>

@@ -73,3 +73,27 @@ def test_la_keyword_forzada_sale_en_vez_de_rechazar_la_ficha():
     assert out["aprobado"] and out["forzadas_sacadas"] == ["italian piano"]
     assert [k["keyword"] for k in out["objetivos"]] == [
         "19800 steinway piano", "steinway and sons piano", "mother of pearl piano"]
+
+
+def test_h1_inventado_cae_al_respaldo_aunque_falte_su_generica(monkeypatch):
+    from cassoni import validator as V
+    llamadas = []
+
+    class Red:
+        def redactar(self, *, ficha, keywords, feedback=None):
+            llamadas.append(feedback)
+            return {"h1": "Boulevard Wood Lounge Chair by DV", "description": "<p>x</p>"}
+
+    def controles(ficha, red, kws):
+        if red["h1"] == ficha["h1_respaldo"]:
+            return []
+        return ["H1: el H1 dice cosas que la ficha no dice: wood",
+                "Falta la genérica del material del H1: sumá 'wood chair'"]
+
+    import cassoni.redactor as R
+    monkeypatch.setattr(R, "controles", controles)
+    v = object.__new__(V.Validator)
+    v.validate_reescritura = lambda **k: {"aprobado": True, "issues": []}
+    out = v.redactar_y_validar(ficha={"h1_respaldo": "Boulevard Lounge Chair by DV"},
+                               keywords=[], redactor=Red())
+    assert out["aprobado"] and out["edited"]["h1"] == "Boulevard Lounge Chair by DV"
