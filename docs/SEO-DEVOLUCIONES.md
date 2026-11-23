@@ -91,3 +91,14 @@ fabricante, y el `<title>` como «{name} by {Marca} | Cassoni». En WooCommerce 
 Siguiente: tanda de 30 fichas nuevas elegidas al azar por código, en seco, para que el
 SEO las revise sin que nadie las haya mirado antes (`scripts/tanda_seo.sh`).
 
+## 23-nov-2026 · Acercarnos a la referencia de Alex
+
+Revisadas las reglas contra sus 10 fichas (D-027, D-028):
+- «Nunca marble table» fue una generalización nuestra: Alex marcó una keyword falsa
+  (Palatial sin mármol) y una de otro producto (Dandy, mesa de pool). Vuelven las
+  genéricas cortas del material exacto del H1, como en su referencia.
+- Tapizado en opciones: el H1 no elige uno («Upholstered»), como en Hermes.
+- Sin códigos en el H1 (SC1019, 19800), como en Cleopatra y Steinway.
+- Marca ajena como keyword: «steinway and sons piano».
+Simulado: 16 de 22 de sus keywords (antes 9). **Todo en seco**: nada se escribe en la tienda.
+

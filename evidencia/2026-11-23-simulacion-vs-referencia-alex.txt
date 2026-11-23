@@ -1,22 +1,52 @@
-Rock Coffee Table      H1 código: Rock Marble Coffee Table by Rugiano        | Alex: Rock Marble Coffee Table by Rugiano
-                       kw agente: ['rugiano coffee table', 'marble coffee table', 'wood coffee table'] | Alex: ['marble table', 'rugiano coffee table', 'wood table'] | en común: ['rugiano coffee table']
-Club Sofa              H1 código: Club Sofa by Rugiano                       | Alex: Club Sofa with Brass Tube Frame by Rugiano
-                       kw agente: ['club style sofa', 'club couch', 'rugiano sofa'] | Alex: ['club couch', 'club style sofa', 'rugiano sofas'] | en común: ['club couch', 'club style sofa', 'rugiano sofas']
-Hermes Maxi Bed        H1 código: (redactor)                                 | Alex: Hermes Maxi Upholstered King Bed by DV Home Collection
-                       kw agente: ['hermes bed', 'maxi bed'] | Alex: ['hermes bed frame', 'maxi bed'] | en común: ['maxi bed']
-Tiffany  Mirror        H1 código: (redactor)                                 | Alex: Tiffany Large Rectangular Wall Mirror by DV Home Collection
-                       kw agente: ['tiffany style mirror', 'tiffany mirrors'] | Alex: ['tiffany mirror'] | en común: ['tiffany mirror']
-Cleopatra Chair (SC101 H1 código: (redactor)                                 | Alex: Cleopatra Wood and Leather Dining Chair by OAK
-                       kw agente: ['cleopatra chair design', 'cleopatra wooden chair', 'oak dining chair'] | Alex: ['cleopatra wooden chair', "cleopatra's chair", 'wood and leather chair'] | en común: ['cleopatra wooden chair']
-Cruise Sofa            H1 código: (redactor)                                 | Alex: Cruise Teak Outdoor Sofa by Talenti
-                       kw agente: ['cruise couch', 'talenti sofa'] | Alex: ['cruise couch'] | en común: ['cruise couch']
-Bakkarat Table         H1 código: (redactor)                                 | Alex: Bakkarat Round Glass Dining Table by Tonelli Design
-                       kw agente: [] | Alex: ['dining table in glass', 'glass table'] | en común: []
-Illan Wall Lamp        H1 código: (redactor)                                 | Alex: Illan LED Wall Sconce by Luceplan
-                       kw agente: ['illan lamp', 'luceplan illan'] | Alex: ['luceplan illan', 'wall light', 'wall sconce'] | en común: ['luceplan illan']
-19800 Steinway Piano   H1 código: (redactor)                                 | Alex: Hand-Carved Mother-of-Pearl Steinway Piano by Riva Mobili D'Arte
-                       kw agente: ['19800 steinway piano', 'piano steinway'] | Alex: ['italian piano', 'steinway and sons pianos'] | en común: []
-Shibari Chair          H1 código: (redactor)                                 | Alex: Shibari Stretch Fabric Armchair by Visionnaire
-                       kw agente: ['shibari chairs', 'chair shibari', 'visionnaire armchair'] | Alex: ['shibari chairs', 'visionnaire chair'] | en común: ['shibari chairs']
+Rock Coffee Table      Alex=['marble table', 'rugiano coffee table', 'wood table']
+   H1 alex  : Rock Marble Coffee Table by Rugiano
+      kw: ['rugiano coffee table', 'wood table', 'marble table']  → en común 3
+   H1 agente: Rock Marble Coffee Table by Rugiano
+      kw: ['rugiano coffee table', 'wood table', 'marble table']  → en común 3
+Club Sofa              Alex=['club couch', 'club style sofa', 'rugiano sofas']
+   H1 alex  : Club Sofa by Rugiano
+      kw: ['club style sofa', 'club couch', 'rugiano sofa']  → en común 3
+   H1 agente: Club Sofa by Rugiano
+      kw: ['club style sofa', 'club couch', 'rugiano sofa']  → en común 3
+Hermes Maxi Bed        Alex=['hermes bed frame', 'maxi bed']
+   H1 alex  : Hermes Maxi Upholstered King Bed by DV Home Collection
+      kw: ['hermes bed', 'maxi bed']  → en común 1
+   H1 agente: Hermes Maxi Upholstered King Bed by DV Home Collection
+      kw: ['hermes bed', 'maxi bed']  → en común 1
+Tiffany  Mirror        Alex=['tiffany mirror']
+   H1 alex  : Tiffany Large Rectangular Wall Mirror by DV Home Collection
+      kw: ['tiffany style mirror', 'tiffany mirrors']  → en común 1
+   H1 agente: Tiffany Rectangular Wall Mirror by DV Home Collection
+      kw: ['tiffany style mirror', 'tiffany mirrors']  → en común 1
+Cleopatra Chair (SC101 Alex=['cleopatra wooden chair', "cleopatra's chair", 'wood and leather chair']
+   H1 alex  : Cleopatra Wood and Leather Dining Chair by OAK
+      kw: ['cleopatra chair design', 'cleopatra wooden chair', 'oak dining chair', 'wood and leather chair']  → en común 2
+   H1 agente: Cleopatra Leather Dining Chair by OAK
+      kw: ['cleopatra chair design', 'cleopatra wooden chair', 'oak dining chair', 'leather chair']  → en común 1
+Cruise Sofa            Alex=['cruise couch']
+   H1 alex  : Cruise Teak Outdoor Sofa by Talenti
+      kw: ['cruise couch', 'talenti sofa', 'teak sofa']  → en común 1
+   H1 agente: Cruise Teak Outdoor Sofa by Talenti
+      kw: ['cruise couch', 'talenti sofa', 'teak sofa']  → en común 1
+Bakkarat Table         Alex=['dining table in glass', 'glass table']
+   H1 alex  : Bakkarat Round Glass Dining Table by Tonelli Design
+      kw: ['dining table in glass', 'glass table']  → en común 2
+   H1 agente: Bakkarat Glass Dining Table by Tonelli Design
+      kw: ['dining table in glass', 'glass table']  → en común 2
+Illan Wall Lamp        Alex=['luceplan illan', 'wall light', 'wall sconce']
+   H1 alex  : Illan LED Wall Sconce by Luceplan
+      kw: ['illan lamp', 'luceplan illan']  → en común 1
+   H1 agente: Illan Wood Wall Sconce by Luceplan
+      kw: ['illan lamp', 'luceplan illan', 'wood sconce']  → en común 1
+19800 Steinway Piano   Alex=['italian piano', 'steinway and sons pianos']
+   H1 alex  : Hand-Carved Mother-of-Pearl Steinway Piano by Riva Mobili D'Arte
+      kw: ['19800 steinway piano', 'steinway and sons piano', 'mother of pearl piano']  → en común 1
+   H1 agente: Steinway Piano by Riva Mobili D'Arte
+      kw: ['19800 steinway piano', 'steinway and sons piano']  → en común 1
+Shibari Chair          Alex=['shibari chairs', 'visionnaire chair']
+   H1 alex  : Shibari Stretch Fabric Armchair by Visionnaire
+      kw: ['shibari chairs', 'chair shibari', 'visionnaire armchair']  → en común 1
+   H1 agente: Shibari Fabric Armchair by Visionnaire
+      kw: ['shibari chairs', 'chair shibari', 'visionnaire armchair']  → en común 1
 
-keywords de Alex que elige el código: 10/22
+keywords de Alex que elige el agente: con el H1 de Alex 16/22 · con el H1 del agente 15/22   (antes: 9/22 medido, 10/22 simulado)

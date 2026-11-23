@@ -211,8 +211,12 @@ def _bloque_genericas(ficha: dict) -> str:
     if not gen:
         return ""
     lista = ", ".join(f"'{k}' ({v}/mes)" for k, v, _ in gen)
-    return ("GENÉRICA OPCIONAL — podés sumar UNA de estas, exacta y una sola vez, SOLO si "
-            "su material es el rasgo que pusiste en el H1: " + lista + ".\n\n")
+    return ("GENÉRICAS — sumá HASTA DOS de estas, exactas y una vez cada una, con la "
+            "misma regla del equipo SEO: su material es EXACTAMENTE el rasgo que pusiste en "
+            "el H1 (H1 'Wood and Leather Dining Chair' → 'wood and leather chair', no "
+            "'wood chair'), no repiten el H1 tal cual (H1 'Glass Dining Table' → 'dining "
+            "table in glass' y 'glass table', no 'glass dining table'), y preferí la forma "
+            "corta. Si el H1 no tiene material, ninguna: " + lista + ".\n\n")
 
 
 def fuentes_de(ficha: dict) -> str:
@@ -252,10 +256,19 @@ def controles(ficha: dict, redactado: dict, keywords: list[str]) -> list[str]:
     issues += check_reescritura(redactado, keywords=keywords, fuentes=fuentes,
                                 url_categoria=ficha.get("url_categoria") or "")
     if ficha.get("genericas_opcionales"):
-        from .reglas_seo import generica_usada
-        g = generica_usada(strip_html(redactado.get("description") or ""),
-                           redactado.get("h1") or "", ficha["genericas_opcionales"])
-        if g and not g[2]:
-            issues.append(f"La genérica '{g[0]}' no es del material del H1: sacala o usá "
-                          "la del material que dice el H1")
+        from .reglas_seo import genericas_para_h1, genericas_usadas
+        h1 = redactado.get("h1") or ""
+        desc = strip_html(redactado.get("description") or "")
+        usadas = genericas_usadas(desc, h1, ficha["genericas_opcionales"])
+        for kw, _, ok in usadas:
+            if not ok:
+                issues.append(f"La genérica '{kw}' no es del material del H1: sacala o usá "
+                              "la del material que dice el H1")
+        # como Alex: si el H1 tiene material, va su genérica (salvo que no entre natural)
+        esperadas = genericas_para_h1(h1, ficha["genericas_opcionales"])
+        if esperadas and not any(ok for _, _, ok in usadas) \
+                and not any(k in omitidas for k, _, _ in esperadas):
+            issues.append("Falta la genérica del material del H1: sumá "
+                          + " o ".join(f"'{k}'" for k, _, _ in esperadas)
+                          + " (exacta, en una oración real; si no entra natural, ponela en omitidas)")
     return issues

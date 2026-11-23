@@ -602,12 +602,14 @@ class Pipeline:
             omitidas = {(o.get("keyword") or "").lower() for o in edited.get("omitidas") or []}
             objetivos = [o for o in objetivos if o["keyword"].lower() not in omitidas]
             if ficha.get("genericas_opcionales") and aprobado:
-                from .reglas_seo import generica_usada
-                g = generica_usada(strip_html(edited.get("description") or ""), h1,
-                                   ficha["genericas_opcionales"])
-                if g and g[2] and g[0] not in {o["keyword"].lower() for o in objetivos}:
-                    objetivos.append({"keyword": g[0], "origen": "generica", "volume": g[1],
-                                      "volumen": g[1], "por_que": "el material del H1 con el tipo"})
+                from .reglas_seo import genericas_usadas
+                ya = {o["keyword"].lower() for o in objetivos}
+                for kw, v, ok in genericas_usadas(strip_html(edited.get("description") or ""),
+                                                  h1, ficha["genericas_opcionales"]):
+                    if ok and kw not in ya:
+                        ya.add(kw)
+                        objetivos.append({"keyword": kw, "origen": "generica", "volume": v,
+                                          "volumen": v, "por_que": "el material del H1 con el tipo"})
             vres = dict(vres, omitidas=edited.get("omitidas") or [], mismo_nombre=ficha["mismo_nombre"], tipo=ficha["tipo"],
                         url_categoria=ficha["url_categoria"],
                         h1_respaldo_usado=bool(edited.get("h1_respaldo_usado")))

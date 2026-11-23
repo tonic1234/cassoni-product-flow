@@ -109,3 +109,27 @@ def test_la_busqueda_de_la_marca_ajena_puede_ser_keyword():
                           texto_ficha="19800 Steinway Piano mother-of-pearl piano",
                           marca_ajena="steinway")
     assert "piano steinway" in [e["keyword"] for e in sel["elegidas"]]
+
+
+def test_steinway_and_sons_como_alex():
+    cands = [{"keyword": "steinway & sons piano", "origen": "gsc", "impresiones": 22, "volumen": 27100},
+             {"keyword": "steinway and sons piano", "origen": "gsc", "impresiones": 18, "volumen": 27100},
+             {"keyword": "19800 steinway piano", "origen": "gsc", "impresiones": 38, "volumen": 50}]
+    sel = elegir_keywords(cands, nombre="19800 Steinway Piano", marca="Riva Mobili D'Arte",
+                          tipo="piano", h1="Mother-of-Pearl Steinway Piano by Riva Mobili D'Arte",
+                          rasgo="mother of pearl", texto_ficha="19800 Steinway Piano mother-of-pearl",
+                          marca_ajena="steinway")
+    kws = [e["keyword"] for e in sel["elegidas"]]
+    assert "steinway and sons piano" in kws and "steinway & sons piano" not in kws
+
+
+def test_la_marca_ajena_sola_no_es_keyword():
+    cands = [{"keyword": "steinway and sons", "origen": "gsc", "impresiones": 22, "volumen": 6600},
+             {"keyword": "steinway and sons piano", "origen": "gsc", "impresiones": 18, "volumen": 27100},
+             {"keyword": "19800 steinway piano", "origen": "gsc", "impresiones": 38, "volumen": 50}]
+    sel = elegir_keywords(cands, nombre="19800 Steinway Piano", marca="Riva Mobili D'Arte",
+                          tipo="piano", h1="Mother-of-Pearl Steinway Piano by Riva Mobili D'Arte",
+                          rasgo="mother of pearl", texto_ficha="19800 Steinway Piano mother-of-pearl",
+                          marca_ajena="steinway")
+    kws = [e["keyword"] for e in sel["elegidas"]]
+    assert kws == ["19800 steinway piano", "steinway and sons piano"]

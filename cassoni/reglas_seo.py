@@ -14,8 +14,10 @@ Console y las de marca más tipo ('nomon wall clock')":
 - primero las de Search Console con impresiones que no repiten el H1 ni dicen algo
   que la ficha no dice;
 - después marca + tipo con volumen;
-- una genérica solo si falta, y solo el rasgo del H1 con el tipo completo
-  ('marble coffee table', nunca 'marble table' ni 'leather table').
+- genéricas como en la referencia de Alex (23-nov): el material EXACTO del H1 con el
+  tipo corto, sin repetir el H1 ('marble table', 'glass table', 'wood and leather
+  chair'). Nunca un material que la ficha no tiene ('marble table' en Palatial) ni un
+  tipo corto que es otro producto ('leather table' de una mesa de pool, Dandy).
 """
 from __future__ import annotations
 
@@ -62,6 +64,11 @@ MARCAS_AJENAS = frozenset({
     "steinway", "bosendorfer", "fazioli", "bechstein", "yamaha", "kawai", "bluthner",
     "petrof", "schimmel", "grotrian",
 })
+
+
+# el nombre completo de la marca respalda sus búsquedas («steinway and sons piano»:
+# Alex usa «steinway and sons pianos»)
+NOMBRE_COMPLETO = {"steinway": "steinway and sons", "bluthner": "bluthner pianos"}
 
 
 def marca_ajena_en(nombre: str, marca: str) -> str:
@@ -147,17 +154,37 @@ def opciones_para_h1(texto: str, materiales: Iterable[str]) -> list[str]:
     return grupos[0]
 
 
+# tipos que acortados son OTRO producto: quien busca «leather table» no quiere una
+# mesa de pool (Dandy, devolución de Alex del 17-nov)
+_NO_ACORTAR = frozenset({"pool table", "billiard table", "foosball table", "ping pong table",
+                         "table tennis table", "game table", "card table", "poker table",
+                         "air hockey table", "massage table"})
+
+
+def cabeza_de(tipo: str) -> str:
+    """El tipo corto que sigue siendo el mismo producto: 'coffee table' → 'table',
+    'outdoor sofa' → 'sofa', 'armchair' → 'armchair'; 'pool table' → '' (no se acorta)."""
+    t = _norm(tipo)
+    if t.startswith("outdoor "):
+        t = t[len("outdoor "):]
+    if not t or t in _NO_ACORTAR:
+        return ""
+    return t.split()[-1]
+
+
 def keywords_de_opciones(opciones: Iterable[str], nucleo: str, vol: dict,
                          minimo: int = 0) -> list[dict]:
-    """'{opción} {tipo}' con volumen, una por opción, de la más buscada a la menos:
-    la descripción las cubre a todas (Rock: 'marble coffee table', 'wood coffee table')."""
+    """Una keyword por opción, de la más buscada a la menos: la forma corta como Alex
+    ('marble table', 'wood table') si tiene volumen; si no, '{opción} {tipo}'."""
     minimo = minimo or MIN_VOL_GENERICA
+    cabeza = cabeza_de(nucleo)
     out = []
     for m in opciones:
-        kw = f"{m} {nucleo}".lower()
-        v = int((vol.get(kw) or {}).get("volume") or 0)
-        if v >= minimo:
-            out.append({"keyword": kw, "origen": "opcion", "volumen": v, "material": m})
+        for kw in ([f"{m} {cabeza}".lower()] if cabeza else []) + [f"{m} {nucleo}".lower()]:
+            v = int((vol.get(kw) or {}).get("volume") or 0)
+            if v >= minimo:
+                out.append({"keyword": kw, "origen": "opcion", "volumen": v, "material": m})
+                break
     return sorted(out, key=lambda k: -k["volumen"])
 
 
@@ -213,27 +240,78 @@ def rasgos_con_volumen(materiales: Iterable[str], tipo: str, vol: dict) -> list[
 
 
 def genericas_opcionales(materiales: Iterable[str], nucleo: str, vol: dict,
-                         minimo: int = MIN_VOL_GENERICA, n: int = 4) -> list[tuple[str, int, str]]:
-    """('{material} {tipo}', volumen, material) con volumen, para que el redactor sume
-    UNA y solo la del material que puso en el H1 ('Bakkarat Glass Dining Table' →
-    'glass dining table')."""
-    out = []
-    for m in materiales:
-        kw = f"{m} {nucleo}".lower()
+                         minimo: int = MIN_VOL_GENERICA, n: int = 8) -> list[tuple[str, int, str]]:
+    """(keyword, volumen, material) con volumen, armadas solo con materiales de la
+    ficha: '{m} {tipo}', '{m} {tipo corto}', '{tipo} in {m}' y de a dos materiales
+    '{m1} and {m2} {tipo corto}'. El redactor suma las del material de SU H1
+    (genericas_para_h1)."""
+    mats = [_norm(m) for m in materiales if m]
+    cabeza = cabeza_de(nucleo)
+    formas: list[tuple[str, str]] = []
+    for m in mats:
+        formas += [(f"{m} {nucleo}", m), (f"{nucleo} in {m}", m)]
+        if cabeza:
+            formas.append((f"{m} {cabeza}", m))
+    if cabeza:
+        for i, m1 in enumerate(mats):
+            for m2 in mats[i + 1:]:
+                formas += [(f"{m1} and {m2} {cabeza}", f"{m1} {m2}"),
+                           (f"{m2} and {m1} {cabeza}", f"{m1} {m2}")]
+    out, vistas = [], set()
+    for kw, material in formas:
+        kw = _norm(kw)
         v = int((vol.get(kw) or {}).get("volume") or 0)
-        if v >= minimo:
-            out.append((kw, v, m))
+        if v >= minimo and kw not in vistas:
+            vistas.add(kw)
+            out.append((kw, v, material))
     return sorted(out, key=lambda x: -x[1])[:n]
 
 
+def genericas_para_h1(h1: str, opcionales, maximo: int = 2) -> list[tuple[str, int, str]]:
+    """Las genéricas que corresponden a ESTE H1, como Alex: su material es exactamente
+    el del H1 (Cleopatra «Wood and Leather» → 'wood and leather chair', no 'wood chair'),
+    no repiten el H1 tal cual (Bakkarat: 'dining table in glass' y 'glass table', no
+    'glass dining table'), una por combinación de palabras, en el orden del H1."""
+    h1n = f" {_norm(h1)} "
+    h1w = set(h1n.split())
+    mats_h1 = {w for _, _, mat in opcionales for w in _norm(mat).split() if w in h1w}
+    if not mats_h1:
+        return []
+    out, vistas = [], set()
+
+    def _orden(item):
+        kw, v, _ = item
+        # primero la que sigue el orden del H1 ('wood and leather' antes que 'leather and wood')
+        palabras = [w for w in kw.split() if w in mats_h1]
+        en_orden = palabras == sorted(palabras, key=lambda w: h1n.find(f" {w} "))
+        return (not en_orden, -v)
+
+    for kw, v, mat in sorted(opcionales, key=_orden):
+        clave = frozenset(kw.split())
+        if (set(_norm(mat).split()) != mats_h1 or f" {kw} " in h1n or clave in vistas):
+            continue
+        vistas.add(clave)
+        out.append((kw, v, mat))
+        if len(out) >= maximo:
+            break
+    return out
+
+
 def generica_usada(descripcion_plana: str, h1: str, opcionales):
-    """(keyword, volumen, ok) de la genérica opcional que usó el redactor, o None.
-    ok = todas las palabras de su material están en el H1."""
+    """(keyword, volumen, ok) de la primera genérica opcional que usó el redactor, o
+    None. ok = todas las palabras de su material están en el H1."""
+    usadas = genericas_usadas(descripcion_plana, h1, opcionales)
+    return usadas[0] if usadas else None
+
+
+def genericas_usadas(descripcion_plana: str, h1: str, opcionales) -> list[tuple[str, int, bool]]:
+    """Todas las genéricas opcionales que usó el redactor: (keyword, volumen, ok)."""
     texto, h1w = _norm(descripcion_plana), set(_norm(h1).split())
+    out = []
     for kw, v, material in opcionales:
         if re.search(rf"(?<![a-z]){re.escape(_norm(kw))}(?![a-z])", texto):
-            return kw, v, set(_norm(material).split()) <= h1w
-    return None
+            out.append((kw, v, set(_norm(material).split()) <= h1w))
+    return out
 
 
 def elegir_keywords(candidatas: list[dict], *, nombre: str, marca: str, tipo: str,
@@ -245,6 +323,8 @@ def elegir_keywords(candidatas: list[dict], *, nombre: str, marca: str, tipo: st
     (Alex usa la marca como keyword: «steinway and sons pianos»)."""
     opciones = opciones or []
     max_gsc = 1 if len(opciones) >= 2 else 2
+    if marca_ajena:
+        texto_ficha = f"{texto_ficha} {NOMBRE_COMPLETO.get(marca_ajena, marca_ajena)}"
     h1n = _norm(h1)
     nombre_n = nombre_de_busqueda(nombre)
     modelo_n = _norm(modelo_de(nombre, marca))
@@ -255,6 +335,7 @@ def elegir_keywords(candidatas: list[dict], *, nombre: str, marca: str, tipo: st
     vistas: set[str] = set()
 
     def _clave(k: str) -> str:
+        k = (k or "").replace("&", " and ")
         return " ".join(w[:-1] if len(w) > 3 and w.endswith("s") and not w.endswith("ss") else w
                         for w in _norm(k).replace("'s ", " ").split())
 
@@ -275,7 +356,8 @@ def elegir_keywords(candidatas: list[dict], *, nombre: str, marca: str, tipo: st
 
     # 1) Search Console: ya trae impresiones; primero las variantes del nombre
     for c in sorted((c for c in candidatas if c.get("origen") == "gsc"),
-                    key=lambda c: (-_nombra(_norm(c["keyword"])), -(c.get("impresiones") or 0))):
+                    key=lambda c: (-_nombra(_norm(c["keyword"])), "&" in (c["keyword"] or ""),
+                                   -(c.get("impresiones") or 0))):
         kw = _norm(c["keyword"])
         sin = palabras_sin_respaldo(kw, texto_ficha, tipos)
         imp = c.get("impresiones") or 0
@@ -287,7 +369,8 @@ def elegir_keywords(candidatas: list[dict], *, nombre: str, marca: str, tipo: st
             motivo = "es el nombre recortado"
         elif kw in h1n or kw in (nombre_n, modelo_n):
             motivo = "ya lo dice el H1 o es el nombre tal cual"
-        elif kw == marca_n:
+        elif kw == marca_n or (marca_ajena and _clave(kw) in {
+                _clave(marca_ajena), _clave(NOMBRE_COMPLETO.get(marca_ajena, marca_ajena))}):
             motivo = "es solo la marca"
         elif sin:
             motivo = "la ficha no dice " + ", ".join(f"'{w}'" for w in sin)
@@ -315,8 +398,8 @@ def elegir_keywords(candidatas: list[dict], *, nombre: str, marca: str, tipo: st
                 if _agregar(c, f"marca + tipo ({c.get('volumen')}/mes)"):
                     break
 
-    # (sin genéricas por material: «leather table», «marble table» fallaban; Alex,
-    # 17-nov: lo que funciona es Search Console + marca y tipo)
+    # las genéricas por material no se eligen acá: dependen del H1 que escribe el
+    # redactor (genericas_para_h1) o de la opción del H1 (keywords_de_opciones)
     elegidas_k = {e["keyword"] for e in elegidas}
     descartadas += [{"keyword": c["keyword"], "motivo": "no cumple las reglas del SEO"}
                     for c in candidatas if c["keyword"] not in elegidas_k

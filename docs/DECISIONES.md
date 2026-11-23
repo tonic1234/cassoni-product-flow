@@ -344,7 +344,32 @@ simuladas sin red ni LLM):
   ser keyword (Alex: «steinway and sons pianos»).
 Resultado de la simulación: el H1 que decide el código coincide con Alex donde lo fija
 (Rock, Club Sofa por nombre); keywords de Alex elegidas por el código: 10 de 22 (antes 9).
-Lo que falta son genéricas cortas de material + tipo («marble table», «glass table»,
-«wall sconce», «italian piano»): 8 de las 12 que faltan. La regla del 17-nov las prohíbe
-(«nunca 'marble table'») y la referencia de Alex las usa: hay que preguntarle.
+Lo que faltaba eran genéricas cortas de material + tipo: ver D-028.
+
+## D-028 · Genéricas cortas como en la referencia de Alex
+**23-nov-2026**
+Alex nunca dijo «nunca marble table». El 17-nov marcó dos errores de DeepSeek: «marble
+table» en **Palatial** (esa versión no tiene mármol: la keyword afirmaba algo falso) y
+«leather table» en **Dandy** (es una mesa de pool: «leather table» es otro producto).
+En D-025 lo generalizamos de más a «sin genéricas cortas», y su propia referencia las usa.
+Regla nueva, en código:
+- **Material exacto del H1 + tipo corto** (`cabeza_de`: 'coffee table' → 'table'), sin
+  repetir el H1 tal cual y una por combinación de palabras (`genericas_para_h1`):
+  Bakkarat «Glass Dining Table» → «dining table in glass», «glass table»; Cleopatra «Wood
+  and Leather Dining Chair» → «wood and leather chair» (no «wood chair»). Hasta dos.
+- **Opción estructural** (D-027): forma corta de cada opción si tiene volumen (Rock:
+  «marble table», «wood table»).
+- **Nunca** un material que la ficha no tiene (solo materiales del texto) ni un tipo que
+  acortado es otro producto (`_NO_ACORTAR`: pool, billiard, foosball… → Dandy sin
+  «leather table»).
+- El redactor recibe la regla; el control en código rechaza la genérica de otro material
+  y pide la del H1 si falta (salvo que el redactor la declare omitida por no entrar natural).
+- **Marca ajena:** su nombre completo respalda las búsquedas («steinway and sons piano»),
+  la marca sola no es keyword, y entre «&» y «and» va la forma escrita.
+Simulación sobre las 10 fichas de Alex (`evidencia/2026-11-23-simulacion-vs-referencia-alex.txt`,
+sin red ni LLM): keywords de Alex elegidas **16 de 22** con su H1 y **15 de 22** con el H1
+que escribió el agente (antes 9 medido). Las 6 que faltan son elecciones puntuales («hermes
+bed frame», «cleopatra's chair», «wall light», «wall sconce», «italian piano», «visionnaire
+chair»): forzarlas sería ajustar a 10 fichas. Lo que hace el redactor con la regla nueva
+se mide en la próxima tanda en seco.
 
