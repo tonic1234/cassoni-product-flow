@@ -201,7 +201,9 @@ def _bloque_opciones(ficha: dict) -> str:
     return ("OPCIONES — la parte principal del producto viene en " + " o ".join(ops) + ". "
             "La descripción cubre TODAS las opciones por igual, no solo la del H1: una "
             "sección (o una lista <ul>) con una línea por opción y lo que la ficha dice de "
-            "cada una. Cada opción con su keyword objetivo, si la tiene.\n\n")
+            "cada una (ej. del SEO: <h2>UPHOLSTERY</h2> con las telas y los cueros). Cada "
+            "opción con su keyword objetivo, si la tiene. Si la opción es el tapizado, el "
+            "H1 no elige uno: dice \"Upholstered\".\n\n")
 
 
 def _bloque_genericas(ficha: dict) -> str:
@@ -240,12 +242,10 @@ def controles(ficha: dict, redactado: dict, keywords: list[str]) -> list[str]:
     # piden correcciones que no puede hacer
     issues = [] if ficha.get("h1_fijo") else [f"H1: {i}" for i in verificar_h1(
         redactado.get("h1") or "", nombre=ficha["nombre"], marca=ficha["marca"],
-        tipo=ficha["tipo"], texto_ficha=fuentes,
-        codigos_permitidos=ficha.get("codigos") or ())]
+        tipo=ficha["tipo"], texto_ficha=fuentes)]
     if not ficha.get("h1_fijo"):
         h1_plano = " " + " ".join(re.findall(r"[a-z0-9]+", (redactado.get("h1") or "").lower())) + " "
-        for parte, que in ((ficha.get("sufijo") or "", "lo que el nombre dice después del tipo"),
-                           (" ".join(ficha.get("codigos") or []), "el código que la gente busca")):
+        for parte, que in ((ficha.get("sufijo") or "", "lo que el nombre dice después del tipo"),):
             w = " ".join(re.findall(r"[a-z0-9]+", parte.lower()))
             if w and f" {w} " not in h1_plano:
                 issues.append(f"H1: perdió {que}: '{parte}'")

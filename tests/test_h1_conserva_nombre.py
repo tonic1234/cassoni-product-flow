@@ -6,12 +6,11 @@ TARS anotó H1 que pierden códigos de modelo y ediciones. Tres causas:
   Tiffany): pasaban a la regla del rasgo sin motivo.
 - La regla del rasgo armaba {modelo} {rasgo} {tipo} y perdía lo que va después del
   tipo («Cleopatra Chair Limited Edition» → «Cleopatra Walnut Chair»).
-- Los números de modelo se borraban como código de catálogo aunque la gente los
-  busque («19800 steinway piano»: 38 impresiones en posición 1,2).
+
+Los códigos de catálogo SÍ se van: Alex los saca en su referencia («Cleopatra Wood
+and Leather Dining Chair», sin SC1019; «… Mother-of-Pearl Steinway Piano», sin 19800).
 """
-from cassoni.h1 import verificar_h1
-from cassoni.reglas_seo import (codigos_buscados, h1_por_datos, marca_ajena_en,
-                                modelo_para_h1, sufijo_del_nombre)
+from cassoni.reglas_seo import h1_por_datos, marca_ajena_en, sufijo_del_nombre
 
 
 # --- marca ajena: solo si el modelo ES la marca ------------------------------------
@@ -54,42 +53,16 @@ def test_opciones_conservan_la_edicion():
     assert r["h1"] == "Rock Marble Coffee Table Gold Edition by Rugiano"
 
 
-# --- números de modelo que la gente busca --------------------------------------
+# --- códigos de catálogo: afuera, como en la referencia de Alex ------------------
 
-FILAS = [{"keyword": "19800 steinway piano", "impressions": 38},
-         {"keyword": "steinway piano", "impressions": 486},
-         {"keyword": "sc1019", "impressions": 1}]
-
-
-def test_codigos_buscados_solo_con_impresiones():
-    assert codigos_buscados("19800 Steinway Piano", FILAS) == ["19800"]
-    assert codigos_buscados("Bolero Chair (SC1019)", FILAS) == []
-
-
-def test_modelo_para_h1_conserva_el_codigo_en_su_lugar():
-    assert modelo_para_h1("19800 Steinway Piano", "Riva Mobili D'Arte", ["19800"]) == "19800 Steinway"
-    assert modelo_para_h1("Steinway Piano 19800", "Riva Mobili D'Arte", ["19800"]) == "Steinway 19800"
-    assert modelo_para_h1("19800 Steinway Piano", "Riva Mobili D'Arte", []) == "Steinway"
-
-
-def test_h1_por_datos_con_codigo_buscado():
-    r = h1_por_datos("19800 Steinway Piano", "Riva Mobili D'Arte", "piano", 27100,
-                     [("mother of pearl", 110)], umbral=1000, marca_ajena="steinway",
-                     codigos=["19800"])
-    assert r["rasgo"] == "mother of pearl" and r["fijo"] is False
+def test_sin_codigos_de_catalogo_como_alex():
+    r = h1_por_datos("Cleopatra Chair (SC1019)", "OAK", "chair", 10, [], umbral=1000)
+    assert "SC1019" not in r["h1"]
     r = h1_por_datos("19800 Steinway Piano", "Riva Mobili D'Arte", "piano", 27100, [],
-                     umbral=1000, marca_ajena="steinway", codigos=["19800"])
-    assert r["h1"] == "19800 Steinway Piano by Riva Mobili D'Arte"
+                     umbral=1000, marca_ajena="steinway")
+    assert r["h1"] == "Steinway Piano by Riva Mobili D'Arte"
 
 
-def test_nombre_que_ya_se_busca_conserva_el_codigo_buscado():
-    r = h1_por_datos("K2 Table", "Reflex", "table", 5000, [], umbral=1000, codigos=["K2"])
-    assert r["h1"] == "K2 Table by Reflex"
-
-
-def test_verificar_h1_acepta_el_codigo_buscado():
-    h1 = "19800 Steinway Mother-of-Pearl Piano by Riva Mobili D'Arte"
-    kw = dict(nombre="19800 Steinway Piano", marca="Riva Mobili D'Arte", tipo="piano",
-              texto_ficha="19800 Steinway Piano mother-of-pearl inlays")
-    assert any("códigos" in i for i in verificar_h1(h1, **kw))
-    assert not any("códigos" in i for i in verificar_h1(h1, **kw, codigos_permitidos=["19800"]))
+def test_nombre_que_ya_se_busca_sin_codigo():
+    r = h1_por_datos("Club Sofa (CL01)", "Rugiano", "sofa", 1000, [], umbral=1000)
+    assert r["h1"] == "Club Sofa by Rugiano"

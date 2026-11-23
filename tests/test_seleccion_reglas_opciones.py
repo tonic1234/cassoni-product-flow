@@ -60,15 +60,38 @@ def test_steinway_el_h1_no_queda_en_el_nombre_de_la_marca():
     assert ctx["h1_fijo"] == ""                       # el redactor pone el rasgo
     assert ctx["h1_rasgos"] == [("mother of pearl", 110)]
     assert "steinway" in ctx["h1_regla"]
-    assert [e["keyword"] for e in sel["elegidas"]] == ["19800 steinway piano"]
+    assert "19800 steinway piano" in [e["keyword"] for e in sel["elegidas"]]
 
 
-def test_steinway_el_h1_conserva_el_numero_que_se_busca():
-    pipe = _pipe({"steinway piano": 27100, "mother of pearl piano": 110})
-    ctx = _ctx("19800 Steinway Piano", "Riva Mobili D'Arte", "piano", PIANO_DESC,
-               [{"keyword": "19800 steinway piano", "impressions": 38, "position": 1.2}])
-    pipe._seleccion_reglas("u", {}, ctx)
-    assert ctx["modelo_h1"] == "19800 Steinway" and ctx["codigos_h1"] == ["19800"]
+HERMES_DESC = ("<p>Part of the Italian Hermes collection, this double bed is offered with a "
+               "multilayer structure covered with non-deformable polyurethane foam.</p><p>The "
+               "upholstery is offered in a wide range of fabric or leather options and the large "
+               "headboard features a refined vertical quilting. Made in Italy.</p>")
+CLUB_DESC = ("<p>This is a designer Italian Sofa, part of the exclusive Club collection. It stands "
+             "out for the innovative structure created by refined brushed brass or bronze drawn "
+             "tubes that, combined with the upholstered leather or fabric, create a stylish "
+             "pattern. Made in Italy.</p>")
+
+
+def test_hermes_el_tapizado_no_decide_el_h1_como_alex():
+    pipe = _pipe({"leather king bed": 1000, "fabric king bed": 480})
+    ctx = _ctx("Hermes Maxi Bed", "DV Home Collection", "king bed", HERMES_DESC, [])
+    sel = pipe._seleccion_reglas("u", {}, ctx)
+    assert ctx["h1_fijo"] == ""                       # «Upholstered» lo pone el redactor
+    assert set(ctx["opciones"]) == {"fabric", "leather"}   # la descripción cubre las dos
+    assert not any(e["origen"] == "opcion" for e in sel["elegidas"])
+
+
+def test_club_sofa_dos_grupos_no_tocan_h1_ni_keywords():
+    pipe = _pipe({"club sofa": 1000, "leather sofa": 40500, "brass sofa": 90})
+    ctx = _ctx("Club Sofa", "Rugiano", "sofa", CLUB_DESC,
+               [{"keyword": "club couch", "impressions": 40, "position": 6},
+                {"keyword": "club style sofa", "impressions": 25, "position": 7}])
+    sel = pipe._seleccion_reglas("u", {}, ctx)
+    assert ctx["h1_fijo"] == "Club Sofa by Rugiano"
+    kws = [e["keyword"] for e in sel["elegidas"]]
+    assert "club couch" in kws and "club style sofa" in kws
+    assert not any(e["origen"] == "opcion" for e in sel["elegidas"])
 
 
 def test_hermes_maxi_no_es_marca_ajena_y_su_nombre_manda():

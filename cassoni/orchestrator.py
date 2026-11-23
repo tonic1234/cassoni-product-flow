@@ -411,28 +411,27 @@ class Pipeline:
         # 18-nov: si la parte principal viene en opciones («wood or marble»), el H1 lleva
         # la más buscada y la descripción cubre todas; una marca ajena en el nombre
         # («Steinway») no cuenta como «el nombre ya se busca»
-        opciones = opciones_de_material(strip_html(ctx["desc_orig"]), mats)
+        desc_plana = strip_html(ctx["desc_orig"])
+        # 23-nov, como Alex: una opción estructural (la tapa de Rock) decide el H1 y suma
+        # una keyword por opción; el tapizado o varios grupos solo piden cubrirlas en la
+        # descripción. Una marca ajena («Steinway») no cuenta como volumen del nombre.
+        from .reglas_seo import opciones_para_h1, sufijo_del_nombre
+        opciones = opciones_para_h1(desc_plana, mats)
         ajena = marca_ajena_en(ctx["nombre"], ctx["marca"])
-        # 23-nov: el H1 no pierde lo que el nombre dice después del tipo ni los
-        # códigos que la gente busca («19800 steinway piano»)
-        from .reglas_seo import codigos_buscados, modelo_para_h1, sufijo_del_nombre
-        codigos = codigos_buscados(ctx["nombre"], ctx["kw_rows"])
-        ctx["codigos_h1"] = codigos
-        ctx["modelo_h1"] = modelo_para_h1(ctx["nombre"], ctx["marca"], codigos)
         ctx["sufijo_h1"] = sufijo_del_nombre(ctx["nombre"], ctx["marca"], tipo)
         r = h1_por_datos(ctx["nombre"], ctx["marca"], tipo,
                          (vol.get(nombre_q) or {}).get("volume"), rasgos,
                          umbral=self.cfg.h1_umbral_nombre, opciones=opciones,
-                         marca_ajena=ajena, codigos=codigos)
+                         marca_ajena=ajena)
         ctx["h1_regla"] = r["regla"]
         # H1 fijo: el nombre solo, sin tipo o la opción más buscada. Con rasgo libre: el
         # redactor elige entre los rasgos con su volumen el que tienen TODAS las versiones
         ctx["h1_fijo"] = r["h1"] if r["fijo"] else ""
         ctx["h1_rasgos"] = sorted(((m, v) for m, v in rasgos if v), key=lambda x: -x[1])
         kw_opciones = keywords_de_opciones(opciones, nucleo, vol) if len(opciones) >= 2 else []
-        ctx["opciones"] = opciones if len(opciones) >= 2 else []
-        # con opciones, las genéricas son las de cada opción (van como objetivo)
-        ctx["genericas_opcionales"] = [] if ctx["opciones"] else genericas_opcionales(mats, nucleo, vol)
+        ctx["opciones"] = opciones_de_material(desc_plana, mats)
+        # con opción en el H1, las genéricas son las de cada opción (van como objetivo)
+        ctx["genericas_opcionales"] = [] if kw_opciones else genericas_opcionales(mats, nucleo, vol)
         cands = candidatas_gsc(ctx["kw_rows"], ctx["nombre"], ctx["marca"]) + con_volumen(gen, vol)
         texto = " ".join([ctx["nombre"], ctx["marca"], *ctx["atributos"],
                           *ctx["categorias"], strip_html(ctx["desc_orig"])])
@@ -701,8 +700,8 @@ class Pipeline:
             except Exception as exc:
                 log.warning("No se pudo buscar fichas con el mismo nombre (%s)", exc)
         return {"url": url, "nombre": html.unescape(ctx["nombre"]), "marca": ctx["marca"],
-                "modelo": ctx.get("modelo_h1") or modelo_de(html.unescape(ctx["nombre"]), ctx["marca"]),
-                "sufijo": ctx.get("sufijo_h1", ""), "codigos": ctx.get("codigos_h1", []),
+                "modelo": modelo_de(html.unescape(ctx["nombre"]), ctx["marca"]),
+                "sufijo": ctx.get("sufijo_h1", ""),
                 "tipo": ctx["tipo"], "categorias": [html.unescape(r["name"]) for r in ruta],
                 "url_categoria": url_cat, "atributos": list(ctx["atributos"]),
                 "medidas": medidas_ee_uu(ctx["atributos"]), "descripcion": ctx["desc_orig"],

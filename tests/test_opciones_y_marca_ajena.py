@@ -6,7 +6,8 @@
   cada una («marble coffee table», «wood coffee table»).
 - Steinway: el volumen de «steinway piano» es el de la marca Steinway, no el de esta
   pieza de Riva Mobili D'Arte. Un nombre que es marca ajena + tipo no cuenta como
-  «el nombre ya se busca», y la búsqueda de esa marca no es keyword de la ficha.
+  «el nombre ya se busca». La búsqueda de la marca SÍ puede ser keyword: Alex usa
+  «steinway and sons pianos» en su referencia (23-nov).
 """
 from cassoni.reglas_seo import (elegir_keywords, h1_por_datos, keywords_de_opciones,
                                 marca_ajena_en, opciones_de_material)
@@ -99,15 +100,12 @@ def test_steinway_el_volumen_del_nombre_no_cuenta():
     assert "marca" in r["regla"] and "steinway" in r["regla"]
 
 
-def test_la_busqueda_de_la_marca_ajena_no_es_keyword():
+def test_la_busqueda_de_la_marca_ajena_puede_ser_keyword():
     cands = [{"keyword": "piano steinway", "origen": "gsc", "impresiones": 300, "volumen": 27100},
-             {"keyword": "steinway", "origen": "gsc", "impresiones": 54, "volumen": 12000},
              {"keyword": "19800 steinway piano", "origen": "gsc", "impresiones": 38, "volumen": 50}]
     sel = elegir_keywords(cands, nombre="19800 Steinway Piano", marca="Riva Mobili D'Arte",
                           tipo="piano", h1="Mother-of-Pearl Steinway Piano by Riva Mobili D'Arte",
                           rasgo="mother of pearl",
                           texto_ficha="19800 Steinway Piano mother-of-pearl piano",
                           marca_ajena="steinway")
-    assert [e["keyword"] for e in sel["elegidas"]] == ["19800 steinway piano"]
-    motivos = {d["keyword"]: d["motivo"] for d in sel["descartadas"]}
-    assert "marca" in motivos["piano steinway"]
+    assert "piano steinway" in [e["keyword"] for e in sel["elegidas"]]

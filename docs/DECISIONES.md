@@ -320,10 +320,6 @@ TARS anotó H1 que pierden códigos de modelo y ediciones, y que el tope de Data
   Limited Edition» → «Cleopatra Walnut Chair». Ahora el H1 conserva lo que el nombre dice
   después del tipo (`reglas_seo.sufijo_del_nombre`), y si lo arma el redactor, el
   control en código lo exige.
-- **Los números de modelo se borraban como código de catálogo** aunque la gente los
-  busque («19800 steinway piano», 38 impresiones en posición 1,2). Un código que aparece
-  en una búsqueda de Search Console con impresiones queda en el H1
-  (`codigos_buscados`, `modelo_para_h1`); los demás se siguen sacando.
 - **Presupuesto:** con el tope agotado, las keywords se descartan «sin datos de Google»
   y la ficha sale «sin keywords objetivo», igual que una a la que no le corresponde
   ninguna. Ahora cada ficha del lote lleva `dfs_sin_presupuesto` y
@@ -333,4 +329,22 @@ Como cambian las reglas del H1, el lote del 18-nov no representa el código actu
 vuelven a correr **las mismas 30** (`URLS=elegidas.txt`).
 Tests: `test_h1_conserva_nombre.py`, `test_rehacer_sin_presupuesto.py`,
 `test_seleccion_reglas_opciones.py` (evidencia `2026-11-23-h1-conserva-nombre-*`).
+
+**Ajuste del mismo día contra la referencia de Alex** (sus 10 fichas, `evidencia/referencia-seo.json`,
+simuladas sin red ni LLM):
+- **Opciones:** solo decide el H1 una opción **estructural única** (la tapa de Rock:
+  «Rock Marble Coffee Table», igual que Alex). Si la opción es el **tapizado**, Alex no
+  elige uno («Hermes Maxi **Upholstered** King Bed») y no suma keywords por opción; con
+  **varios grupos** (Club Sofa: tubos de latón o bronce, cuero o tela) tampoco. En todos
+  los casos el redactor cubre las opciones en la descripción (Alex: sección UPHOLSTERY).
+  La versión del 18-nov fijaba «Leather» en Hermes, donde el agente ya coincidía con Alex.
+- **Códigos:** se descartó conservar en el H1 los códigos que la gente busca: Alex saca
+  «SC1019» y «19800».
+- **Marca ajena:** sigue sin contar para el H1, pero la búsqueda de la marca **sí** puede
+  ser keyword (Alex: «steinway and sons pianos»).
+Resultado de la simulación: el H1 que decide el código coincide con Alex donde lo fija
+(Rock, Club Sofa por nombre); keywords de Alex elegidas por el código: 10 de 22 (antes 9).
+Lo que falta son genéricas cortas de material + tipo («marble table», «glass table»,
+«wall sconce», «italian piano»): 8 de las 12 que faltan. La regla del 17-nov las prohíbe
+(«nunca 'marble table'») y la referencia de Alex las usa: hay que preguntarle.
 
