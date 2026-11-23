@@ -419,10 +419,12 @@ class Pipeline:
         opciones = opciones_para_h1(desc_plana, mats)
         ajena = marca_ajena_en(ctx["nombre"], ctx["marca"])
         ctx["sufijo_h1"] = sufijo_del_nombre(ctx["nombre"], ctx["marca"], tipo)
+        from .reglas_seo import rasgo_combinado
         r = h1_por_datos(ctx["nombre"], ctx["marca"], tipo,
                          (vol.get(nombre_q) or {}).get("volume"), rasgos,
                          umbral=self.cfg.h1_umbral_nombre, opciones=opciones,
-                         marca_ajena=ajena)
+                         marca_ajena=ajena,
+                         combinado=rasgo_combinado(desc_plana, mats, nucleo, vol))
         ctx["h1_regla"] = r["regla"]
         # H1 fijo: el nombre solo, sin tipo o la opción más buscada. Con rasgo libre: el
         # redactor elige entre los rasgos con su volumen el que tienen TODAS las versiones
@@ -602,11 +604,13 @@ class Pipeline:
             omitidas = {(o.get("keyword") or "").lower() for o in edited.get("omitidas") or []}
             objetivos = [o for o in objetivos if o["keyword"].lower() not in omitidas]
             if ficha.get("genericas_opcionales") and aprobado:
-                from .reglas_seo import genericas_usadas
+                from .reglas_seo import genericas_para_h1, genericas_usadas
                 ya = {o["keyword"].lower() for o in objetivos}
+                # solo las que corresponden al H1 (Illan: 'wood wall sconce' ya está en el H1)
+                validas = {k for k, _, _ in genericas_para_h1(h1, ficha["genericas_opcionales"])}
                 for kw, v, ok in genericas_usadas(strip_html(edited.get("description") or ""),
                                                   h1, ficha["genericas_opcionales"]):
-                    if ok and kw not in ya:
+                    if ok and kw in validas and kw not in ya:
                         ya.add(kw)
                         objetivos.append({"keyword": kw, "origen": "generica", "volume": v,
                                           "volumen": v, "por_que": "el material del H1 con el tipo"})

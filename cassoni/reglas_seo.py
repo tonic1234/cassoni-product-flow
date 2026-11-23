@@ -188,9 +188,36 @@ def keywords_de_opciones(opciones: Iterable[str], nucleo: str, vol: dict,
     return sorted(out, key=lambda k: -k["volumen"])
 
 
+def rasgo_combinado(texto: str, materiales: Iterable[str], nucleo: str,
+                    vol: dict, minimo: int = 0) -> Optional[tuple[str, int]]:
+    """('{m1} and {m2}', volumen) cuando la PRIMERA oración define el producto con dos
+    materiales que no son opciones entre sí y la combinación se busca:
+    «Wooden chair with leather upholstery» → ('wood and leather', 1300), como el
+    «Cleopatra Wood and Leather Dining Chair» de Alex. Si no, None."""
+    minimo = minimo or MIN_VOL_GENERICA
+    cabeza = cabeza_de(nucleo)
+    if not cabeza:
+        return None
+    primera = re.split(r"(?<=[.!?;])\s+|\n+", (texto or "").strip())[0]
+    t = " " + _norm(primera).replace(" wooden ", " wood ") + " "
+    t = re.sub(r"^ wooden ", " wood ", t)
+    en_opcion = {m for g in grupos_de_opciones(primera, materiales) for m in g}
+    mats = [m for m in {_norm(x) for x in materiales if x}
+            if f" {m} " in t and m not in en_opcion]
+    # sin los que cubre uno más largo ('wood' dentro de 'rosewood' no aplica: palabras)
+    mats = sorted(mats, key=lambda m: t.find(f" {m} "))
+    if len(mats) != 2:
+        return None
+    frase = f"{mats[0]} and {mats[1]}"
+    v = max(int((vol.get(f"{frase} {cabeza}") or {}).get("volume") or 0),
+            int((vol.get(f"{mats[1]} and {mats[0]} {cabeza}") or {}).get("volume") or 0))
+    return (frase, v) if v >= minimo else None
+
+
 def h1_por_datos(nombre: str, marca: str, tipo: str, vol_nombre: Optional[int],
                  rasgos: Iterable[tuple[str, int]], umbral: int = UMBRAL_NOMBRE,
-                 opciones: Iterable[str] = (), marca_ajena: str = "") -> dict:
+                 opciones: Iterable[str] = (), marca_ajena: str = "",
+                 combinado: Optional[tuple[str, int]] = None) -> dict:
     """{'h1', 'regla', 'rasgo', 'fijo'}. `rasgos`: (material, volumen de '{material}
     {tipo}') solo con materiales que la ficha confirma. `fijo`: el H1 ya está decidido
     y el redactor no lo cambia. `opciones`: materiales que la ficha ofrece como
@@ -221,6 +248,12 @@ def h1_por_datos(nombre: str, marca: str, tipo: str, vol_nombre: Optional[int],
                 "regla": (f"opción más buscada: '{mejor_op[0]} {tipo}' ({mejor_op[1]}/mes); "
                           f"la descripción cubre las opciones: {', '.join(sorted(ops))}") + nota,
                 "rasgo": mejor_op[0], "fijo": True}
+    if combinado:
+        frase = _titulo(combinado[0]).replace(" And ", " and ")
+        return {"h1": f"{modelo} {frase} {_titulo(tipo)}{suf}{por}",
+                "regla": (f"el producto es de {combinado[0]} (primera oración; "
+                          f"'{combinado[0]} {cabeza_de(tipo)}' {combinado[1]}/mes)") + nota,
+                "rasgo": combinado[0], "fijo": True}
     mejor = max(((m, v) for m, v in rasgos if v), key=lambda x: x[1], default=None)
     if mejor:
         return {"h1": f"{modelo} {_titulo(mejor[0])} {_titulo(tipo)}{suf}{por}",

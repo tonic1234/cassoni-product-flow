@@ -37,7 +37,8 @@ from cassoni.redactor import Redactor, strip_html      # noqa: E402
 from cassoni.reglas_seo import (elegir_keywords, genericas_opcionales,  # noqa: E402
                                 genericas_usadas, h1_por_datos, keywords_de_opciones,
                                 marca_ajena_en, nombre_de_busqueda, opciones_de_material,
-                                opciones_para_h1, rasgos_con_volumen, sufijo_del_nombre)
+                                opciones_para_h1, rasgo_combinado, rasgos_con_volumen,
+                                sufijo_del_nombre, genericas_para_h1)
 from cassoni.validator import Validator                # noqa: E402
 
 CONTROL = "evidencia/2026-11-17-control-reglas3.json"
@@ -54,7 +55,8 @@ def preparar(ref: dict, desc_orig: str, umbral: int) -> tuple[dict, list[dict], 
     ajena = marca_ajena_en(nombre, marca)
     rasgos = rasgos_con_volumen(mats, nucleo, vol)
     r = h1_por_datos(nombre, marca, tipo, (vol.get(nombre_de_busqueda(nombre)) or {}).get("volume"),
-                     rasgos, umbral=umbral, opciones=ops, marca_ajena=ajena)
+                     rasgos, umbral=umbral, opciones=ops, marca_ajena=ajena,
+                     combinado=rasgo_combinado(plano, mats, nucleo, vol))
     kw_ops = keywords_de_opciones(ops, nucleo, vol) if len(ops) >= 2 else []
     sel = elegir_keywords(ref["candidatas"], nombre=nombre, marca=marca, tipo=tipo, h1=r["h1"],
                           rasgo=r["rasgo"], texto_ficha=" ".join([nombre, marca, plano]),
@@ -100,9 +102,10 @@ def main(argv=None) -> int:
         objetivos = [o for o in objetivos if o["keyword"].lower() not in omitidas]
         if val["aprobado"] and ficha["genericas_opcionales"]:
             ya = {o["keyword"].lower() for o in objetivos}
+            validas = {k for k, _, _ in genericas_para_h1(h1, ficha["genericas_opcionales"])}
             for kw, v, ok in genericas_usadas(strip_html(ed.get("description") or ""), h1,
                                               ficha["genericas_opcionales"]):
-                if ok and kw not in ya:
+                if ok and kw in validas and kw not in ya:
                     ya.add(kw)
                     objetivos.append({"keyword": kw, "origen": "generica", "volumen": v})
         fichas.append({

@@ -79,3 +79,43 @@ def test_dandy_mesa_de_pool_no_da_leather_table():
 def test_no_repite_el_h1_tal_cual():
     ops = genericas_opcionales(["fabric"], "armchair", _vol(fabric_armchair=320))
     assert genericas_para_h1("Shibari Stretch Fabric Armchair by Visionnaire", ops) == []
+
+
+# --- 23-nov, después del control real ----------------------------------------------
+from cassoni.reglas_seo import h1_por_datos, rasgo_combinado  # noqa: E402
+
+CLEO_DESC = "Wooden chair with leather upholstery. Rosewood, Ebony or Citronier finish."
+
+
+def test_cleopatra_rasgo_combinado_en_el_orden_del_texto():
+    r = rasgo_combinado(CLEO_DESC, ["rosewood", "leather", "ebony", "wood"], "dining chair", CLEOPATRA)
+    assert r == ("wood and leather", 1300)
+
+
+def test_cleopatra_h1_como_alex():
+    comb = rasgo_combinado(CLEO_DESC, ["rosewood", "leather", "ebony", "wood"], "dining chair", CLEOPATRA)
+    r = h1_por_datos("Cleopatra Chair (SC1019)", "OAK", "dining chair", 320,
+                     [("leather", 9900), ("wood", 9900)], umbral=1000, combinado=comb)
+    assert r["h1"] == "Cleopatra Wood and Leather Dining Chair by OAK" and r["fijo"] is True
+
+
+def test_materiales_en_opcion_no_son_combinacion():
+    texto = "Coffee table with a top in wood or marble."
+    assert rasgo_combinado(texto, ["wood", "marble"], "coffee table",
+                           _vol(wood_and_marble_table=720)) is None
+
+
+def test_combinacion_sin_volumen_no_va():
+    assert rasgo_combinado(CLEO_DESC, ["wood", "leather"], "dining chair", _vol()) is None
+
+
+def test_solo_la_primera_oracion_define_el_producto():
+    texto = "A refined armchair. The legs are in brass and the seat in velvet."
+    assert rasgo_combinado(texto, ["brass", "velvet"], "armchair",
+                           _vol(brass_and_velvet_armchair=500)) is None
+
+
+def test_illan_la_generica_que_repite_el_h1_no_cuenta():
+    ops = genericas_opcionales(["aluminum", "wood"], "wall sconce",
+                               _vol(wood_wall_sconce=1900, wood_sconce=1300))
+    assert [k for k, _, _ in genericas_para_h1("Illan Wood Wall Sconce by Luceplan", ops)] == ["wood sconce"]

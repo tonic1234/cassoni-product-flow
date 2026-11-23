@@ -378,4 +378,11 @@ por OpenCode, en seco y sin atributos de WooCommerce;
 H1 idénticos 3 (antes 2), parecido 0,74 (antes 0,66), 10 de 10 aprobadas, 87 palabras promedio
 (Alex 86). Diferencias que quedan: Cleopatra sale «Leather» y no «Wood and Leather» (por eso no
 entra «wood and leather chair»); Illan suma dos genéricas del mismo material.
+**Ajustes tras el control real:**
+- **Rasgo combinado:** si la PRIMERA oración define el producto con dos materiales que no
+  son opciones entre sí y la combinación se busca, el H1 la lleva en ese orden
+  (`rasgo_combinado`): «Wooden chair with leather upholstery» → «Cleopatra Wood and Leather
+  Dining Chair», como Alex. DeepSeek elegía «Leather» por ser el más buscado.
+- **Genéricas que cuentan:** solo las que corresponden al H1 (`genericas_para_h1`): en
+  Illan «wood wall sconce» ya está en el H1, queda «wood sconce».
 

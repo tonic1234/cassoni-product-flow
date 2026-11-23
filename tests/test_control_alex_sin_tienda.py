@@ -31,3 +31,9 @@ def test_bakkarat_ofrece_las_genericas_de_alex():
     ficha, _, _ = preparar(ref, desc, 1000)
     kws = [k for k, _, _ in ficha["genericas_opcionales"]]
     assert "dining table in glass" in kws and "glass table" in kws
+
+
+def test_cleopatra_h1_fijo_como_alex():
+    ref, desc = _ref("Cleopatra")
+    ficha, _, r = preparar(ref, desc, 1000)
+    assert ficha["h1_fijo"] == "Cleopatra Wood and Leather Dining Chair by OAK"
