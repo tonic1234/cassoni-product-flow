@@ -372,7 +372,9 @@ def candidatas_de_competencia(rankeadas: Iterable[dict], *, h1: str, nombre: str
         v = int(c.get("volume") or c.get("volumen") or 0)
         palabras = kw.split()
         sing = [_singular(w) for w in palabras]
-        nombra_tipo = (cabeza and _singular(cabeza) in sing) or (not cabeza and nucleo in kw)
+        # termina en el tipo, como una frase normal en inglés: «foam bed king» no (23-nov)
+        nombra_tipo = ((cabeza and sing and sing[-1] == _singular(cabeza))
+                       or (not cabeza and kw.endswith(nucleo)))
         resto = [w for w, s_ in zip(palabras, sing) if s_ not in tipo_w and w not in _RELLENO]
         if (not kw or kw in vistas or v < minimo or not nombra_tipo or not resto
                 or not re.fullmatch(r"[a-z0-9' &-]+", (c.get("keyword") or "").lower())

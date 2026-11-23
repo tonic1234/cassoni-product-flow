@@ -246,6 +246,10 @@ class Pipeline:
             self.volumenes.obtener(todas)
         if self.competidores is None or self.volumenes is None:
             return
+        # en modo reglas la competencia se consulta en la ficha, solo si no llega a 3
+        # keywords: precargarla para todas pagaba consultas que no se usaban (23-nov)
+        if self.cfg.modo_keywords == "reglas":
+            return
         de_competidores: list[str] = []
         for u in urls:
             try:
@@ -743,6 +747,13 @@ class Pipeline:
         consulta = ctx["h1"].replace(" by ", " ") if ctx["marca"] else ctx["h1"]
         if consulta in self._comp_cache:
             return self._comp_cache[consulta]
+        # caché de 30 días en la base: es la consulta más cara (23-nov)
+        loc = self.cfg.dfs_location_code
+        guardada = (self.db.competencia_fresca(consulta, loc, self.cfg.dfs_cache_dias)
+                    if self.db is not None else None)
+        if guardada is not None:
+            self._comp_cache[consulta] = (guardada[0], guardada[1])
+            return self._comp_cache[consulta]
         # 1) lo que los competidores RANKEAN (DataForSEO): el dato más fuerte
         try:
             resumen, rankeadas = self.competidores.rankeadas(consulta)
@@ -754,6 +765,8 @@ class Pipeline:
             cands = [c for c in rankeadas
                      if not any(a and a in c["keyword"].replace(" ", "") for a in ajenas)]
             self._comp_cache[consulta] = (resumen, cands[:60])
+            if self.db is not None:
+                self.db.guardar_competencia(consulta, loc, resumen, cands[:60])
             return resumen, cands[:60]
         # 2) respaldo: leer sus páginas y tomar frases que se repiten
         try:
@@ -767,6 +780,8 @@ class Pipeline:
                                            marcas_ajenas=ajenas)[:30] if paginas else []
         resumen = [{"url": p.get("url"), "rank": p.get("rank")} for p in paginas]
         self._comp_cache[consulta] = (resumen, cands)
+        if self.db is not None:
+            self.db.guardar_competencia(consulta, loc, resumen, cands)
         return resumen, cands
 
     @staticmethod

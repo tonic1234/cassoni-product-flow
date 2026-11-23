@@ -428,3 +428,22 @@ por no entrar natural y la ficha queda debajo de 3, `Validator.redactar_hasta_mi
 redacta UNA vez más con la siguiente reserva. Sin reserva válida, la ficha queda con menos:
 la coherencia no se negocia.
 
+## D-030 · Menos gasto en la competencia: solo cuando hace falta, menos resultados y caché
+**23-nov-2026**
+Precios vigentes de la cuenta (`/v3/appendix/user_data`): `ranked_keywords` US$ 0,012 por
+pedido + US$ 0,00012 por resultado (solo live); SERP live US$ 0,002, en cola US$ 0,0006;
+volumen Google Ads US$ 0,09 por pedido de hasta 1.000 keywords (solo live). La competencia
+(3 `ranked_keywords` por ficha) es ~90% del gasto de DataForSEO.
+Diagnóstico sobre las 10 fichas de Alex: solo 2 de 10 consultas devolvieron keywords. Google
+no muestra el mismo producto de nicho en otras tiendas (Rock: Pinterest, otra mesa en
+Wayfair), varias URLs llegan recortadas (el filtro por la página no acierta) y cuando la
+encuentra, rankea para 0-1 búsquedas. Cuesta ~US$ 0,06 por ficha y casi no aporta.
+Cambios:
+- En modo reglas la competencia **no se precarga**: se consulta en la ficha solo si no llega
+  a 3 keywords con Search Console, opciones, genérica del H1 y marca + tipo.
+- `ranked_keywords` pide 40 resultados (antes 100): ya vienen ordenados por volumen.
+- **Caché de 30 días** en la base (`cassoni_competencia_cache`), como los volúmenes.
+- La keyword de la competencia tiene que **terminar en el tipo** («foam bed king» no).
+Descartado: SERP en cola por lote: ahorra US$ 0,0014 por ficha y suma complejidad.
+Pendiente: una fuente que rinda más para completar hasta 3 en productos de nicho.
+

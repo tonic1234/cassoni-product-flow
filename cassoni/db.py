@@ -106,6 +106,17 @@ class KeywordVolume(Base):
     fetched_at = Column(DateTime)
 
 
+class CompetenciaCache(Base):
+    """Caché de lo que rankea la competencia para una consulta (DataForSEO SERP +
+    ranked_keywords): es la consulta más cara del pipeline y se repite entre fichas y
+    corridas (23-nov)."""
+    __tablename__ = "cassoni_competencia_cache"
+    consulta = Column(String(255), primary_key=True)
+    location = Column(Integer, primary_key=True)
+    datos = Column(Text)                 # JSON [resumen, rankeadas]
+    fetched_at = Column(DateTime)
+
+
 class KeywordObjetivo(Base):
     """Una de las (hasta) 3 keywords que se incorporaron a una ficha.
 
@@ -226,6 +237,25 @@ class DB:
             return {f.keyword: {"volume": f.volume, "cpc": f.cpc,
                                 "competition": f.competition}
                     for f in filas if f.fetched_at and f.fetched_at >= limite}
+
+    def competencia_fresca(self, consulta: str, location: int, max_dias: int):
+        """(resumen, rankeadas) en caché y vigente, o None."""
+        limite = datetime.now(timezone.utc).replace(tzinfo=None) - timedelta(days=max_dias)
+        with self.Session() as s:
+            row = s.get(CompetenciaCache, (consulta[:255], location))
+            if not row or not row.fetched_at or row.fetched_at < limite:
+                return None
+            resumen, rank = json.loads(row.datos or "[[], []]")
+            return resumen, rank
+
+    def guardar_competencia(self, consulta: str, location: int, resumen: list, rank: list) -> None:
+        with self.Session() as s:
+            row = s.get(CompetenciaCache, (consulta[:255], location)) or CompetenciaCache(
+                consulta=consulta[:255], location=location)
+            row.datos = json.dumps([resumen, rank], ensure_ascii=False, default=str)
+            row.fetched_at = datetime.now(timezone.utc).replace(tzinfo=None)
+            s.merge(row)
+            s.commit()
 
     def guardar_volumenes(self, datos: dict[str, dict | None], location: int) -> None:
         ahora = datetime.now(timezone.utc).replace(tzinfo=None)

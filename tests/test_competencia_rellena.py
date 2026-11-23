@@ -96,3 +96,23 @@ def test_el_minimo_nunca_mete_una_incoherente():
                               h1=FROG, nombre="Frog Coffee Table", marca="Sovet Italia",
                               tipo="coffee table", texto_ficha=TEXTO_FROG, minimo=10))
     assert [e["keyword"] for e in sel["elegidas"]] == ["frog table"]
+
+
+def test_la_keyword_de_la_competencia_termina_en_el_tipo():
+    rank = [_c("foam bed king", 260, 2), _c("upholstered foam king bed", 90, 1)]
+    out = [c["keyword"] for c in candidatas_de_competencia(
+        rank, h1="Hermes Maxi Upholstered King Bed by DV Home Collection", nombre="Hermes Maxi Bed",
+        marca="DV Home Collection", tipo="king bed",
+        texto_ficha="Hermes double bed, upholstered, polyurethane foam, king size")]
+    assert out == ["upholstered foam king bed"]
+
+
+def test_cache_de_competencia_en_la_base(tmp_path):
+    from cassoni.config import Config
+    from cassoni.db import DB
+    c = Config(env="staging")
+    c.db_url = f"sqlite:///{tmp_path}/c.db"
+    db = DB(c)
+    assert db.competencia_fresca("rock coffee table rugiano", 2840, 30) is None
+    db.guardar_competencia("rock coffee table rugiano", 2840, [{"url": "x"}], [{"keyword": "k"}])
+    assert db.competencia_fresca("rock coffee table rugiano", 2840, 30) == ([{"url": "x"}], [{"keyword": "k"}])

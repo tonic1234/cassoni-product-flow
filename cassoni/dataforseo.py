@@ -306,7 +306,7 @@ class DataForSEOFetcher:
             out.append(fila)
         return out
 
-    def ranked_keywords(self, url: str, limite: int = 100, max_posicion: int = 20,
+    def ranked_keywords(self, url: str, limite: int = 40, max_posicion: int = 20,
                         patron: str = "") -> list[dict]:
         """Búsquedas por las que RANKEA una página (DataForSEO Labs, ranked_keywords):
         lo que a un competidor con el mismo producto le funciona. Solo las que
