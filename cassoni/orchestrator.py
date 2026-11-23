@@ -437,9 +437,17 @@ class Pipeline:
         cands = candidatas_gsc(ctx["kw_rows"], ctx["nombre"], ctx["marca"]) + con_volumen(gen, vol)
         texto = " ".join([ctx["nombre"], ctx["marca"], *ctx["atributos"],
                           *ctx["categorias"], strip_html(ctx["desc_orig"])])
+        gen_h1 = []
+        if r["fijo"] and ctx["genericas_opcionales"]:
+            # H1 decidido en código: su genérica se conoce ya y entra entre las 3
+            from .reglas_seo import genericas_para_h1
+            gen_h1 = [{"keyword": k, "origen": "generica", "volumen": v}
+                      for k, v, _ in genericas_para_h1(r["h1"], ctx["genericas_opcionales"])]
+            ctx["genericas_opcionales"] = []
+        ctx["marca_ajena"] = ajena
         sel = elegir_keywords(cands, nombre=ctx["nombre"], marca=ctx["marca"], tipo=tipo,
                               h1=r["h1"], rasgo=r["rasgo"], texto_ficha=texto,
-                              opciones=kw_opciones, marca_ajena=ajena)
+                              opciones=kw_opciones, marca_ajena=ajena, genericas_h1=gen_h1)
         for e in sel["elegidas"]:
             e["volume"], e["impressions"] = e.get("volumen"), e.get("impresiones")
         sel["faltan"] = 0
@@ -716,6 +724,7 @@ class Pipeline:
                 "h1_rasgos": ctx.get("h1_rasgos", []),
                 "genericas_opcionales": ctx.get("genericas_opcionales", []),
                 "opciones": ctx.get("opciones", []),
+                "marca_ajena": ctx.get("marca_ajena", ""),
                 "keywords_obligatorias": self.cfg.modo_keywords == "reglas"}
 
     def _paginas_competidores(self, ctx: dict) -> tuple[list[dict], list[dict]]:

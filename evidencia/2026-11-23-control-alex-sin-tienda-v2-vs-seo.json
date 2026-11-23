@@ -1,0 +1,352 @@
+{
+ "resumen": {
+  "fichas": 10,
+  "h1_iguales": 4,
+  "h1_parecido_promedio": 0.77,
+  "keywords_seo": 22,
+  "keywords_agente": 24,
+  "keywords_en_comun": 14,
+  "cobertura": 0.64,
+  "acierto": 0.58,
+  "palabras_agente_prom": 84,
+  "palabras_seo_prom": 86,
+  "aprobadas": 9
+ },
+ "meta": {
+  "modo": "reescritura sin tienda",
+  "llm": "deepseek-v4.1-flash",
+  "validador": "deepseek-v4.1-flash",
+  "commit": "9b70493526ae31de94acdc217f94126c40c0d85a",
+  "dry_run": true,
+  "faltan": "atributos y descripción corta de WooCommerce",
+  "costos": {
+   "tokens_in": 72886,
+   "tokens_out": 104479,
+   "cache_hit": 0,
+   "cache_miss": 72886,
+   "usd": 0.1472406,
+   "llamadas": 32
+  }
+ },
+ "fichas": [
+  {
+   "url": "https://cassoni.com/product/cas-rug-rock-coffee-table-01/",
+   "nombre": "Rock Coffee Table",
+   "h1_agente": "Rock Marble Coffee Table by Rugiano",
+   "h1_seo": "Rock Marble Coffee Table by Rugiano",
+   "h1_igual": true,
+   "h1_parecido": 1.0,
+   "kw_agente": [
+    "rugiano coffee table",
+    "wood table",
+    "marble table"
+   ],
+   "kw_seo": [
+    "marble table",
+    "rugiano coffee table",
+    "wood table"
+   ],
+   "kw_en_comun": [
+    "marble table",
+    "rugiano coffee table",
+    "wood table"
+   ],
+   "cobertura": 1.0,
+   "acierto": 1.0,
+   "palabras_agente": 79,
+   "palabras_seo": 103,
+   "secciones_agente": 2,
+   "secciones_seo": 2,
+   "lista_agente": true,
+   "lista_seo": true,
+   "kw_en_apertura": true,
+   "aprobada": true,
+   "descripcion_agente": "<p>The Rock is a Rugiano coffee table with a shaped top, available in painted wood or marble. Designed by Rugiano, it comes in two sizes. Made in Italy.</p>\n<h2>TOP OPTIONS</h2>\n<ul>\n<li><strong>Wood:</strong> the wood table version has a Decoro decorated painted wood top.</li>\n<li><strong>Marble:</strong> the marble table version offers a wide range of marble options.</li>\n</ul>\n<h2>SIZE AND FRAME</h2>\n<p>Both versions share the same two bronzed brass metal legs. Choose the top first, then the size. See all <a href=\"https://cassoni.com/product-category/furniture/living-room/coffee-side-tables/\">coffee tables</a>.</p>",
+   "descripcion_seo": "The Rock is a Rugiano coffee table with an irregular, pebble-like top resting on two bronzed brass legs. Made in Italy.\nTWO TOPS, TWO LOOKS\n • Marble table top in 19 marbles, from Travertino and Emperador Dark (category A) to Calacatta Gold (B) and Patagonia or Calcite St Barth (C).\n • A hand-painted wood table top in Rugiano's Decoro technique, with 11 designs inspired by painters such as Van Gogh, Monet and Botticelli.\nWHICH SIZE\n The three large sizes are 11\" high, for a low sofa. The small one (size C) is 14 1/8\" high and works as a side table next to an armchair."
+  },
+  {
+   "url": "https://cassoni.com/product/cas-rug-club-sofa-01/",
+   "nombre": "Club Sofa",
+   "h1_agente": "Club Sofa by Rugiano",
+   "h1_seo": "Club Sofa with Brass Tube Frame by Rugiano",
+   "h1_igual": false,
+   "h1_parecido": 0.33,
+   "kw_agente": [
+    "club style sofa",
+    "club couch",
+    "rugiano sofa"
+   ],
+   "kw_seo": [
+    "club couch",
+    "club style sofa",
+    "rugiano sofas"
+   ],
+   "kw_en_comun": [
+    "club couch",
+    "club style sofa",
+    "rugiano sofas"
+   ],
+   "cobertura": 1.0,
+   "acierto": 1.0,
+   "palabras_agente": 99,
+   "palabras_seo": 102,
+   "secciones_agente": 1,
+   "secciones_seo": 2,
+   "lista_agente": true,
+   "lista_seo": false,
+   "kw_en_apertura": true,
+   "aprobada": true,
+   "descripcion_agente": "<p>The Club Sofa by Rugiano is a designer Italian club style sofa, a club couch with a structure of brushed brass or bronze drawn tubes and leather or fabric upholstery. Made in Italy.</p><h2>FRAME AND UPHOLSTERY</h2><ul><li><strong>Brushed brass:</strong> drawn tubes form the structure, combined with the upholstery.</li><li><strong>Bronze:</strong> drawn tubes form the structure, combined with the upholstery.</li><li><strong>Leather:</strong> upholstery combined with the drawn-tube structure.</li><li><strong>Fabric:</strong> upholstery combined with the drawn-tube structure.</li></ul><p>Choose brass or bronze for the frame and leather or fabric for the upholstery; this Rugiano sofa fits a sophisticated living area. See all <a href=\"https://cassoni.com/product-category/furniture/living-room/sofas-sectionals/\">sofas and sectionals</a>.</p>",
+   "descripcion_seo": "A club style sofa with straight lines and a frame of brushed brass or bronze tubes that outline the upholstery. If you are comparing Rugiano sofas, this is the one where the metal frame is the design.\nFITS MORE ROOMS THAN IT LOOKS\n At 33 1/2\" deep, this club couch is shallower than most luxury sofas. That makes it a good choice for apartments and narrow living rooms. It comes in four widths, from a 2-seater to the 4-seater Major.\nUPHOLSTERY\n Fabric (categories A and B) or leather (C and D). You can also send your own fabric or leather (C.O.M. / C.O.L.)."
+  },
+  {
+   "url": "https://cassoni.com/product/cas-dvhc-hermes-maxi-bed-01/",
+   "nombre": "Hermes Maxi Bed",
+   "h1_agente": "Hermes Maxi Upholstered King Bed by DV Home Collection",
+   "h1_seo": "Hermes Maxi Upholstered King Bed by DV Home Collection",
+   "h1_igual": true,
+   "h1_parecido": 1.0,
+   "kw_agente": [
+    "hermes bed",
+    "maxi bed"
+   ],
+   "kw_seo": [
+    "hermes bed frame",
+    "maxi bed"
+   ],
+   "kw_en_comun": [
+    "maxi bed"
+   ],
+   "cobertura": 0.5,
+   "acierto": 0.5,
+   "palabras_agente": 87,
+   "palabras_seo": 102,
+   "secciones_agente": 2,
+   "secciones_seo": 2,
+   "lista_agente": false,
+   "lista_seo": false,
+   "kw_en_apertura": false,
+   "aprobada": true,
+   "descripcion_agente": "<p>The Hermes Maxi bed is an upholstered king bed from DV Home Collection, with a multilayer frame padded in non-deformable polyurethane foam. Its large headboard has vertical quilting. Made in Italy.</p>\n<h2>UPHOLSTERY OPTIONS</h2>\n<p>This Hermes bed comes in fabric or leather, in a wide range of options. Both cover the same frame and the quilted headboard.</p>\n<h2>HEADBOARD AND CUSHIONS</h2>\n<p>Square goose feather decorative cushions are optional and available on request. Choose the upholstery first, then ask for the cushions, and browse our <a href=\"https://cassoni.com/product-category/furniture/bedroom/double-beds/\">king beds</a> for other frames.</p>",
+   "descripcion_seo": "The Hermes bed frame pairs a low upholstered base with an extra-wide headboard in vertical quilting. The \"Maxi\" is the wide version of the Hermes Bed: the headboard runs well past the sides of the mattress.\nBEFORE YOU ORDER\n It fits a standard American King mattress (76 3/4\" × 80\"). Slats are included and the mattress is not. Measure the wall first: this maxi bed is much wider than the mattress.\nUPHOLSTERY\n Fabrics from the Lario, Lido, Cloud and Vegan Nabuk lines, or leather in categories A, B and C. Square goose feather cushions (19 5/8\" or 15 3/4\") are available on request."
+  },
+  {
+   "url": "https://cassoni.com/product/cas-dvhc-tiffany-mirror-01/",
+   "nombre": "Tiffany  Mirror",
+   "h1_agente": "Tiffany Multilayered Wall Mirror by DV Home Collection",
+   "h1_seo": "Tiffany Large Rectangular Wall Mirror by DV Home Collection",
+   "h1_igual": false,
+   "h1_parecido": 0.5,
+   "kw_agente": [
+    "tiffany style mirror",
+    "tiffany mirrors"
+   ],
+   "kw_seo": [
+    "tiffany mirror"
+   ],
+   "kw_en_comun": [
+    "tiffany mirror"
+   ],
+   "cobertura": 1.0,
+   "acierto": 0.5,
+   "palabras_agente": 67,
+   "palabras_seo": 72,
+   "secciones_agente": 1,
+   "secciones_seo": 2,
+   "lista_agente": false,
+   "lista_seo": false,
+   "kw_en_apertura": true,
+   "aprobada": true,
+   "descripcion_agente": "<p>The Tiffany style mirror is a multilayered wall mirror by DV Home Collection, made in Italy with a natural mirror and a frame in six finishes.</p><h2>FRAME FINISHES</h2><p>Choose shining stainless steel, antique bronze satin, shaded glossy, shaded satin, chrome black or 24Kt gold. All Tiffany mirrors share the same structure; the finish sets the look for a hallway, bedroom or entry.</p><p>See more <a href=\"https://cassoni.com/product-category/accessories/mirrors/\">wall mirrors</a>.</p>",
+   "descripcion_seo": "The Tiffany mirror is a rectangular wall mirror with a slim metal frame and natural mirror glass, 1/8\" thick. Made in Italy.\nVERTICAL OR HORIZONTAL\n You can hang it upright, or turn it sideways over a console or a sideboard. For a taller, narrower mirror, see the Tiffany Extra Large.\nFRAME FINISHES\n Stainless steel, antique bronze satin, shaded glossy, shaded satin, chrome black, 24kt gold, champagne gold, pink gold or gold satin."
+  },
+  {
+   "url": "https://cassoni.com/product/cas-oak-sc_1019_chair-01/",
+   "nombre": "Cleopatra Chair (SC1019)",
+   "h1_agente": "Cleopatra Wood and Leather Dining Chair by OAK",
+   "h1_seo": "Cleopatra Wood and Leather Dining Chair by OAK",
+   "h1_igual": true,
+   "h1_parecido": 1.0,
+   "kw_agente": [
+    "cleopatra chair design",
+    "cleopatra wooden chair",
+    "oak dining chair"
+   ],
+   "kw_seo": [
+    "cleopatra wooden chair",
+    "cleopatra's chair",
+    "wood and leather chair"
+   ],
+   "kw_en_comun": [
+    "cleopatra wooden chair"
+   ],
+   "cobertura": 0.33,
+   "acierto": 0.33,
+   "palabras_agente": 66,
+   "palabras_seo": 74,
+   "secciones_agente": 2,
+   "secciones_seo": 2,
+   "lista_agente": true,
+   "lista_seo": false,
+   "kw_en_apertura": true,
+   "aprobada": false,
+   "descripcion_agente": "<p>The Cleopatra wooden chair by OAK is a wood and leather chair with a wooden frame. The Cleopatra chair design is a dining chair, and this OAK dining chair comes in three wood finishes.</p><h2>WOOD FINISHES</h2><p>The wooden frame is available in:</p><ul><li>Rosewood</li><li>Ebony</li><li>Citronier</li></ul><p>Choose one of the three when you order.</p><h2>LEATHER UPHOLSTERY</h2><p>The upholstery is leather.</p><p>Find more <a href=\"https://cassoni.com/product-category/furniture/dining-room/chairs-armchairs/\">dining chairs</a> in the category.</p>",
+   "descripcion_seo": "Designed by Luca Scacchetti, Cleopatra's chair is a wood and leather chair for the dining room. It has a tall backrest that stands out around the table.\nWOOD\n This Cleopatra wooden chair comes in amara ebony, or lacquered in black, ivory, lead grey, red or white. Each option has a satin or a polished finish.\nLEATHER\n Smooth leather in categories A to C, waxed leather or nabuk, including a nabuk with a Kuba pattern."
+  },
+  {
+   "url": "https://cassoni.com/product/cas-tal-cruise-teak-sofa-01/",
+   "nombre": "Cruise Sofa",
+   "h1_agente": "Cruise Teak Outdoor Sofa by Talenti",
+   "h1_seo": "Cruise Teak Outdoor Sofa by Talenti",
+   "h1_igual": true,
+   "h1_parecido": 1.0,
+   "kw_agente": [
+    "cruise couch",
+    "talenti sofa",
+    "teak sofa"
+   ],
+   "kw_seo": [
+    "cruise couch"
+   ],
+   "kw_en_comun": [
+    "cruise couch"
+   ],
+   "cobertura": 1.0,
+   "acierto": 0.33,
+   "palabras_agente": 75,
+   "palabras_seo": 88,
+   "secciones_agente": 2,
+   "secciones_seo": 2,
+   "lista_agente": false,
+   "lista_seo": true,
+   "kw_en_apertura": true,
+   "aprobada": true,
+   "descripcion_agente": "<p>The Cruise is a teak outdoor sofa by Talenti, a cruise couch built around a teak wood structure. Made in Italy.</p><h2>TEAK AND ROPE</h2><p>The teak sofa frame is entirely in teak wood, while synthetic rope defines the backrest and armrests. The cushions use weather-resistant fabrics for outdoor living areas.</p><h2>OUTDOOR USE</h2><p>The weather-resistant cushions and three-seat layout make this Talenti sofa suitable for relaxed outdoor seating. For more options, browse our <a href=\"https://cassoni.com/product-category/outdoor/living-area/sofas-sectionals-living-area/\">outdoor sofas</a>.</p>",
+   "descripcion_seo": "The Cruise couch is a three-seater outdoor sofa by Ludovica + Roberto Palomba for Talenti. It has a full teak frame, with woven synthetic rope on the arms and backrest, like the deck of a boat.\nMADE TO STAY OUTSIDE\n • Smoke teak frame.\n • Quick-dry foam padding.\n • Removable cushion covers in weather-resistant, fire-rated outdoor fabrics (Mambo Taupe, Twill Beige, Slate Grey).\nA LOW, RELAXED SEAT\n The seat is 14 5/8\" high, lower than an indoor sofa, for lounging by the pool or on a terrace. Extra decorative cushions are optional."
+  },
+  {
+   "url": "https://cassoni.com/product/cas-tnl-bakkarat-table-01/",
+   "nombre": "Bakkarat Table",
+   "h1_agente": "Bakkarat Glass Dining Table by Tonelli Design",
+   "h1_seo": "Bakkarat Round Glass Dining Table by Tonelli Design",
+   "h1_igual": false,
+   "h1_parecido": 0.8,
+   "kw_agente": [
+    "dining table in glass",
+    "glass table"
+   ],
+   "kw_seo": [
+    "dining table in glass",
+    "glass table"
+   ],
+   "kw_en_comun": [
+    "dining table in glass",
+    "glass table"
+   ],
+   "cobertura": 1.0,
+   "acierto": 1.0,
+   "palabras_agente": 79,
+   "palabras_seo": 87,
+   "secciones_agente": 1,
+   "secciones_seo": 2,
+   "lista_agente": false,
+   "lista_seo": false,
+   "kw_en_apertura": false,
+   "aprobada": true,
+   "descripcion_agente": "<p>The Bakkarat is a glass table by Tonelli Design with an extra-clear glass top and a chrome-plated metal base. Made in Italy.</p><h2>TOP AND BASE</h2><p>This dining table in glass pairs a clear top with a sculptural central leg. The chrome-plated base reflects light and contrasts with the glass. Because the leg is central, the perimeter stays open for chairs.</p><p>Choose it for a dining room where the table is seen from all sides. See all <a href=\"https://cassoni.com/product-category/furniture/dining-room/fixed-tables/\">dining tables</a>.</p>",
+   "descripcion_seo": "A round dining table in glass by D'Urbino e Lomazzi for Tonelli. The top is extra clear tempered glass. The sculptural central leg is a 1 1/8\" thick glass piece on a polished chrome base. Made in Italy.\nWHY EXTRA CLEAR GLASS\n Standard glass shows a green tint at the edges. Extra clear glass stays colorless, so this glass table lets you see the twist of the leg from every side of the room.\nFOUR DIAMETERS\n From 43 1/4\" to 55 1/8\", all at standard dining height."
+  },
+  {
+   "url": "https://cassoni.com/product/illan-luxury-wall-lamp-luceplan/",
+   "nombre": "Illan Wall Lamp",
+   "h1_agente": "Illan Wood Wall Sconce by Luceplan",
+   "h1_seo": "Illan LED Wall Sconce by Luceplan",
+   "h1_igual": false,
+   "h1_parecido": 0.6,
+   "kw_agente": [
+    "illan lamp",
+    "luceplan illan",
+    "wood sconce"
+   ],
+   "kw_seo": [
+    "luceplan illan",
+    "wall light",
+    "wall sconce"
+   ],
+   "kw_en_comun": [
+    "luceplan illan"
+   ],
+   "cobertura": 0.33,
+   "acierto": 0.33,
+   "palabras_agente": 97,
+   "palabras_seo": 81,
+   "secciones_agente": 2,
+   "secciones_seo": 2,
+   "lista_agente": false,
+   "lista_seo": true,
+   "kw_en_apertura": true,
+   "aprobada": true,
+   "descripcion_agente": "<p>The Illan lamp is a wall sconce by Luceplan, designed by Zsuzsanna Horvath. A die-cast aluminum body holds the LED and throws light upward; the layered wood shade gives it the geometric silhouette. Made in Italy.</p><h2>LIGHT AND DIMMING</h2><p>21W, 1265lm, 2700K or 3000K, CRI 90, dimmable, and UL approved.</p><h2>SURPLUS WOOD SHADE</h2><p>The shade is laser-cut, ultra-thin and flexible wood, taken from surplus left over from making the Luceplan Illan suspension lamp.</p><p>This wood sconce is for walls where light should wash upward rather than down; browse our <a href=\"https://cassoni.com/product-category/lighting/wall-lamps-sconces/\">wall sconces</a> if you need a different format.</p>",
+   "descripcion_seo": "Luceplan Illan is an LED wall sconce designed by Zsuzsanna Horvath. Its shade is laser-cut birch wood in thin layers, made from the material left over when producing the Illan suspension lamp.\nTHE LIGHT\n • LED 21W, 1265 lumens, CRI 90.\n • Dimmable, in 2700K (warmer) or 3000K.\n • The light points upward, so this wall light washes the wall without glare.\n • UL approved.\nWHERE IT WORKS\n At 11\" wide and only 5 1/8\" deep, it fits hallways and both sides of a bed."
+  },
+  {
+   "url": "https://cassoni.com/product/luxury-exquisite-masterpiece-19800-steinway-piano-by-riva-mobili-darte/",
+   "nombre": "19800 Steinway Piano",
+   "h1_agente": "Steinway Mother-of-Pearl Piano by Riva Mobili D'Arte",
+   "h1_seo": "Hand-Carved Mother-of-Pearl Steinway Piano by Riva Mobili D'Arte",
+   "h1_igual": false,
+   "h1_parecido": 0.71,
+   "kw_agente": [
+    "19800 steinway piano"
+   ],
+   "kw_seo": [
+    "italian piano",
+    "steinway and sons pianos"
+   ],
+   "kw_en_comun": [],
+   "cobertura": 0.0,
+   "acierto": 0.0,
+   "palabras_agente": 83,
+   "palabras_seo": 91,
+   "secciones_agente": 1,
+   "secciones_seo": 2,
+   "lista_agente": true,
+   "lista_seo": false,
+   "kw_en_apertura": true,
+   "aprobada": true,
+   "descripcion_agente": "<p>The 19800 Steinway Piano is a Riva Mobili D'Arte piano with hand-carved decorations on the base and sides and mother-of-pearl inlays across the surface. Made in Italy.</p>\n<h2>CARVINGS AND INLAYS</h2>\n<ul>\n<li>Hand-carved details along the base and sides.</li>\n<li>Mother-of-pearl inlays on the surface, reflecting light in iridescent shades.</li>\n</ul>\n<p>The deciding factor on this mother of pearl piano is the decoration itself: carving on the base and sides, inlay on the surface. For the rest of the workshop's output, see <a href=\"https://cassoni.com/brand/riva-mobili-darte/\">Riva Mobili D'Arte pianos</a>.</p>",
+   "descripcion_seo": "Among Steinway and Sons pianos, this is a one-of-a-kind dressed piece. Riva Mobili d'Arte covers it in mother-of-pearl, with inlays of precious wood and brass and a deep high-gloss finish. The result is an Italian piano case made to be the centerpiece of a room.\nCRAFT\n A solid wood base, hand-carved in three dimensions and finished in hand-applied gold leaf. The mother-of-pearl changes color with the angle of light. A matching ottoman is included.\nMATCHING PIECES\n The same finish is available on sofas, lounge chairs, consoles and mirrors from the collection."
+  },
+  {
+   "url": "https://cassoni.com/product/shibari-modern-designer-chair-visionnaire/",
+   "nombre": "Shibari Chair",
+   "h1_agente": "Shibari Fabric Armchair by Visionnaire",
+   "h1_seo": "Shibari Stretch Fabric Armchair by Visionnaire",
+   "h1_igual": false,
+   "h1_parecido": 0.75,
+   "kw_agente": [
+    "shibari chairs",
+    "visionnaire armchair"
+   ],
+   "kw_seo": [
+    "shibari chairs",
+    "visionnaire chair"
+   ],
+   "kw_en_comun": [
+    "shibari chairs"
+   ],
+   "cobertura": 0.5,
+   "acierto": 0.5,
+   "palabras_agente": 103,
+   "palabras_seo": 62,
+   "secciones_agente": 2,
+   "secciones_seo": 1,
+   "lista_agente": false,
+   "lista_seo": false,
+   "kw_en_apertura": true,
+   "aprobada": true,
+   "descripcion_agente": "<p>Shibari chairs are fully covered in stretch fabric: curved tubular metal legs rise and converge at the backrest, forming a knot. This Visionnaire armchair merges structure and form in a single outline.</p><h2>THE KNOT</h2><p>The knot has carried meanings of joining, devotion and eternity in Egyptian, Buddhist and Chinese symbolism. Here it ties the legs to the backrest without a visible break.</p><h2>SEAT AND SUPPORT</h2><p>A high-density polyurethane core and a webbed seat carry the support, so the chair stays solid without looking heavy. The cover runs over the whole frame; nothing is left exposed. Compare it with other <a href=\"https://cassoni.com/product-category/furniture/dining-room/chairs-armchairs/\">chairs and armchairs</a>.</p>",
+   "descripcion_seo": "A Visionnaire chair designed by Studiopepe. Curved metal tubes run from the legs to the backrest, where they close in a soft knot, the idea behind the name.\nUPHOLSTERY\n Fully covered in recycled stretch fabric (Paddington) in Chalk, Carbon, Natural, Amaretto or Gris, with a backrest cushion included. Like all Shibari chairs, it has a high-density foam core and a webbed seat."
+  }
+ ]
+}

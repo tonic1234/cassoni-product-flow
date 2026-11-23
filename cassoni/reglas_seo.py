@@ -349,13 +349,17 @@ def genericas_usadas(descripcion_plana: str, h1: str, opcionales) -> list[tuple[
 
 def elegir_keywords(candidatas: list[dict], *, nombre: str, marca: str, tipo: str,
                     h1: str, rasgo: str, texto_ficha: str,
-                    opciones: Optional[list[dict]] = None, marca_ajena: str = "") -> dict:
+                    opciones: Optional[list[dict]] = None, marca_ajena: str = "",
+                    genericas_h1: Optional[list[dict]] = None) -> dict:
     """{'elegidas': [...], 'descartadas': [{keyword, motivo}]} sin LLM.
     `opciones`: keywords '{opción} {tipo}' (keywords_de_opciones); entran todas después
     de Search Console, aunque el H1 diga una. `marca_ajena`: no cambia la elección
     (Alex usa la marca como keyword: «steinway and sons pianos»)."""
     opciones = opciones or []
-    max_gsc = 1 if len(opciones) >= 2 else 2
+    genericas_h1 = genericas_h1 or []
+    # las genéricas del H1 ya decidido ocupan su lugar entre las 3, no se suman como
+    # cuarta (Cleopatra con 4 keywords y dos líneas de texto: keyword stuffing, 23-nov)
+    max_gsc = 1 if len(opciones) + len(genericas_h1) >= 2 else 2
     if marca_ajena:
         texto_ficha = f"{texto_ficha} {NOMBRE_COMPLETO.get(marca_ajena, marca_ajena)}"
     h1n = _norm(h1)
@@ -419,6 +423,9 @@ def elegir_keywords(candidatas: list[dict], *, nombre: str, marca: str, tipo: st
     # 2) una por cada opción de la parte principal (Rock: mármol y madera)
     for c in opciones:
         _agregar(c, f"opción de la ficha ({c.get('volumen')}/mes)")
+
+    for c in genericas_h1:
+        _agregar(c, f"el material del H1 con el tipo ({c.get('volumen')}/mes)")
 
     # 3) marca + tipo, con volumen
     if marca_n:

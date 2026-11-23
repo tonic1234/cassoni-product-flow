@@ -162,7 +162,7 @@ DESCRIPCIÓN CORTA ACTUAL:
 DESCRIPCIÓN LARGA ACTUAL (fuente de datos; se reescribe):
 {strip_html(ficha.get('descripcion') or '')}
 
-{_bloque_rasgos(ficha)}{_bloque_opciones(ficha)}{_bloque_genericas(ficha)}KEYWORDS OBJETIVO (exactas, 1 o 2 veces cada una){' — las eligió el equipo SEO con datos: usalas TODAS; omití una solo si contradice la ficha' if ficha.get('keywords_obligatorias') else ''}:
+{_bloque_rasgos(ficha)}{_bloque_opciones(ficha)}{_bloque_genericas(ficha)}{_bloque_marca_ajena(ficha)}KEYWORDS OBJETIVO (exactas, 1 o 2 veces cada una){' — las eligió el equipo SEO con datos: usalas TODAS; omití una solo si contradice la ficha' if ficha.get('keywords_obligatorias') else ''}:
 {chr(10).join(f'- {k}' for k in objetivo) or '(ninguna: escribí la ficha igual)'}
 
 Responde SOLO con JSON:
@@ -204,6 +204,20 @@ def _bloque_opciones(ficha: dict) -> str:
             "cada una (ej. del SEO: <h2>UPHOLSTERY</h2> con las telas y los cueros). Cada "
             "opción con su keyword objetivo, si la tiene. Si la opción es el tapizado, el "
             "H1 no elige uno: dice \"Upholstered\".\n\n")
+
+
+def _bloque_marca_ajena(ficha: dict) -> str:
+    """La ficha nombra la marca de otro fabricante («Steinway»): su nombre completo es un
+    dato de la marca, no del producto, y respalda las búsquedas que lo usan."""
+    from .reglas_seo import NOMBRE_COMPLETO
+    m = ficha.get("marca_ajena") or ""
+    if not m:
+        return ""
+    completo = NOMBRE_COMPLETO.get(m, m)
+    return (f"MARCA EN EL NOMBRE — el nombre del producto dice «{m.title()}»: es la marca "
+            f"{completo.title()} (ese es su nombre completo). Una keyword con "
+            f"«{completo}» nombra la misma marca que la ficha; no afirma nada nuevo. "
+            f"El fabricante de la ficha sigue siendo {ficha.get('marca') or 'el de la ficha'}.\n\n")
 
 
 def _bloque_genericas(ficha: dict) -> str:

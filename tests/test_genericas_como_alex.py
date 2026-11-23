@@ -119,3 +119,24 @@ def test_illan_la_generica_que_repite_el_h1_no_cuenta():
     ops = genericas_opcionales(["aluminum", "wood"], "wall sconce",
                                _vol(wood_wall_sconce=1900, wood_sconce=1300))
     assert [k for k, _, _ in genericas_para_h1("Illan Wood Wall Sconce by Luceplan", ops)] == ["wood sconce"]
+
+
+def test_la_generica_del_h1_fijo_ocupa_un_lugar_de_tres():
+    from cassoni.reglas_seo import elegir_keywords
+    cands = [{"keyword": k, "origen": "gsc", "impresiones": i, "volumen": 20} for k, i in
+             [("cleopatra chair design", 27), ("cleopatra wooden chair", 15)]] + \
+            [{"keyword": "oak dining chair", "origen": "generica", "volumen": 2400}]
+    sel = elegir_keywords(cands, nombre="Cleopatra Chair (SC1019)", marca="OAK", tipo="dining chair",
+                          h1="Cleopatra Wood and Leather Dining Chair by OAK", rasgo="wood and leather",
+                          texto_ficha="Cleopatra OAK wooden chair design with leather",
+                          genericas_h1=[{"keyword": "wood and leather chair", "origen": "generica",
+                                         "volumen": 1300}])
+    kws = [e["keyword"] for e in sel["elegidas"]]
+    assert len(kws) == 3 and "wood and leather chair" in kws and "oak dining chair" not in kws
+
+
+def test_redactor_sabe_el_nombre_completo_de_la_marca_ajena():
+    from cassoni.redactor import _bloque_marca_ajena
+    b = _bloque_marca_ajena({"marca_ajena": "steinway", "marca": "Riva Mobili D'Arte"})
+    assert "Steinway And Sons" in b or "Steinway and Sons" in b.replace("And", "and")
+    assert _bloque_marca_ajena({"marca_ajena": ""}) == ""

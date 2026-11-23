@@ -58,16 +58,22 @@ def preparar(ref: dict, desc_orig: str, umbral: int) -> tuple[dict, list[dict], 
                      rasgos, umbral=umbral, opciones=ops, marca_ajena=ajena,
                      combinado=rasgo_combinado(plano, mats, nucleo, vol))
     kw_ops = keywords_de_opciones(ops, nucleo, vol) if len(ops) >= 2 else []
+    opcionales = [] if kw_ops else genericas_opcionales(mats, nucleo, vol)
+    gen_h1 = []
+    if r["fijo"] and opcionales:
+        gen_h1 = [{"keyword": k, "origen": "generica", "volumen": v}
+                  for k, v, _ in genericas_para_h1(r["h1"], opcionales)]
+        opcionales = []
     sel = elegir_keywords(ref["candidatas"], nombre=nombre, marca=marca, tipo=tipo, h1=r["h1"],
                           rasgo=r["rasgo"], texto_ficha=" ".join([nombre, marca, plano]),
-                          opciones=kw_ops, marca_ajena=ajena)
+                          opciones=kw_ops, marca_ajena=ajena, genericas_h1=gen_h1)
     ficha = {"url": ref["url"], "nombre": nombre, "marca": marca, "modelo": modelo_de(nombre, marca),
              "tipo": tipo, "categorias": [], "url_categoria": ref.get("url_categoria_seo") or "",
              "atributos": [], "medidas": [], "descripcion": desc_orig, "corta": "",
              "mismo_nombre": [], "h1_respaldo": h1_respaldo(nombre, marca, tipo),
              "h1_fijo": r["h1"] if r["fijo"] else "", "h1_regla": r["regla"],
              "h1_rasgos": sorted(((m, v) for m, v in rasgos if v), key=lambda x: -x[1]),
-             "genericas_opcionales": [] if kw_ops else genericas_opcionales(mats, nucleo, vol),
+             "genericas_opcionales": opcionales, "marca_ajena": ajena,
              "opciones": opciones_de_material(plano, mats),
              "sufijo": sufijo_del_nombre(nombre, marca, tipo), "keywords_obligatorias": True}
     return ficha, sel["elegidas"], r
