@@ -385,4 +385,19 @@ entra «wood and leather chair»); Illan suma dos genéricas del mismo material.
   Dining Chair», como Alex. DeepSeek elegía «Leather» por ser el más buscado.
 - **Genéricas que cuentan:** solo las que corresponden al H1 (`genericas_para_h1`): en
   Illan «wood wall sconce» ya está en el H1, queda «wood sconce».
+- **La genérica del H1 fijo ocupa uno de los 3 lugares** (no se suma como cuarta) y el
+  redactor sabe el nombre completo de una marca ajena («Steinway» = Steinway & Sons).
+
+**Control final del 23-nov** (en seco, deepseek-v4.1-flash, sin atributos de WooCommerce;
+`evidencia/2026-11-23-control-alex-sin-tienda-v3*.json`):
+
+| | 17-nov | v1 | v2 | **v3** |
+|---|---|---|---|---|
+| Keywords de Alex elegidas (de 22) | 9 | 15 | 14 | **16** |
+| H1 idénticos (de 10) | 2 | 3 | 4 | **4** |
+| Parecido del H1 | 0,66 | 0,74 | 0,77 | **0,77** |
+| Aprobadas | 10 | 10 | 9 | **10** |
+| Palabras promedio (Alex 86) | 96 | 87 | 84 | **81** |
+
+Costo de la corrida: ~US$ 0,14 a precio de lista (28 llamadas).
 
